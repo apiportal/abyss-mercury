@@ -11,9 +11,10 @@
 <body>
 <div th:replace="frags/layout/navs :: navError"></div>
 <main>
-	<h1>???</h1>
-	<h3>???</h3>
-	<p>???</p>
+	<h1 th:text="${context.get('http.statusCode')}">???</h1>
+	<h3 th:text="${context.get('http.errorMessage')}">???</h3>
+	<p th:text="${context.get('context.failureMessage')}">???</p>
+	<p th:text="${context.get('http.url')}">???</p>
 </main>
 <div th:replace="frags/layout/footer :: copy"></div>
 <script data-module="error" data-main="/dist/js/main" src="/dist/js/lib/require.min.js"></script>
