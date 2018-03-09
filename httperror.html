@@ -15,8 +15,8 @@
 	<h3 th:text="${context.get('http.errorMessage')}">???</h3>
 	<p th:text="${context.get('context.failureMessage')}">???</p>
 	<p th:text="${context.get('http.url')}">???</p>
+	<div th:replace="frags/layout/footer :: copy"></div>
 </main>
-<div th:replace="frags/layout/footer :: copy"></div>
 <script data-module="error" data-main="/dist/js/main" src="/dist/js/lib/require.min.js"></script>
 </body>
 </html>

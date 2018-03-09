@@ -11,30 +11,33 @@
 <body>
 <div th:replace="frags/layout/navs :: navLogin"></div>
 <main>
+	<div class="alert alert-success text-center">
+		Your Verapi API Portal account has been activated. You can now login.
+	</div>
 	<h1>Sign in</h1>
 	<h6>Enter your details below</h6>
 	<form action="/login-auth" method="POST">
 		<div class="form-group">
-			<label for="username">Email address</label>
-			<input type="email" class="form-control" required="" name="username" id="username" placeholder="Enter email">
+			<label for="username">Email Address</label>
+			<input type="email" name="username" id="username" class="form-control" placeholder="" required="">
 		</div>
 		<div class="form-group">
 			<label for="password">Password</label>
-			<a class="capitalize-font txt-primary block mb-10 pull-right font-12" href="forgot-password.html">forgot password?</a>
-			<input type="password" class="form-control" required="" name="password" id="password" placeholder="Enter password">
+			<input type="password" name="password" id="password" class="form-control" placeholder="" required="">
 		</div>
 		<div class="form-group">
-			<div class="checkbox checkbox-primary">
-				<input id="rememberMe" required="" type="checkbox">
+			<a href="forgot-password.html" class="txt-link checkbox-link pull-right">Forgot password?</a>
+			<span class="checkbox checkbox-primary inline-block">
+				<input type="checkbox" name="rememberMe" id="rememberMe" required="">
 				<label for="rememberMe">Keep me logged in</label>
-			</div>
+			</span>
 		</div>
 		<div class="form-group text-center">
-			<button type="submit" class="btn btn-success btn-rounded">sign in</button>
+			<button type="submit" class="btn btn-primary btn-rounded btn-lg">Sign in</button>
 		</div>
 	</form>
+	<div th:replace="frags/layout/footer :: copy"></div>
 </main>
-<div th:replace="frags/layout/footer :: copy"></div>
 <script data-module="auth" data-main="/dist/js/main" src="/dist/js/lib/require.min.js"></script>
 </body>
 </html>

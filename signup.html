@@ -16,33 +16,32 @@
 	<form action="/sign-up" method="POST">
 		<div class="form-group">
 			<label for="username">Username</label>
-			<input type="text" class="form-control" required="" name="username" id="username" placeholder="Username">
+			<input type="text" name="username" id="username" class="form-control" placeholder="" required="">
 		</div>
 		<div class="form-group">
 			<label for="email">Email address</label>
-			<input type="email" class="form-control" required="" name="email" id="email" placeholder="Enter email">
+			<input type="email" name="email" id="email" class="form-control" placeholder="" required="">
 		</div>
 		<div class="form-group">
 			<label for="password">Password</label>
-			<input type="password" class="form-control" required="" name="password" id="password" placeholder="Enter pwd">
+			<input type="password" name="password" id="password" class="form-control" placeholder="" required="">
 		</div>
 		<div class="form-group">
 			<label for="password2">Confirm Password</label>
-			<input type="password" class="form-control" required="" name="password2" id="password2" placeholder="Enter pwd">
+			<input type="password" name="password2" id="password2" class="form-control" placeholder="" required="">
 		</div>
 		<div class="form-group">
 			<div class="checkbox checkbox-primary">
-				<input id="isAgreedToTerms" name="isAgreedToTerms" required="" type="checkbox">
-				<label for="isAgreedToTerms"> I agree to all</label> <a href="#">Terms</a>
+				<input type="checkbox" name="isAgreedToTerms" id="isAgreedToTerms" required="">
+				<label for="isAgreedToTerms"> I agree to all</label> <a href="#" class="txt-link">Terms</a>
 			</div>
-			<div class="clearfix"></div>
 		</div>
 		<div class="form-group text-center">
-			<button type="submit" class="btn btn-success btn-rounded">sign Up</button>
+			<button type="submit" class="btn btn-primary btn-rounded btn-lg">Sign up</button>
 		</div>
 	</form>
+	<div th:replace="frags/layout/footer :: copy"></div>
 </main>
-<div th:replace="frags/layout/footer :: copy"></div>
 <script data-module="auth" data-main="/dist/js/main" src="/dist/js/lib/require.min.js"></script>
 </body>
 </html>
