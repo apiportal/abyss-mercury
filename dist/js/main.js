@@ -1,7 +1,6 @@
 var bust = '.js?bust=' + new Date().getTime();
 require.config({
 	// "baseUrl": "/js",
-	// "urlArgs": "v=1",
 	// "urlArgs": "bust=" + (new Date()).getTime(),
 	"paths": {
 		"jquery": "lib/jquery.min",
