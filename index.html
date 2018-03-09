@@ -5,7 +5,7 @@
 <body>
 <div th:replace="webroot/frags/layout/navs.htm :: navIndex"></div>
 <main>
-	<h1>Welcome</h1>
+	<h1 th:text="'Welcome ' + ${context.get('user.name')}">Welcome</h1>
 	<div th:replace="webroot/frags/layout/footer.htm :: copy"></div>
 </main>
 <script data-module="auth" data-main="/dist/js/main" src="/dist/js/lib/require.min.js"></script>
