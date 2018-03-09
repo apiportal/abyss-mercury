@@ -5,7 +5,7 @@
 <body>
 <div th:replace="webroot/frags/layout/navs.htm :: navLogin"></div>
 <main>
-	<div class="alert alert-success text-center">
+	<div class="alert alert-success text-center" th:if="${context.get('isUserActivated')}"> 
 		Your Verapi API Portal account has been activated. You can now login.
 	</div>
 	<h1>Sign in</h1>

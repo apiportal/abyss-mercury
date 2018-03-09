@@ -18,6 +18,15 @@
 			<a class="inline-block btn btn-outline btn-primary btn-rounded nonecase-font" href="/index">Back to Home</a>
 		</div>
 	</header>
+	<header th:fragment="navIndex" class="navbar navbar-fixed-top navbar-light">
+		<a class="logo-main" href="/index">
+			<i class="icon-verapi"></i>
+			<span class="brand-text"><span>API</span> Portal</span>
+		</a>
+		<div class="nav-button">
+			<a class="inline-block btn btn-outline btn-primary btn-rounded nonecase-font" href="/logout">Logout</a>
+		</div>
+	</header>
 	<header th:fragment="navLogin" class="navbar navbar-fixed-top navbar-light">
 		<a class="logo-main" href="/index">
 			<i class="icon-verapi"></i>
