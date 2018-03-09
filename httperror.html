@@ -1,21 +1,15 @@
 ﻿<!DOCTYPE html>
 <html class="page-error" lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:include="frags/layout/head :: header">
-<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
-<script src="dist/js/lib/thymus.min.js" id="thymus"
-	data-thx-base-path="." data-thx-frag-extension=".htm"
-	data-thx-head-frag="th:include=frags/layout/head :: header"
-	data-thx-preload-js="/dist/js/loader.js"
-	data-thx-onfrags="fragsListener();" data-thx-onfrag="fragListener()"></script>
+<head th:replace="webroot/frags/layout/head.htm :: header">
 </head>
 <body>
-<div th:replace="frags/layout/navs :: navError"></div>
+<div th:replace="webroot/frags/layout/navs.htm :: navError"></div>
 <main>
 	<h1 th:text="${context.get('http.statusCode')}">???</h1>
 	<h3 th:text="${context.get('http.errorMessage')}">???</h3>
 	<p th:text="${context.get('context.failureMessage')}">???</p>
 	<p th:text="${context.get('http.url')}">???</p>
-	<div th:replace="frags/layout/footer :: copy"></div>
+	<div th:replace="webroot/frags/layout/footer.htm :: copy"></div>
 </main>
 <script data-module="error" data-main="/dist/js/main" src="/dist/js/lib/require.min.js"></script>
 </body>
