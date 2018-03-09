@@ -43,14 +43,16 @@ require.config({
 if (typeof jQuery === 'function') {
 	define('jquery', function() { return jQuery; });
 }
-var module = $('script[src*="require.min"]').data('module');
-var args = module.split('|');
-if (module.length) {
-	require([args[0]], function () {
-		if (args.length > 1) {
-			args.shift();
-			// args.push('app');
-			require(args);
-		}
-	});
-}
+define(['config', 'jquery'], function(config, $){
+	var module = $('script[src*="require.min"]').data('module');
+	var args = module.split('|');
+	if (module.length) {
+		require([args[0]], function () {
+			if (args.length > 1) {
+				args.shift();
+				// args.push('app');
+				require(args);
+			}
+		});
+	}
+});
