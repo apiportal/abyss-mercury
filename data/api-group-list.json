@@ -1,0 +1,23 @@
+{
+	"groupList": [
+		{
+			"id": 1,
+			"name": "A Group"
+		},
+		{
+			"id": 2,
+			"name": "B Group"
+		},
+		{
+			"id": 3,
+			"name": "C Group"
+		}
+	],
+	"totalPages": 6,
+	"totalItems": 60,
+	"pageSize": 10,
+	"currentPage": 1,
+	"last": false,
+	"first": true,
+	"sort": null
+}

@@ -1,0 +1,149 @@
+{
+	"groupList": [
+		{
+			"id": 1,
+			"name": "A Group",
+			"description": "Description of my group",
+			"status": true,
+			"userCount": 200,
+			"dateFrom": "2011-10-05T14:48:00.000",
+			"dateTo": "2011-10-05T14:48:00.000",
+			"permissions": [
+				{
+					"id": 1,
+					"name": "Add, edit, delete API"
+				},
+				{
+					"id": 2,
+					"name": "Add, edit, delete APP"
+				},
+				{
+					"id": 3,
+					"name": "Add, edit, delete Proxy"
+				}
+			]
+		},
+		{
+			"id": 2,
+			"name": "B Group",
+			"description": "Long Description of my group Long Description of my group Long Description of my group",
+			"status": false,
+			"userCount": 122,
+			"dateFrom": "2011-10-05T14:48:00.000",
+			"dateTo": "2011-10-05T14:48:00.000",
+			"permissions": [
+				{
+					"id": 1,
+					"name": "Add, edit, delete API"
+				},
+				{
+					"id": 2,
+					"name": "Add, edit, delete APP"
+				},
+				{
+					"id": 3,
+					"name": "Add, edit, delete Proxy"
+				}
+			]
+		},
+		{
+			"id": 3,
+			"name": "C Group",
+			"description": "Description of my group",
+			"status": true,
+			"userCount": 89,
+			"dateFrom": "2011-10-05T14:48:00.000",
+			"dateTo": "2011-10-05T14:48:00.000",
+			"permissions": [
+				{
+					"id": 1,
+					"name": "Add, edit, delete API"
+				},
+				{
+					"id": 2,
+					"name": "Add, edit, delete APP"
+				},
+				{
+					"id": 3,
+					"name": "Add, edit, delete Proxy"
+				}
+			]
+		},
+		{
+			"id": 4,
+			"name": "D Group",
+			"description": "Description of my group",
+			"status": true,
+			"userCount": 45,
+			"dateFrom": "2011-10-05T14:48:00.000",
+			"dateTo": "2011-10-05T14:48:00.000",
+			"permissions": [
+				{
+					"id": 1,
+					"name": "Add, edit, delete API"
+				},
+				{
+					"id": 2,
+					"name": "Add, edit, delete APP"
+				},
+				{
+					"id": 3,
+					"name": "Add, edit, delete Proxy"
+				}
+			]
+		},
+		{
+			"id": 5,
+			"name": "E Group",
+			"description": "Description of my group",
+			"status": true,
+			"userCount": 777,
+			"dateFrom": "2011-10-05T14:48:00.000",
+			"dateTo": "2011-10-05T14:48:00.000",
+			"permissions": [
+				{
+					"id": 1,
+					"name": "Add, edit, delete API"
+				},
+				{
+					"id": 2,
+					"name": "Add, edit, delete APP"
+				},
+				{
+					"id": 3,
+					"name": "Add, edit, delete Proxy"
+				}
+			]
+		},
+		{
+			"id": 6,
+			"name": "F Group",
+			"description": "Description of my group",
+			"status": true,
+			"userCount": 54,
+			"dateFrom": "2011-10-05T14:48:00.000",
+			"dateTo": "2011-10-05T14:48:00.000",
+			"permissions": [
+				{
+					"id": 1,
+					"name": "Add, edit, delete API"
+				},
+				{
+					"id": 2,
+					"name": "Add, edit, delete APP"
+				},
+				{
+					"id": 3,
+					"name": "Add, edit, delete Proxy"
+				}
+			]
+		}
+	],
+	"totalPages": 6,
+	"totalItems": 60,
+	"pageSize": 10,
+	"currentPage": 1,
+	"last": false,
+	"first": true,
+	"sort": null
+}

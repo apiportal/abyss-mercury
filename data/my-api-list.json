@@ -1,0 +1,148 @@
+{
+	"myApiList": [
+		{
+			"id": 1,
+			"name": "My Api 1",
+			"version": "V.2.0.0",
+			"date": "2016.03.27",
+			"status": "published",
+			"authentication": "No Auth",
+			"authorization": "No Authz",
+			"context": "/petstore",
+			"baseUrl": "virtserver.swaggerhub.com/monasdyas4/my-petstore/1.0.0",
+			"description": "This is a sample Petstore server. You can find out more about Swagger at",
+			"tags": "store,pets",
+			"group": "store",
+			"categories": "Category 1",
+			"test": {"kkk": "vvv"},
+			"proxies": [
+				{
+					"id": 1,
+					"name": "My Proxy 1",
+					"context": "my_proxy_1"
+				},
+				{
+					"id": 2,
+					"name": "My Proxy 2",
+					"context": "my_proxy_2"
+				},
+				{
+					"id": 3,
+					"name": "My Proxy 3",
+					"context": "my_proxy_3"
+				}
+			]
+		},
+		{
+			"id": 2,
+			"name": "My Api 2",
+			"version": "V.1.0.1",
+			"date": "2017.05.12",
+			"status": "draft",
+			"authentication": "Basic Auth",
+			"authorization": "No Authz",
+			"context": "/petstore",
+			"baseUrl": "virtserver.swaggerhub.com/monasdyas4/my-petstore/1.0.1",
+			"description": "This is a sample Petstore server. You can find out more about Swagger at",
+			"tags": "technology",
+			"group": "recent",
+			"categories": "",
+			"test": {"kkk": "vvv"},
+			"proxies": [
+				{
+					"id": 4,
+					"name": "My Proxy 4",
+					"context": "my_proxy_4"
+				},
+				{
+					"id": 5,
+					"name": "My Proxy 5",
+					"context": "my_proxy_5"
+				}
+			]
+		},
+		{
+			"id": 3,
+			"name": "My Api 3",
+			"version": "V.1.0.2",
+			"date": "2017.11.16",
+			"status": "staged",
+			"authentication": "API Key Auth",
+			"authorization": "API Key Authz",
+			"context": "/petstore",
+			"baseUrl": "virtserver.swaggerhub.com/monasdyas4/my-petstore/1.0.2",
+			"description": "This is a sample Petstore server. You can find out more about Swagger at",
+			"tags": "test",
+			"group": "",
+			"categories": "Category 2",
+			"test": {"kkk": "vvv"},
+			"proxies": []
+		},
+		{
+			"id": 4,
+			"name": "My Api 4",
+			"version": "V.1.0.3",
+			"date": "2016.03.07",
+			"status": "published",
+			"authentication": "oAuth 2.0",
+			"authorization": "API Key Authz",
+			"context": "/petstore",
+			"baseUrl": "virtserver.swaggerhub.com/monasdyas4/my-petstore/1.0.3",
+			"description": "This is a sample Petstore server. You can find out more about Swagger at",
+			"tags": "tag1,tag2,tag3",
+			"group": "",
+			"categories": "",
+			"test": {"kkk": "vvv"},
+			"proxies": [
+				{
+					"id": 1,
+					"name": "My Proxy 1",
+					"context": "my_proxy_1"
+				}
+			]
+		},
+		{
+			"id": 5,
+			"name": "My Api 5",
+			"version": "V.1.0.4",
+			"date": "2017.05.22",
+			"status": "published",
+			"authentication": "LDAP Auth",
+			"authorization": "API Key Authz",
+			"context": "/petstore",
+			"baseUrl": "virtserver.swaggerhub.com/monasdyas4/my-petstore/1.0.4",
+			"description": "This is a sample Petstore server. You can find out more about Swagger at",
+			"tags": "",
+			"group": "",
+			"categories": "",
+			"test": {"kkk": "vvv"},
+			"proxies": [
+				{
+					"id": 1,
+					"name": "My Proxy 1",
+					"context": "my_proxy_1"
+				},
+				{
+					"id": 2,
+					"name": "My Proxy 2",
+					"context": "my_proxy_2"
+				},
+				{
+					"id": 3,
+					"name": "My Proxy 3",
+					"context": "my_proxy_3"
+				},
+				{
+					"id": 4,
+					"name": "My Proxy 4",
+					"context": "my_proxy_4"
+				},
+				{
+					"id": 5,
+					"name": "My Proxy 5",
+					"context": "my_proxy_5"
+				}
+			]
+		}
+	]
+}

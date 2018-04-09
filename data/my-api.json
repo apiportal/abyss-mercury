@@ -1,0 +1,210 @@
+{
+	"myApi": {
+		"id": 1,
+		"specs": "",
+		"name": "My Api 1",
+		"version": "V.1.0.0",
+		"date": "27.03.2016",
+		"status": "published",
+		"context": "/petstore",
+		"baseUrl": "virtserver.swaggerhub.com/monasdyas4/my-petstore/1.0.0",
+		"qosPolicy": "",
+		"description": "This is a sample Petstore server. You can find out more about Swagger at",
+		"tags": [
+			{
+				"id": 1,
+				"name": "A Tag"
+			},
+			{
+				"id": 2,
+				"name": "B Tag"
+			},
+			{
+				"id": 3,
+				"name": "C Tag"
+			}
+		],
+		"group": [
+			{
+				"id": 1,
+				"name": "A Group"
+			},
+			{
+				"id": 2,
+				"name": "B Group"
+			},
+			{
+				"id": 3,
+				"name": "C Group"
+			}
+		],
+		"categories": [
+			{
+				"id": 1,
+				"name": "A Category"
+			},
+			{
+				"id": 2,
+				"name": "B Category"
+			},
+			{
+				"id": 3,
+				"name": "C Category"
+			}
+		],
+		"authentication": {
+			"noAuth": {
+				"enabled": true,
+				"name": "No Authentication"
+			},
+			"basic": {
+				"enabled": false,
+				"name": "Basic Authentication"
+			},
+			"apiKey": {
+				"enabled": false,
+				"name": "API Key Authentication",
+				"provider": "Verapi Key",
+				"verapiName": "string",
+				"verapiType": "verapiKey"
+			},
+			"oAuth": {
+				"enabled": false,
+				"name": "oAuth 2.0"
+			},
+			"ldap": {
+				"enabled": false,
+				"name": "LDAP Authentication"
+			},
+			"saml": {
+				"enabled": false,
+				"name": "SAML Authentication"
+			}
+		},
+		"authorization": {
+			"noAuthz": {
+				"enabled": true,
+				"name": "No Authorization"
+			},
+			"apiKey": {
+				"enabled": false,
+				"name": "API Key Authorization",
+			}
+		},
+		"methods": [
+			{
+				"id": 1,
+				"verb": "GET",
+				"resourcePath": "/pet",
+				"operationId": "getPet",
+				"summary": "Update an existing pet",
+				"description": "Pet object that needs to be added to the store",
+				"parameters": [
+					{
+						"id": 1,
+						"name": "",
+						"description": "",
+						"dataType": "",
+						"required": false,
+						"defaultValue": "",
+						"minLength": "",
+						"maxLength": "",
+						"pattern": ""
+					},
+					{
+						"id": 2,
+						"name": "",
+						"description": "",
+						"dataType": "",
+						"required": false,
+						"defaultValue": "",
+						"minLength": "",
+						"maxLength": "",
+						"pattern": ""
+					}
+				]
+			},
+			{
+				"id": 2,
+				"verb": "POST",
+				"resourcePath": "/pet",
+				"operationId": "getPet",
+				"summary": "Update an existing pet",
+				"description": "Pet object that needs to be added to the store",
+				"parameters": [
+					{
+						"id": 1,
+						"name": "",
+						"description": "",
+						"dataType": "",
+						"required": false,
+						"defaultValue": "",
+						"minLength": "",
+						"maxLength": "",
+						"pattern": ""
+					}
+				]
+			},
+			{
+				"id": 3,
+				"verb": "PUT",
+				"resourcePath": "/pet",
+				"operationId": "getPet",
+				"summary": "Update an existing pet",
+				"description": "Pet object that needs to be added to the store",
+				"parameters": [
+					{
+						"id": 1,
+						"name": "",
+						"description": "",
+						"dataType": "",
+						"required": false,
+						"defaultValue": "",
+						"minLength": "",
+						"maxLength": "",
+						"pattern": ""
+					}
+				]
+			},
+			{
+				"id": 4,
+				"verb": "DELETE",
+				"resourcePath": "/pet",
+				"operationId": "getPet",
+				"summary": "Update an existing pet",
+				"description": "Pet object that needs to be added to the store",
+				"parameters": [
+					{
+						"id": 1,
+						"name": "",
+						"description": "",
+						"dataType": "",
+						"required": false,
+						"defaultValue": "",
+						"minLength": "",
+						"maxLength": "",
+						"pattern": ""
+					}
+				]
+			}
+		],
+		"proxies": [
+			{
+				"id": 1,
+				"name": "My Proxy 1",
+				"context": "my_proxy_1"
+			},
+			{
+				"id": 2,
+				"name": "My Proxy 2",
+				"context": "my_proxy_2"
+			},
+			{
+				"id": 3,
+				"name": "My Proxy 3",
+				"context": "my_proxy_3"
+			}
+		]
+	}
+
+}

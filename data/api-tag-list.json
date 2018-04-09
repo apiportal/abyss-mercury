@@ -1,0 +1,23 @@
+{
+	"tagList": [
+		{
+			"id": 1,
+			"name": "A Tag"
+		},
+		{
+			"id": 2,
+			"name": "B Tag"
+		},
+		{
+			"id": 3,
+			"name": "C Tag"
+		}
+	],
+	"totalPages": 6,
+	"totalItems": 60,
+	"pageSize": 10,
+	"currentPage": 1,
+	"last": false,
+	"first": true,
+	"sort": null
+}

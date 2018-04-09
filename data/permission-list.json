@@ -1,0 +1,71 @@
+{
+	"permissionList": [
+		{
+			"id": 1,
+			"name": "Add, edit, delete API",
+			"description": "Description of this permission",
+			"resource": "API",
+			"actions": [
+				{
+					"id": 1,
+					"name": "Add"
+				},
+				{
+					"id": 2,
+					"name": "Edit"
+				},
+				{
+					"id": 3,
+					"name": "Delete"
+				}
+			]
+		},
+		{
+			"id": 2,
+			"name": "Add, edit, delete APP",
+			"description": "Description of this permission",
+			"resource": "APP",
+			"actions": [
+				{
+					"id": 1,
+					"name": "Add"
+				},
+				{
+					"id": 2,
+					"name": "Edit"
+				},
+				{
+					"id": 3,
+					"name": "Delete"
+				}
+			]
+		},
+		{
+			"id": 3,
+			"name": "Add, edit, delete Proxy",
+			"description": "Description of this permission",
+			"resource": "Proxy",
+			"actions": [
+				{
+					"id": 1,
+					"name": "Add"
+				},
+				{
+					"id": 2,
+					"name": "Edit"
+				},
+				{
+					"id": 3,
+					"name": "Delete"
+				}
+			]
+		}
+	],
+	"totalPages": 6,
+	"totalItems": 60,
+	"pageSize": 10,
+	"currentPage": 1,
+	"last": false,
+	"first": true,
+	"sort": null
+}

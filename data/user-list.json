@@ -1,0 +1,245 @@
+{
+	"userList": [
+		{
+			"id": 1,
+			"fullName": "A Name Surname",
+			"userName": "myUserName",
+			"email": "myemail@email.com",
+			"loginCount": 200,
+			"lastLogin": "2011-10-05T14:48:00.000Z",
+			"failedLoginCount": 0,
+			"lastFailedLogin": "2011-10-05T14:48:00.000Z",
+			"directory": "Internal Directory",
+			"groups": [
+				{
+					"id": 1,
+					"name": "A Group"
+				},
+				{
+					"id": 2,
+					"name": "B Group"
+				},
+				{
+					"id": 3,
+					"name": "C Group"
+				}
+			],
+			"permissions": [
+				{
+					"id": 1,
+					"name": "Add, edit, delete API"
+				},
+				{
+					"id": 2,
+					"name": "Add, edit, delete APP"
+				},
+				{
+					"id": 3,
+					"name": "Add, edit, delete Proxy"
+				}
+			]
+		},
+		{
+			"id": 2,
+			"fullName": "B Name Surname",
+			"userName": "myUserName",
+			"email": "myemail@email.com",
+			"loginCount": 122,
+			"lastLogin": "2011-10-05T14:48:00.000Z",
+			"failedLoginCount": 12,
+			"lastFailedLogin": "2011-10-05T14:48:00.000Z",
+			"directory": "Internal Directory",
+			"groups": [
+				{
+					"id": 1,
+					"name": "A Group"
+				},
+				{
+					"id": 2,
+					"name": "B Group"
+				},
+				{
+					"id": 3,
+					"name": "C Group"
+				}
+			],
+			"permissions": [
+				{
+					"id": 1,
+					"name": "Add, edit, delete API"
+				},
+				{
+					"id": 2,
+					"name": "Add, edit, delete APP"
+				},
+				{
+					"id": 3,
+					"name": "Add, edit, delete Proxy"
+				}
+			]
+		},
+		{
+			"id": 3,
+			"fullName": "C Name Surname",
+			"userName": "myUserName",
+			"email": "myemail@email.com",
+			"loginCount": 89,
+			"lastLogin": "2011-10-05T14:48:00.000Z",
+			"failedLoginCount": 6,
+			"lastFailedLogin": "2011-10-05T14:48:00.000Z",
+			"directory": "Internal Directory",
+			"groups": [
+				{
+					"id": 1,
+					"name": "A Group"
+				},
+				{
+					"id": 2,
+					"name": "B Group"
+				},
+				{
+					"id": 3,
+					"name": "C Group"
+				}
+			],
+			"permissions": [
+				{
+					"id": 1,
+					"name": "Add, edit, delete API"
+				},
+				{
+					"id": 2,
+					"name": "Add, edit, delete APP"
+				},
+				{
+					"id": 3,
+					"name": "Add, edit, delete Proxy"
+				}
+			]
+		},
+		{
+			"id": 4,
+			"fullName": "D Name Surname",
+			"userName": "myUserName",
+			"email": "myemail@email.com",
+			"loginCount": 45,
+			"lastLogin": "2011-10-05T14:48:00.000Z",
+			"failedLoginCount": 8,
+			"lastFailedLogin": "2011-10-05T14:48:00.000Z",
+			"directory": "Internal Directory",
+			"groups": [
+				{
+					"id": 1,
+					"name": "A Group"
+				},
+				{
+					"id": 2,
+					"name": "B Group"
+				},
+				{
+					"id": 3,
+					"name": "C Group"
+				}
+			],
+			"permissions": [
+				{
+					"id": 1,
+					"name": "Add, edit, delete API"
+				},
+				{
+					"id": 2,
+					"name": "Add, edit, delete APP"
+				},
+				{
+					"id": 3,
+					"name": "Add, edit, delete Proxy"
+				}
+			]
+		},
+		{
+			"id": 5,
+			"fullName": "E Name Surname",
+			"userName": "myUserName",
+			"email": "myemail@email.com",
+			"loginCount": 777,
+			"lastLogin": "2011-10-05T14:48:00.000Z",
+			"failedLoginCount": 8,
+			"lastFailedLogin": "2011-10-05T14:48:00.000Z",
+			"directory": "Internal Directory",
+			"groups": [
+				{
+					"id": 1,
+					"name": "A Group"
+				},
+				{
+					"id": 2,
+					"name": "B Group"
+				},
+				{
+					"id": 3,
+					"name": "C Group"
+				}
+			],
+			"permissions": [
+				{
+					"id": 1,
+					"name": "Add, edit, delete API"
+				},
+				{
+					"id": 2,
+					"name": "Add, edit, delete APP"
+				},
+				{
+					"id": 3,
+					"name": "Add, edit, delete Proxy"
+				}
+			]
+		},
+		{
+			"id": 6,
+			"fullName": "F Name Surname",
+			"userName": "myUserName",
+			"email": "myemail@email.com",
+			"loginCount": 54,
+			"lastLogin": "2011-10-05T14:48:00.000Z",
+			"failedLoginCount": 3,
+			"lastFailedLogin": "2011-10-05T14:48:00.000Z",
+			"directory": "Internal Directory",
+			"groups": [
+				{
+					"id": 1,
+					"name": "A Group"
+				},
+				{
+					"id": 2,
+					"name": "B Group"
+				},
+				{
+					"id": 3,
+					"name": "C Group"
+				}
+			],
+			"permissions": [
+				{
+					"id": 1,
+					"name": "Add, edit, delete API"
+				},
+				{
+					"id": 2,
+					"name": "Add, edit, delete APP"
+				},
+				{
+					"id": 3,
+					"name": "Add, edit, delete Proxy"
+				}
+			]
+		}
+	],
+	"totalPages": 6,
+	"totalItems": 60,
+	"pageSize": 10,
+	"currentPage": 1,
+	"last": false,
+	"first": true,
+	"sort": null
+}

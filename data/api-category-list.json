@@ -1,0 +1,23 @@
+{
+	"categoryList": [
+		{
+			"id": 1,
+			"name": "A Category"
+		},
+		{
+			"id": 2,
+			"name": "B Category"
+		},
+		{
+			"id": 3,
+			"name": "C Category"
+		}
+	],
+	"totalPages": 6,
+	"totalItems": 60,
+	"pageSize": 10,
+	"currentPage": 1,
+	"last": false,
+	"first": true,
+	"sort": null
+}
