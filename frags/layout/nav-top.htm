@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+	<nav th:fragment="navTop" class="navbar navbar-fixed-top">
+		<div class="mobile-only-brand">
+			<div class="nav-header">
+				<a class="logo-wrap" href="/index">
+					<i class="icon-verapi"></i>
+					<span class="brand-text"><span>API</span> Portal</span>
+				</a>
+			</div>	
+			<a id="toggle_nav_btn" class="toggle-left-nav-btn" href="javascript:void(0);"><i class="fas fa-bars"></i></a>
+			<a id="toggle_mobile_nav" class="mobile-only-view" href="javascript:void(0);"><i class="fas fa-ellipsis-v"></i></a>
+			<div class="breadcrumbs flex-grow">
+				<ol class="breadcrumb" v-if="pageCurrent == 'my-apis'">
+					<li><a href="#">My APIs</a></li>
+					<li v-if="rootState == 'edit'"><a href="#">Basic Information</a></li>
+					<li v-if="rootState == 'edit'"><a href="#">Authentication</a></li>
+					<li v-if="rootState == 'edit'" class="active"><a href="#">Authorization</a></li>
+					<li v-if="rootState == 'edit'" class="active"><a href="#">Methods</a></li>
+				</ol>
+				<ol class="breadcrumb" v-if="pageCurrent == 'users'">
+					<li><a href="#">User Management</a></li>
+					<li><a href="/abyss/users">Users</a></li>
+				</ol>
+				<ol class="breadcrumb" v-if="pageCurrent == 'user-groups'">
+					<li><a href="#">User Management</a></li>
+					<li><a href="/abyss/users-groups">User Groups</a></li>
+				</ol>
+			</div>
+		</div>
+		<div id="mobile_only_nav" class="mobile-only-nav">
+			<form id="search_form" role="search" class="top-nav-search fol">
+				<div class="input-group">
+					<input type="text" name="example-input1-group2" class="form-control" placeholder="Search">
+					<span class="input-group-btn">
+					<button type="button" class="btn btn-default" data-target="#search_form" data-toggle="collapse" aria-label="Close" aria-expanded="true"><i class="fas fa-search"></i></button>
+					</span>
+				</div>
+			</form>
+			<ul class="nav navbar-right top-nav">
+				<li>
+					<a id="open_right_sidebar" href="#"><i class="fas fa-comments top-nav-icon"></i></a>
+				</li>
+				<li class="dropdown alert-drp">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fas fa-bell top-nav-icon"></i><span class="top-nav-icon-badge">5</span></a>
+					<ul class="dropdown-menu alert-dropdown" data-dropdown-in="bounceIn" data-dropdown-out="bounceOut">
+						<li class="nav-item border-bottom">
+							<div class="clearfix">
+							<a class="txt-item float-right" href="#"> clear all</a>
+							<h6 class="m-0">Notifications</h6>
+							</div>
+						</li>
+						<li class="nav-item border-bottom">
+							<div class="clearfix"><small class="float-right">2pm</small><div class="text-truncate">New subscription created</div></div>
+							<small class="d-block text-truncate">Your customer subscribed for the basic plan. The customer will pay $25 per md-block onth.</small>
+						</li>
+						<li class="nav-item border-bottom">
+							<div class="clearfix"><small class="float-right">1pm</small><div class="text-truncate txt-warning">Server #2 not responding</div></div>
+							<small class="d-block text-truncate">Some technical error occurred needs to be resolved.</small>
+						</li>
+						<li class="nav-item border-bottom">
+							<div class="clearfix"><small class="float-right">4pm</small><div class="text-truncate">2 new messages</div></div>
+							<small class="d-block text-truncate"> The last payment for your G Suite Basic subscription failed.</small>
+						</li>
+						<li class="nav-item border-bottom">
+							<div class="clearfix"><small class="float-right">1pm</small><div class="text-truncate">Sandy Doe</div></div>
+							<small class="d-block text-truncate">Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, ad-block dipisci velit</small>
+						</li>
+						<li class="nav-item border-bottom">
+							<div class="clearfix"><small class="float-right">1pm</small><div class="text-truncate txt-danger">99% server space occupied.</div></div>
+							<small class="d-block text-truncate">consectetur, adipisci velit.</small>
+						</li>
+						<li class="">
+							<a class="d-block text-center read-all" href="javascript:void(0)">Read all</a>
+						</li>
+					</ul>
+				</li>
+				<li class="dropdown auth-drp">
+					<a href="#" class="dropdown-toggle pr-0" data-toggle="dropdown"><img src="/dist/img/avatar.jpg" alt="user_auth" class="user-auth-img img-circle"/><span class="user-online-status"></span></a>
+					<ul class="dropdown-menu user-auth-dropdown" data-dropdown-in="flipInX" data-dropdown-out="flipOutX">
+						<li>
+							<a href="#"><i class="fas fa-user"></i><span>Profile</span></a>
+						</li>
+						<li>
+							<a href="#"><i class="fas fa-money-bill-alt"></i><span>my balance</span></a>
+						</li>
+						<li>
+							<a href="#"><i class="fas fa-envelope"></i><span>Inbox</span></a>
+						</li>
+						<li>
+							<a href="#" id="setting_panel_btn"><i class="fas fa-cog"></i><span>Settings</span></a>
+						</li>
+						<li class="divider"></li>
+						<li class="sub-menu dropdown-hover dropdown">
+							<a href="#" class="dropdown-toggle pr-0 level-2-drp"><i class="fas fa-check-circle txt-success"></i> available</a>
+							<ul class="dropdown-menu open-left-side">
+								<li>
+									<a href="#"><i class="fas fa-check-circle txt-success"></i><span>available</span></a>
+								</li>
+								<li>
+									<a href="#"><i class="fas fa-pause-circle txt-warning"></i><span>busy</span></a>
+								</li>
+								<li>
+									<a href="#"><i class="fas fa-minus-circle txt-danger"></i><span>offline</span></a>
+								</li>
+							</ul>	
+						</li>
+						<li class="divider"></li>
+						<li>
+							<a href="#"><i class="fas fa-power-off"></i><span>Log Out</span></a>
+						</li>
+					</ul>
+				</li>
+			</ul>
+		</div>	
+	</nav>
+</body>
+</html>

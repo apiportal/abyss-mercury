@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+	<ul class="pagination pagination--lg" th:fragment="pagination">
+		<li v-if="!paginate.first" v-on:click="getPage(paginate.currentPage - 1);"> <a href="#"><i class="fa fa-angle-left"></i></a> </li>
+		<li v-bind:class="{'active': page == paginate.currentPage}" v-for="page in paginate.pages"><a href="#" v-on:click="getPage(page);">{{page}}</a></li>
+		<li v-if="!paginate.last"> <a href="#" v-on:click="getPage(paginate.currentPage + 1);"><i class="fa fa-angle-right"></i></a> </li>
+	</ul>
+</body>
+</html>

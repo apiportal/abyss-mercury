@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+	<div th:fragment="navLeft" class="fixed-sidebar-left">
+		<ul class="nav side-nav flex-column nicescroll-bar">
+			<li>
+				<a href="/abyss/index"><i class="fas fa-fw fa-home"></i><span class="right-nav-text">Dashboard</span></a>
+			</li>
+			<li>
+				<a href="#" class="js-collapse-open"><i class="fas fa-fw fa-cube"></i><span class="right-nav-text">My Business APIs</span></a>
+				<button type="button" data-toggle="collapse" data-target="#apiCat" aria-controls="apiCat" class="nav-caret"></button>
+				<ul id="apiCat" class="collapse">
+					<li>
+						<a href="#" class="nav-caret" data-toggle="collapse" data-target="#apiGroups" aria-controls="apiGroups">Groups</a>
+						<ul id="apiGroups" class="collapse">
+							<li><a href="#" data-toggle="modal" data-target="#responsive-modal"><i class="fas fa-fw fa-plus-square"></i> ADD GROUP</a></li>
+							<li><a href="#"><i class="fas fa-fw fa-object-group txt-danger"></i> Favorites</a></li>
+							<li><a href="#"><i class="fas fa-fw fa-object-group txt-success"></i> Finance</a></li>
+							<li><a href="#"><i class="fas fa-fw fa-object-group txt-info"></i> Junk</a></li>
+							<li><a href="#"><i class="fas fa-fw fa-object-group txt-warning"></i> Mobile</a></li>
+							<li><a href="#"><i class="fas fa-fw fa-object-group txt-primary"></i> Recent</a></li>
+						</ul>
+					</li>
+					<li>
+						<a href="#" class="nav-caret" data-toggle="collapse" data-target="#apiTags" aria-controls="apiTags">Tags</a>
+						<ul id="apiTags" class="collapse">
+							<li><a href="#"><i class="fas fa-fw fa-plus-square"></i> ADD TAG</a></li>
+							<li><a href="#"><i class="fas fa-fw fa-stop txt-danger"></i> Social</a></li>
+							<li><a href="#"><i class="fas fa-fw fa-stop txt-success"></i> Weather</a></li>
+							<li><a href="#"><i class="fas fa-fw fa-stop txt-info"></i> Travel</a></li>
+							<li><a href="#"><i class="fas fa-fw fa-stop txt-warning"></i> Food</a></li>
+							<li><a href="#"><i class="fas fa-fw fa-stop txt-primary"></i> Sports</a></li>
+						</ul>
+					</li>
+					<li>
+						<a href="#" class="nav-caret" data-toggle="collapse" data-target="#apiStatus" aria-controls="apiStatus">Sort by Status</a>
+						<ul id="apiStatus" class="collapse">
+							<li><a href="#"><i class="fas fa-circle txt-grey"></i>Draft</a></li>
+							<li><a href="#"><i class="fas fa-circle txt-purple"></i>Staged</a></li>
+							<li><a href="#"><i class="fas fa-circle txt-green"></i>Published</a></li>
+							<li><a href="#"><i class="fas fa-circle txt-cyan"></i>Promoted</a></li>
+							<li><a href="#"><i class="fas fa-circle txt-orange"></i>Demoted</a></li>
+							<li><a href="#"><i class="fas fa-circle txt-red"></i>Retired</a></li>
+						</ul>
+					</li>
+				</ul>
+			</li>
+			<li>
+				<a href="#" class="js-collapse-open"><i class="fas fa-fw fa-code-branch"></i><span class="right-nav-text">My Proxies</span></a>
+				<button type="button" data-toggle="collapse" data-target="#proxyCat" aria-controls="proxyCat" class="nav-caret"></button>
+				<ul id="proxyCat" class="collapse">
+					<li>
+						<a href="#" class="nav-caret" data-toggle="collapse" data-target="#proxyGroups" aria-controls="proxyGroups">Groups</a>
+						<ul id="proxyGroups" class="collapse">
+							<li><a href="#" data-toggle="modal" data-target="#responsive-modal"><i class="fas fa-fw fa-plus-square"></i> ADD GROUP</a></li>
+							<li><a href="#"><i class="fas fa-fw fa-object-group txt-danger"></i> Favorites</a></li>
+							<li><a href="#"><i class="fas fa-fw fa-object-group txt-success"></i> Finance</a></li>
+							<li><a href="#"><i class="fas fa-fw fa-object-group txt-info"></i> Junk</a></li>
+							<li><a href="#"><i class="fas fa-fw fa-object-group txt-warning"></i> Mobile</a></li>
+							<li><a href="#"><i class="fas fa-fw fa-object-group txt-primary"></i> Recent</a></li>
+						</ul>
+					</li>
+					<li>
+						<a href="#" class="nav-caret" data-toggle="collapse" data-target="#proxyTags" aria-controls="proxyTags">Tags</a>
+						<ul id="proxyTags" class="collapse">
+							<li><a href="#"><i class="fas fa-fw fa-plus-square"></i> ADD TAG</a></li>
+							<li><a href="#"><i class="fas fa-fw fa-stop txt-danger"></i> Social</a></li>
+							<li><a href="#"><i class="fas fa-fw fa-stop txt-success"></i> Weather</a></li>
+							<li><a href="#"><i class="fas fa-fw fa-stop txt-info"></i> Travel</a></li>
+							<li><a href="#"><i class="fas fa-fw fa-stop txt-warning"></i> Food</a></li>
+							<li><a href="#"><i class="fas fa-fw fa-stop txt-primary"></i> Sports</a></li>
+						</ul>
+					</li>
+					<li>
+						<a href="#" class="nav-caret" data-toggle="collapse" data-target="#proxyStatus" aria-controls="proxyStatus">Sort by Status</a>
+						<ul id="proxyStatus" class="collapse">
+							<li><a href="#"><i class="fas fa-circle txt-grey"></i>Draft</a></li>
+							<li><a href="#"><i class="fas fa-circle txt-purple"></i>Staged</a></li>
+							<li><a href="#"><i class="fas fa-circle txt-green"></i>Published</a></li>
+							<li><a href="#"><i class="fas fa-circle txt-cyan"></i>Promoted</a></li>
+							<li><a href="#"><i class="fas fa-circle txt-orange"></i>Demoted</a></li>
+							<li><a href="#"><i class="fas fa-circle txt-red"></i>Retired</a></li>
+						</ul>
+					</li>
+				</ul>
+			</li>
+			<li>
+				<a href="#"><i class="fas fa-fw fa-cubes"></i><span class="right-nav-text">My Apps</span></a>
+			</li>
+			<li>
+				<a href="#"><i class="fas fa-fw fa-tags"></i><span class="right-nav-text">Plans</span></a>
+			</li>
+			<li>
+				<a href="#"><i class="fas fa-fw fa-newspaper"></i><span class="right-nav-text">Subscriptions</span></a>
+			</li>
+			<li>
+				<a href="#"><i class="fas fa-fw fa-globe"></i><span class="right-nav-text">Explore</span><span class="badge badge-pill badge-warning">8</span></a>
+			</li>
+			<li class="navigation-header border-top">
+				<span>Dev</span><i class="fas fa-fw fa-ellipsis-h"></i>
+			</li>
+			<li>
+				<a href="#" class="nav-caret" data-toggle="collapse" data-target="#pageUserMngt" aria-controls="pageUserMngt"><i class="fas fa-fw fa-user"></i><span class="right-nav-text">User Management</span></a>
+				<ul id="pageUserMngt" class="collapse">
+					<li>
+						<a href="/abyss/user">Users</a>
+					</li>
+					<li>
+						<a href="/abyss/user-groups">Groups</a>
+					</li>
+				</ul>
+			</li>
+			<li>
+				<a href="#" class="nav-caret" data-toggle="collapse" data-target="#pages_dr" aria-controls="pages_dr"><i class="fas fa-fw fa-file"></i><span class="right-nav-text">Special Pages</span></a>
+				<ul id="pages_dr" class="collapse">
+					<li>
+						<a href="#" class="nav-caret" data-toggle="collapse" data-target="#auth_dr">Authantication pages</a>
+						<ul id="auth_dr" class="collapse collapse-level-2">
+							<li>
+								<a href="/abyss/login">Login</a>
+							</li>
+							<li>
+								<a href="/abyss/signup">Register</a>
+							</li>
+							<li>
+								<a href="/abyss/forgot-password">Forgot Password</a>
+							</li>
+							<li>
+								<a href="/abyss/reset-password">Reset Password</a>
+							</li>
+							<li>
+								<a href="/abyss/change-password">Change Password</a>
+							</li>
+						</ul>
+					</li>
+					<li>
+						<a href="/abyss/404">Error 404</a>
+					</li>
+				</ul>
+			</li>
+			<li>
+				<a href="#" class="nav-caret" data-toggle="collapse" data-target="#dropdown_dr_lv1"><i class="fas fa-fw fa-info"></i><span class="right-nav-text">Helpers</span></a>
+				<ul id="dropdown_dr_lv1" class="collapse">
+					<li>
+						<a href="#" class="nav-caret" data-toggle="collapse" data-target="#dropdown_dr_lv2">Colors</a>
+						<ul id="dropdown_dr_lv2" class="collapse collapse-level-2">
+							<li><a href="#" class="bg-blue txt-white">blue</a></li>
+							<li><a href="#" class="bg-indigo txt-white">indigo</a></li>
+							<li><a href="#" class="bg-purple txt-white">purple</a></li>
+							<li><a href="#" class="bg-pink txt-white">pink</a></li>
+							<li><a href="#" class="bg-red txt-white">red</a></li>
+							<li><a href="#" class="bg-orange txt-white">orange</a></li>
+							<li><a href="#" class="bg-yellow txt-white">yellow</a></li>
+							<li><a href="#" class="bg-green txt-white">green</a></li>
+							<li><a href="#" class="bg-teal txt-white">teal</a></li>
+							<li><a href="#" class="bg-cyan txt-white">cyan</a></li>
+						</ul>
+					</li>
+				</ul>
+			</li>
+		</ul>
+	</div>
+</body>
+</html>
