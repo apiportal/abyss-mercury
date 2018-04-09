@@ -16,7 +16,7 @@ function fragListener(event) {
 		// event.log();
 	}
 	if (loaded) {
-		console.log("fragListener: ", event);
+		// console.log("fragListener: ", event);
 	}
 }
 function fragsListener(event) {
@@ -25,7 +25,7 @@ function fragsListener(event) {
 	}
 	var firstLoad = !loaded;
 	loaded = true;
-	event.log();
+	// event.log();
 	UI.layout.init(event, true);
 	if (event.actionScope.prop('tagName').toLowerCase() !== 'html') {
 		// updateUI(event);
