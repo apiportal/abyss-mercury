@@ -1,0 +1,151 @@
+﻿<!DOCTYPE html>
+<html class="vs-user-groups" lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:include="webroot/frags/layout/head.htm :: header">
+</head>
+<body>
+<div id="portal" class="wrapper" v-bind:class="pageClass">
+	<div th:replace="webroot/frags/layout/navs.htm :: navs"></div>
+	<main class="page-wrapper">
+	<user-groups inline-template v-on:set-state="setState" v-on:set-page="setPage" v-bind:root-state="rootState">
+		<div class="columns">
+			<section class="column column-main column-main-fixed">
+				<div class="column-main-fixed-overlay" v-if="rootState == 'add' || rootState == 'edit'" v-on:click="$emit('set-state', 'init'); cancelGroup()"></div>
+				<div class="nicescroll--bar">
+					<div class="fow no-gutters">
+						<div class="fol form-group mb-0 bg-white">
+							<v-select label="name" :filterable="false" :options="groupOptions" @search="getGroupOptions" :on-change="filterGroup" placeholder="Search Groups">
+								<span slot="no-options"></span>
+							</v-select>
+						</div>
+					</div>
+					<table class="table table-hover table-bordered table-edge">
+						<tr>
+							<th v-bind:class="sort.order" v-on:click="sortList('status', Boolean)">Status</th>
+							<th v-bind:class="sort.order" v-on:click="sortList('name', String)">Group Name</th>
+							<th v-bind:class="sort.order" v-on:click="sortList('userCount', Number)">Users</th>
+							<th v-bind:class="sort.order" v-on:click="sortList('dateFrom', Date)">Effective From</th>
+							<th v-bind:class="sort.order" v-on:click="sortList('dateTo', Date)">Effective To</th>
+							<th v-bind:class="sort.order" v-on:click="sortList('permissions', Array)">Permissions</th>
+							<th class="td-action-1"></th>
+							<th class="td-action-1"></th>
+						</tr>
+						<tr v-for="(group, index) in sortBy(groupList)" v-bind:class="{'active': isSelected(index), 'text-muted': !group.status}">
+							<td class="td-action-1"><i class="fas fa-circle" v-bind:class="{'txt-green': group.status}"></i></td>
+							<td>
+								<div class="d-block">{{group.name}}</div>
+								<small class="d-block">{{group.description}}</small>
+							</td>
+							<td>{{group.userCount}}</td>
+							<td>{{group.dateFrom | formatDate}}</td>
+							<td>{{group.dateTo | formatDate}}</td>
+							<td>
+								<span v-for="(g, index) in group.permissions">
+									{{g.name}}
+									<span v-if="index != (group.permissions.length - 1)">, </span>
+								</span>
+								<!-- commaJoin[index] -->
+							</td>
+							<td class="td-action-1">
+								<a href="#" class="btn btn-xl txt-link btn-square" title="EDIT GROUP" v-on:click="$emit('set-state', 'edit'); selectGroup(group, index);"><i class="fas fa-edit"></i></a>
+							</td>
+							<td class="td-action-1">
+								<a href="#" class="btn btn-xl txt-link txt-grey btn-square" title="DELETE GROUP" v-on:click="deleteGroup(group, index)"><i class="fas fa-trash-alt"></i></a>
+							</td>
+						</tr>
+					</table>
+					<div th:replace="webroot/frags/layout/pagination.htm :: pagination"></div>
+				</div>
+			</section>
+			<aside class="column column-aside add-column">
+				<div class="nicescroll-bar">
+					<div class="clearfix border-bottom column-header column-min-button">
+						<h5 class="column-header-title" >
+						<span v-if="rootState == 'add'">Add New Group</span>
+						<span v-if="rootState == 'edit'">Edit Group</span>
+						</h5>
+					</div>
+					<div class="p-3">
+						<div class="form-group" v-bind:class="{ 'has-error': errors.has('groupName') }">
+							<label for="groupName">Group Name:</label>
+							<input type="text" name="groupName" id="groupName" v-model="group.name" v-validate="'required'" class="form-control" placeholder="groupName">
+						</div>
+						<div class="form-group" v-bind:class="{ 'has-error': errors.has('description') }">
+							<label for="description">Decription:</label>
+							<textarea type="text" name="description" id="description" v-model="group.description" v-validate="'required'" class="form-control" placeholder="Decription"></textarea>
+						</div>
+						<div class="form-group form-group-date" v-bind:class="{ 'has-error': errors.has('dateFrom') }">
+							<label class="">Effective From</label>
+							<div class="input-group w-100">
+								<date-picker name="dateFrom" v-model="group.dateFrom" :config="config" v-validate="'required'"></date-picker>
+								<span class="input-group-addon"><i class="fa fa-calendar-alt"></i></span>
+							</div>
+						</div>
+						<div class="form-group" v-bind:class="{ 'has-error': errors.has('dateTo') }">
+							<label class="">Effective To</label>
+							<div class="input-group w-100">
+								<date-picker name="dateTo" v-model="group.dateTo" :config="config" v-validate="'required'"></date-picker>
+								<span class="input-group-addon"><i class="fa fa-calendar-alt"></i></span>
+							</div>
+						</div>
+						<div class="form-group ">
+							<span class="checkbox">
+								<input type="checkbox" name="status" id="status" v-model="group.status">
+								<label for="status">Enabled</label>
+							</span>
+						</div>
+						<div class="form-group d-flex justify-content-between">
+							<button type="button" class="btn btn-secondary btn-rounded" v-on:click="$emit('set-state', 'init'); cancelGroup()">CANCEL</button>
+							<button type="button" class="btn btn-primary btn-rounded" v-if="rootState == 'add'" v-on:click="groupAction('add')">ADD GROUP</button>
+							<button type="button" class="btn btn-primary btn-rounded" v-if="rootState == 'edit'" v-on:click="groupAction('edit')">SAVE</button>
+						</div>
+					</div>
+				</div>
+			</aside>
+			<aside class="column column-aside users-column">
+				<div class="nicescroll-bar">
+					<div class="clearfix border-bottom column-header column-min-button">
+						<h5 class="column-header-title">Add Users to this group</h5>
+					</div>
+					<div class="p-3">
+						<div class="form-group v-select-color-purple">
+							<v-select label="id" multiple :filterable="false" :options="userOptions" @search="getUserOptions" v-model="group.users">
+								<span slot="no-options"></span>
+								<template slot="option" slot-scope="option">
+									<strong>{{ option.fullName }}</strong>
+									<div>{{ option.userName }}</div>
+									<small>{{ option.email }}</small>
+								</template>
+								<template slot="selected-option" slot-scope="option">
+									<strong>{{ option.fullName }}</strong>
+									<div>{{ option.userName }}</div>
+									<small>{{ option.email }}</small>
+								</template>
+							</v-select>
+						</div>
+					</div>
+				</div>
+			</aside>
+			<aside class="column column-aside permissions-column">
+				<div class="nicescroll-bar">
+					<div class="clearfix border-bottom column-header column-min-button">
+						<h5 class="column-header-title">Group Permissions</h5>
+					</div>
+					<div class="p-3">
+						<div class="form-group v-select-color-green">
+							<v-select label="name" multiple :filterable="false" :options="permissionOptions" @search="getPermissionOptions" v-model="group.permissions">
+								<span slot="no-options"></span>
+							</v-select>
+						</div>
+					</div>
+				</div>
+			</aside>
+			<div class="btn-float-br btn-float-under">
+				<button class="btn btn-xl btn-green btn-circle" v-on:click="$emit('set-state', 'add', 'init')" title="ADD NEW GROUP "><i class="fas fa-plus"></i></button>
+			</div>
+		</div>
+	</user-groups>
+	</main>
+</div>
+<script id="reqVue" data-module="user-groups" data-main="/dist/js/main" src="/dist/js/lib/require.min.js"></script>
+</body>
+</html>

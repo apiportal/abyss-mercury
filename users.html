@@ -1,0 +1,180 @@
+﻿<!DOCTYPE html>
+<html class="vs-users" lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:include="webroot/frags/layout/head.htm :: header">
+</head>
+<body>
+<div id="portal" class="wrapper" v-bind:class="pageClass">
+	<div th:replace="webroot/frags/layout/navs.htm :: navs"></div>
+	<main class="page-wrapper">
+	<users inline-template v-on:set-state="setState" v-on:set-page="setPage" v-bind:root-state="rootState">
+		<div class="columns">
+			<section class="column column-main column-main-fixed">
+				<div class="column-main-fixed-overlay" v-if="rootState == 'add' || rootState == 'edit'" v-on:click="$emit('set-state', 'init'); cancelUser()"></div>
+				<div class="nicescroll--bar">
+					<div class="fow no-gutters">
+						<div class="fol fol-6 form-group mb-0 bg-white">
+							<v-select label="id" :filterable="false" :options="userOptions" @search="getUserOptions" :on-change="filterUser" placeholder="Search Users">
+								<span slot="no-options"></span>
+								<template slot="option" slot-scope="option">
+									<strong>{{ option.fullName }}</strong>
+									<div>{{ option.userName }}</div>
+									<small>{{ option.email }}</small>
+								</template>
+								<template slot="selected-option" slot-scope="option">
+									<strong>{{ option.fullName }}</strong> <em>{{ option.userName }}</em> <small>{{ option.email }}</small>
+								</template>
+							</v-select>
+						</div>
+						<div class="fol form-group mb-0 bg-white">
+							<v-select label="name" :filterable="false" :options="groupOptions" @search="getGroupOptions" :on-change="filterGroup" placeholder="Search Groups">
+								<span slot="no-options"></span>
+							</v-select>
+						</div>
+						<div class="fol form-group mb-0 bg-white">
+							<v-select label="name" :filterable="false" :options="permissionOptions" @search="getPermissionOptions" :on-change="filterPermission" placeholder="Search Permissions">
+								<span slot="no-options"></span>
+							</v-select>
+						</div>
+					</div>
+					<table class="table table-hover table-bordered table-edge">
+						<tr>
+							<th v-bind:class="sort.order" v-on:click="sortList('fullName', String)">Full Name</th>
+							<th v-bind:class="sort.order" v-on:click="sortList('userName', String)">Username</th>
+							<th v-bind:class="sort.order" v-on:click="sortList('loginCount', Number)">Logins</th>
+							<th v-bind:class="sort.order" v-on:click="sortList('failedLoginCount', Number)">Failed Logins</th>
+							<th></th>
+							<th></th>
+							<th></th>
+						</tr>
+						<tr class="p-3 border-bottom" v-for="(user, index) in sortBy(userList)" v-bind:class="{'active': isSelected(index)}">
+							<td>{{user.fullName}}</td>
+							<td>
+								<div class="d-block">{{user.userName}}</div>
+								<small class="d-block">{{user.email}}</small>
+							</td>
+							<td class="td-login">
+								<div class="d-flex align-items-center">
+									<div class="d-block small">
+										<strong class="d-block">LOGINS</strong>
+										<span class="d-block">{{user.lastLogin | formatDateTime}}</span>
+									</div>
+									<strong class="ml-auto">{{user.loginCount}}</strong>
+								</div>
+							</td>
+							<td class="td-login">
+								<div class="d-flex align-items-center">
+									<div class="d-block small">
+										<strong class="d-block">FAILED LOGINS</strong>
+										<span class="d-block">{{user.lastFailedLogin | formatDateTime}}</span>
+									</div>
+									<strong class="ml-auto">{{user.failedLoginCount}}</strong>
+								</div>
+							</td>
+							<td>
+								<div class="">
+									<strong class="small txt-line mr-1">GROUP:</strong>
+									<small v-for="(u, index) in user.groups">
+										{{u.name}}<span v-if="index != (user.groups.length - 1)">, </span>
+									</small>
+								</div>
+								<div class="">
+									<strong class="small txt-line mr-1">PERMISSIONS:</strong>
+									<small v-for="(u, index) in user.permissions">
+										{{u.name}}<span v-if="index != (user.permissions.length - 1)">, </span>
+									</small>
+								</div>
+								<div class="">
+									<strong class="small txt-line mr-1">DIRECTORY:</strong>
+									<small class="ml--auto">{{user.directory}}</small>
+								</div>
+							</td>
+							<td class="td-action-1">
+								<a href="#" class="btn btn-xl txt-link btn-square" title="EDIT USER" v-on:click="$emit('set-state', 'edit'); selectUser(user, index);"><i class="fas fa-edit"></i></a>
+							</td>
+							<td class="td-action-1">
+								<a href="#" class="btn btn-xl txt-link txt-grey btn-square" title="DELETE USER" v-on:click="deleteUser(user, index)"><i class="fas fa-trash-alt"></i></a>
+							</td>
+						</tr>
+					</table>
+					<div th:replace="webroot/frags/layout/pagination.htm :: pagination"></div>
+				</div>
+			</section>
+			<aside class="column column-aside add-column">
+				<div class="nicescroll-bar">
+					<div class="clearfix border-bottom column-header column-min-button">
+						<h5 class="column-header-title" v-if="rootState == 'init' || rootState == 'add'">Add New User</h5>
+						<h5 class="column-header-title" v-if="rootState == 'edit'">Edit User</h5>
+					</div>
+					<div class="p-3">
+						<div class="form-group" v-bind:class="{ 'has-error': errors.has('fullName') }">
+							<label for="fullName">Full Name:</label>
+							<input type="text" name="fullName" id="fullName" v-model="user.fullName" v-validate="'required'" class="form-control" placeholder="Full Name">
+						</div>
+						<div class="form-group" v-bind:class="{ 'has-error': errors.has('userName') }">
+							<label for="userName">UserName:</label>
+							<input type="text" name="userName" id="userName" v-model="user.userName" v-validate="'required'" class="form-control" placeholder="userName">
+						</div>
+						<div class="form-group" v-bind:class="{ 'has-error': errors.has('email') }">
+							<label for="email">Email:</label>
+							<input type="text" name="email" id="email" v-model="user.email" v-validate="'required|email'" class="form-control" placeholder="email">
+						</div>
+						<p v-if="rootState == 'edit'"><a href="#" class="txt-link" v-on:click="resetPassword = !resetPassword">Reset Password</a></p>
+						<div v-show="rootState == 'add' || resetPassword">
+							<div class="form-group js-showpass" v-bind:class="{ 'has-error': errors.has('password') }">
+								<label class="clearfix d-block" for="password">Password: <a href="#" class="float-right txt-link">Regenerate Password</a></label>
+								<div class="input-group">
+									<input type="password" name="password" id="password" v-model="user.password" v-validate="rootState == 'add' ? 'required' : ''" class="form-control" placeholder="password">
+									<a href="#" class="txt-link js-eye input-group-addon"><i class="fas fa-eye"></i></a>
+								</div>
+							</div>
+							<div class="form-group ">
+								<span class="checkbox">
+									<input type="checkbox" name="notify" id="notify" v-model="user.notify">
+									<label for="notify">Send Notificaiton</label>
+								</span>
+							</div>
+						</div>
+						<p v-if="rootState == 'add'">This user will be able to change her password after first login</p>
+						<div class="form-group d-flex justify-content-between">
+							<button type="button" class="btn btn-secondary btn-rounded" v-on:click="$emit('set-state', 'init'); cancelUser()">CANCEL</button>
+							<button type="button" class="btn btn-primary btn-rounded" v-if="rootState == 'add'" v-on:click="userAction('add')">ADD USER</button>
+							<button type="button" class="btn btn-primary btn-rounded" v-if="rootState == 'edit'" v-on:click="userAction('edit')">SAVE</button>
+						</div>
+					</div>
+				</div>
+			</aside>
+			<aside class="column column-aside permissions-column">
+				<div class="nicescroll-bar">
+					<div class="clearfix border-bottom column-header column-min-button">
+						<h5 class="column-header-title">Groups & Permissions</h5>
+					</div>
+					<div class="p-3">
+						<div class="form-group v-select-color-pink">
+							<h6>Directory</h6>
+							<input type="directory" name="directory" id="directory" v-model="user.directory" class="form-control" placeholder="directory">
+						</div>
+						<div class="form-group v-select-color-pink">
+							<h6>Add User to Group:</h6>
+							<v-select label="name" multiple :filterable="false" :options="groupOptions" @search="getGroupOptions" v-model="user.groups">
+								<span slot="no-options"></span>
+							</v-select>
+						</div>
+						<div class="form-group v-select-color-green">
+							<h6>Assign Permission to User:</h6>
+							<v-select label="name" multiple :filterable="false" :options="permissionOptions" @search="getPermissionOptions" v-model="user.permissions">
+								<span slot="no-options"></span>
+							</v-select>
+						</div>
+					</div>
+				</div>
+			</aside>
+			<div class="btn-float-br btn-float-under">
+				<button class="btn btn-xl btn-green btn-circle" v-on:click="$emit('set-state', 'add', 'init')" title="ADD NEW USER "><i class="fas fa-plus"></i></button>
+			</div>
+		</div>
+	</users>
+	</main>
+</div>
+<script id="reqVue" data-module="users" data-main="/dist/js/main" src="/dist/js/lib/require.min.js"></script>
+</body>
+</html>
