@@ -1,13 +1,18 @@
 ﻿<!DOCTYPE html>
-<html class="page-auth" lang="en" xmlns:th="http://www.thymeleaf.org">
+<html class="vs-index" lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="webroot/frags/layout/head.htm :: header">
 </head>
 <body>
-<div th:replace="webroot/frags/layout/navs.htm :: navIndex"></div>
-<main>
-	<h1 th:text="'Welcome ' + ${context.get('user.name')}">Welcome</h1>
-	<div th:replace="webroot/frags/layout/footer.htm :: copy"></div>
-</main>
-<script data-module="auth" data-main="/dist/js/main" src="/dist/js/lib/require.min.js"></script>
+<div id="portal" class="wrapper" v-bind:class="pageClass">
+	<div th:replace="webroot/frags/layout/navs.htm :: navs"></div>
+	<main class="page-wrapper">
+	<index inline-template v-on:set-state="setState" v-on:set-page="setPage" v-bind:root-state="rootState">
+				<div class="d-flex align-items-center w-100 h-100 text-center justify-content-center">
+					<h1 th:text="'Welcome ' + ${context.get('user.name')}">Welcome</h1>
+				</div>
+	</index>
+	</main>
+</div>
+<script id="reqVue" data-module="index" data-main="/dist/js/main" src="/dist/js/lib/require.min.js"></script>
 </body>
 </html>

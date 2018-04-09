@@ -8,6 +8,7 @@
 		<div th:replace="webroot/frags/layout/nav-top.htm :: navTop"></div>
 		<div th:replace="webroot/frags/layout/nav-left.htm :: navLeft"></div>
 		<div th:replace="webroot/frags/layout/nav-right.htm :: navRight"></div>
+		<div th:replace="webroot/frags/layout/modal.htm :: modal"></div>
 	</div>
 	<header th:fragment="navError" class="navbar navbar-fixed-top navbar-light">
 		<a class="logo-main" href="/index">
@@ -15,7 +16,7 @@
 			<span class="brand-text"><span>API</span> Portal</span>
 		</a>
 		<div class="nav-button">
-			<a class="inline-block btn btn-outline btn-primary btn-rounded nonecase-font" href="/abyss/index">Back to Home</a>
+			<a class="d-inline-block btn btn-outline-primary btn-rounded" href="/abyss/index">Back to Home</a>
 		</div>
 	</header>
 	<header th:fragment="navIndex" class="navbar navbar-fixed-top navbar-light">
@@ -33,8 +34,8 @@
 			<span class="brand-text"><span>API</span> Portal</span>
 		</a>
 		<div class="nav-button">
-			<span class="inline-block pr-10">Don't have an account?</span>
-			<a class="inline-block btn btn-outline btn-primary btn-rounded" href="/abyss/signup">Sign Up</a>
+			<span class="d-inline-block pr-10">Don't have an account?</span>
+			<a class="d-inline-block btn btn-outline-primary btn-rounded" href="/abyss/signup">Sign Up</a>
 		</div>
 	</header>
 	<header th:fragment="navSignup" class="navbar navbar-fixed-top navbar-light">
@@ -43,8 +44,8 @@
 			<span class="brand-text"><span>API</span> Portal</span>
 		</a>
 		<div class="nav-button">
-			<span class="inline-block pr-10">Already have an account?</span>
-			<a class="inline-block btn btn-outline btn-primary btn-rounded" href="/abyss/login">Sign In</a>
+			<span class="d-inline-block pr-10">Already have an account?</span>
+			<a class="d-inline-block btn btn-outline-primary btn-rounded" href="/abyss/login">Sign In</a>
 		</div>
 	</header>
 </body>
