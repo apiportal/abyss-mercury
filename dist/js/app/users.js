@@ -146,22 +146,16 @@ define(['Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'eonasdan-bootst
 				});
 			},
 			cancelUser() {
-				console.log("this.newUser: ", this.newUser.permissions);
 				var index = this.userList.indexOf(this.user);
 				this.userList[index] = this.selectedUser;
-				// this.user = Vue.util.extend({}, this.newUser);
-				// this.selectedUser = Vue.util.extend({}, this.newUser);
 				this.user = _.cloneDeep(this.newUser);
 				this.selectedUser = _.cloneDeep(this.newUser);
 				// this.groupOptions = [],
 				// this.permissionOptions = [],
-				console.log("this.permissionOptions: ", this.permissionOptions);
 				this.selected = null;
 			},
 			selectUser(item, i) {
-				this.selectedUser = Vue.util.extend({}, item);
-				// not working
-				// this.selectedUser = _.cloneDeep(this.item);
+				this.selectedUser = _.cloneDeep(item);
 				this.user = item;
 				this.selected = i;
 			},
@@ -179,7 +173,6 @@ define(['Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'eonasdan-bootst
 							this.addItem(this.userList, this.user).then(response => {
 								// this.addItem(this.userList, this.user);
 								this.$emit('set-state', 'init');
-								// this.user = Vue.util.extend({}, this.newUser);
 								// this.resetItem(this.user, this.newUser);
 								this.user = _.cloneDeep(this.newUser);
 								console.log("this.user: ", this.user );
@@ -188,7 +181,7 @@ define(['Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'eonasdan-bootst
 						if (act == 'edit') {
 							this.updateItem(this.userList, this.user).then(response => {
 								this.$emit('set-state', 'init');
-								this.user = Vue.util.extend({}, this.newUser);
+								this.user = _.cloneDeep(this.newUser);
 								this.selected = null;
 							});
 						}
@@ -210,7 +203,6 @@ define(['Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'eonasdan-bootst
 		created() {
 			this.log(this.$options.name);
 			this.$emit('set-page', 'users', 'init');
-			// this.newUser = Vue.util.extend({}, this.user);
 			this.newUser = _.cloneDeep(this.user);
 			// axios.all([
 			// 	axios.get(this.ajaxUrl),

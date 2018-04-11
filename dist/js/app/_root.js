@@ -53,7 +53,6 @@ define(['Vue', 'axios', 'vee-validate', 'moment'], function (Vue, axios, VeeVali
 			addItem(arr, item) {
 				// console.log("this.ajaxHeaders: ", this.ajaxHeaders);
 				return axios.post(this.testUrl, item, this.ajaxHeaders).then(response => {
-					// arr.push(Vue.util.extend({}, item));
 					arr.push(item);
 					return response;
 				}, error => {

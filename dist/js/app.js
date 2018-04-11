@@ -1,6 +1,6 @@
 var IZ = IZ || {}, UI = UI || {};
 // define(['config', 'jquery', 'moment', 'bootstrap', 'domready!'], function(config, $, moment){
-define(['config', 'jquery', 'bootstrap', 'domready!'], function(config, $){
+define(['config', 'jquery', 'bootstrap', 'domready'], function(config, $){
 //■■■iife
 // (function($) {
 	// console.log(moment().format('LLLL'));
@@ -48,9 +48,11 @@ define(['config', 'jquery', 'bootstrap', 'domready!'], function(config, $){
 			// $('[data-toggle="collapse"]:not(button)').addClass('nav-caret');
 		},
 		preload: function() {
-			$(".preloader-it").delay(500).fadeOut("slow");
-			// $(".preloader-it").hide();
-			// console.log("preload: ", $(".preloader-it"));
+			// $(".preloader-it").delay(500).fadeOut("slow");
+			setTimeout(function(){
+				// console.log("preload: ", $(".preloader-it"));
+				$(".preloader-it").fadeOut("slow");
+			},500);
 			var progressAnim = $('.progress-anim');
 			if( progressAnim.length > 0 ){
 				for(var i = 0; i < progressAnim.length; i++){

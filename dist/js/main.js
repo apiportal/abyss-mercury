@@ -10,8 +10,10 @@ if(reqVue != null) {
 }
 var modules = getModules.split('|');
 if(reqVue != null) { 
-	modules.push('root', 'app');
+	modules.push('app', 'root');
 }
+// modules.unshift('app');
+// console.log("modules: ", modules);
 require.config({
 	// "baseUrl": "/js",
 	// "urlArgs": "bust=" + (new Date()).getTime(),
@@ -73,23 +75,15 @@ require.config({
 		'owlcarousel': ['jquery'],
 		'axios': ['Vue'],
 		'dropdown': ['jquery', 'bootstrap'],
-		'moment': {
-			exports: 'moment'
-		},
-		'Vue': {
-			exports: 'Vue'
-		},
-		'axios': {
-			exports: 'axios'
-		},
-		'lodash': {
-			exports: '_'
-		},
+		'moment': { exports: 'moment'},
+		'Vue': { exports: 'Vue'},
+		'axios': { exports: 'axios'},
+		'lodash': { exports: '_'},
 		'auth': ['config', 'jquery', 'bootstrap'],
 		'error': ['config', 'jquery', 'bootstrap'],
-		'app': ['config', 'jquery', 'bootstrap', 'lodash', 'moment'],
+		'app': ['config', 'jquery', 'bootstrap'],
 		'root': [modules[0], 'Vue', 'axios', 'lodash', 'vee-validate', 'moment']
-		// 'app': ['config', 'jquery', 'bootstrap', 'dropdown', 'moment']
+		// 'app': ['config', 'jquery', 'bootstrap', 'dropdown', 'moment', 'lodash']
 	},
 	deps: modules
 });

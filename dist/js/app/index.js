@@ -64,7 +64,7 @@ define(['Vue', 'axios', 'vee-validate', 'lodash', 'vue-select'], function(Vue, a
 		created() {
 			this.log(this.$options.name);
 			this.$emit('set-page', 'index', 'init');
-			// this.newUser = Vue.util.extend({}, this.user);
+			// this.newUser = _.cloneDeep(this.user);
 			// this.getPage(1);
 		}
 	});
