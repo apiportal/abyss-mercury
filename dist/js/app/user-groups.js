@@ -16,10 +16,10 @@ define(['Vue', 'axios', 'vee-validate', 'vue-select', 'VueBootstrapDatetimePicke
 				},
 				pageState: 'init',
 				paginate: {},
-				ajaxUrl: '/data/user-group-list.json',
+				ajaxUrl: '/abyss/user-groups/management',
 				testUrl: 'http://www.monasdyas.com/api/api',
 				ajaxHeaders: {
-					contentType: 'application/json',
+					contentType: 'application/json; charset=utf-8',
 					datatype: 'json',
 					headers: {'Content-Type': 'application/json'}
 				},
