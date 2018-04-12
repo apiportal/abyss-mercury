@@ -14,10 +14,10 @@ define(['Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'eonasdan-bootst
 				},
 				pageState: 'init',
 				paginate: {},
-				ajaxUrl: '/users',
+				ajaxUrl: '/abyss/users/management',
 				testUrl: 'http://www.monasdyas.com/api/api',
 				ajaxHeaders: {
-					contentType: 'application/json',
+					contentType: 'application/json; charset=utf-8',
 					datatype: 'json',
 					headers: {'Content-Type': 'application/json'}
 				},
