@@ -4,25 +4,27 @@
 </head>
 <body>
 <div th:replace="webroot/frags/layout/navs.htm :: navLogin"></div>
-<main>
+<main id="portal">
 	<div class="alert alert-success text-center" th:if="${context.get('isUserActivated')}"> 
 		Your Abyss API Portal account has been activated. You can now login.
 	</div>
 	<h1>Sign in</h1>
 	<h6>Enter your details below</h6>
-	<form action="/abyss/login-auth" method="POST">
-		<div class="form-group">
+	<form action="/abyss/login-auth" method="POST" @submit.prevent="validateBeforeSubmit">
+		<div class="form-group" v-bind:class="{ 'has-error': errors.has('username') }">
 			<label for="username">Username</label>
-			<input type="text" name="username" id="username" class="form-control" placeholder="username" required>
+			<input type="text" name="username" id="username" class="form-control" placeholder="username" v-validate="'required'">
+			<em v-show="errors.has('username')">{{ errors.first('username') }}</em>
 		</div>
-		<div class="form-group">
+		<div class="form-group" v-bind:class="{ 'has-error': errors.has('password') }">
 			<label for="password">Password</label>
-			<input type="password" name="password" id="password" class="form-control" placeholder="password" required>
+			<input type="password" name="password" id="password" class="form-control" placeholder="password"  v-validate="'required'">
+			<em v-show="errors.has('password')">{{ errors.first('password') }}</em>
 		</div>
 		<div class="form-group">
 			<a href="/abyss/forgot-password" class="txt-link checkbox-link pull-right">Forgot password?</a>
 			<span class="checkbox checkbox-primary d-inline-block">
-				<input type="checkbox" name="rememberMe" id="rememberMe" required>
+				<input type="checkbox" name="rememberMe" id="rememberMe">
 				<label for="rememberMe">Keep me logged in</label>
 			</span>
 		</div>
