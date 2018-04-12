@@ -123,14 +123,12 @@ define(['Vue', 'axios', 'vee-validate', 'vue-select', 'VueBootstrapDatetimePicke
 			cancelGroup() {
 				var index = this.groupList.indexOf(this.group);
 				this.groupList[index] = this.selectedGroup;
-				// this.group = Vue.util.extend({}, this.newGroup);
-				// this.selectedGroup = Vue.util.extend({}, this.newGroup);
 				this.group = _.cloneDeep(this.newGroup);
 				this.selectedGroup = _.cloneDeep(this.newGroup);
 				this.selected = null;
 			},
 			selectGroup(item, i) {
-				this.selectedGroup = Vue.util.extend({}, item);
+				this.selectedGroup = _.cloneDeep(item);
 				this.group = item;
 				this.selected = i;
 			},
@@ -148,7 +146,6 @@ define(['Vue', 'axios', 'vee-validate', 'vue-select', 'VueBootstrapDatetimePicke
 							this.addItem(this.groupList, this.group).then(response => {
 								// this.addItem(this.groupList, this.group);
 								this.$emit('set-state', 'edit');
-								// this.group = Vue.util.extend({}, this.newGroup);
 								// this.resetItem(this.group, this.newGroup);
 								this.group = _.cloneDeep(this.newGroup);
 								console.log("this.group: ", this.group );
@@ -157,7 +154,7 @@ define(['Vue', 'axios', 'vee-validate', 'vue-select', 'VueBootstrapDatetimePicke
 						if (act == 'edit') {
 							this.updateItem(this.groupList, this.group).then(response => {
 								this.$emit('set-state', 'init');
-								this.group = Vue.util.extend({}, this.newGroup);
+								this.group = _.cloneDeep(this.newGroup);
 								this.selected = null;
 							});
 						}
@@ -182,7 +179,6 @@ define(['Vue', 'axios', 'vee-validate', 'vue-select', 'VueBootstrapDatetimePicke
 		created() {
 			this.log(this.$options.name);
 			this.$emit('set-page', 'user-groups', 'init');
-			// this.newGroup = Vue.util.extend({}, this.group);
 			this.newGroup = _.cloneDeep(this.group);
 			// axios.all([
 			// 	axios.get(this.ajaxUrl),

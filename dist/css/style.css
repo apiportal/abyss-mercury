@@ -1,5 +1,4 @@
 @charset "UTF-8";
-@import url(https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700|Rubik:300,300i,400,400i,500,500i,700,700i,900,900i&amp;subset=latin-ext);
 .transition-all, .dropdown-hover > .dropdown-menu, .dropdown-hover:hover > .dropdown-menu, .fixed-sidebar-left, .fixed-sidebar-left .side-nav, .fixed-sidebar-left .side-nav li a, .page-wrapper, .navbar .nav-header, .navbar .nav > li > a, .columns .column-fixed-right, .columns .column-aside, .columns .column-main, .switch label:before, .switch label:after, .choose label {
   -webkit-transition: all 0.2s ease-in-out;
   -o-transition: all 0.2s ease-in-out;
@@ -8808,7 +8807,13 @@ input[type="search"] {
     line-height: 46px; } }
 
 .form-group {
-  margin-bottom: 15px; }
+  margin-bottom: 15px;
+  position: relative; }
+  .form-group em {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    font-size: 12px; }
 
 .radio,
 .checkbox {
@@ -11220,6 +11225,10 @@ button.close {
   .navbar-right .dropdown-menu {
     right: 0;
     left: auto; }
+    .navbar-right .dropdown-menu .sub-menu .dropdown-menu {
+      right: 100%;
+      top: auto;
+      bottom: 0; }
   .navbar-right .dropdown-menu-left {
     left: 0;
     right: auto; } }
@@ -11391,21 +11400,6 @@ caption + thead > tr:first-child > th, .color-bg-table .table > colgroup + thead
 
 .help-block {
   color: #878787; }
-
-.has-success .form-control {
-  border-color: rgba(70, 148, 8, 0.5); }
-  .has-success .form-control:focus {
-    border-color: #469408; }
-
-.has-warning .form-control {
-  border-color: rgba(230, 154, 42, 0.5); }
-  .has-warning .form-control:focus {
-    border-color: #e69a2a; }
-
-.has-error .form-control {
-  border-color: rgba(234, 108, 65, 0.5); }
-  .has-error .form-control:focus {
-    border-color: #ea6c41; }
 
 .has-success .checkbox, .has-success .checkbox-inline, .has-success .control-label, .has-success .help-block, .has-success .radio, .has-success .radio-inline, .has-success.checkbox label, .has-success.checkbox-inline label, .has-success.radio label, .has-success.radio-inline label {
   color: #4cac00; }
