@@ -14,7 +14,7 @@ define(['Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'eonasdan-bootst
 				},
 				pageState: 'init',
 				paginate: {},
-				ajaxUrl: '/data/user-list.json',
+				ajaxUrl: '/users',
 				testUrl: 'http://www.monasdyas.com/api/api',
 				ajaxHeaders: {
 					contentType: 'application/json',
