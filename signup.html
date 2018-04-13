@@ -30,12 +30,12 @@
 		</div>
 		<div class="form-group" v-bind:class="{ 'has-error': errors.has('password') }">
 			<label for="password">Password</label>
-			<input type="password" name="password" id="password" class="form-control" placeholder="" v-validate="'required|min:8|password_strength'">
+			<input type="password" name="password" id="password" class="form-control" placeholder="" v-validate="'required|min:3'">
 			<em v-bind:class="{ 'show': errors.has('password') }">{{ errors.first('password') }}</em>
 		</div>
 		<div class="form-group" v-bind:class="{ 'has-error': errors.has('password2') }">
 			<label for="password2">Confirm Password</label>
-			<input type="password" name="password2" id="password2" class="form-control" placeholder="" v-validate="'required|min:8|password_strength|confirmed:password'">
+			<input type="password" name="password2" id="password2" class="form-control" placeholder="" v-validate="'required|min:3|confirmed:password'">
 			<em v-bind:class="{ 'show': errors.has('password2') }">{{ errors.first('password2') }}</em>
 		</div>
 		<div class="form-group" v-bind:class="{ 'has-error': errors.has('isAgreedToTerms') }">
