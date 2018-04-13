@@ -1,6 +1,5 @@
 ﻿<!DOCTYPE html>
-<html class="vs-users" lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:v-bind="http://www.w3.org/1999/xhtml"
-	  xmlns:v-on="http://www.w3.org/1999/xhtml">
+<html class="vs-users" lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:v-bind="http://www.w3.org/1999/xhtml" xmlns:v-on="http://www.w3.org/1999/xhtml">
 <head th:include="webroot/frags/layout/head.htm :: header">
 </head>
 <body>
@@ -17,17 +16,17 @@
 							<v-select label="id" :filterable="false" :options="userOptions" @search="getUserOptions" :on-change="filterUser" placeholder="Search Users">
 								<span slot="no-options"></span>
 								<template slot="option" slot-scope="option">
-									<strong>{{ option.fullName }}</strong>
-									<div>{{ option.userName }}</div>
+									<strong>{{ option.first_name }} {{ option.last_name }}</strong>
+									<div>{{ option.subject_name }}</div>
 									<small>{{ option.email }}</small>
 								</template>
 								<template slot="selected-option" slot-scope="option">
-									<strong>{{ option.fullName }}</strong> <em>{{ option.userName }}</em> <small>{{ option.email }}</small>
+									<strong>{{ option.first_name }} {{ option.last_name }}</strong> <em>{{ option.subject_name }}</em> <small>{{ option.email }}</small>
 								</template>
 							</v-select>
 						</div>
 						<div class="fol form-group mb-0 bg-white">
-							<v-select label="name" :filterable="false" :options="groupOptions" @search="getGroupOptions" :on-change="filterGroup" placeholder="Search Groups">
+							<v-select label="group_name" :filterable="false" :options="groupOptions" @search="getGroupOptions" :on-change="filterGroup" placeholder="Search Groups">
 								<span slot="no-options"></span>
 							</v-select>
 						</div>
@@ -39,33 +38,50 @@
 					</div>
 					<table class="table table-hover table-bordered table-edge">
 						<tr>
-							<th v-bind:class="sort.order" v-on:click="sortList('fullName', String)">Full Name</th>
-							<th v-bind:class="sort.order" v-on:click="sortList('userName', String)">Username</th>
-							<th v-bind:class="sort.order" v-on:click="sortList('loginCount', Number)">Logins</th>
-							<th v-bind:class="sort.order" v-on:click="sortList('failedLoginCount', Number)">Failed Logins</th>
-							<th></th>
-							<th></th>
-							<th></th>
+							<th class="td-bool" v-bind:class="sort.order" v-on:click="sortList('is_activated', Boolean)">Activated</th>
+							<th class="td-name" v-bind:class="sort.order" v-on:click="sortList('first_name', String)">First Name</th>
+							<th class="td-name" v-bind:class="sort.order" v-on:click="sortList('last_name', String)">Last Name</th>
+							<th class="td-name" v-bind:class="sort.order" v-on:click="sortList('subject_name', String)">Username</th>
+							<th class="td-name" v-bind:class="sort.order" v-on:click="sortList('display_name', String)">Display Name</th>
+							<th class="td-datetime" v-bind:class="sort.order" v-on:click="sortList('created', Date)">Created Updated</th>
+							<th class="td-datetime" v-bind:class="sort.order" v-on:click="sortList('loginCount', Number)">Logins</th>
+							<th class="td-datetime" v-bind:class="sort.order" v-on:click="sortList('failedLoginCount', Number)">Failed Logins</th>
+							<th class="td-long"></th>
+							<th class="td-action-1"></th>
+							<th class="td-action-1"></th>
 						</tr>
-						<tr class="p-3 border-bottom" v-for="(user, index) in sortBy(userList)" v-bind:class="{'active': isSelected(index)}">
-							<td>{{user.fullName}}</td>
+						<tr v-for="(user, index) in sortBy(userList)" v-bind:class="{'active': isSelected(index)}">
+							<td class="text-center">
+								<i class="fas fa-circle" v-bind:class="{'txt-green': user.is_activated}"></i>
+							</td>
+							<td>{{ user.first_name }}</td>
+							<td>{{ user.last_name }}</td>
 							<td>
-								<div class="d-block">{{user.userName}}</div>
+								<div class="d-block">{{user.subject_name}}</div>
 								<small class="d-block">{{user.email}}</small>
 							</td>
-							<td class="td-login">
+							<td>
+								{{user.display_name}}
+							</td>
+							<td class="td-datetime">
+								<strong class="small d-block">CREATED:</strong>
+								<small>{{user.created | formatDateTime}}</small>
+								<strong class="small d-block">UPDATED:</strong>
+								<small>{{user.updated | formatDateTime}}</small>
+							</td>
+							<td>
 								<div class="d-flex align-items-center">
 									<div class="d-block small">
-										<strong class="d-block">LOGINS</strong>
+										<strong class="d-block">LAST LOGIN</strong>
 										<span class="d-block">{{user.lastLogin | formatDateTime}}</span>
 									</div>
 									<strong class="ml-auto">{{user.loginCount}}</strong>
 								</div>
 							</td>
-							<td class="td-login">
+							<td>
 								<div class="d-flex align-items-center">
 									<div class="d-block small">
-										<strong class="d-block">FAILED LOGINS</strong>
+										<strong class="d-block">LAST FAILED</strong>
 										<span class="d-block">{{user.lastFailedLogin | formatDateTime}}</span>
 									</div>
 									<strong class="ml-auto">{{user.failedLoginCount}}</strong>
@@ -73,19 +89,19 @@
 							</td>
 							<td>
 								<div class="">
-									<strong class="small txt-line mr-1">GROUP:</strong>
+									<strong class="small">GROUP:</strong>
 									<small v-for="(u, index) in user.groups">
-										{{u.name}}<span v-if="index != (user.groups.length - 1)">, </span>
+										{{u.group_name}}<span v-if="index != (user.groups.length - 1)">, </span>
 									</small>
 								</div>
 								<div class="">
-									<strong class="small txt-line mr-1">PERMISSIONS:</strong>
+									<strong class="small">PERMISSIONS:</strong>
 									<small v-for="(u, index) in user.permissions">
 										{{u.name}}<span v-if="index != (user.permissions.length - 1)">, </span>
 									</small>
 								</div>
 								<div class="">
-									<strong class="small txt-line mr-1">DIRECTORY:</strong>
+									<strong class="small">DIRECTORY:</strong>
 									<small class="ml--auto">{{user.directory}}</small>
 								</div>
 							</td>
@@ -107,13 +123,21 @@
 						<h5 class="column-header-title" v-if="rootState == 'edit'">Edit User</h5>
 					</div>
 					<div class="p-3">
-						<div class="form-group" v-bind:class="{ 'has-error': errors.has('fullName') }">
-							<label for="fullName">Full Name:</label>
-							<input type="text" name="fullName" id="fullName" v-model="user.fullName" v-validate="'required'" class="form-control" placeholder="Full Name">
+						<div class="form-group" v-bind:class="{ 'has-error': errors.has('first_name') }">
+							<label for="first_name">Full Name:</label>
+							<input type="text" name="first_name" id="first_name" v-model="user.first_name" v-validate="'required'" class="form-control" placeholder="Full Name">
 						</div>
-						<div class="form-group" v-bind:class="{ 'has-error': errors.has('userName') }">
-							<label for="userName">UserName:</label>
-							<input type="text" name="userName" id="userName" v-model="user.userName" v-validate="'required'" class="form-control" placeholder="userName">
+						<div class="form-group" v-bind:class="{ 'has-error': errors.has('last_name') }">
+							<label for="last_name">Full Name:</label>
+							<input type="text" name="last_name" id="last_name" v-model="user.last_name" v-validate="'required'" class="form-control" placeholder="Full Name">
+						</div>
+						<div class="form-group" v-bind:class="{ 'has-error': errors.has('subject_name') }">
+							<label for="subject_name">UserName:</label>
+							<input type="text" name="subject_name" id="subject_name" v-model="user.subject_name" v-validate="'required'" class="form-control" placeholder="subject_name">
+						</div>
+						<div class="form-group" v-bind:class="{ 'has-error': errors.has('display_name') }">
+							<label for="display_name">Display Name:</label>
+							<input type="text" name="display_name" id="display_name" v-model="user.display_name" v-validate="'required'" class="form-control" placeholder="display_name">
 						</div>
 						<div class="form-group" v-bind:class="{ 'has-error': errors.has('email') }">
 							<label for="email">Email:</label>
@@ -156,7 +180,7 @@
 						</div>
 						<div class="form-group v-select-color-pink">
 							<h6>Add User to Group:</h6>
-							<v-select label="name" multiple :filterable="false" :options="groupOptions" @search="getGroupOptions" v-model="user.groups">
+							<v-select label="group_name" multiple :filterable="false" :options="groupOptions" @search="getGroupOptions" v-model="user.groups">
 								<span slot="no-options"></span>
 							</v-select>
 						</div>

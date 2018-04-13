@@ -1,0 +1,32 @@
+{
+	"groupList": [{
+		"uuid": "dbcadc32-c16c-4c95-b6f3-bcc6d26b7744",
+		"created": "2018-04-09T12:52:17.916178Z",
+		"updated": "2018-04-09T12:52:17.916178Z",
+		"deleted": null,
+		"is_deleted": 0,
+		"is_enabled": 1,
+		"group_name": "admin",
+		"description": "Administrators Group / Role",
+		"effective_start_date": "2018-04-09T12:52:17.916178Z",
+		"effective_end_date": null
+	}, {
+		"uuid": "0f6f8ebd-8e4e-4cd6-a03d-16b07a1d93db",
+		"created": "2018-04-09T12:52:17.936456Z",
+		"updated": "2018-04-09T12:52:17.936456Z",
+		"deleted": null,
+		"is_deleted": 0,
+		"is_enabled": 1,
+		"group_name": "developer",
+		"description": "Developers Group / Role",
+		"effective_start_date": "2018-04-09T12:52:17.936456Z",
+		"effective_end_date": null
+	}],
+	"totalPages": 1,
+	"totalItems": 2,
+	"pageSize": 10,
+	"currentPage": 1,
+	"last": false,
+	"first": true,
+	"sort": "ASC GROUP NAME"
+}

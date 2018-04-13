@@ -14,19 +14,19 @@
 		<div class="form-group" v-bind:class="{ 'has-error': errors.has('username') }">
 			<label for="username">Username</label>
 			<input type="text" name="username" id="username" class="form-control" placeholder="username" v-validate="'required'">
-			<em v-show="errors.has('username')">{{ errors.first('username') }}</em>
+			<em v-bind:class="{ 'show': errors.has('username') }">{{ errors.first('username') }}</em>
 		</div>
 		<div class="form-group" v-bind:class="{ 'has-error': errors.has('password') }">
 			<label for="password">Password</label>
 			<input type="password" name="password" id="password" class="form-control" placeholder="password"  v-validate="'required'">
-			<em v-show="errors.has('password')">{{ errors.first('password') }}</em>
+			<em v-bind:class="{ 'show': errors.has('password') }">{{ errors.first('password') }}</em>
 		</div>
 		<div class="form-group">
-			<a href="/abyss/forgot-password" class="txt-link checkbox-link pull-right">Forgot password?</a>
 			<span class="checkbox checkbox-primary d-inline-block">
 				<input type="checkbox" name="rememberMe" id="rememberMe">
 				<label for="rememberMe">Keep me logged in</label>
 			</span>
+			<a href="/abyss/forgot-password" class="txt-link checkbox-link pull-right">Forgot password?</a>
 		</div>
 		<div class="form-group text-center">
 			<button type="submit" class="btn btn-primary btn-rounded btn-lg">Sign in</button>

@@ -22,6 +22,11 @@ define(['Vue', 'axios', 'vee-validate', 'moment'], function (Vue, axios, VeeVali
 			log(name) {
 				console.log(name , this);
 			},
+			preload() {
+				$(document).ready(function() {
+					$(".preloader-it").fadeOut("slow");
+				});
+			},
 			makePaginate(data) {
 				let paginate = {
 					pages: [],
@@ -35,6 +40,7 @@ define(['Vue', 'axios', 'vee-validate', 'moment'], function (Vue, axios, VeeVali
 				for (var i = 1; i < paginate.totalPages; i++) {
 					paginate.pages.push(i);
 				}
+				// console.log("paginate: ", paginate);
 				return paginate;
 			},
 			resetItem(obj, blank) {
@@ -43,7 +49,7 @@ define(['Vue', 'axios', 'vee-validate', 'moment'], function (Vue, axios, VeeVali
 				// return obj;
 			},
 			updateItem(arr, item) {
-				return axios.post(this.testUrl, item, this.ajaxHeaders).then(response => {
+				return axios.post(this.ajaxUrl, item, this.ajaxHeaders).then(response => {
 					return response;
 				}, error => {
 					console.error(error);
@@ -52,7 +58,7 @@ define(['Vue', 'axios', 'vee-validate', 'moment'], function (Vue, axios, VeeVali
 			},
 			addItem(arr, item) {
 				// console.log("this.ajaxHeaders: ", this.ajaxHeaders);
-				return axios.post(this.testUrl, item, this.ajaxHeaders).then(response => {
+				return axios.post(this.ajaxUrl, item, this.ajaxHeaders).then(response => {
 					arr.push(item);
 					return response;
 				}, error => {
@@ -62,7 +68,7 @@ define(['Vue', 'axios', 'vee-validate', 'moment'], function (Vue, axios, VeeVali
 			removeItem(arr, item) {
 				var r = confirm('Are you sure to delete?');
 				if (r == true) {
-					axios.post(this.testUrl, item, this.ajaxHeaders).then(response => {
+					axios.post(this.ajaxUrl, item, this.ajaxHeaders).then(response => {
 						var index = arr.indexOf(item);
 						arr.splice(index, 1);
 					}, error => {

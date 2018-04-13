@@ -61,6 +61,9 @@ define(['Vue', 'axios', 'vee-validate', 'lodash', 'vue-select'], function(Vue, a
 				});
 			},
 		},
+		mounted() {
+			this.preload();
+		},
 		created() {
 			this.log(this.$options.name);
 			this.$emit('set-page', 'index', 'init');

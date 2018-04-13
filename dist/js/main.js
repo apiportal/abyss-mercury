@@ -20,6 +20,7 @@ require.config({
 	"paths": {
 		//// libs ////
 		"jquery": "lib/jquery.min",
+		// "jquery": "lib/jquery-3.3.1.min",
 		"domready": "lib/domReady",
 		"bootstrap": "lib/bootstrap.min",
 		"lodash": "lib/lodash.min",
@@ -66,6 +67,8 @@ require.config({
 		"my-apis": "app/my-apis",
 		"users": "app/users",
 		"user-groups": "app/user-groups",
+		"user-directories": "app/user-directories",
+		"change-password": "app/change-password",
 		"app": "app"
 	},
 	shim: {

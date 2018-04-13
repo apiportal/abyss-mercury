@@ -27,6 +27,14 @@
 					<li><a href="#">User Management</a></li>
 					<li><a href="/abyss/users-groups">User Groups</a></li>
 				</ol>
+				<ol class="breadcrumb" v-if="pageCurrent == 'user-directories'">
+					<li><a href="#">User Management</a></li>
+					<li><a href="/abyss/users-directories">User Directories</a></li>
+				</ol>
+				<ol class="breadcrumb" v-if="pageCurrent == 'change-password'">
+					<li><a href="#">My Account</a></li>
+					<li><a href="/abyss/change-password">Change Password</a></li>
+				</ol>
 			</div>
 		</div>
 		<div id="mobile_only_nav" class="mobile-only-nav">
