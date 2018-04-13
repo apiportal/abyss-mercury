@@ -8,13 +8,21 @@ define(['Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'eonasdan-bootst
 			return {
 				isLoading: true,
 				sort: {
-					key: 'fullName',
+					key: 'first_name',
 					type: String,
 					order: 'asc'
 				},
 				pageState: 'init',
 				paginate: {},
 				ajaxUrl: '/abyss/users/management',
+				// ajaxUrl: 'http://local.monasdyas.com/api/get?file=http://192.168.10.46:38081/abyss/users/management',
+				ajaxGroupsUrl: '/abyss/user-groups/management',
+				// ajaxGroupsUrl: 'http://local.monasdyas.com/api/get?file=http://192.168.10.46:38081/abyss/user-groups/management',
+				// ajaxPermissionsUrl: '/abyss/user-permissions/management',
+				ajaxPermissionsUrl: '/data/permission-list.json',
+				
+				// ajaxUrl: 'http://192.168.10.46:38081/abyss/users/management', // access-control-origin error
+				// ajaxUrl: '/data/user-list-abyss.json',
 				testUrl: 'http://www.monasdyas.com/api/api',
 				ajaxHeaders: {
 					contentType: 'application/json; charset=utf-8',
@@ -23,7 +31,7 @@ define(['Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'eonasdan-bootst
 				},
 				selected: null,
 				resetPassword: false,
-				user: {
+				userOLD: {
 					"id": 0,
 					"fullName": "",
 					"userName": "",
@@ -33,6 +41,30 @@ define(['Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'eonasdan-bootst
 					"lastLogin": "",
 					"failedLoginCount": 0,
 					"lastFailedLogin": "",
+					"directory": "Internal Directory",
+					"groups": [],
+					"permissions": []
+				},
+				user: {
+					"uuid": null,
+					"created": null,
+					"updated": null,
+					"deleted": null, // ? what is the difference
+					"is_deleted": null, // ? what is the difference
+					"is_activated": null,
+					"subject_name": null,
+					"first_name": null,
+					"last_name": null,
+					"display_name": null,
+					"email": null,
+					"effective_start_date": null,
+					"effective_end_date": null,
+
+					"notify": true,
+					"loginCount": 0,
+					"lastLogin": null,
+					"failedLoginCount": 0,
+					"lastFailedLogin": null,
 					"directory": "Internal Directory",
 					"groups": [],
 					"permissions": []
@@ -105,7 +137,7 @@ define(['Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'eonasdan-bootst
 			},
 			getGroupOptions(search, loading) {
 				loading(true)
-				axios.get('/data/user-group-list.json', {
+				axios.get(this.ajaxGroupsUrl, {
 					params: {
 						q: search
 					}
@@ -118,7 +150,7 @@ define(['Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'eonasdan-bootst
 			},
 			getPermissionOptions(search, loading) {
 				loading(true)
-				axios.get('/data/permission-list.json', {
+				axios.get(this.ajaxPermissionsUrl, {
 					params: {
 						q: search
 					}
@@ -129,6 +161,30 @@ define(['Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'eonasdan-bootst
 					loading(false);
 				})
 			},
+			fakeData() { // delete
+				this.userList.forEach((value, key) => {
+				// this.userList.forEach(function (value, key) {
+					value.permissions = [
+						{
+							"id": 1,
+							"name": "Add, edit, delete API"
+						},
+						{
+							"id": 2,
+							"name": "Add, edit, delete APP"
+						},
+						{
+							"id": 3,
+							"name": "Add, edit, delete Proxy"
+						}
+					]
+					value.loginCount = 5;
+					value.lastLogin = "2018-04-12T14:48:00.000Z";
+					value.failedLoginCount = 1;
+					value.lastFailedLogin = "2018-04-10T11:15:00.000Z";
+					value.directory = "Internal Directory";
+				});
+			},
 			getPage(p, d) {
 				// axios.get(this.ajaxUrl, {
 				// 	params: {
@@ -138,9 +194,10 @@ define(['Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'eonasdan-bootst
 				var param = d || '';
 				axios.get(this.ajaxUrl + '?page=' + p + param)
 				.then(response => {
-					// console.log("p: ", p);
 					this.userList = response.data.userList;
 					this.paginate = this.makePaginate(response.data);
+					this.fakeData(); // delete
+					console.log("this.userList: ", this.userList);
 				}, error => {
 					console.error(error);
 				});
@@ -185,7 +242,6 @@ define(['Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'eonasdan-bootst
 								this.selected = null;
 							});
 						}
-						this.$emit('set-state', 'init');
 						return;
 					}
 					// alert('Correct them errors!');
@@ -199,6 +255,9 @@ define(['Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'eonasdan-bootst
 				},
 				deep: true
 			}
+		},
+		mounted() {
+			this.preload();
 		},
 		created() {
 			this.log(this.$options.name);

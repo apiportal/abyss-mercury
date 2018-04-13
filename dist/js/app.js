@@ -49,10 +49,10 @@ define(['config', 'jquery', 'bootstrap', 'domready'], function(config, $){
 		},
 		preload: function() {
 			// $(".preloader-it").delay(500).fadeOut("slow");
-			setTimeout(function(){
+			// setTimeout(function(){
 				// console.log("preload: ", $(".preloader-it"));
-				$(".preloader-it").fadeOut("slow");
-			},500);
+				// $(".preloader-it").fadeOut("slow");
+			// },500);
 			var progressAnim = $('.progress-anim');
 			if( progressAnim.length > 0 ){
 				for(var i = 0; i < progressAnim.length; i++){

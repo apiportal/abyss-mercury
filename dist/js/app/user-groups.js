@@ -10,13 +10,21 @@ define(['Vue', 'axios', 'vee-validate', 'vue-select', 'VueBootstrapDatetimePicke
 			return {
 				isLoading: true,
 				sort: {
-					key: 'name',
+					key: 'group_name',
 					type: String,
 					order: 'asc'
 				},
 				pageState: 'init',
 				paginate: {},
 				ajaxUrl: '/abyss/user-groups/management',
+				// ajaxUrl: 'http://local.monasdyas.com/api/get?file=http://192.168.10.46:38081/abyss/user-groups/management',
+				ajaxUsersUrl: '/abyss/users/management',
+				// ajaxUsersUrl: 'http://local.monasdyas.com/api/get?file=http://192.168.10.46:38081/abyss/users/management',
+				// ajaxPermissionsUrl: '/abyss/user-permissions/management',
+				ajaxPermissionsUrl: '/data/permission-list.json',
+				
+				// ajaxUrl: 'http://192.168.10.46:38081/abyss/user-groups/management', // access-control-origin error
+				// ajaxUrl: '/data/user-group-list-abyss.json',
 				testUrl: 'http://www.monasdyas.com/api/api',
 				ajaxHeaders: {
 					contentType: 'application/json; charset=utf-8',
@@ -25,7 +33,7 @@ define(['Vue', 'axios', 'vee-validate', 'vue-select', 'VueBootstrapDatetimePicke
 				},
 				selected: null,
 				resetPassword: false,
-				group: {
+				groupOLD: {
 					"id": 0,
 					"name": "",
 					"description": "",
@@ -33,6 +41,22 @@ define(['Vue', 'axios', 'vee-validate', 'vue-select', 'VueBootstrapDatetimePicke
 					"dateFrom": null,
 					"dateTo": null,
 					"status": null,
+					"permissions": [],
+					"users": []
+				},
+				group: {
+					"uuid": null,
+					"created": null,
+					"updated": null,
+					"deleted": null,
+					"is_deleted": 0,
+					"is_enabled": 1,
+					"group_name": null,
+					"description": null,
+					"effective_start_date": null,
+					"effective_end_date": null,
+
+					"userCount": 0,
 					"permissions": [],
 					"users": []
 				},
@@ -66,7 +90,7 @@ define(['Vue', 'axios', 'vee-validate', 'vue-select', 'VueBootstrapDatetimePicke
 			},
 			getUserOptions(search, loading) {
 				loading(true)
-				axios.get('/data/user-list.json', {
+				axios.get(this.ajaxUsersUrl, {
 					params: {
 						q: search
 					}
@@ -92,7 +116,7 @@ define(['Vue', 'axios', 'vee-validate', 'vue-select', 'VueBootstrapDatetimePicke
 			},
 			getPermissionOptions(search, loading) {
 				loading(true)
-				axios.get('/data/permission-list.json', {
+				axios.get(this.ajaxPermissionsUrl, {
 					params: {
 						q: search
 					}
@@ -102,6 +126,26 @@ define(['Vue', 'axios', 'vee-validate', 'vue-select', 'VueBootstrapDatetimePicke
 					this.permissionOptions = response.data.permissionList;
 					loading(false);
 				})
+			},
+			fakeData() { // delete
+				this.groupList.forEach((value, key) => {
+				// this.userList.forEach(function (value, key) {
+				    value.permissions = [
+						{
+							"id": 1,
+							"name": "Add, edit, delete API"
+						},
+						{
+							"id": 2,
+							"name": "Add, edit, delete APP"
+						},
+						{
+							"id": 3,
+							"name": "Add, edit, delete Proxy"
+						}
+					]
+					value.userCount = 5;
+				});
 			},
 			getPage(p, d) {
 				// axios.get(this.ajaxUrl).then(response => {
@@ -113,9 +157,10 @@ define(['Vue', 'axios', 'vee-validate', 'vue-select', 'VueBootstrapDatetimePicke
 				var param = d || '';
 				axios.get(this.ajaxUrl + '?page=' + p + param, this.ajaxHeaders)
 				.then(response => {
-					// console.log("p: ", p);
 					this.groupList = response.data.groupList;
 					this.paginate = this.makePaginate(response.data);
+					this.fakeData(); // delete
+					console.log("this.groupList: ", this.groupList);
 				}, error => {
 					console.error(error);
 				});
@@ -145,7 +190,7 @@ define(['Vue', 'axios', 'vee-validate', 'vue-select', 'VueBootstrapDatetimePicke
 						if (act == 'add') {
 							this.addItem(this.groupList, this.group).then(response => {
 								// this.addItem(this.groupList, this.group);
-								this.$emit('set-state', 'edit');
+								this.$emit('set-state', 'init');
 								// this.resetItem(this.group, this.newGroup);
 								this.group = _.cloneDeep(this.newGroup);
 								console.log("this.group: ", this.group );
@@ -158,7 +203,6 @@ define(['Vue', 'axios', 'vee-validate', 'vue-select', 'VueBootstrapDatetimePicke
 								this.selected = null;
 							});
 						}
-						this.$emit('set-state', 'init');
 						return;
 					}
 					// alert('Correct them errors!');
@@ -175,6 +219,9 @@ define(['Vue', 'axios', 'vee-validate', 'vue-select', 'VueBootstrapDatetimePicke
 					}
 				});
 			},
+		},
+		mounted() {
+			this.preload();
 		},
 		created() {
 			this.log(this.$options.name);

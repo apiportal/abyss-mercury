@@ -1,0 +1,41 @@
+﻿<!DOCTYPE html>
+<html class="vs-user-directories" lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:include="webroot/frags/layout/head.htm :: header">
+</head>
+<body>
+<div id="portal" class="wrapper" v-bind:class="pageClass">
+	<div th:replace="webroot/frags/layout/navs.htm :: navs"></div>
+	<main class="page-wrapper">
+	<user-directories inline-template v-on:set-state="setState" v-on:set-page="setPage" v-bind:root-state="rootState">
+		<div class="columns">
+			<section class="column column-main column-main-fixed">
+				<div class="column-main-fixed-overlay" v-if="rootState == 'add' || rootState == 'edit'" v-on:click="$emit('set-state', 'init');"></div>
+				<div class="nicescroll--bar">
+					<table class="table table-hover table-bordered table-edge">
+						<tr>
+							<th class="td-name">Name</th>
+							<th class="td-name">Type</th>
+							<th class="td-bool">Order</th>
+							<th class="td-bool">Enabled</th>
+						</tr>
+						<tr>
+							<td>Intenal Directory</td>
+							<td>Intenal</td>
+							<td><i class="fas fa-chevron-up"></i></td>
+							<td>
+								<span class="switch switch-primary ml-auto">
+									<input type="checkbox" name="userDirectoryStatus" id="userDirectoryStatus" checked>
+									<label for="userDirectoryStatus"></label>
+								</span>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</section>
+		</div>
+	</user-directories>
+	</main>
+</div>
+<script id="reqVue" data-module="user-directories" data-main="/dist/js/main" src="/dist/js/lib/require.min.js"></script>
+</body>
+</html>

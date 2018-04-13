@@ -1,4 +1,3 @@
-console.log("JS: auth.js");
 define(['Vue', 'axios', 'vee-validate'], function (Vue, axios, VeeValidate) {
 	Vue.use(VeeValidate)
 	new Vue({
@@ -15,7 +14,7 @@ define(['Vue', 'axios', 'vee-validate'], function (Vue, axios, VeeValidate) {
 			}
 		},
 		created() {
-			console.log("this: ", this);
+			console.log("JS: auth.js: ", this);
 		}
 	});
 });
