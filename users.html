@@ -38,12 +38,12 @@
 					</div>
 					<table class="table table-hover table-bordered table-edge">
 						<tr>
-							<th class="td-bool" v-bind:class="sort.order" v-on:click="sortList('is_activated', Boolean)">Activated</th>
+							<th class="td-bool" v-bind:class="sort.order" v-on:click="sortList('is_activated', Boolean)">Status</th>
 							<th class="td-name" v-bind:class="sort.order" v-on:click="sortList('first_name', String)">First Name</th>
 							<th class="td-name" v-bind:class="sort.order" v-on:click="sortList('last_name', String)">Last Name</th>
-							<th class="td-name" v-bind:class="sort.order" v-on:click="sortList('subject_name', String)">Username</th>
+							<th class="td-name" v-bind:class="sort.order" v-on:click="sortList('subject_name', String)">Username / Email</th>
 							<th class="td-name" v-bind:class="sort.order" v-on:click="sortList('display_name', String)">Display Name</th>
-							<th class="td-datetime" v-bind:class="sort.order" v-on:click="sortList('created', Date)">Created Updated</th>
+							<th class="td-datetime-x" v-bind:class="sort.order" v-on:click="sortList('created', Date)">Created / Updated / Deleted</th>
 							<th class="td-datetime" v-bind:class="sort.order" v-on:click="sortList('loginCount', Number)">Logins</th>
 							<th class="td-datetime" v-bind:class="sort.order" v-on:click="sortList('failedLoginCount', Number)">Failed Logins</th>
 							<th class="td-long"></th>
@@ -52,7 +52,9 @@
 						</tr>
 						<tr v-for="(user, index) in sortBy(userList)" v-bind:class="{'active': isSelected(index)}">
 							<td class="text-center">
-								<i class="fas fa-circle" v-bind:class="{'txt-green': user.is_activated}"></i>
+								<i class="fas fa-circle" title="Not Activated" v-if="!user.is_activated"></i>
+								<i class="fas fa-check-circle txt-green" title="Activated" v-if="user.is_activated"></i>
+								<i class="fas fa-times-circle txt-red" title="Deleted" v-if="user.is_deleted"></i>
 							</td>
 							<td>{{ user.first_name }}</td>
 							<td>{{ user.last_name }}</td>
@@ -63,11 +65,19 @@
 							<td>
 								{{user.display_name}}
 							</td>
-							<td class="td-datetime">
-								<strong class="small d-block">CREATED:</strong>
-								<small>{{user.created | formatDateTime}}</small>
-								<strong class="small d-block">UPDATED:</strong>
-								<small>{{user.updated | formatDateTime}}</small>
+							<td>
+								<div>
+									<strong class="small">CREATED:</strong>
+									<small>{{user.created | formatDateTime}}</small>
+								</div>
+								<div>
+									<strong class="small">UPDATED:</strong>
+									<small>{{user.updated | formatDateTime}}</small>
+								</div>
+								<div v-if="user.is_deleted">
+									<strong class="small">DELETED:</strong>
+									<small>{{user.deleted | formatDateTime}}</small>
+								</div>
 							</td>
 							<td>
 								<div class="d-flex align-items-center">
@@ -124,33 +134,39 @@
 					</div>
 					<div class="p-3">
 						<div class="form-group" v-bind:class="{ 'has-error': errors.has('first_name') }">
-							<label for="first_name">Full Name:</label>
-							<input type="text" name="first_name" id="first_name" v-model="user.first_name" v-validate="'required'" class="form-control" placeholder="Full Name">
+							<label for="first_name">First Name:</label>
+							<input type="text" name="first_name" id="first_name" v-model="user.first_name" v-validate="'required|min:2|alpha_spaces'" class="form-control" placeholder="First Name">
+							<em v-bind:class="{ 'show': errors.has('first_name') }">{{ errors.first('first_name') }}</em>
 						</div>
 						<div class="form-group" v-bind:class="{ 'has-error': errors.has('last_name') }">
-							<label for="last_name">Full Name:</label>
-							<input type="text" name="last_name" id="last_name" v-model="user.last_name" v-validate="'required'" class="form-control" placeholder="Full Name">
+							<label for="last_name">Last Name:</label>
+							<input type="text" name="last_name" id="last_name" v-model="user.last_name" v-validate="'required|min:2|alpha'" class="form-control" placeholder="Last Name">
+							<em v-bind:class="{ 'show': errors.has('last_name') }">{{ errors.first('last_name') }}</em>
 						</div>
 						<div class="form-group" v-bind:class="{ 'has-error': errors.has('subject_name') }">
 							<label for="subject_name">UserName:</label>
-							<input type="text" name="subject_name" id="subject_name" v-model="user.subject_name" v-validate="'required'" class="form-control" placeholder="subject_name">
+							<input type="text" name="subject_name" id="subject_name" v-model="user.subject_name" v-validate="{required: true, regex: /^[0-9A-Z_@.-]*$/i, min: 3}" class="form-control" placeholder="subject_name">
+							<em v-bind:class="{ 'show': errors.has('subject_name') }">{{ errors.first('subject_name') }}</em>
 						</div>
 						<div class="form-group" v-bind:class="{ 'has-error': errors.has('display_name') }">
 							<label for="display_name">Display Name:</label>
-							<input type="text" name="display_name" id="display_name" v-model="user.display_name" v-validate="'required'" class="form-control" placeholder="display_name">
+							<input type="text" name="display_name" id="display_name" v-model="user.display_name" v-validate="{required: true, regex: /^[0-9A-Z_.-\s]*$/i, min: 3, max: 30}" class="form-control" placeholder="display_name">
+							<em v-bind:class="{ 'show': errors.has('display_name') }">{{ errors.first('display_name') }}</em>
 						</div>
 						<div class="form-group" v-bind:class="{ 'has-error': errors.has('email') }">
 							<label for="email">Email:</label>
 							<input type="text" name="email" id="email" v-model="user.email" v-validate="'required|email'" class="form-control" placeholder="email">
+							<em v-bind:class="{ 'show': errors.has('email') }">{{ errors.first('email') }}</em>
 						</div>
 						<p v-if="rootState == 'edit'"><a href="#" class="txt-link" v-on:click="resetPassword = !resetPassword">Reset Password</a></p>
 						<div v-show="rootState == 'add' || resetPassword">
 							<div class="form-group js-showpass" v-bind:class="{ 'has-error': errors.has('password') }">
 								<label class="clearfix d-block" for="password">Password: <a href="#" class="float-right txt-link">Regenerate Password</a></label>
 								<div class="input-group">
-									<input type="password" name="password" id="password" v-model="user.password" v-validate="rootState == 'add' ? 'required' : ''" class="form-control" placeholder="password">
+									<input type="password" name="password" id="password" v-model="user.password" v-validate="rootState == 'add' ? 'required|min:8|password_strength' : ''" class="form-control" placeholder="password">
 									<a href="#" class="txt-link js-eye input-group-addon"><i class="fas fa-eye"></i></a>
 								</div>
+								<em v-bind:class="{ 'show': errors.has('password') }">{{ errors.first('password') }}</em>
 							</div>
 							<div class="form-group ">
 								<span class="checkbox checkbox-primary">
@@ -176,7 +192,9 @@
 					<div class="p-3">
 						<div class="form-group v-select-color-pink">
 							<h6>Directory</h6>
-							<input type="directory" name="directory" id="directory" v-model="user.directory" class="form-control" placeholder="directory">
+							<select name="directory" id="directory" v-model="user.directory" class="form-control">
+								<option value="Internal Directory">Internal Directory</option>
+							</select>
 						</div>
 						<div class="form-group v-select-color-pink">
 							<h6>Add User to Group:</h6>
