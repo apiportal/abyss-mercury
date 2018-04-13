@@ -4,39 +4,46 @@
 </head>
 <body>
 <div th:replace="webroot/frags/layout/navs.htm :: navSignup"></div>
-<main>
+<main id="portal">
 	<h1>Sign up</h1>
 	<h6>Enter your details below</h6>	
-	<form action="/abyss/sign-up" method="POST">
-		<div class="form-group">
+	<form action="/abyss/sign-up" method="POST" id="validForm" v-on:submit="validateBeforeSubmit">
+		<div class="form-group" v-bind:class="{ 'has-error': errors.has('firstname') }">
 			<label for="firstname">First Name</label>
-			<input type="text" name="firstname" id="firstname" class="form-control" placeholder="" required>
+			<input type="text" name="firstname" id="firstname" class="form-control" placeholder="" v-validate="'required|min:2|alpha'">
+			<em v-bind:class="{ 'show': errors.has('firstname') }">{{ errors.first('firstname') }}</em>
 		</div>
-		<div class="form-group">
+		<div class="form-group" v-bind:class="{ 'has-error': errors.has('lastname') }">
 			<label for="lastname">Last Name</label>
-			<input type="text" name="lastname" id="lastname" class="form-control" placeholder="" required>
+			<input type="text" name="lastname" id="lastname" class="form-control" placeholder="" v-validate="'required|min:2|alpha'">
+			<em v-bind:class="{ 'show': errors.has('lastname') }">{{ errors.first('lastname') }}</em>
 		</div>
-		<div class="form-group">
+		<div class="form-group" v-bind:class="{ 'has-error': errors.has('username') }">
 			<label for="username">Username</label>
-			<input type="text" name="username" id="username" class="form-control" placeholder="" required>
+			<input type="text" name="username" id="username" class="form-control" placeholder="" v-validate="{required: true, regex: /^[0-9A-Z_@.-]*$/i, min: 3}">
+			<em v-bind:class="{ 'show': errors.has('username') }">{{ errors.first('username') }}</em>
 		</div>
-		<div class="form-group">
+		<div class="form-group" v-bind:class="{ 'has-error': errors.has('email') }">
 			<label for="email">Email address</label>
-			<input type="email" name="email" id="email" class="form-control" placeholder="" required>
+			<input type="email" name="email" id="email" class="form-control" placeholder="" v-validate="'required|email'">
+			<em v-bind:class="{ 'show': errors.has('email') }">{{ errors.first('email') }}</em>
 		</div>
-		<div class="form-group">
+		<div class="form-group" v-bind:class="{ 'has-error': errors.has('password') }">
 			<label for="password">Password</label>
-			<input type="password" name="password" id="password" class="form-control" placeholder="" required>
+			<input type="password" name="password" id="password" class="form-control" placeholder="" v-validate="'required|min:8|password_strength'">
+			<em v-bind:class="{ 'show': errors.has('password') }">{{ errors.first('password') }}</em>
 		</div>
-		<div class="form-group">
+		<div class="form-group" v-bind:class="{ 'has-error': errors.has('password2') }">
 			<label for="password2">Confirm Password</label>
-			<input type="password" name="password2" id="password2" class="form-control" placeholder="" required>
+			<input type="password" name="password2" id="password2" class="form-control" placeholder="" v-validate="'required|min:8|password_strength|confirmed:password'">
+			<em v-bind:class="{ 'show': errors.has('password2') }">{{ errors.first('password2') }}</em>
 		</div>
-		<div class="form-group">
+		<div class="form-group" v-bind:class="{ 'has-error': errors.has('isAgreedToTerms') }">
 			<div class="checkbox checkbox-primary">
-				<input type="checkbox" name="isAgreedToTerms" id="isAgreedToTerms" required>
+				<input type="checkbox" name="isAgreedToTerms" id="isAgreedToTerms" v-validate="'required'" v-bind:checked="terms" v-on:keyup.enter="terms = !terms">
 				<label for="isAgreedToTerms"> I agree to all</label> <a href="#" class="txt-link">Terms</a>
 			</div>
+			<em v-bind:class="{ 'show': errors.has('isAgreedToTerms') }">{{ errors.first('isAgreedToTerms') }}</em>
 		</div>
 		<div class="form-group text-center">
 			<button type="submit" class="btn btn-primary btn-rounded btn-lg">Sign up</button>

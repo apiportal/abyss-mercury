@@ -1,6 +1,25 @@
 // define(['Vue', 'axios', 'vee-validate', 'moment'], function (Vue, axios, VeeValidate, moment) {
 define(['Vue', 'axios', 'vee-validate', 'moment'], function (Vue, axios, VeeValidate, moment) {
 	Vue.use(VeeValidate);
+	const dictionary = {
+		en: {
+			attributes: {
+				username: 'Username',
+				oldPassword: 'Old Password',
+				newPassword: 'Password',
+				confirmPassword: 'Confirm Password',
+				password: 'Password'
+			}
+		}
+	};
+	VeeValidate.Validator.localize(dictionary);
+	VeeValidate.Validator.extend('password_strength', {
+		getMessage: field => 'The password must contain at least: 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character (*,._&?)',
+		validate: value => {
+			var strongRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})");
+			return strongRegex.test(value);
+		}
+	});
 	Vue.filter('formatDateTime', function(value) {
 		if (value) {
 			return moment(String(value)).format('DD.MM.YYYY hh:mm')
