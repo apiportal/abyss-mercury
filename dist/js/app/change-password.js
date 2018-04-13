@@ -11,10 +11,12 @@ define(['Vue', 'axios', 'vee-validate', 'lodash'], function(Vue, axios, VeeValid
 			}
 		},
 		methods: {
-			validateBeforeSubmit() {
+			validateBeforeSubmit(event) {
+				event.preventDefault();
 				this.$validator.validateAll().then((result) => {
 					if (result) {
 						// alert('Form Submitted!');
+						document.querySelector('#validForm').submit();
 						return;
 					}
 					// alert('Correct them errors!');

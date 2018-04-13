@@ -177,6 +177,16 @@ define(['config', 'jquery', 'bootstrap', 'domready'], function(config, $){
 			});
 		},
 		elements: function() {
+			// $('input:checkbox').keypress(function(event) {
+			// 	console.log("this: ", this);
+			// 	var keycode = (event.keyCode ? event.keyCode : event.which);
+			// 	if (keycode == 13) {
+			// 		$(this).attr('checked', 'checked');
+			// 		// Checkbox_to_RadioButton(this);
+			// 		// alert("Enter key was pressed");
+			// 	}
+			// 	event.stopPropagation();
+			// });
 			$(".js-page-loader").one('click', function(e) {
 				$(this).initz_loadz();
 				console.log("e: ", e);
