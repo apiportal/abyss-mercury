@@ -15237,11 +15237,11 @@ a#toggle_mobile_nav {
   z-index: 3; }
 
 .column-header-action {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
+  display: -webkit-box !important;
+  display: -ms-flexbox !important;
+  display: flex !important;
   float: right;
-  position: absolute;
+  position: absolute !important;
   bottom: 100%;
   right: 0; }
 
@@ -15399,7 +15399,6 @@ a#toggle_mobile_nav {
 .vs-my-apis .vs-edit .create-item {
   display: none !important; }
 
-.vs-my-apis .vs-edit .code-editor,
 .vs-my-apis .vs-edit .edit-item {
   display: block !important; }
 
