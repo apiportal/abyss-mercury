@@ -18,7 +18,7 @@
 		</div>
 		<div class="form-group" v-bind:class="{ 'has-error': errors.has('password') }">
 			<label for="password">Password</label>
-			<input type="password" name="password" id="password" class="form-control" placeholder="Enter yourpassword" v-validate="'required|min:8'">
+			<input type="password" name="password" id="password" class="form-control" placeholder="Enter yourpassword" v-validate="'required|min:3'">
 			<em v-bind:class="{ 'show': errors.has('password') }">{{ errors.first('password') }}</em>
 		</div>
 		<div class="form-group">
