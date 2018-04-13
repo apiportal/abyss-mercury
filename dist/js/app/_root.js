@@ -8,7 +8,16 @@ define(['Vue', 'axios', 'vee-validate', 'moment'], function (Vue, axios, VeeVali
 				oldPassword: 'Old Password',
 				newPassword: 'Password',
 				confirmPassword: 'Confirm Password',
-				password: 'Password'
+				password: 'Password',
+				first_name: 'First Name', 
+				last_name: 'Last Name', 
+				subject_name: 'Subject Name', 
+				display_name: 'Display Name', 
+				email: 'Email', 
+				group_name: 'Group Name', 
+				description: 'Description', 
+				effective_start_date: 'Effective Start Date', 
+				effective_end_date: 'Effective End Date', 
 			}
 		}
 	};

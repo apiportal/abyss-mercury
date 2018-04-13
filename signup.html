@@ -41,7 +41,7 @@
 		<div class="form-group" v-bind:class="{ 'has-error': errors.has('isAgreedToTerms') }">
 			<div class="checkbox checkbox-primary">
 				<input type="checkbox" name="isAgreedToTerms" id="isAgreedToTerms" v-validate="'required'" v-bind:checked="terms" v-on:keyup.enter="terms = !terms">
-				<label for="isAgreedToTerms"> I agree to all</label> <a href="#" class="txt-link">Terms</a>
+				<label for="isAgreedToTerms"> I agree to all</label> <a href="#" data-toggle="modal" data-target="#termsModal" class="txt-link">Terms</a>
 			</div>
 			<em v-bind:class="{ 'show': errors.has('isAgreedToTerms') }">{{ errors.first('isAgreedToTerms') }}</em>
 		</div>
@@ -50,6 +50,7 @@
 		</div>
 	</form>
 	<div th:replace="webroot/frags/layout/footer.htm :: copy"></div>
+	<div th:replace="webroot/frags/layout/terms.htm :: terms"></div>
 </main>
 <script id="reqJs" data-module="auth" data-main="/dist/js/main" src="/dist/js/lib/require.min.js"></script>
 </body>
