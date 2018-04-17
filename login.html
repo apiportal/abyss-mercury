@@ -1,13 +1,16 @@
 ﻿<!DOCTYPE html>
-<html class="page-auth" lang="en" xmlns:th="http://www.thymeleaf.org">
+<html class="page-auth" lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:v-on="http://www.w3.org/1999/xhtml"
+	  xmlns:v-bind="http://www.w3.org/1999/xhtml">
 <head th:replace="webroot/frags/layout/head.htm :: header">
 </head>
 <body>
 <div th:replace="webroot/frags/layout/navs.htm :: navLogin"></div>
 <main id="portal">
-	<div class="alert alert-success text-center" th:if="${context.get('isUserActivated')}"> 
+<!--
+	<div class="alert alert-success text-center" th:if="${context.get('isUserActivated')}">
 		Your Abyss API Portal account has been activated. You can now login.
 	</div>
+-->
 	<h1>Sign in</h1>
 	<h6>Enter your details below</h6>
 	<form action="/abyss/login-auth" method="POST" id="validForm" v-on:submit="validateBeforeSubmit">
