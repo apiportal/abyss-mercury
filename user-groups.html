@@ -20,33 +20,43 @@
 					</div>
 					<table class="table table-hover table-bordered table-edge">
 						<tr>
-							<th class="td-bool" v-bind:class="sort.order" v-on:click="sortList('is_enabled', Boolean)">Enabled</th>
+							<th class="td-bool" v-bind:class="sort.order" v-on:click="sortList('is_enabled', Boolean)">Status</th>
 							<th class="td-name" v-bind:class="sort.order" v-on:click="sortList('group_name', String)">Group Name</th>
 							<th class="td-number" v-bind:class="sort.order" v-on:click="sortList('userCount', Number)">Users</th>
-							<th class="td-datetime" v-bind:class="sort.order" v-on:click="sortList('created', Date)">Created Updated</th>
-							<th class="td-date" v-bind:class="sort.order" v-on:click="sortList('effective_start_date', Date)">Effective From</th>
-							<th class="td-date" v-bind:class="sort.order" v-on:click="sortList('effective_end_date', Date)">Effective To</th>
+							<th class="td-datetime-x" v-bind:class="sort.order" v-on:click="sortList('created', Date)">Created / Updated / Deleted</th>
+							<th class="td-datetime" v-bind:class="sort.order" v-on:click="sortList('effective_start_date', Date)">Effective From</th>
+							<th class="td-datetime" v-bind:class="sort.order" v-on:click="sortList('effective_end_date', Date)">Effective To</th>
 							<th class="td-long" v-bind:class="sort.order" v-on:click="sortList('permissions', Array)">Permissions</th>
 							<th class="td-action-1"></th>
 							<th class="td-action-1"></th>
 						</tr>
 						<tr v-for="(group, index) in sortBy(groupList)" v-bind:class="{'active': isSelected(index), 'text-muted': !group.is_enabled}">
 							<td class="text-center">
-								<i class="fas fa-circle" v-bind:class="{'txt-green': group.is_enabled}"></i>
+								<i class="fas fa-circle" title="Not Enabled" v-if="!group.is_enabled"></i>
+								<i class="fas fa-check-circle txt-green" title="Enabled" v-if="group.is_enabled"></i>
+								<i class="fas fa-times-circle txt-red" title="Deleted" v-if="group.is_deleted"></i>
 							</td>
 							<td>
 								<div class="d-block">{{group.group_name}}</div>
 								<small class="d-block">{{group.description}}</small>
 							</td>
 							<td>{{group.userCount}}</td>
-							<td class="td-datetime">
-								<strong class="small d-block">CREATED:</strong>
-								<small>{{group.created | formatDateTime}}</small>
-								<strong class="small d-block">UPDATED:</strong>
-								<small>{{group.updated | formatDateTime}}</small>
+							<td>
+								<div>
+									<strong class="small">CREATED:</strong>
+									<small>{{group.created | formatDateTime}}</small>
+								</div>
+								<div>
+									<strong class="small">UPDATED:</strong>
+									<small>{{group.updated | formatDateTime}}</small>
+								</div>
+								<div v-if="group.is_deleted">
+									<strong class="small">DELETED:</strong>
+									<small>{{group.deleted | formatDateTime}}</small>
+								</div>
 							</td>
-							<td>{{group.effective_start_date | formatDate}}</td>
-							<td>{{group.effective_end_date | formatDate}}</td>
+							<td>{{group.effective_start_date | formatDateTime}}</td>
+							<td>{{group.effective_end_date | formatDateTime}}</td>
 							<td>
 								<span v-for="(g, index) in group.permissions">
 									{{g.name}}
@@ -74,13 +84,15 @@
 						</h5>
 					</div>
 					<div class="p-3">
-						<div class="form-group" v-bind:class="{ 'has-error': errors.has('groupName') }">
-							<label for="groupName">Group Name:</label>
-							<input type="text" name="groupName" id="groupName" v-model="group.group_name" v-validate="'required'" class="form-control" placeholder="groupName">
+						<div class="form-group" v-bind:class="{ 'has-error': errors.has('group_name') }">
+							<label for="group_name">Group Name:</label>
+							<input type="text" name="group_name" id="group_name" v-model="group.group_name" v-validate="'required|min:2|alpha_spaces'" class="form-control" placeholder="group_name">
+							<em v-bind:class="{ 'show': errors.has('group_name') }">{{ errors.first('group_name') }}</em>
 						</div>
 						<div class="form-group" v-bind:class="{ 'has-error': errors.has('description') }">
 							<label for="description">Decription:</label>
 							<textarea type="text" name="description" id="description" v-model="group.description" v-validate="'required'" class="form-control" placeholder="Decription"></textarea>
+							<em v-bind:class="{ 'show': errors.has('description') }">{{ errors.first('description') }}</em>
 						</div>
 						<div class="form-group form-group-date" v-bind:class="{ 'has-error': errors.has('effective_start_date') }">
 							<label class="">Effective From</label>
@@ -88,6 +100,7 @@
 								<date-picker name="effective_start_date" v-model="group.effective_start_date" :config="config" v-validate="'required'"></date-picker>
 								<span class="input-group-addon"><i class="fa fa-calendar-alt"></i></span>
 							</div>
+							<em v-bind:class="{ 'show': errors.has('effective_start_date') }">{{ errors.first('effective_start_date') }}</em>
 						</div>
 						<div class="form-group" v-bind:class="{ 'has-error': errors.has('effective_end_date') }">
 							<label class="">Effective To</label>
@@ -95,6 +108,7 @@
 								<date-picker name="effective_end_date" v-model="group.effective_end_date" :config="config" v-validate="'required'"></date-picker>
 								<span class="input-group-addon"><i class="fa fa-calendar-alt"></i></span>
 							</div>
+							<em v-bind:class="{ 'show': errors.has('effective_end_date') }">{{ errors.first('effective_end_date') }}</em>
 						</div>
 						<div class="form-group ">
 							<span class="checkbox">

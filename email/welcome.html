@@ -1,6 +1,6 @@
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html lang="en-EN">
+<html lang="en-EN" xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -28,18 +28,18 @@
 				<table border="0" width="600" cellpadding="0" cellspacing="0" class="container" style="width:600px; max-width:600px; font-family:Helvetica, Arial, sans-serif; background-color: #FFF; border-bottom: 1px solid #DDDEDF; color: #222222;">
 					<tr>
 						<td align="left" style="border-bottom: 1px solid #DDDEDF;">
-							<img src="http://apiportal.com/dist/img/logo-api-portal-2x.png" width="184" height="66" alt="API Portal" style="width: 184px; height: 66px; border: 0px none" />
+							<img src="http://apiportal.com/dist/img/logo-api-portal-2x.png" th:src="${context.get('mail.image.url')}" width="184" height="66" alt="API Portal" style="width: 184px; height: 66px; border: 0px none" />
 						</td>
 					</tr>
 					<tr>
 						<td align="left" style="padding: 0 20px 10px 20px; font-size:14px; line-height:20px; text-align:left;">
 <h1 style="font-size: 18px; margin: 25px 0 20px 0;">Welcome to Abyss API Portal</h1>
-<p>Dear, ReplaceThisTextWithUserName</p>
+<p th:text="'Dear, ' + ${context.get('full.name')}">Dear, Abyss API Portal</p>
 <p>Congratulations! You have successfully signed-up to Abyss API Portal. To get the most of the APIs, please click the button below to login</p>
 <p>See you online; <br> Abyss API Portal Team.</p>
-<p style="text-align: center; margin: 20px 0;">
-	<a href="ReplaceThisTextWithServiceLink" style="display: block; width:200px; background-color:#0088CC; padding:10px; margin: 20px auto; text-align: center; border-radius: 60px; text-transform: uppercase; color:#ffffff; text-decoration: none; font-weight:bold;">Click here to login</a>
-</p>
+<div class="text-align: center; margin: 20px 0; display: block; width:200px; background-color:#0088CC; padding:10px; margin: 20px auto; text-align: center; border-radius: 60px; text-transform: uppercase; color:#ffffff; text-decoration: none; font-weight:bold;">
+	<a href="ReplaceThisTextWithServiceLink" th:href="${context.get('url.login')}" style="display: block; width:200px; background-color:#0088CC; padding:10px; margin: 20px auto; text-align: center; border-radius: 60px; text-transform: uppercase; color:#ffffff; text-decoration: none; font-weight:bold;">CLICK HERE TO LOGIN</a>
+</div>
 						</td>
 					</tr>
 					<tr>

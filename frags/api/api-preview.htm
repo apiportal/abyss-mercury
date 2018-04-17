@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div class="card" th:fragment="apiPreview">
+	<div class="embed-responsive embed-responsive-16by9 bg-primary">sas</div>
+	<div class="px-3 py-1">
+		<button type="button" class="btn btn-square btn-link float-right" v-on:click="$emit('set-state', 'init')"><i class="fas fa-times"></i></button>
+		<h3><strong>{{api.name}}</strong></h3>
+		<p><label class="d-block text-uppercase">Authentication</label>
+			<small class="comma" v-if="api.authentication.noAuth.enabled">{{api.authentication.noAuth.name}}</small>
+			<small class="comma" v-if="api.authentication.basic.enabled">{{api.authentication.basic.name}}</small>
+			<small class="comma" v-if="api.authentication.apiKey.enabled">{{api.authentication.apiKey.name}}</small>
+			<small class="comma" v-if="api.authentication.oAuth.enabled">{{api.authentication.oAuth.name}}</small>
+			<small class="comma" v-if="api.authentication.ldap.enabled">{{api.authentication.ldap.name}}</small>
+			<small class="comma" v-if="api.authentication.saml.enabled">{{api.authentication.saml.name}}</small>
+			<!-- <small v-for="(authen, index) in api.authentication" v-if="authen.enabled">
+				{{authen.name}}<span v-if="index != (api.authentication.length - 1)">, </span>
+			</small> -->
+		</p>
+		<p><label class="d-block text-uppercase">Context</label>{{api.context}}</p>
+		<p><label class="d-block text-uppercase">Base URL</label> <span class="d-block text-truncate">{{api.baseUrl}}</span></p>
+		<p><label class="d-block text-uppercase">Categories</label> <span class="d-block text-truncate">{{api.categories}}</span></p>
+		<p>{{api.description}}</p>
+		<p><span class="badge badge-info badge-pill">Tecnology</span></p>
+	</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,16 @@
+﻿<!DOCTYPE html>
+<html class="page-error" lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:include="webroot/frags/layout/head.htm :: header">
+</head>
+<body>
+<div th:replace="webroot/frags/layout/navs.htm :: navError"></div>
+<main>
+	<h1><i class="fas fa-check"></i></h1>
+	<h3 th:text="${context.get('http.errorMessage')}">???</h3>
+	<p th:text="${context.get('context.failureMessage')}">???</p>
+	<p th:text="${context.get('http.url')}">???</p>
+	<div th:replace="webroot/frags/layout/footer.htm :: copy"></div>
+</main>
+<script id="reqJs" data-module="error" data-main="/dist/js/main" src="/dist/js/lib/require.min.js"></script>
+</body>
+</html>

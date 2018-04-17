@@ -15237,11 +15237,11 @@ a#toggle_mobile_nav {
   z-index: 3; }
 
 .column-header-action {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
+  display: -webkit-box !important;
+  display: -ms-flexbox !important;
+  display: flex !important;
   float: right;
-  position: absolute;
+  position: absolute !important;
   bottom: 100%;
   right: 0; }
 
@@ -15399,7 +15399,6 @@ a#toggle_mobile_nav {
 .vs-my-apis .vs-edit .create-item {
   display: none !important; }
 
-.vs-my-apis .vs-edit .code-editor,
 .vs-my-apis .vs-edit .edit-item {
   display: block !important; }
 
@@ -15423,6 +15422,16 @@ a#toggle_mobile_nav {
   -ms-flex: 0 0 0px !important;
   flex: 0 0 0 !important;
   max-width: 0 !important; }
+
+.vs-index .page-wrapper {
+  background-color: #0063a6; }
+  .vs-index .page-wrapper > * {
+    background-image: url("/dist/img/dash-bg.png");
+    background-repeat: no-repeat;
+    background-size: auto 50%;
+    background-position: center center; }
+    .vs-index .page-wrapper > * h1 {
+      color: #fff; }
 
 .btn-float-bc {
   padding: 15px;
@@ -15468,6 +15477,9 @@ a#toggle_mobile_nav {
 
 .td-datetime {
   width: 130px; }
+
+.td-datetime-x {
+  width: 180px; }
 
 .td-date {
   width: 100px; }

@@ -30,18 +30,18 @@
 		</div>
 		<div class="form-group" v-bind:class="{ 'has-error': errors.has('password') }">
 			<label for="password">Password</label>
-			<input type="password" name="password" id="password" class="form-control" placeholder="" v-validate="'required|min:8|password_strength'">
+			<input type="password" name="password" id="password" class="form-control" placeholder="" v-validate="'required|min:3'">
 			<em v-bind:class="{ 'show': errors.has('password') }">{{ errors.first('password') }}</em>
 		</div>
 		<div class="form-group" v-bind:class="{ 'has-error': errors.has('password2') }">
 			<label for="password2">Confirm Password</label>
-			<input type="password" name="password2" id="password2" class="form-control" placeholder="" v-validate="'required|min:8|password_strength|confirmed:password'">
+			<input type="password" name="password2" id="password2" class="form-control" placeholder="" v-validate="'required|min:3|confirmed:password'">
 			<em v-bind:class="{ 'show': errors.has('password2') }">{{ errors.first('password2') }}</em>
 		</div>
 		<div class="form-group" v-bind:class="{ 'has-error': errors.has('isAgreedToTerms') }">
 			<div class="checkbox checkbox-primary">
 				<input type="checkbox" name="isAgreedToTerms" id="isAgreedToTerms" v-validate="'required'" v-bind:checked="terms" v-on:keyup.enter="terms = !terms">
-				<label for="isAgreedToTerms"> I agree to all</label> <a href="#" class="txt-link">Terms</a>
+				<label for="isAgreedToTerms"> I agree to all</label> <a href="#" data-toggle="modal" data-target="#termsModal" class="txt-link">Terms</a>
 			</div>
 			<em v-bind:class="{ 'show': errors.has('isAgreedToTerms') }">{{ errors.first('isAgreedToTerms') }}</em>
 		</div>
@@ -50,6 +50,7 @@
 		</div>
 	</form>
 	<div th:replace="webroot/frags/layout/footer.htm :: copy"></div>
+	<div th:replace="webroot/frags/layout/terms.htm :: terms"></div>
 </main>
 <script id="reqJs" data-module="auth" data-main="/dist/js/main" src="/dist/js/lib/require.min.js"></script>
 </body>

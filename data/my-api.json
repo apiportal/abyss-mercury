@@ -88,7 +88,7 @@
 			},
 			"apiKey": {
 				"enabled": false,
-				"name": "API Key Authorization",
+				"name": "API Key Authorization"
 			}
 		},
 		"methods": [
