@@ -221,6 +221,11 @@ define(['config', 'jquery', 'bootstrap', 'domready'], function(config, $){
 				$(this).parents('.column').addClass('column-maximize');
 				$(targets).addClass('column-minimize');
 			});
+			$(document).on('click', '.column-minimize-button', function () {
+				var targets = $(this).data('targets') || '';
+				var target = $(this).data('target') || '';
+				$(targets).addClass('column-minimize');
+			});
 			$(document).on('click', '.column-normalize-button', function () {
 				var targets = $(this).data('targets') || '';
 				$(this).parents('.column').removeClass('column-maximize');

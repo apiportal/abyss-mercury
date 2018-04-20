@@ -145,6 +145,7 @@ define(['Vue', 'axios', 'vee-validate', 'moment'], function (Vue, axios, VeeVali
 			isLoading: true,
 			pageCurrent: 'my-apisssssssssssssss',
 			rootState: 'initttttttttttttt',
+			childState: 'chhhhhh',
 			pageClassPrefix: 'vs',
 			pageClass: '',
 			ajaxHeaders: {
@@ -158,6 +159,7 @@ define(['Vue', 'axios', 'vee-validate', 'moment'], function (Vue, axios, VeeVali
 			setPage(page, state) {
 				this.pageCurrent = page;
 				this.rootState = state;
+				// this.childState = state;
 			},
 			setState(state, toggle) {
 				if (this.rootState != 'init' && toggle && this.rootState == state) {
@@ -167,6 +169,19 @@ define(['Vue', 'axios', 'vee-validate', 'moment'], function (Vue, axios, VeeVali
 				} else{
 					this.rootState = state;
 					this.pageClass = this.pageClassPrefix + '-' + state;
+				}
+			},
+			setChildState(state, toggle) {
+				if (this.childState != 'init' && toggle && this.childState == state) {
+					console.log("state: ", state);
+					this.childState = toggle;
+					this.pageClass = this.pageClassPrefix + '-' + this.rootState + ' ' + this.pageClassPrefix + '-' + toggle;
+				} else if (state == '') {
+					this.childState = state;
+					this.pageClass = this.pageClassPrefix + '-' + this.rootState;
+				} else {
+					this.childState = state;
+					this.pageClass = this.pageClassPrefix + '-' + this.rootState + ' ' + this.pageClassPrefix + '-' + state;
 				}
 			},
 			validateBeforeSubmit() {
@@ -185,6 +200,7 @@ define(['Vue', 'axios', 'vee-validate', 'moment'], function (Vue, axios, VeeVali
 		},
 		mounted() {
 			this.setState('init');
+			// this.setChildState('child');
 		},
 		created() {
 			this.log(this.$options.name);

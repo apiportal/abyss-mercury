@@ -150,7 +150,7 @@
 						</div>
 						<div class="form-group" v-bind:class="{ 'has-error': errors.has('display_name') }">
 							<label for="display_name">Display Name:</label>
-							<input type="text" name="display_name" id="display_name" v-model="user.display_name" v-validate="{required: true, regex: /^[0-9A-Z_.-\s]*$/i, min: 3, max: 30}" class="form-control" placeholder="display_name">
+							<input type="text" name="display_name" id="display_name" v-model="user.display_name" v-validate="{required: true, alpha_spaces: true, min: 3, max: 30}" class="form-control" placeholder="display_name">
 							<em v-bind:class="{ 'show': errors.has('display_name') }">{{ errors.first('display_name') }}</em>
 						</div>
 						<div class="form-group" v-bind:class="{ 'has-error': errors.has('email') }">
