@@ -20,9 +20,9 @@
 						<div class="dropdown column-header-button">
 							<button type="button" class="dropdown-toggle btn btn-lg btn-link txt-link btn-square" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
 							<ul class="dropdown-menu dropdown-menu-right" role="menu">
-								<li><a href="#" v-on:click="sortList('name', String)"><i class="fas fa-sort"></i>Sort by Name</a></li>
-								<li><a href="#" v-on:click="sortList('created', Date);"><i class="fas fa-calendar-alt"></i>Sort by Date</a></li>
-								<li><a href="#" v-on:click="sortList('proxies', Array)"><i class="fas fa-code-branch"></i>Sort by Proxies</a></li>
+								<li><a href="#" v-on:click="sortList(sortApi, 'name', String)"><i class="fas fa-sort"></i>Sort by Name</a></li>
+								<li><a href="#" v-on:click="sortList(sortApi, 'created', Date);"><i class="fas fa-calendar-alt"></i>Sort by Date</a></li>
+								<li><a href="#" v-on:click="sortList(sortApi, 'proxies', Array)"><i class="fas fa-code-branch"></i>Sort by Proxies</a></li>
 							</ul>
 						</div>
 						<h5 class="column-header-title">My APIs <small>All</small></h5>
@@ -31,13 +31,13 @@
 						<span slot="no-options"></span>
 					</v-select>
 					<ul class="nav flex-column nav-controls nav-controls-first">
-						<li v-for="(api, index) in sortBy(myApiList)">
+						<li v-for="(api, index) in sortBy(sortApi, myApiList)">
 							<div class="nav-actions dropdown dropdown-hover">
 								<button type="button"><i class="fas fa-ellipsis-h"></i></button>
 								<ul class="dropdown-menu dropdown-menu-right" role="menu" data-dropdown-in="slideInRight" data-dropdown-out="slideOutRight">
 									<li><a href="#" v-on:click="$emit('set-state', 'edit');selectApi(api, index)"><i class="fas fa-edit"></i>Edit</a></li>
 									<li><a href="#"><i class="fas fa-code-branch"></i>Create Proxy</a></li>
-									<li><a href="#" v-on:click="$emit('set-state', 'preview');selectApi('api')"><i class="fas fa-file-alt"></i>Preview</a></li>
+									<li><a href="#" v-on:click="$emit('set-state', 'preview');selectApi('api, index')"><i class="fas fa-file-alt"></i>Preview</a></li>
 									<li class="dropdown-header">VISIBILITY</li>
 									<li role="separator" class="divider"></li>
 									<li><a href="#" v-on:click="api.visibility = 'public'; apiListAction(api)"><i class="fas fa-eye"></i>Public</a></li>
@@ -55,7 +55,7 @@
 								</ul>
 							</div>
 							<!-- <a href="#" data-toggle="collapse" v-on:click="getApiDetails(api)" v-bind:data-target="'#api'+index" v-bind:aria-controls="'api'+index"> -->
-							<a href="#" data-toggle="collapse" v-bind:data-target="'#api'+index" v-bind:aria-controls="'api'+index">
+							<a href="#" data-toggle="collapse" v-bind:data-target="'#api'+index" v-bind:aria-controls="'api'+index" v-bind:class="{'active': isSelectedApi(index)}">
 								<div class="">
 									<i v-bind:title="api.state" class="fas fa-circle" v-bind:class="'stat-' + api.state"></i>
 									<strong>{{api.name}}</strong> <small class="text-muted">{{api.version}}</small>
@@ -77,33 +77,9 @@
 												<p class="fol-6"><strong class="d-block text-uppercase">Authentication</strong>{{api.authenticationList}}</p>
 												<p class="fol-6"><strong class="d-block text-uppercase">Authentication</strong>{{api.authorizationList}}</p>
 											</div>
-											<p>
-												<strong class="d-block text-uppercase">Categories</strong>{{api.categoryList}}
-											</p>
-											<p>
-												<strong class="d-block text-uppercase">Tags</strong>{{api.tagList}}
-											</p>
-											<p>
-												<strong class="d-block text-uppercase">Groups</strong>{{api.groupList}}
-											</p>
-											<!-- <p>
-												<strong class="d-block text-uppercase">Categories</strong>
-												<span v-for="(cat, index) in api.categories">
-													{{cat.name}}<span class="comma" v-if="index != (api.categories.length - 1)">, </span>
-												</span>
-											</p>
-											<p>
-												<strong class="d-block text-uppercase">Tags</strong>
-												<span class="badge badge-primary badge-pill px-2 mr-1" v-for="(tag, index) in api.tags">
-													{{tag.name}}
-												</span>
-											</p>
-											<p>
-												<strong class="d-block text-uppercase">Groups</strong>
-												<span v-for="(group, index) in api.groups">
-													{{group.name}}<span class="comma" v-if="index != (api.groups.length - 1)">, </span>
-												</span>
-											</p> -->
+											<p><strong class="d-block text-uppercase">Categories</strong>{{api.categoryList}}</p>
+											<p><strong class="d-block text-uppercase">Tags</strong>{{api.tagList}}</p>
+											<p><strong class="d-block text-uppercase">Groups</strong>{{api.groupList}}</p>
 											<p><small class="d-block">{{api.description}}</small></p>
 										</div>
 										<ul class="row nav flex-column nav-controls mt-2">
@@ -111,9 +87,9 @@
 												<strong class="d-block text-uppercase">PROXIES</strong>
 											</li>
 											<li class="nav-link" v-for="(proxy, index) in api.proxies">
-												<div class="nav-actions dropdown">
+												<div class="nav-actions dropdown dropdown-hover">
 													<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
-													<ul class="dropdown-menu dropdown-menu-right" role="menu">
+													<ul class="dropdown-menu dropdown-menu-right" role="menu" data-dropdown-in="slideInRight" data-dropdown-out="slideOutRight">
 														<li><a href="#" v-on:click="$emit('set-state', 'edit')"><i class="fas fa-edit"></i>Edit</a></li>
 														<li><a href="#"><i class="fas fa-trash-alt"></i>Delete</a></li>
 														<li><a href="#"><i class="fas fa-file-alt"></i>Preview</a></li>
@@ -130,7 +106,7 @@
 				</div>
 			</aside>
 			<aside class="column column-aside create-column">
-				<div class="nicescroll-bar">
+				<div class="nicescroll-bar" v-if="rootState == 'create' || rootState == 'edit'">
 					<div class="clearfix border-bottom column-header column-min-button">
 						<h5 class="column-header-title">Basic Information</h5>
 					</div>
@@ -186,15 +162,15 @@
 							</div>
 							<div class="form-group v-select-color-green">
 								<label for="categories">Add to Categories:</label>
-								<v-select label="name" multiple :filterable="true" :options="categoryOptions" @search="getCategoryOptions" v-model="api.categories"></v-select>
+								<v-select label="name" multiple :filterable="true" :options="categoryOptions" @search="getCategoryOptions" v-model="api.categories" :on-change="categoriesToList"></v-select>
 							</div>
 							<div class="form-group v-select-color-purple">
 								<label for="tags">Add Tags:</label>
-								<v-select label="name" multiple taggable :filterable="false" :options="tagOptions" @search="getTagOptions" v-model="api.tags"></v-select>
+								<v-select label="name" multiple taggable :filterable="false" :options="tagOptions" @search="getTagOptions" v-model="api.tags" :on-change="tagsToList"></v-select>
 							</div>
 							<div class="form-group v-select-color-pink">
 								<label for="group">Add Group:</label>
-								<v-select label="name" multiple :filterable="false" :options="groupOptions" @search="getGroupOptions" v-model="api.groups"></v-select>
+								<v-select label="name" multiple :filterable="false" :options="groupOptions" @search="getGroupOptions" v-model="api.groups" :on-change="groupsToList"></v-select>
 							</div>
 							<!-- <div class="form-group">
 								<label for="group">Add Picture:</label>
@@ -209,14 +185,14 @@
 				</div>
 			</aside>
 			<aside class="column column-aside edit-column authentication-column">
-				<div class="nicescroll-bar">
+				<div class="nicescroll-bar" v-if="rootState == 'create' || rootState == 'edit'">
 					<div class="clearfix column-header column-min-button">
 						<h5 class="column-header-title">Authentication</h5>
 					</div>
 					<ul class="nav flex-column nav-controls mb-3">
 						<li class="collapse-check" v-for="(authen, index) in api.authentication" v-bind:class="{'disabled': authen.disabled}">
 							<div class="switch switch-primary ml-auto">
-								<input type="checkbox" name="authentication" v-bind:id="'authentication'+authen.type" v-model="authen.enabled" v-on:change="checkAuthentication(authen, index, $event)" class="js-collapse-check" v-bind:disabled="authen.disabled"> <label v-bind:for="'authentication'+authen.type"></label>
+								<input type="checkbox" name="authentication" v-bind:id="'authentication'+authen.type" v-model="authen.enabled" v-on:change="checkAuthentication(authen, index)" class="js-collapse-check" v-bind:disabled="authen.disabled"> <label v-bind:for="'authentication'+authen.type"></label>
 							</div>
 							<a href="#" class="nav-link fol" v-bind:data-toggle="(authen.disabled !== true) ? 'collapse' : ''" v-bind:data-target="'#authentication'+authen.type+'Box'" v-bind:aria-controls="'authentication'+authen.type+'Box'">
 								<span v-if="authen.type == 'noAuth'"><i class="fas fa-unlock"></i></span>
@@ -343,7 +319,7 @@
 				</div>
 			</aside>
 			<aside class="column column-aside edit-column authorization-column">
-				<div class="nicescroll-bar">
+				<div class="nicescroll-bar" v-if="rootState == 'create' || rootState == 'edit'">
 					<div class="clearfix column-header column-min-button">
 						<h5 class="column-header-title">Authorization</h5>
 					</div>
@@ -389,7 +365,7 @@
 						<h5 class="column-header-title">Methods</h5>
 					</div>
 					<ul class="nav flex-column nav-controls">
-						<li v-for="(method, mindex) in sortBy(api.methods)" v-bind:class="methodBadge(method.verb, 'nav')">
+						<li v-for="(method, mindex) in sortBy(sortMethod, api.methods)" v-bind:class="methodBadge(method.verb, 'nav')">
 							<div class="nav-actions dropdown">
 								<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
 								<ul class="dropdown-menu dropdown-menu-right" role="menu">

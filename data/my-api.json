@@ -5,6 +5,7 @@
 		"name": "My Api 1",
 		"version": "V.1.0.0",
 		"created": "2017-05-22T00:00:00.000Z",
+		"updated": "2017-05-22T00:00:00.000Z",
 		"state": "published",
 		"visibility": "public",
 		"context": "/petstore",
@@ -13,6 +14,11 @@
 		"image": "",
 		"color": "#006699",
 		"description": "This is a sample Petstore server. You can find out more about Swagger at",
+		"tagList": "A Tag, B Tag, C Tag",
+		"groupList": "A Group, B Group, C Group",
+		"categoryList": "A Category, B Category, C Category",
+		"authenticationList": "No Authentication",
+		"authorizationList": "No Authorization",
 		"tags": [
 			{
 				"id": 1,

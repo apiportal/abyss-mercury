@@ -30,7 +30,12 @@ define(['Vue', 'axios', 'vee-validate', 'vue-select', 'moment'], function(Vue, a
 		data() {
 			return {
 				isLoading: true,
-				sort: {
+				sortApi: {
+					key: 'created',
+					type: Date,
+					order: 'desc'
+				},
+				sortMethod: {
 					key: 'created',
 					type: Date,
 					order: 'desc'
@@ -55,14 +60,19 @@ define(['Vue', 'axios', 'vee-validate', 'vue-select', 'moment'], function(Vue, a
 					name: '',
 					version: 'V.1.0.0',
 					created: '',
-					state: '',
-					visibility: '',
+					state: 'draft',
+					visibility: 'private',
 					context: '',
 					baseUrl: '',
 					qosPolicy: '',
 					image: '',
 					color: '',
 					description: '',
+					"tagList": "",
+					"groupList": "",
+					"categoryList": "",
+					"authenticationList": "No Authentication",
+					"authorizationList": "No Authorization",
 					tags: [],
 					groups: [],
 					categories: [],
@@ -390,16 +400,21 @@ define(['Vue', 'axios', 'vee-validate', 'vue-select', 'moment'], function(Vue, a
 				axios.get('/data/my-api.json').then(response => {
 					// this.api = Object.assign(response.data.myApi, item);
 					// this.api = Object.assign({}, item, response.data.myApi);
-					this.selectedApi = _.cloneDeep(item);
+					// this.selectedApi = _.cloneDeep(item);
 					this.selectedApiIndex = i;
 					// this.api = response.data.myApi;
 					this.api = Object.assign(item, response.data.myApi);
+					this.selectedApi = _.cloneDeep(this.api);
+					$('#api'+i).collapse('show');
 					if ( this.rootState != 'preview') {
-						$('.list-column').addClass('column-minimize');
+						// $('.list-column').addClass('column-minimize');
 					}
 				}, error => {
 					console.error(error);
 				});
+			},
+			isSelectedApi(i) {
+				return i === this.selectedApiIndex;
 			},
 			cancelApi() {
 				var index = this.myApiList.indexOf(this.api);
@@ -415,7 +430,7 @@ define(['Vue', 'axios', 'vee-validate', 'vue-select', 'moment'], function(Vue, a
 				this.selectedApiIndex = null;
 				this.$emit('set-state', 'init');
 				$('.column-maximize').removeClass('column-maximize');
-				$('.list-column').removeClass('column-minimize');
+				// $('.list-column').removeClass('column-minimize');
 			},
 			saveApi() {
 				// console.log("this.myApiList: ", this.myApiList);
@@ -423,6 +438,7 @@ define(['Vue', 'axios', 'vee-validate', 'vue-select', 'moment'], function(Vue, a
 				// var index = this.myApiList.indexOf(this.api);
 				// console.log("index: ", index);
 				// console.log("this.myApiList[index]: ", this.myApiList[index]);
+				this.api.updated = moment().toISOString();
 				axios.post(this.ajaxUrl, this.api, this.ajaxHeaders).then(response => {
 					console.log("response: ", response);
 					// var xxx = this.myApiList.filter((item) => item.id == this.api.id );
@@ -434,12 +450,12 @@ define(['Vue', 'axios', 'vee-validate', 'vue-select', 'moment'], function(Vue, a
 			createApi() {
 				this.$validator.validateAll().then((result) => {
 					if (result) {
-						this.api.date = moment().toISOString();
+						this.api.created = moment().toISOString();
 						axios.post(this.ajaxUrl, this.api, this.ajaxHeaders).then(response => {
 							this.addItem(this.myApiList, this.api).then(response => {
 								// alert('Form Submitted!');
 								this.$emit('set-state', 'edit');
-								$('.list-column').addClass('column-minimize');
+								// $('.list-column').addClass('column-minimize');
 							});
 						}, error => {
 							alert(error.code + ': ' + error.message);
@@ -474,41 +490,47 @@ define(['Vue', 'axios', 'vee-validate', 'vue-select', 'moment'], function(Vue, a
 					alert(error.code + ': ' + error.message);
 				})
 			},
-			checkAuthentication(a, i, e) {
+			categoriesToList() {
+				this.api.categoryList = this.api.categories.map(e => e.name).join(', ');
+				console.log("this.api.categories: ", this.api.categories);
+				console.log("this.api.categoryList: ", this.api.categoryList);
+			},
+			tagsToList() {
+				this.api.tagList = this.api.tags.map(e => e.name).join(', ');
+			},
+			groupsToList() {
+				this.api.groupList = this.api.groups.map(e => e.name).join(', ');
+			},
+			checkAuthentication(a, i) {
 				if (i == 0 && a.enabled == true ) {
-					for(var i = 1; i < this.api.authentication.length; i++){
-						// console.log("this.api.authentication[i].name: ", this.api.authentication[i].name);
-						this.api.authentication[i].enabled = false;
+					for(var j = 1; j < this.api.authentication.length; j++){
+						this.api.authentication[j].enabled = false;
 					}
-					console.log("e: ", e);
-					// e.preventDefault();
-					// e.stopPropagation();
 				} else if ( i > 0 && a.enabled == true) {
-					console.log("else: ", a.name, a.enabled);
 					this.api.authentication[0].enabled = false;
 				}
-				var xxx = this.api.authentication.filter((item) => item.enabled == true );
-				console.log("xxx: ", xxx);
+				// var selected = this.api.authentication.filter((item) => item.enabled == true );
+				var selected = this.api.authentication.filter((item, index) => item.enabled == true && index > 0);
+				if (selected.length == 0) {
+					this.api.authentication[0].enabled = true;
+				}
+				var toList = this.api.authentication.filter((item) => item.enabled == true );
+				this.api.authenticationList = toList.map(e => e.name).join(', ');
 			},
-			checkAuthorization(a, i, e) {
-				// this.api.authorization.forEach((value, key) => {
-				// 	console.log("a.enabled: ", a.enabled);
-				// 	console.log("value.enabled: ", value.enabled);
-				// });
+			checkAuthorization(a, i) {
 				if (i == 0 && a.enabled == true ) {
 					for(var i = 1; i < this.api.authorization.length; i++){
-						// console.log("this.api.authorization[i].name: ", this.api.authorization[i].name);
 						this.api.authorization[i].enabled = false;
 					}
 				} else if ( i > 0 && a.enabled == true) {
 					this.api.authorization[0].enabled = false;
 				}
-				var xxx = this.api.authorization.filter((item) => item.enabled == true );
-				console.log("xxx: ", xxx);
-				// this.api.authorization[0].enabled = false;
-				// if (this.api.authorization[1].enabled == false ) {
-					// this.api.authorization[0].enabled = true;
-				// }
+				var selected = this.api.authorization.filter((item, index) => item.enabled == true && index > 0);
+				if (selected.length == 0) {
+					this.api.authorization[0].enabled = true;
+				}
+				var toList = this.api.authorization.filter((item) => item.enabled == true );
+				this.api.authorizationList = toList.map(e => e.name).join(', ');
 			},
 			getApiOptions(search, loading) {
 				loading(true)
@@ -562,18 +584,30 @@ define(['Vue', 'axios', 'vee-validate', 'vue-select', 'moment'], function(Vue, a
 					loading(false);
 				})
 			},
+			difference(object, base) {
+				function changes(object, base) {
+					return _.transform(object, function(result, value, key) {
+						if (!_.isEqual(value, base[key])) {
+							result[key] = (_.isObject(value) && _.isObject(base[key])) ? changes(value, base[key]) : value;
+						}
+					});
+				}
+				return changes(object, base);
+			},
 		},
 		computed: {
 		},
-		// watch: {
-		// 	api: {
-		// 		handler(val, oldVal) {
-		// 			console.log('Item Changed', oldVal)
-		// 			console.log(val)
-		// 		},
-		// 		deep: true
-		// 	}
-		// },
+		watch: {
+			api: {
+				handler(val, oldVal) {
+					// console.log('old val', oldVal);
+					// console.log('new val', val);
+					var xxx = this.difference(val, this.selectedApi);
+					console.log("xxx: ", xxx);
+				},
+				deep: true
+			}
+		},
 		mounted() {
 			this.preload();
 		},
