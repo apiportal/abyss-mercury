@@ -20,17 +20,17 @@
 					</div>
 					<table class="table table-hover table-bordered table-edge">
 						<tr>
-							<th class="td-bool" v-bind:class="sort.order" v-on:click="sortList('is_enabled', Boolean)">Status</th>
-							<th class="td-name" v-bind:class="sort.order" v-on:click="sortList('group_name', String)">Group Name</th>
-							<th class="td-number" v-bind:class="sort.order" v-on:click="sortList('userCount', Number)">Users</th>
-							<th class="td-datetime-x" v-bind:class="sort.order" v-on:click="sortList('created', Date)">Created / Updated / Deleted</th>
-							<th class="td-datetime" v-bind:class="sort.order" v-on:click="sortList('effective_start_date', Date)">Effective From</th>
-							<th class="td-datetime" v-bind:class="sort.order" v-on:click="sortList('effective_end_date', Date)">Effective To</th>
-							<th class="td-long" v-bind:class="sort.order" v-on:click="sortList('permissions', Array)">Permissions</th>
+							<th class="td-bool" v-bind:class="sort.order" v-on:click="sortList(sort, 'is_enabled', Boolean)">Status</th>
+							<th class="td-name" v-bind:class="sort.order" v-on:click="sortList(sort, 'group_name', String)">Group Name</th>
+							<th class="td-number" v-bind:class="sort.order" v-on:click="sortList(sort, 'userCount', Number)">Users</th>
+							<th class="td-datetime-x" v-bind:class="sort.order" v-on:click="sortList(sort, 'created', Date)">Created / Updated / Deleted</th>
+							<th class="td-datetime" v-bind:class="sort.order" v-on:click="sortList(sort, 'effective_start_date', Date)">Effective From</th>
+							<th class="td-datetime" v-bind:class="sort.order" v-on:click="sortList(sort, 'effective_end_date', Date)">Effective To</th>
+							<th class="td-long" v-bind:class="sort.order" v-on:click="sortList(sort, 'permissions', Array)">Permissions</th>
 							<th class="td-action-1"></th>
 							<th class="td-action-1"></th>
 						</tr>
-						<tr v-for="(group, index) in sortBy(groupList)" v-bind:class="{'active': isSelected(index), 'text-muted': !group.is_enabled}">
+						<tr v-for="(group, index) in sortBy(sort, groupList)" v-bind:class="{'active': isSelected(index), 'text-muted': !group.is_enabled}">
 							<td class="text-center">
 								<i class="fas fa-circle" title="Not Enabled" v-if="!group.is_enabled"></i>
 								<i class="fas fa-check-circle txt-green" title="Enabled" v-if="group.is_enabled"></i>

@@ -38,19 +38,19 @@
 					</div>
 					<table class="table table-hover table-bordered table-edge">
 						<tr>
-							<th class="td-bool" v-bind:class="sort.order" v-on:click="sortList('is_activated', Boolean)">Status</th>
-							<th class="td-name" v-bind:class="sort.order" v-on:click="sortList('first_name', String)">First Name</th>
-							<th class="td-name" v-bind:class="sort.order" v-on:click="sortList('last_name', String)">Last Name</th>
-							<th class="td-name" v-bind:class="sort.order" v-on:click="sortList('subject_name', String)">Username / Email</th>
-							<th class="td-name" v-bind:class="sort.order" v-on:click="sortList('display_name', String)">Display Name</th>
-							<th class="td-datetime-x" v-bind:class="sort.order" v-on:click="sortList('created', Date)">Created / Updated / Deleted</th>
-							<th class="td-datetime" v-bind:class="sort.order" v-on:click="sortList('loginCount', Number)">Logins</th>
-							<th class="td-datetime" v-bind:class="sort.order" v-on:click="sortList('failedLoginCount', Number)">Failed Logins</th>
+							<th class="td-bool" v-bind:class="sort.order" v-on:click="sortList(sort, 'is_activated', Boolean)">Status</th>
+							<th class="td-name" v-bind:class="sort.order" v-on:click="sortList(sort, 'first_name', String)">First Name</th>
+							<th class="td-name" v-bind:class="sort.order" v-on:click="sortList(sort, 'last_name', String)">Last Name</th>
+							<th class="td-name" v-bind:class="sort.order" v-on:click="sortList(sort, 'subject_name', String)">Username / Email</th>
+							<th class="td-name" v-bind:class="sort.order" v-on:click="sortList(sort, 'display_name', String)">Display Name</th>
+							<th class="td-datetime-x" v-bind:class="sort.order" v-on:click="sortList(sort, 'created', Date)">Created / Updated / Deleted</th>
+							<th class="td-datetime" v-bind:class="sort.order" v-on:click="sortList(sort, 'loginCount', Number)">Logins</th>
+							<th class="td-datetime" v-bind:class="sort.order" v-on:click="sortList(sort, 'failedLoginCount', Number)">Failed Logins</th>
 							<th class="td-long"></th>
 							<th class="td-action-1"></th>
 							<th class="td-action-1"></th>
 						</tr>
-						<tr v-for="(user, index) in sortBy(userList)" v-bind:class="{'active': isSelected(index)}">
+						<tr v-for="(user, index) in sortBy(sort, userList)" v-bind:class="{'active': isSelected(index)}">
 							<td class="text-center">
 								<i class="fas fa-circle" title="Not Activated" v-if="!user.is_activated"></i>
 								<i class="fas fa-check-circle txt-green" title="Activated" v-if="user.is_activated"></i>
@@ -150,7 +150,7 @@
 						</div>
 						<div class="form-group" v-bind:class="{ 'has-error': errors.has('display_name') }">
 							<label for="display_name">Display Name:</label>
-							<input type="text" name="display_name" id="display_name" v-model="user.display_name" v-validate="{required: true, regex: /^[0-9A-Z_.-\s]*$/i, min: 3, max: 30}" class="form-control" placeholder="display_name">
+							<input type="text" name="display_name" id="display_name" v-model="user.display_name" v-validate="{required: true, alpha_spaces: true, min: 3, max: 30}" class="form-control" placeholder="display_name">
 							<em v-bind:class="{ 'show': errors.has('display_name') }">{{ errors.first('display_name') }}</em>
 						</div>
 						<div class="form-group" v-bind:class="{ 'has-error': errors.has('email') }">

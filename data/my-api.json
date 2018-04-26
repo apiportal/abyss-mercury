@@ -4,12 +4,21 @@
 		"specs": "",
 		"name": "My Api 1",
 		"version": "V.1.0.0",
-		"date": "27.03.2016",
-		"status": "published",
+		"created": "2017-05-22T00:00:00.000Z",
+		"updated": "2017-05-22T00:00:00.000Z",
+		"state": "published",
+		"visibility": "public",
 		"context": "/petstore",
 		"baseUrl": "virtserver.swaggerhub.com/monasdyas4/my-petstore/1.0.0",
 		"qosPolicy": "",
+		"image": "",
+		"color": "#006699",
 		"description": "This is a sample Petstore server. You can find out more about Swagger at",
+		"tagList": "A Tag, B Tag, C Tag",
+		"groupList": "A Group, B Group, C Group",
+		"categoryList": "A Category, B Category, C Category",
+		"authenticationList": "No Authentication",
+		"authorizationList": "No Authorization",
 		"tags": [
 			{
 				"id": 1,
@@ -24,7 +33,7 @@
 				"name": "C Tag"
 			}
 		],
-		"group": [
+		"groups": [
 			{
 				"id": 1,
 				"name": "A Group"
@@ -52,48 +61,74 @@
 				"name": "C Category"
 			}
 		],
-		"authentication": {
-			"noAuth": {
+		"authentication": [
+			{
+				"type": "noAuth",
 				"enabled": true,
-				"name": "No Authentication"
+				"name": "No Authentication",
+				"disabled": false,
+				"fields": {}
 			},
-			"basic": {
+			{
+				"type": "basic",
 				"enabled": false,
-				"name": "Basic Authentication"
+				"name": "Basic Authentication",
+				"disabled": false,
+				"fields": {}
 			},
-			"apiKey": {
+			{
+				"type": "apiKey",
 				"enabled": false,
-				"name": "API Key Authentication",
-				"provider": "Verapi Key",
-				"verapiName": "string",
-				"verapiType": "verapiKey"
+				"name": "API Key Authorization",
+				"disabled": false,
+				"fields": {
+					"provider": "Verapi Key",
+					"verapiName": "string",
+					"verapiType": "verapiKey"
+				}
 			},
-			"oAuth": {
+			{
+				"type": "oAuth",
 				"enabled": false,
-				"name": "oAuth 2.0"
+				"name": "oAuth 2.0",
+				"disabled": true,
+				"fields": {}
 			},
-			"ldap": {
+			{
+				"type": "ldap",
 				"enabled": false,
-				"name": "LDAP Authentication"
+				"name": "LDAP Authentication",
+				"disabled": true,
+				"fields": {}
 			},
-			"saml": {
+			{
+				"type": "saml",
 				"enabled": false,
-				"name": "SAML Authentication"
+				"name": "SAML Authentication",
+				"disabled": true,
+				"fields": {}
 			}
-		},
-		"authorization": {
-			"noAuthz": {
+		],
+		"authorization": [
+			{
+				"type": "noAuthz",
 				"enabled": true,
-				"name": "No Authorization"
+				"name": "No Authorization",
+				"disabled": false,
+				"fields": {}
 			},
-			"apiKey": {
+			{
+				"type": "apiKey",
 				"enabled": false,
-				"name": "API Key Authorization"
+				"name": "API Key Authorization",
+				"disabled": false,
+				"fields": {}
 			}
-		},
+		],
 		"methods": [
 			{
 				"id": 1,
+				"created": "2017-09-22T00:00:00.000Z",
 				"verb": "GET",
 				"resourcePath": "/pet",
 				"operationId": "getPet",
@@ -102,72 +137,94 @@
 				"parameters": [
 					{
 						"id": 1,
-						"name": "",
-						"description": "",
-						"dataType": "",
-						"required": false,
-						"defaultValue": "",
-						"minLength": "",
-						"maxLength": "",
-						"pattern": ""
+						"created": "2017-05-22T00:00:00.000Z",
+						"name": "Param 1",
+						"description": "Pet object that needs to be added to the store",
+						"dataType": "String",
+						"required": true,
+						"defaultValue": "default",
+						"minLength": "2",
+						"maxLength": "10",
+						"pattern": "regex"
 					},
 					{
 						"id": 2,
-						"name": "",
-						"description": "",
-						"dataType": "",
-						"required": false,
-						"defaultValue": "",
-						"minLength": "",
-						"maxLength": "",
-						"pattern": ""
+						"name": "Param 2",
+						"description": "Pet object that needs to be added to the store",
+						"dataType": "String",
+						"required": true,
+						"defaultValue": "default",
+						"minLength": "2",
+						"maxLength": "10",
+						"pattern": "regex"
+					}
+				],
+				"headers": [
+					{
+						"id": 1,
+						"created": "2017-05-22T00:00:00.000Z",
+						"name": "Header 1",
+						"description": "Pet object that needs to be added to the store",
+						"dataType": "String",
+						"required": true,
+						"defaultValue": "default",
+						"minLength": "2",
+						"maxLength": "10",
+						"pattern": "regex"
 					}
 				]
 			},
 			{
 				"id": 2,
+				"created": "2017-05-22T00:00:00.000Z",
 				"verb": "POST",
-				"resourcePath": "/pet",
+				"resourcePath": "/pet/{petId}",
 				"operationId": "getPet",
-				"summary": "Update an existing pet",
+				"summary": "Updates a pet in the store with form data",
 				"description": "Pet object that needs to be added to the store",
 				"parameters": [
 					{
 						"id": 1,
-						"name": "",
-						"description": "",
-						"dataType": "",
-						"required": false,
-						"defaultValue": "",
-						"minLength": "",
-						"maxLength": "",
-						"pattern": ""
+						"created": "2017-05-22T00:00:00.000Z",
+						"name": "Param 1",
+						"description": "Pet object that needs to be added to the store",
+						"dataType": "String",
+						"required": true,
+						"defaultValue": "default",
+						"minLength": "2",
+						"maxLength": "10",
+						"pattern": "regex"
+					}
+				],
+				"headers": [
+					{
+						"id": 1,
+						"created": "2017-05-22T00:00:00.000Z",
+						"name": "Header 1",
+						"description": "Pet object that needs to be added to the store",
+						"dataType": "String",
+						"required": true,
+						"defaultValue": "default",
+						"minLength": "2",
+						"maxLength": "10",
+						"pattern": "regex"
 					}
 				]
 			},
 			{
 				"id": 3,
+				"created": "2017-05-22T00:00:00.000Z",
 				"verb": "PUT",
 				"resourcePath": "/pet",
 				"operationId": "getPet",
 				"summary": "Update an existing pet",
 				"description": "Pet object that needs to be added to the store",
-				"parameters": [
-					{
-						"id": 1,
-						"name": "",
-						"description": "",
-						"dataType": "",
-						"required": false,
-						"defaultValue": "",
-						"minLength": "",
-						"maxLength": "",
-						"pattern": ""
-					}
-				]
+				"parameters": [],
+				"headers": []
 			},
 			{
 				"id": 4,
+				"created": "2017-05-22T00:00:00.000Z",
 				"verb": "DELETE",
 				"resourcePath": "/pet",
 				"operationId": "getPet",
@@ -176,14 +233,29 @@
 				"parameters": [
 					{
 						"id": 1,
-						"name": "",
-						"description": "",
-						"dataType": "",
-						"required": false,
-						"defaultValue": "",
-						"minLength": "",
-						"maxLength": "",
-						"pattern": ""
+						"created": "2017-05-22T00:00:00.000Z",
+						"name": "Param 1",
+						"description": "Pet object that needs to be added to the store",
+						"dataType": "String",
+						"required": true,
+						"defaultValue": "default",
+						"minLength": "2",
+						"maxLength": "10",
+						"pattern": "regex"
+					}
+				],
+				"headers": [
+					{
+						"id": 1,
+						"created": "2017-05-22T00:00:00.000Z",
+						"name": "Header 1",
+						"description": "Pet object that needs to be added to the store",
+						"dataType": "String",
+						"required": true,
+						"defaultValue": "default",
+						"minLength": "2",
+						"maxLength": "10",
+						"pattern": "regex"
 					}
 				]
 			}

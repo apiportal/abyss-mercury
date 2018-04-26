@@ -1,5 +1,4 @@
-// define(['Vue', 'axios', 'vee-validate', 'eonasdan-bootstrap-datetimepicker', 'css!bootstrap-datetimepicker-css', 'vue!date-picker.htm', 'vue!comps/component.html'], function(Vue, axios, VeeValidate) {
-define(['Vue', 'axios', 'vee-validate', 'vue-select', 'VueBootstrapDatetimePicker', 'eonasdan-bootstrap-datetimepicker'], function(Vue, axios, VeeValidate, VueSelect, VueBootstrapDatetimePicker) {
+define(['Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBootstrapDatetimePicker', 'eonasdan-bootstrap-datetimepicker'], function(Vue, axios, VeeValidate, VueSelect, moment, VueBootstrapDatetimePicker) {
 	Vue.component('date-picker', VueBootstrapDatetimePicker.default);
 	Vue.component('v-select', VueSelect.VueSelect);
 	Vue.component('user-groups', {
@@ -16,16 +15,22 @@ define(['Vue', 'axios', 'vee-validate', 'vue-select', 'VueBootstrapDatetimePicke
 				},
 				pageState: 'init',
 				paginate: {},
+
 				ajaxUrl: '/abyss/user-groups/management',
-				// ajaxUrl: 'http://local.monasdyas.com/api/get?file=http://192.168.10.46:38081/abyss/user-groups/management',
+				// ajaxUrl: 'http://192.168.21.180:18881/000?file=http://192.168.21.180:18881/data/user-group-list-abyss.json',
+				// ajaxUrl: 'http://local.abyss.com/000?file=http://192.168.10.46:38081/abyss/user-groups/management',
+				// ajaxUrl: 'http://local.abyss.com/000?file=http://local.abyss.com/data/user-group-list-abyss.json',
+
 				ajaxUsersUrl: '/abyss/users/management',
-				// ajaxUsersUrl: 'http://local.monasdyas.com/api/get?file=http://192.168.10.46:38081/abyss/users/management',
+				// ajaxUsersUrl: 'http://192.168.21.180:18881/000?file=http://192.168.21.180:18881/data/user-list-abyss.json',
+				// ajaxUsersUrl: 'http://local.abyss.com/000?file=http://192.168.10.46:38081/abyss/users/management',
+				// ajaxUsersUrl: 'http://local.abyss.com/000?file=http://local.abyss.com/data/user-list-abyss.json',
+
 				// ajaxPermissionsUrl: '/abyss/user-permissions/management',
 				ajaxPermissionsUrl: '/data/permission-list.json',
+				// ajaxPermissionsUrl: 'http://192.168.21.180:18881/000?file=http://192.168.21.180:18881/data/permission-list.json',
+				// ajaxPermissionsUrl: 'http://local.abyss.com/000?file=http://local.abyss.com/data/permission-list.json',
 				
-				// ajaxUrl: 'http://192.168.10.46:38081/abyss/user-groups/management', // access-control-origin error
-				// ajaxUrl: '/data/user-group-list-abyss.json',
-				testUrl: 'http://www.monasdyas.com/api/api',
 				ajaxHeaders: {
 					contentType: 'application/json; charset=utf-8',
 					datatype: 'json',
@@ -70,7 +75,7 @@ define(['Vue', 'axios', 'vee-validate', 'vue-select', 'VueBootstrapDatetimePicke
 
 				date: null,
 					config: {
-					format: 'YYYY-MM-DD hh:mm:ss',
+					format: 'YYYY-MM-DD HH:mm:ss',
 					// format: 'YYYY-MM-DD',
 					useCurrent: false,
 					showClear: true,
@@ -188,7 +193,12 @@ define(['Vue', 'axios', 'vee-validate', 'vue-select', 'VueBootstrapDatetimePicke
 					console.log("result: ", result);
 					if (result) {
 						if (act == 'add') {
-							this.addItem(this.groupList, this.group).then(response => {
+							this.group.created = moment().toISOString();
+							var postItem = _.cloneDeep(this.group);
+							postItem.effective_start_date = moment(this.group.effective_start_date).toISOString();
+							postItem.effective_end_date = moment(this.group.effective_end_date).toISOString();
+							// this.addItem(this.groupList, this.group).then(response => {
+							this.addItem(this.groupList, postItem).then(response => {
 								// this.addItem(this.groupList, this.group);
 								this.$emit('set-state', 'init');
 								// this.resetItem(this.group, this.newGroup);
@@ -197,7 +207,15 @@ define(['Vue', 'axios', 'vee-validate', 'vue-select', 'VueBootstrapDatetimePicke
 							});
 						}
 						if (act == 'edit') {
-							this.updateItem(this.groupList, this.group).then(response => {
+							this.group.updated = moment().toISOString();
+							var postItem = _.cloneDeep(this.group);
+							postItem.effective_start_date = moment(this.group.effective_start_date).toISOString();
+							postItem.effective_end_date = moment(this.group.effective_end_date).toISOString();
+							console.log("postItem: ", postItem);
+							// this.updateItem(this.groupList, this.group).then(response => {
+							this.updateItem(this.groupList, postItem).then(response => {
+								console.log("response: ", response);
+								console.log("postItem: ", postItem);
 								this.$emit('set-state', 'init');
 								this.group = _.cloneDeep(this.newGroup);
 								this.selected = null;

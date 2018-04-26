@@ -37,8 +37,10 @@ require.config({
 		"vee-validate": "comps/vee-validate.min",
 		"date-picker": "comps/date-picker",
 		"vue-select": "comps/vue-select",
-
 		"VueBootstrapDatetimePicker": "comps/vue-bootstrap-datetimepicker.min",
+		"vue-dropzone": "comps/vue2Dropzone",
+		// "v-lazy-img": "comps/v-lazy-img",
+		// "VueLazyBackgroundImage": "comps/VueLazyBackgroundImage",
 		// "PasswordStrengthMeter": "app/PasswordStrengthMeter.htm",
 		"eonasdan-bootstrap-datetimepicker": "plugins/bootstrap-datetimepicker.min",
 		"bootstrap-datetimepicker-css": "plugins/bootstrap-datetimepicker.min.css?noext",

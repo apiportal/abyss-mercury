@@ -1,4 +1,4 @@
-define(['Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'eonasdan-bootstrap-datetimepicker'], function(Vue, axios, VeeValidate, _, VueSelect) {
+define(['Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'moment'], function(Vue, axios, VeeValidate, _, VueSelect, moment) {
 	Vue.component('v-select', VueSelect.VueSelect);
 	Vue.component('users', {
 		props: {
@@ -17,14 +17,20 @@ define(['Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'eonasdan-bootst
 				//ajaxUrl: '/abyss/users/management',
                 ajaxUrl: 'http://localhost:38082/abyss/api/subject/getAll',
 				// ajaxUrl: 'http://local.monasdyas.com/api/get?file=http://192.168.10.46:38081/abyss/users/management',
+				// ajaxUrl: 'http://192.168.21.180:18881/000?file=http://192.168.21.180:18881/data/user-list-abyss.json',
+				// ajaxUrl: 'http://local.abyss.com/000?file=http://192.168.10.46:38081/abyss/users/management',
+				// ajaxUrl: 'http://local.abyss.com/000?file=http://local.abyss.com/data/user-list-abyss.json',
+
 				ajaxGroupsUrl: '/abyss/user-groups/management',
-				// ajaxGroupsUrl: 'http://local.monasdyas.com/api/get?file=http://192.168.10.46:38081/abyss/user-groups/management',
+				// ajaxGroupsUrl: 'http://192.168.21.180:18881/000?file=http://192.168.21.180:18881/data/user-group-list-abyss.json',
+				// ajaxGroupsUrl: 'http://local.abyss.com/000?file=http://192.168.10.46:38081/abyss/user-groups/management',
+				// ajaxGroupsUrl: 'http://local.abyss.com/000?file=http://local.abyss.com/data/user-group-list-abyss.json',
+
 				// ajaxPermissionsUrl: '/abyss/user-permissions/management',
 				ajaxPermissionsUrl: '/data/permission-list.json',
+				// ajaxPermissionsUrl: 'http://192.168.21.180:18881/000?file=http://192.168.21.180:18881/data/permission-list.json',
+				// ajaxPermissionsUrl: 'http://local.abyss.com/000?file=http://local.abyss.com/data/permission-list.json',
 				
-				// ajaxUrl: 'http://192.168.10.46:38081/abyss/users/management', // access-control-origin error
-				// ajaxUrl: '/data/user-list-abyss.json',
-				testUrl: 'http://www.monasdyas.com/api/api',
 				ajaxHeaders: {
 					contentType: 'application/json; charset=utf-8',
 					datatype: 'json',
@@ -228,6 +234,7 @@ define(['Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'eonasdan-bootst
 					console.log("result: ", result);
 					if (result) {
 						if (act == 'add') {
+							this.user.created = moment().toISOString();
 							this.addItem(this.userList, this.user).then(response => {
 								// this.addItem(this.userList, this.user);
 								this.$emit('set-state', 'init');
@@ -237,6 +244,7 @@ define(['Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'eonasdan-bootst
 							});
 						}
 						if (act == 'edit') {
+							this.user.updated = moment().toISOString();
 							this.updateItem(this.userList, this.user).then(response => {
 								this.$emit('set-state', 'init');
 								this.user = _.cloneDeep(this.newUser);

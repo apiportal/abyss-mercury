@@ -2,26 +2,92 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <body>
 <div class="card" th:fragment="apiPreview">
-	<div class="embed-responsive embed-responsive-16by9 bg-primary">sas</div>
-	<div class="px-3 py-1">
-		<button type="button" class="btn btn-square btn-link float-right" v-on:click="$emit('set-state', 'init')"><i class="fas fa-times"></i></button>
-		<h3><strong>{{api.name}}</strong></h3>
-		<p><label class="d-block text-uppercase">Authentication</label>
-			<small class="comma" v-if="api.authentication.noAuth.enabled">{{api.authentication.noAuth.name}}</small>
-			<small class="comma" v-if="api.authentication.basic.enabled">{{api.authentication.basic.name}}</small>
-			<small class="comma" v-if="api.authentication.apiKey.enabled">{{api.authentication.apiKey.name}}</small>
-			<small class="comma" v-if="api.authentication.oAuth.enabled">{{api.authentication.oAuth.name}}</small>
-			<small class="comma" v-if="api.authentication.ldap.enabled">{{api.authentication.ldap.name}}</small>
-			<small class="comma" v-if="api.authentication.saml.enabled">{{api.authentication.saml.name}}</small>
-			<!-- <small v-for="(authen, index) in api.authentication" v-if="authen.enabled">
-				{{authen.name}}<span v-if="index != (api.authentication.length - 1)">, </span>
-			</small> -->
-		</p>
-		<p><label class="d-block text-uppercase">Context</label>{{api.context}}</p>
-		<p><label class="d-block text-uppercase">Base URL</label> <span class="d-block text-truncate">{{api.baseUrl}}</span></p>
-		<p><label class="d-block text-uppercase">Categories</label> <span class="d-block text-truncate">{{api.categories}}</span></p>
-		<p>{{api.description}}</p>
-		<p><span class="badge badge-info badge-pill">Tecnology</span></p>
+	<div class="fow m-0">
+		<div class="fol-4 border-right">
+			<div class="row border-bottom">
+				<div class="thumb" v-if="api.image" :style="{ 'background-image': 'url(' + api.image + ')' }"></div>
+				<div class="thumb" v-if="!api.image" :style="{ 'background-color': api.color }">{{api.name}}</div>
+			</div>
+			<div class="py-3">
+				<span class="float-right text-uppercase py-1"><span class="small">{{api.state}}</span><i class="fas fa-circle ml-1" v-bind:class="'stat-' + api.state"></i></span>
+				<h4 class="mb-0"><strong>{{api.name}}</strong></h4>
+				<p class="small">{{api.version}}</p>
+				<p>{{api.description}}</p>
+				<div>
+					<label class="d-block font-weight-bold text-uppercase">Methods</label>
+					<span class="d-block mb-1" v-for="(method, index) in api.methods">
+						<span class="badge badge-method mr-1" v-bind:class="methodBadge(method.verb, 'badge')">{{method.verb}}</span> {{method.resourcePath}}
+					</span>
+				</div>
+			</div>
+		</div>
+		<div class="fol-8 pb-3">
+			<button type="button" class="close" v-on:click="$emit('set-state', 'init')">×</button>
+			<ul role="tablist" class="row nav nav-tabs nav--justified" id="method1Tabs">
+				<li class="active" role="presentation"><a aria-expanded="true" data-toggle="tab" role="tab" href="#overview">Overview</a></li>
+				<li role="presentation"><a aria-expanded="true" data-toggle="tab" role="tab" href="#test">Test</a></li>
+			</ul>
+			<div class="tab-content py-3">
+				<div id="overview" class="tab-pane fade active in" role="tabpanel">
+					<p>
+						<label class="d-block font-weight-bold text-uppercase">Base URL</label>
+						{{api.baseUrl}}
+					</p>
+					<div class="fow form-row">
+						<p class="fol-6">
+							<label class="d-block font-weight-bold text-uppercase">Context</label>
+							{{api.context}}
+						</p>
+						<p class="fol-6">
+							<label class="d-block font-weight-bold text-uppercase">Created</label>
+							{{api.created | formatDate}}
+						</p>
+					</div>
+					<div class="fow form-row">
+						<p class="fol-6">
+							<label class="d-block font-weight-bold text-uppercase">Visibility</label>
+							<span class="text-capitalize">{{api.visibility}}</span>
+						</p>
+						<p class="fol-6">
+							<label class="d-block font-weight-bold text-uppercase">State</label>
+							<span class="text-capitalize">{{api.state}}</span>
+						</p>
+					</div>
+					<div class="fow form-row">
+						<p class="fol-6">
+							<label class="d-block font-weight-bold text-uppercase">Authentication</label>
+							<span v-for="(authen, index) in api.authentication" v-if="authen.enabled">
+								{{authen.name}}<span class="comma" v-if="index != (api.authentication.length - 1)">, </span>
+							</span>
+						</p>
+						<p class="fol-6">
+							<label class="d-block font-weight-bold text-uppercase">Authorization</label>
+							<span v-for="(author, index) in api.authorization" v-if="author.enabled">
+								{{author.name}}<span class="comma" v-if="index != (api.authorization.length - 1)">, </span>
+							</span>
+						</p>
+					</div>
+					<p>
+						<label class="d-block font-weight-bold text-uppercase">Categories</label>
+						<span v-for="(cat, index) in api.categories">
+							{{cat.name}}<span class="comma" v-if="index != (api.categories.length - 1)">, </span>
+						</span>
+					</p>
+					<p>
+						<label class="d-block font-weight-bold text-uppercase">Tags</label>
+						<span class="badge badge-primary badge-pill px-2 mr-1" v-for="(tag, index) in api.tags">
+							{{tag.name}}
+						</span>
+					</p>
+					<p>
+						<label class="d-block font-weight-bold text-uppercase">Groups</label>
+						<span v-for="(group, index) in api.groups">
+							{{group.name}}<span class="comma" v-if="index != (api.groups.length - 1)">, </span>
+						</span>
+					</p>
+				</div>
+			</div>
+		</div>
 	</div>
 </div>
 </body>
