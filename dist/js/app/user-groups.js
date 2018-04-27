@@ -17,10 +17,15 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 				paginate: {},
 				ajaxUrl: abyss.ajax.user_group_list,
 				ajaxHeaders: {
-					contentType: 'application/json; charset=utf-8',
-					datatype: 'json',
-					headers: {'Content-Type': 'application/json'}
-				},
+                    //timeout: 10000,
+                    contentType: 'application/json; charset=utf-8',
+                    datatype: 'json',
+                    withCredentials : true,
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                },
 				selected: null,
 				resetPassword: false,
 				groupOLD: {
@@ -83,7 +88,15 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 				axios.get(abyss.ajax.user_list, {
 					params: {
 						q: search
-					}
+					},
+                    timeout: 10000,
+                    contentType: 'application/json; charset=utf-8',
+                    datatype: 'json',
+                    withCredentials : true,
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
 				})
 				.then(response => {
 					console.log(response);
@@ -96,8 +109,16 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 				axios.get(this.ajaxUrl, {
 					params: {
 						q: search
-					}
-				})
+					},
+                    timeout: 10000,
+                    contentType: 'application/json; charset=utf-8',
+                    datatype: 'json',
+                    withCredentials : true,
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                })
 				.then(response => {
 					console.log(response);
 					this.groupOptions = response.data.groupList;
@@ -109,7 +130,15 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 				axios.get(abyss.ajax.permission_list, {
 					params: {
 						q: search
-					}
+					},
+                    timeout: 10000,
+                    contentType: 'application/json; charset=utf-8',
+                    datatype: 'json',
+                    withCredentials : true,
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
 				})
 				.then(response => {
 					console.log(response);

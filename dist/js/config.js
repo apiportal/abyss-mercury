@@ -11,7 +11,7 @@ define(['global'], function(abyss){
 	var abyssJsonLocation = abyssProtocol + '://' + abyssHost + ':' + abyssJsonPort + '/' + abyssJsonPath;
 	var abyssDataList = {
 		user_list: '/api/subject/getAll',
-		user_group_list: '/user-groups/management',
+		user_group_list: '/api/subjectgroup/getAll',
 		// permission_list: '/user-permissions/management',
 	}
 	var abyssJsonList = {
