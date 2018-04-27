@@ -23,7 +23,7 @@ define(['global'], function(abyss){
 		api_group_list: '/api-group-list.json',
 		permission_list: '/permission-list.json',
 	}
-	if (isAbyssSandbox) {
+	if (isAbyssSandbox===true) {
 		if (location.host == 'local.abyss.com' || location.host == 'localhost:7882') {
 			abyssLocation = 'http://local.abyss.com/000?file=http://local.abyss.com/data';
 			abyssJsonLocation = abyssLocation;
