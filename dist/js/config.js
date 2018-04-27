@@ -1,12 +1,11 @@
 define(['global'], function(abyss){
-	var abyssSandbox = true;
+	var abyssSandbox = abyssSandbox;
 	var abyssProtocol = 'http';
-	var abyssHost2 = abyssHost;
+	var abyssHost = host;
 	console.log("abyssHost: ", abyssHost);
-	console.log("abyssHost2: ", abyssHost2);
 	var abyssPort = '38082';
 	var abyssPath = 'abyss';
-	var abyssLocation = abyssProtocol + '://' + abyssHost2 + ':' + abyssPort + '/' + abyssPath;
+	var abyssLocation = abyssProtocol + '://' + abyssHost + ':' + abyssPort + '/' + abyssPath;
 	var abyssDataList = {
 		index: '/index.json',
 		my_api_list: '/my-api-list.json',
