@@ -14440,7 +14440,11 @@ input[type="button"].btn-block {
         padding: 13px 15px;
         color: #212121;
         display: block;
-        line-height: 20px; }
+        line-height: 20px;
+        overflow: hidden;
+        -o-text-overflow: ellipsis;
+        text-overflow: ellipsis;
+        white-space: nowrap; }
         .fixed-sidebar-left .side-nav li a:hover {
           background: rgba(0, 153, 255, 0.2); }
         .fixed-sidebar-left .side-nav li a.active {
@@ -14456,7 +14460,9 @@ input[type="button"].btn-block {
           width: 16px;
           margin-right: 15px; }
         .fixed-sidebar-left .side-nav li a .badge {
-          float: right; }
+          position: absolute;
+          right: 10px;
+          background-color: #fff; }
       .fixed-sidebar-left .side-nav li button.nav-caret {
         position: absolute;
         top: 0;
@@ -15832,6 +15838,24 @@ th.desc:before {
   color: #ec7700; }
 
 .stat-retired {
+  color: #e31e1e; }
+
+.stat-Draft {
+  color: #8b8e91; }
+
+.stat-Staged {
+  color: #6f42c1; }
+
+.stat-Published {
+  color: #4cac00; }
+
+.stat-Promoted {
+  color: #00bbbb; }
+
+.stat-Demoted {
+  color: #ec7700; }
+
+.stat-Retired {
   color: #e31e1e; }
 
 .dropzone {

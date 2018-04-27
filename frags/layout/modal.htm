@@ -9,14 +9,15 @@
 					<h5 class="modal-title">Add New {{taxTitle}}</h5>
 				</div>
 				<div class="modal-body">
-					<div class="form-group">
+					<div class="form-group" v-bind:class="{ 'has-error': errors.has('name') }">
 						<label v-bind:for="taxTitle+'Name'">{{taxTitle}} Name:</label>
-						<input type="text" class="form-control" v-bind:id="taxTitle+'Name'" v-model="tax.name">
+						<input type="text" class="form-control" name="name" v-bind:id="taxTitle+'Name'" v-model="tax.name" v-validate="{required: true, alpha_spaces: true, min: 2, max: 30}">
+						<em v-bind:class="{ 'show': errors.has('name') }">{{ errors.first('name') }}</em>
 					</div>
 				</div>
 				<div class="modal-footer d-flex justify-content-between">
 					<button type="button" class="btn btn-secondary btn-rounded text-uppercase" data-dismiss="modal" v-on:click="cancelTax(tax)">Close</button>
-					<button type="button" class="btn btn-primary btn-rounded text-uppercase" data-dismiss="modal" v-on:click="addTax()">Add {{taxTitle}}</button>
+					<button type="button" class="btn btn-primary btn-rounded text-uppercase" v-on:click="addTax()">Add {{taxTitle}}</button>
 				</div>
 			</div>
 			<div class="modal-content" v-if="taxAction == 'edit'">
@@ -25,14 +26,15 @@
 					<h5 class="modal-title">Edit {{taxTitle}}</h5>
 				</div>
 				<div class="modal-body">
-					<div class="form-group">
+					<div class="form-group" v-bind:class="{ 'has-error': errors.has('name') }">
 						<label v-bind:for="taxTitle+'Name'">{{taxTitle}} Name:</label>
-						<input type="text" class="form-control" v-bind:id="taxTitle+'Name'" v-model="tax.name">
+						<input type="text" class="form-control" name="name" v-bind:id="taxTitle+'Name'" v-model="tax.name" v-validate="{required: true, alpha_spaces: true, min: 2, max: 30}">
+						<em v-bind:class="{ 'show': errors.has('name') }">{{ errors.first('name') }}</em>
 					</div>
 				</div>
 				<div class="modal-footer d-flex justify-content-between">
 					<button type="button" class="btn btn-secondary btn-rounded text-uppercase" data-dismiss="modal" v-on:click="restoreTax(tax)">Close</button>
-					<button type="button" class="btn btn-primary btn-rounded text-uppercase" data-dismiss="modal" v-on:click="editTax(tax)">Save {{taxTitle}}</button>
+					<button type="button" class="btn btn-primary btn-rounded text-uppercase" v-on:click="editTax(tax)">Save {{taxTitle}}</button>
 				</div>
 			</div>
 		</div>

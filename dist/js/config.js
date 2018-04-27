@@ -23,7 +23,7 @@ define(['global'], function(abyss){
 		api_group_list: '/api-group-list.json',
 		permission_list: '/permission-list.json',
 	}
-	if (isAbyssSandbox===true) {
+	if (isAbyssSandbox === true) {
 		if (location.host == 'local.abyss.com' || location.host == 'localhost:7882') {
 			abyssLocation = 'http://local.abyss.com/000?file=http://local.abyss.com/data';
 			abyssJsonLocation = abyssLocation;
@@ -54,14 +54,14 @@ define(['global'], function(abyss){
 			abyssJsonList[key] = abyssJsonLocation + abyssJsonList[key];
 		}
 	}
-	var abyssAllDataList = Object.assign(abyssDataList, abyssJsonList);
+	var abyssAllDataList = Object.assign(abyssJsonList, abyssDataList);
 	console.log("abyssAllDataList: ", abyssAllDataList);
 	return {
 		name: 'Abyss Api Portal',
 		version: 'V.0.0',
 		thy: true,
 		abyssLocation: abyssLocation,
-		ajax: abyssDataList,
+		ajax: abyssAllDataList,
 		test: 'ffffffffffffffffff',
 	}
 });
