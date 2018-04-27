@@ -7,13 +7,13 @@ define(['global'], function(abyss){
 	var abyssPath = 'abyss';
 	var abyssLocation = abyssProtocol + '://' + abyssHost + ':' + abyssPort + '/' + abyssPath;
 	var abyssDataList = {
-		index: '/index.json',
+		index: '/data/index.json',
 		my_api_list: '/my-api-list.json',
 		my_api: '/my-api.json',
 		api_category_list: '/api-category-list.json',
 		api_tag_list: '/api-tag-list.json',
 		api_group_list: '/api-group-list.json',
-		user_list: 'api/subject/getAll',
+		user_list: '/api/subject/getAll',
 		user_group_list: '/user-groups/management',
 		// permission_list: '/user-permissions/management',
 		permission_list: '/permission-list.json',
