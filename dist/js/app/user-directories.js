@@ -1,4 +1,4 @@
-define(['Vue', 'axios', 'vee-validate', 'lodash'], function(Vue, axios, VeeValidate, _) {
+define(['config', 'Vue', 'axios', 'vee-validate', 'lodash'], function(abyss, Vue, axios, VeeValidate, _) {
 	Vue.component('user-directories', {
 		props: {
 			rootState: { type: String }

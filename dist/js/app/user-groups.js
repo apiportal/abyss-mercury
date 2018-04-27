@@ -1,4 +1,4 @@
-define(['Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBootstrapDatetimePicker', 'eonasdan-bootstrap-datetimepicker'], function(Vue, axios, VeeValidate, VueSelect, moment, VueBootstrapDatetimePicker) {
+define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBootstrapDatetimePicker', 'eonasdan-bootstrap-datetimepicker'], function(abyss, Vue, axios, VeeValidate, VueSelect, moment, VueBootstrapDatetimePicker) {
 	Vue.component('date-picker', VueBootstrapDatetimePicker.default);
 	Vue.component('v-select', VueSelect.VueSelect);
 	Vue.component('user-groups', {
@@ -15,22 +15,7 @@ define(['Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBootstrapDat
 				},
 				pageState: 'init',
 				paginate: {},
-
-				ajaxUrl: '/abyss/user-groups/management',
-				// ajaxUrl: 'http://192.168.21.180:18881/000?file=http://192.168.21.180:18881/data/user-group-list-abyss.json',
-				// ajaxUrl: 'http://local.abyss.com/000?file=http://192.168.10.46:38081/abyss/user-groups/management',
-				// ajaxUrl: 'http://local.abyss.com/000?file=http://local.abyss.com/data/user-group-list-abyss.json',
-
-				ajaxUsersUrl: '/abyss/users/management',
-				// ajaxUsersUrl: 'http://192.168.21.180:18881/000?file=http://192.168.21.180:18881/data/user-list-abyss.json',
-				// ajaxUsersUrl: 'http://local.abyss.com/000?file=http://192.168.10.46:38081/abyss/users/management',
-				// ajaxUsersUrl: 'http://local.abyss.com/000?file=http://local.abyss.com/data/user-list-abyss.json',
-
-				// ajaxPermissionsUrl: '/abyss/user-permissions/management',
-				ajaxPermissionsUrl: '/data/permission-list.json',
-				// ajaxPermissionsUrl: 'http://192.168.21.180:18881/000?file=http://192.168.21.180:18881/data/permission-list.json',
-				// ajaxPermissionsUrl: 'http://local.abyss.com/000?file=http://local.abyss.com/data/permission-list.json',
-				
+				ajaxUrl: abyss.ajax.user_group_list,
 				ajaxHeaders: {
 					contentType: 'application/json; charset=utf-8',
 					datatype: 'json',
@@ -95,7 +80,7 @@ define(['Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBootstrapDat
 			},
 			getUserOptions(search, loading) {
 				loading(true)
-				axios.get(this.ajaxUsersUrl, {
+				axios.get(abyss.ajax.user_list, {
 					params: {
 						q: search
 					}
@@ -121,7 +106,7 @@ define(['Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBootstrapDat
 			},
 			getPermissionOptions(search, loading) {
 				loading(true)
-				axios.get(this.ajaxPermissionsUrl, {
+				axios.get(abyss.ajax.permission_list, {
 					params: {
 						q: search
 					}
@@ -186,7 +171,7 @@ define(['Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBootstrapDat
 				return i === this.selected;
 			},
 			deleteGroup(item) {
-				this.removeItem(this.groupList, item);
+				this.removeItem(this.ajaxUrl, item, this.ajaxHeaders, this.groupList);
 			},
 			groupAction(act) {
 				this.$validator.validateAll().then((result) => {
@@ -197,11 +182,8 @@ define(['Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBootstrapDat
 							var postItem = _.cloneDeep(this.group);
 							postItem.effective_start_date = moment(this.group.effective_start_date).toISOString();
 							postItem.effective_end_date = moment(this.group.effective_end_date).toISOString();
-							// this.addItem(this.groupList, this.group).then(response => {
-							this.addItem(this.groupList, postItem).then(response => {
-								// this.addItem(this.groupList, this.group);
+							this.addItem(this.ajaxUrl, postItem, this.ajaxHeaders, this.groupList).then(response => {
 								this.$emit('set-state', 'init');
-								// this.resetItem(this.group, this.newGroup);
 								this.group = _.cloneDeep(this.newGroup);
 								console.log("this.group: ", this.group );
 							});
@@ -212,8 +194,7 @@ define(['Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBootstrapDat
 							postItem.effective_start_date = moment(this.group.effective_start_date).toISOString();
 							postItem.effective_end_date = moment(this.group.effective_end_date).toISOString();
 							console.log("postItem: ", postItem);
-							// this.updateItem(this.groupList, this.group).then(response => {
-							this.updateItem(this.groupList, postItem).then(response => {
+							this.updateItem(this.ajaxUrl, postItem, this.ajaxHeaders, this.groupList).then(response => {
 								console.log("response: ", response);
 								console.log("postItem: ", postItem);
 								this.$emit('set-state', 'init');
@@ -245,18 +226,6 @@ define(['Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBootstrapDat
 			this.log(this.$options.name);
 			this.$emit('set-page', 'user-groups', 'init');
 			this.newGroup = _.cloneDeep(this.group);
-			// axios.all([
-			// 	axios.get(this.ajaxUrl),
-			// 	// axios.get('/data/create-api.json')
-			// ]).then(
-			// 	axios.spread((groupList, create) => {
-			// 		this.groupList = groupList.data.groupList;
-			// 		this.paginate = this.makePaginate(groupList.data);
-			// 		// this.$set('paginate', this.makePaginate(groupList.data));
-			// 	})
-			// ).catch(error => {
-			// 	console.log(error.response)
-			// });
 			this.getPage(1);
 		}
 	});

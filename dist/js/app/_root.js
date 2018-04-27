@@ -1,5 +1,9 @@
 // define(['Vue', 'axios', 'vee-validate', 'moment'], function (Vue, axios, VeeValidate, moment) {
-define(['Vue', 'axios', 'vee-validate', 'moment'], function (Vue, axios, VeeValidate, moment) {
+define(['config', 'Vue', 'axios', 'vee-validate', 'moment', 'izitoast', 'vue-izitoast'], function (abyss, Vue, axios, VeeValidate, moment, iziToast) {
+	// Window.Vue = Vue;
+	// Window.Vue.use(VueIziToast);
+	// Vue.prototype.$toast = VueIziToast;
+	Vue.use(MyToaster);
 	Vue.use(VeeValidate);
 	const dictionary = {
 		en: {
@@ -50,7 +54,13 @@ define(['Vue', 'axios', 'vee-validate', 'moment'], function (Vue, axios, VeeVali
 			log(name) {
 				console.log(name , this);
 			},
+			uuidv4() {
+				return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
+					(c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+				)
+			},
 			preload() {
+				$('.preloader-it > .la-anim-1').addClass('la-animate');
 				$(document).ready(function() {
 					$(".preloader-it").fadeOut("slow");
 				});
@@ -71,38 +81,48 @@ define(['Vue', 'axios', 'vee-validate', 'moment'], function (Vue, axios, VeeVali
 				// console.log("paginate: ", paginate);
 				return paginate;
 			},
-			resetItem(obj, blank) {
-				obj = _.cloneDeep(blank);
-				// obj = Vue.util.extend({}, blank);
-				// return obj;
-			},
-			updateItem(arr, item) {
-				return axios.post(this.ajaxUrl, item, this.ajaxHeaders).then(response => {
+			// resetItem(obj, blank) {
+			// 	obj = _.cloneDeep(blank);
+			// 	// obj = Vue.util.extend({}, blank);
+			// 	// return obj;
+			// },
+			updateItem(url, item, head, arr) {
+				return axios.post(url, item, head).then(response => {
 					return response;
 				}, error => {
 					console.error(error);
 					alert(error.code + ': ' + error.message);
 				})
 			},
-			addItem(arr, item) {
-				// console.log("this.ajaxHeaders: ", this.ajaxHeaders);
-				return axios.post(this.ajaxUrl, item, this.ajaxHeaders).then(response => {
+			addItem(url, item, head, arr) {
+				return axios.post(url, item, head).then(response => {
 					arr.push(item);
 					return response;
 				}, error => {
 					console.error(error);
 				});
 			},
-			removeItem(arr, item) {
+			removeItem(url, item, head, arr) {
 				var r = confirm('Are you sure to delete?');
 				if (r == true) {
-					axios.post(this.ajaxUrl, item, this.ajaxHeaders).then(response => {
+					axios.post(url, item, head).then(response => {
 						var index = arr.indexOf(item);
 						arr.splice(index, 1);
 					}, error => {
 						console.error(error);
 					});
 				}
+			},
+			checkDiff(object, base) {
+				function changes(object, base) {
+					// return _.transform(object, function(result, value, key) {
+					return _.transform(object, (result, value, key) => {
+						if (!_.isEqual(value, base[key])) {
+							result[key] = (_.isObject(value) && _.isObject(base[key])) ? changes(value, base[key]) : value;
+						}
+					});
+				}
+				return changes(object, base);
 			},
 			sortBy(srt, arr) {
 				if (srt.type == String) {
@@ -143,9 +163,9 @@ define(['Vue', 'axios', 'vee-validate', 'moment'], function (Vue, axios, VeeVali
 		name: 'portal',
 		data: {
 			isLoading: true,
-			pageCurrent: 'my-apisssssssssssssss',
-			rootState: 'initttttttttttttt',
-			childState: 'chhhhhh',
+			pageCurrent: '',
+			rootState: 'init',
+			childState: '',
 			pageClassPrefix: 'vs',
 			pageClass: '',
 			ajaxHeaders: {
@@ -153,9 +173,98 @@ define(['Vue', 'axios', 'vee-validate', 'moment'], function (Vue, axios, VeeVali
 				datatype: 'json',
 				headers: {'Content-Type': 'application/json'}
 			},
+			user: {
+				name: null,
+				surname: null,
+				avatar: null,
+				status: null,
+				settings: {
+					darkSidebar: false
+				},
+				notifications: []
+			},
+			rootCategories: [],
+			taxAction: '',
+			taxTitle: '',
+			taxList: '',
+			tax: {},
+			selectedTax: {},
+			menu: {
+				api: {
+					groups: [],
+					tags: [],
+					categories: [],
+					states: [],
+					visibility: [],
+				},
+				proxy: {
+					groups: [],
+					tags: [],
+					categories: [],
+					states: [],
+					visibility: [],
+				}
+			},
 			end: []
 		},
 		methods: {
+			cancelTax() {
+				this.tax = {};
+				this.selectedTax = {},
+				this.taxAction = '';
+				this.taxTitle = '';
+				this.taxList = '';
+			},
+			deleteTax(list, item) {
+				this.removeItem(abyss.ajax.index, item, this.ajaxHeaders, this.menu.api[list]);
+			},
+			restoreTax(item) {
+				var index = this.menu.api[this.taxList].indexOf(item);
+				this.menu.api[this.taxList][index] = this.selectedTax;
+				this.cancelTax();
+			},
+			addTax() {
+				var item = _.cloneDeep(this.tax);
+				item.uuid = this.uuidv4();
+				item.count = 0;
+				this.addItem(abyss.ajax.index, item, this.ajaxHeaders, this.menu.api[this.taxList]).then(response => {
+					console.log("response: ", response);
+					this.cancelTax();
+				});
+			},
+			editTax() {
+				var item = _.cloneDeep(this.tax);
+				this.updateItem(abyss.ajax.index, item, this.ajaxHeaders, this.menu.api[this.taxList]).then(response => {
+					console.log("response: ", response);
+					this.cancelTax();
+				});
+			},
+			setTax(action, title, list, item) {
+				this.taxAction = action;
+				this.taxTitle = title;
+				this.taxList = list;
+				if (action == 'edit') {
+					this.selectedTax = _.cloneDeep(item);
+					this.tax = item;
+				}
+			},
+			getMenu(data) {
+				// this.categoryOptions = data.myApiCategoryList;
+				// this.tagOptions = data.myApiTagList;
+				// this.groupOptions = data.myApiGroupList;
+				// this.stateOptions = data.myApiStateList;
+				this.menu.api.groups = data.myApiGroupList;
+				this.menu.api.tags = data.myApiTagList;
+				this.menu.api.categories = data.myApiCategoryList;
+				this.menu.api.states = Object.assign(data.defaultStates, data.myApiStateList);
+				this.menu.api.visibility = Object.assign(data.defaultVisibility, data.myApiVisibility);
+			},
+			setMenu(categories, tags, groups, states) {
+				this.menu.api.groups = groups;
+				this.menu.api.tags = tags;
+				this.menu.api.categories = categories;
+				this.menu.api.states = states;
+			},
 			setPage(page, state) {
 				this.pageCurrent = page;
 				this.rootState = state;
@@ -170,6 +279,9 @@ define(['Vue', 'axios', 'vee-validate', 'moment'], function (Vue, axios, VeeVali
 					this.rootState = state;
 					this.pageClass = this.pageClassPrefix + '-' + state;
 				}
+				require(['slimscroll'],function(){
+					$('.nicescroll-bar').slimscroll({height:'100%',color: '#878787', disableFadeOut : true,borderRadius:0,size:'4px',alwaysVisible:false});
+				});
 			},
 			setChildState(state, toggle) {
 				if (this.childState != 'init' && toggle && this.childState == state) {
@@ -203,7 +315,11 @@ define(['Vue', 'axios', 'vee-validate', 'moment'], function (Vue, axios, VeeVali
 			// this.setChildState('child');
 		},
 		created() {
-			this.log(this.$options.name);
+			// this.log(this.$options.name);
+			axios.get(abyss.ajax.index, this.ajaxHeaders)
+			.then((response) => {
+				this.getMenu(response.data);
+			});
 		}
 	});
 });

@@ -13,34 +13,58 @@
 					<li>
 						<a href="#" class="nav-caret" data-toggle="collapse" data-target="#apiGroups" aria-controls="apiGroups">Groups</a>
 						<ul id="apiGroups" class="collapse">
-							<li><a href="#" data-toggle="modal" data-target="#responsive-modal"><i class="fas fa-fw fa-plus-square"></i> ADD GROUP</a></li>
-							<li><a href="#"><i class="fas fa-fw fa-object-group txt-danger"></i> Favorites</a></li>
-							<li><a href="#"><i class="fas fa-fw fa-object-group txt-success"></i> Finance</a></li>
-							<li><a href="#"><i class="fas fa-fw fa-object-group txt-info"></i> Junk</a></li>
-							<li><a href="#"><i class="fas fa-fw fa-object-group txt-warning"></i> Mobile</a></li>
-							<li><a href="#"><i class="fas fa-fw fa-object-group txt-primary"></i> Recent</a></li>
+							<li><a href="#" data-toggle="modal" data-target="#taxModal" v-on:click="setTax('add', 'Group', 'groups')"><i class="fas fa-fw fa-plus-square"></i>ADD GROUP</a></li>
+							<li class="action" v-for="(group, index) in menu.api.groups">
+								<div class="nav-actions dropdown dropdown-hover">
+									<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
+									<ul class="dropdown-menu" role="menu" data-dropdown-in="slideInLeft" data-dropdown-out="slideOutLeft">
+										<li><a href="#" data-toggle="modal" data-target="#taxModal" v-on:click="setTax('edit', 'Group', 'groups', group)"><i class="fas fa-edit"></i>Edit</a></li>
+										<li><a href="#"v-on:click="deleteTax('groups', group)"><i class="fas fa-trash-alt"></i>Delete</a></li>
+									</ul>
+								</div>
+								<a href="#"><i class="fas fa-fw fa-object-group txt-pink"></i>{{group.name}}<span class="badge badge-pill badge-outline">{{group.count}}</span></a></li>
 						</ul>
 					</li>
 					<li>
 						<a href="#" class="nav-caret" data-toggle="collapse" data-target="#apiTags" aria-controls="apiTags">Tags</a>
 						<ul id="apiTags" class="collapse">
-							<li><a href="#"><i class="fas fa-fw fa-plus-square"></i> ADD TAG</a></li>
-							<li><a href="#"><i class="fas fa-fw fa-stop txt-danger"></i> Social</a></li>
-							<li><a href="#"><i class="fas fa-fw fa-stop txt-success"></i> Weather</a></li>
-							<li><a href="#"><i class="fas fa-fw fa-stop txt-info"></i> Travel</a></li>
-							<li><a href="#"><i class="fas fa-fw fa-stop txt-warning"></i> Food</a></li>
-							<li><a href="#"><i class="fas fa-fw fa-stop txt-primary"></i> Sports</a></li>
+							<li><a href="#" data-toggle="modal" data-target="#taxModal" v-on:click="setTax('add', 'Tag', 'tags')"><i class="fas fa-fw fa-plus-square"></i>ADD TAG</a></li>
+							<li class="action" v-for="(tag, index) in menu.api.tags">
+								<div class="nav-actions dropdown dropdown-hover">
+									<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
+									<ul class="dropdown-menu" role="menu" data-dropdown-in="slideInLeft" data-dropdown-out="slideOutLeft">
+										<li><a href="#" data-toggle="modal" data-target="#taxModal" v-on:click="setTax('edit', 'Tag', 'tags', tag)"><i class="fas fa-edit"></i>Edit</a></li>
+										<li><a href="#"v-on:click="deleteTax('tags', tag)"><i class="fas fa-trash-alt"></i>Delete</a></li>
+									</ul>
+								</div>
+								<a href="#"><i class="fas fa-fw fa-stop txt-purple"></i>{{tag.name}}<span class="badge badge-pill badge-outline">{{tag.count}}</span></a></li>
 						</ul>
 					</li>
 					<li>
-						<a href="#" class="nav-caret" data-toggle="collapse" data-target="#apiStatus" aria-controls="apiStatus">Sort by Status</a>
-						<ul id="apiStatus" class="collapse">
-							<li><a href="#"><i class="fas fa-circle txt-grey"></i>Draft</a></li>
-							<li><a href="#"><i class="fas fa-circle txt-purple"></i>Staged</a></li>
-							<li><a href="#"><i class="fas fa-circle txt-green"></i>Published</a></li>
-							<li><a href="#"><i class="fas fa-circle txt-cyan"></i>Promoted</a></li>
-							<li><a href="#"><i class="fas fa-circle txt-orange"></i>Demoted</a></li>
-							<li><a href="#"><i class="fas fa-circle txt-red"></i>Retired</a></li>
+						<a href="#" class="nav-caret" data-toggle="collapse" data-target="#apiCategories" aria-controls="apiCategories">Categories</a>
+						<ul id="apiCategories" class="collapse">
+							<li><a href="#" data-toggle="modal" data-target="#taxModal" v-on:click="setTax('add', 'Category', 'categories')"><i class="fas fa-fw fa-plus-square"></i>ADD CATEGORY</a></li>
+							<li class="action" v-for="(category, index) in menu.api.categories">
+								<div class="nav-actions dropdown dropdown-hover">
+									<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
+									<ul class="dropdown-menu" role="menu" data-dropdown-in="slideInLeft" data-dropdown-out="slideOutLeft">
+										<li><a href="#" data-toggle="modal" data-target="#taxModal" v-on:click="setTax('edit', 'Category', 'categories', category)"><i class="fas fa-edit"></i>Edit</a></li>
+										<li><a href="#"v-on:click="deleteTax('categories', category)"><i class="fas fa-trash-alt"></i>Delete</a></li>
+									</ul>
+								</div>
+								<a href="#"><i class="fas fa-fw fa-stop txt-green"></i>{{category.name}}<span class="badge badge-pill badge-outline">{{category.count}}</span></a></li>
+						</ul>
+					</li>
+					<li>
+						<a href="#" class="nav-caret" data-toggle="collapse" data-target="#apiStates" aria-controls="apiStates">States</a>
+						<ul id="apiStates" class="collapse">
+							<li v-for="(state, index) in menu.api.states"><a href="#"><i v-bind:class="'fas fa-circle stat-' + state.name"></i>{{state.name}}<span class="badge badge-pill badge-outline">{{state.count}}</span></a></li>
+						</ul>
+					</li>
+					<li>
+						<a href="#" class="nav-caret" data-toggle="collapse" data-target="#apiVisibility" aria-controls="apiVisibility">Visibility</a>
+						<ul id="apiVisibility" class="collapse">
+							<li v-for="(visible, index) in menu.api.visibility"><a href="#"><i v-bind:class="'fas fa-' + visible.icon"></i>{{visible.name}}<span class="badge badge-pill badge-outline">{{visible.count}}</span></a></li>
 						</ul>
 					</li>
 				</ul>
@@ -52,23 +76,23 @@
 					<li>
 						<a href="#" class="nav-caret" data-toggle="collapse" data-target="#proxyGroups" aria-controls="proxyGroups">Groups</a>
 						<ul id="proxyGroups" class="collapse">
-							<li><a href="#" data-toggle="modal" data-target="#responsive-modal"><i class="fas fa-fw fa-plus-square"></i> ADD GROUP</a></li>
-							<li><a href="#"><i class="fas fa-fw fa-object-group txt-danger"></i> Favorites</a></li>
-							<li><a href="#"><i class="fas fa-fw fa-object-group txt-success"></i> Finance</a></li>
-							<li><a href="#"><i class="fas fa-fw fa-object-group txt-info"></i> Junk</a></li>
-							<li><a href="#"><i class="fas fa-fw fa-object-group txt-warning"></i> Mobile</a></li>
-							<li><a href="#"><i class="fas fa-fw fa-object-group txt-primary"></i> Recent</a></li>
+							<li><a href="#" data-toggle="modal" data-target="#taxModal"><i class="fas fa-fw fa-plus-square"></i>ADD GROUP</a></li>
+							<li><a href="#"><i class="fas fa-fw fa-object-group txt-danger"></i>Favorites</a></li>
+							<li><a href="#"><i class="fas fa-fw fa-object-group txt-success"></i>Finance</a></li>
+							<li><a href="#"><i class="fas fa-fw fa-object-group txt-info"></i>Junk</a></li>
+							<li><a href="#"><i class="fas fa-fw fa-object-group txt-warning"></i>Mobile</a></li>
+							<li><a href="#"><i class="fas fa-fw fa-object-group txt-primary"></i>Recent</a></li>
 						</ul>
 					</li>
 					<li>
 						<a href="#" class="nav-caret" data-toggle="collapse" data-target="#proxyTags" aria-controls="proxyTags">Tags</a>
 						<ul id="proxyTags" class="collapse">
-							<li><a href="#"><i class="fas fa-fw fa-plus-square"></i> ADD TAG</a></li>
-							<li><a href="#"><i class="fas fa-fw fa-stop txt-danger"></i> Social</a></li>
-							<li><a href="#"><i class="fas fa-fw fa-stop txt-success"></i> Weather</a></li>
-							<li><a href="#"><i class="fas fa-fw fa-stop txt-info"></i> Travel</a></li>
-							<li><a href="#"><i class="fas fa-fw fa-stop txt-warning"></i> Food</a></li>
-							<li><a href="#"><i class="fas fa-fw fa-stop txt-primary"></i> Sports</a></li>
+							<li><a href="#"><i class="fas fa-fw fa-plus-square"></i>ADD TAG</a></li>
+							<li><a href="#"><i class="fas fa-fw fa-stop txt-danger"></i>Social</a></li>
+							<li><a href="#"><i class="fas fa-fw fa-stop txt-success"></i>Weather</a></li>
+							<li><a href="#"><i class="fas fa-fw fa-stop txt-info"></i>Travel</a></li>
+							<li><a href="#"><i class="fas fa-fw fa-stop txt-warning"></i>Food</a></li>
+							<li><a href="#"><i class="fas fa-fw fa-stop txt-primary"></i>Sports</a></li>
 						</ul>
 					</li>
 					<li>

@@ -1,35 +1,21 @@
 // define(['Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-dropzone', 'css!comps/vue2Dropzone.css'], function(Vue, axios, VeeValidate, VueSelect, moment, vueDropzone) {
-define(['Vue', 'axios', 'vee-validate', 'vue-select', 'moment'], function(Vue, axios, VeeValidate, VueSelect, moment) {
-	// Vue.component('vue-dropzone', vueDropzone.vueDropzone);
-	// Vue.component('vue-dropzone', {
-	// 	data() {
-	// 		return {
-	// 			checked: false,
-	// 			title: 'Check me'
-	// 		}
-	// 	},
-	// 	template: '<div class="vue-dropzone dropzone" :id="id" ref="dropzoneElement"></div>',
-	// 	props: {
-	// 		options: { type: Object },
-	// 		mindex: { type: Number },
-	// 		id: { type: String }
-	// 	},
-	// 	methods: {
-			
-	// 	}
-	// });
-	// Vue.use(vue2Dropzone);
-	// Vue.component('dropzone', Dropzone)
-	Vue.component('v-select', VueSelect.VueSelect);
+define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-dropzone', 'css!vue-dropzone-css'], function(abyss, Vue, axios, VeeValidate, VueSelect, moment, vue2Dropzone) {
+	// Vue.component('v-select', VueSelect.VueSelect);
 	Vue.component('my-apis', {
 		// template: template,
+		components: {
+			vueDropzone: vue2Dropzone,
+			'v-select': VueSelect.VueSelect
+		},
 		props: {
 			rootState: { type: String },
-			childState: { type: String }
+			childState: { type: String },
+			rootCategories: { type: Array }
 		},
 		data() {
 			return {
 				isLoading: true,
+				isEditingMethods: false,
 				sortApi: {
 					key: 'created',
 					type: Date,
@@ -41,21 +27,15 @@ define(['Vue', 'axios', 'vee-validate', 'vue-select', 'moment'], function(Vue, a
 					order: 'desc'
 				},
 				pageState: 'init',
-				// childState: 'init',
 				paginate: {},
-				// ajaxApiListUrl: 'http://local.abyss.com/000?file=http://local.abyss.com/data/my-api-list.json',
-				// ajaxUrl: 'http://local.abyss.com/000?file=http://local.abyss.com/data/my-api-list.json',
-				ajaxApiListUrl: '/data/my-api-list.json',
-				ajaxUrl: 'http://www.monasdyas.com/api/api',
-				// ajaxApiListUrl: 'http://192.168.21.180:18881/000?file=http://192.168.21.180:18881/data/my-api-list.json',
-				// ajaxUrl: 'http://192.168.21.180:18881/000?file=http://192.168.21.180:18881/data/my-api-list.json',
+				ajaxUrl: abyss.ajax.my_api,
 				ajaxHeaders: {
 					contentType: 'application/json',
 					datatype: 'json',
 					headers: {'Content-Type': 'application/json'}
 				},
 				api: {
-					id: 0,
+					uuid: "00000000-0000-0000-0000-000000000000",
 					specs: '',
 					name: '',
 					version: 'V.1.0.0',
@@ -144,7 +124,7 @@ define(['Vue', 'axios', 'vee-validate', 'vue-select', 'moment'], function(Vue, a
 					proxies: []
 				},
 				"method": {
-					"id": 0,
+					"uuid": "00000000-0000-0000-0000-000000000000",
 					"created": null,
 					"verb": "GET",
 					"resourcePath": null,
@@ -155,7 +135,7 @@ define(['Vue', 'axios', 'vee-validate', 'vue-select', 'moment'], function(Vue, a
 					"headers": []
 				},
 				"parameter": {
-					"id": 0,
+					"uuid": "00000000-0000-0000-0000-000000000000",
 					"created": null,
 					"name": "",
 					"description": "",
@@ -167,7 +147,7 @@ define(['Vue', 'axios', 'vee-validate', 'vue-select', 'moment'], function(Vue, a
 					"pattern": ""
 				},
 				"header": {
-					"id": 0,
+					"uuid": "00000000-0000-0000-0000-000000000000",
 					"created": null,
 					"name": "",
 					"description": "",
@@ -179,42 +159,87 @@ define(['Vue', 'axios', 'vee-validate', 'vue-select', 'moment'], function(Vue, a
 					"pattern": ""
 				},
 				selectedApi: {},
-				selectedApiIndex: null,
+				changes: {},
+				isChanged: false,
 				newApi: {},
 				myApiList: [],
 
 				selectedMethod: {},
-				selectedMethodIndex: null,
 				newMethod: {},
 
 				selectedParameter: {},
-				selectedParameterIndex: null,
 				newParameter: {},
 
 				selectedHeader: {},
-				selectedHeaderIndex: null,
 				newHeader: {},
 
 				apiOptions: [],
 				categoryOptions: [],
 				tagOptions: [],
 				groupOptions: [],
+				stateOptions: [],
 
-				// dropzoneOptions: {
-				// 	url: 'https://httpbin.org/post',
-				// 	thumbnailWidth: 150,
-				// 	maxFilesize: 0.5,
-				// 	headers: {
-				// 		"My-Awesome-Header": "header value"
-				// 	}
-				// },
+				specData: null,
+				dropSpecsOptions: {
+					url: 'https://httpbin.org/post',
+					method: 'post',
+					uploadMultiple: false,
+					maxFiles: 1,
+					parallelUploads: 1,
+					thumbnailWidth: 260,
+					thumbnailHeight: 146,
+					maxFilesize: 0.5,
+					addRemoveLinks: true,
+					acceptedFiles: '.txt, .json, .yaml, .wsdl, .wadl',
+					headers: {
+						"My-Awesome-Header": "header value"
+					}
+				},
+				dropImageOptions: {
+					url: 'https://httpbin.org/post',
+					method: 'post',
+					uploadMultiple: false,
+					maxFiles: 1,
+					parallelUploads: 1,
+					thumbnailWidth: 260,
+					thumbnailHeight: 146,
+					maxFilesize: 0.5,
+					addRemoveLinks: true,
+					acceptedFiles: '.jpg, .png, .gif',
+					headers: {
+						"My-Awesome-Header": "header value"
+					}
+				},
 
 				end: []
 			}
 		},
 		methods: {
+			dropSpecsSuccess(file, response) {
+				console.log("file, response ", file, response);
+				this.specData = response.files;
+			},
+			dropImageSuccess(file, response) {
+				console.log("file, response ", file, response);
+				// var image = new Image();
+				// image.src = response.files;
+				this.api.image = response.files;
+			},
 			// ■■ Header
 				clickAddHeader(parent) {
+					if (this.isEditingMethods) {
+						this.$validator.validateAll().then((result) => {
+							if (result) {
+								this.openAddHeader(parent);
+								$('#method'+parent.uuid).collapse('show');
+							}
+						});
+					} else {
+						this.openAddHeader(parent);
+						$('#method'+parent.uuid).collapse('show');
+					}
+				},
+				openAddHeader(parent) {
 					this.$emit('set-child-state', 'add-header');
 					this.header = _.cloneDeep(this.newHeader);
 					this.selectedHeader = _.cloneDeep(this.newHeader);
@@ -225,51 +250,81 @@ define(['Vue', 'axios', 'vee-validate', 'vue-select', 'moment'], function(Vue, a
 					this.$validator.validateAll().then((result) => {
 						if (result) {
 							this.header.created = moment().toISOString();
-							this.addItem(this.method.headers, this.header);
+							this.header.uuid = this.uuidv4();
+							this.addItem(this.ajaxUrl, this.header, this.ajaxHeaders, this.method.headers);
 							this.header = _.cloneDeep(this.newHeader);
 							this.method = _.cloneDeep(this.newMethod);
+							this.cleanForHeader();
 							this.$emit('set-child-state', '');
 						}
 					});
 				},
-				deleteHeader(parent, item) {
-					this.removeItem(parent.headers, item);
+				cleanForHeader() {
+					this.selectedMethod = _.cloneDeep(this.newMethod);
+					this.selectedParameter = _.cloneDeep(this.newParameter);
+					this.parameter = _.cloneDeep(this.newParameter);
 				},
-				selectHeader(item, i, m) {
+				deleteHeader(parent, item) {
+					this.removeItem(this.ajaxUrl, item, this.ajaxHeaders, parent.headers);
+				},
+				clickSelectHeader(parent, item) {
+					if (this.isEditingMethods) {
+						this.$validator.validateAll().then((result) => {
+							if (result) {
+								this.selectHeader(parent, item);
+							}
+						});
+					} else {
+						this.selectHeader(parent, item);
+					}
+				},
+				selectHeader(parent, item) {
 					this.selectedHeader = _.cloneDeep(item);
 					this.header = item;
-					this.selectedHeaderIndex = i;
-					this.selectedMethodIndex = m;
+					this.method = parent;
+					this.cleanForHeader();
 					this.$emit('set-child-state', 'edit-header');
 					$('.authentication-column, .authorization-column').addClass('column-minimize');
 				},
-				isSelectedHeader(i, m) {
-					return i === this.selectedHeaderIndex && m === this.selectedMethodIndex;
+				isSelectedHeader(parent, item) {
+					return parent === this.method.uuid && item === this.header.uuid;
 				},
 				updateHeader(item) {
 					this.$validator.validateAll().then((result) => {
 						if (result) {
 							this.header = _.cloneDeep(this.newHeader);
 							this.selectedHeader = _.cloneDeep(this.newHeader);
-							this.selectedHeaderIndex = null;
-							this.selectedMethodIndex = null;
+							this.method = _.cloneDeep(this.newMethod);
 							this.$emit('set-child-state', '');
 							$('.authentication-column, .authorization-column').removeClass('column-minimize');
 						}
 					});
 				},
 				cancelHeader() {
-					// var index = this.method.headers.indexOf(this.header);
-					// this.method.headers[index] = this.selectedHeader;
+					var index = this.method.headers.indexOf(this.header);
+					this.method.headers[index] = this.selectedHeader;
 					this.header = _.cloneDeep(this.newHeader);
 					this.selectedHeader = _.cloneDeep(this.newHeader);
 					this.method = _.cloneDeep(this.newMethod);
-					this.selectedHeaderIndex = null;
+					this.cleanForHeader();
 					this.$emit('set-child-state', '');
 					$('.authentication-column, .authorization-column').removeClass('column-minimize');
 				},
 			// ■■ Parameter
 				clickAddParameter(parent) {
+					if (this.isEditingMethods) {
+						this.$validator.validateAll().then((result) => {
+							if (result) {
+								this.openAddParameter(parent);
+								$('#method'+parent.uuid).collapse('show');
+							}
+						});
+					} else {
+						this.openAddParameter(parent);
+						$('#method'+parent.uuid).collapse('show');
+					}
+				},
+				openAddParameter(parent) {
 					this.$emit('set-child-state', 'add-parameter');
 					this.parameter = _.cloneDeep(this.newParameter);
 					this.selectedParameter = _.cloneDeep(this.newParameter);
@@ -280,51 +335,79 @@ define(['Vue', 'axios', 'vee-validate', 'vue-select', 'moment'], function(Vue, a
 					this.$validator.validateAll().then((result) => {
 						if (result) {
 							this.parameter.created = moment().toISOString();
-							this.addItem(this.method.parameters, this.parameter);
+							this.parameter.uuid = this.uuidv4();
+							this.addItem(this.ajaxUrl, this.parameter, this.ajaxHeaders, this.method.parameters);
 							this.parameter = _.cloneDeep(this.newParameter);
 							this.method = _.cloneDeep(this.newMethod);
+							this.cleanForParameter();
 							this.$emit('set-child-state', '');
 						}
 					});
 				},
-				deleteParameter(parent, item) {
-					this.removeItem(parent.parameters, item);
+				cleanForParameter() {
+					this.selectedMethod = _.cloneDeep(this.newMethod);
+					this.selectedHeader = _.cloneDeep(this.newHeader);
+					this.header = _.cloneDeep(this.newHeader);
 				},
-				selectParameter(item, i, m) {
+				deleteParameter(parent, item) {
+					this.removeItem(this.ajaxUrl, item, this.ajaxHeaders, parent.parameters);
+				},
+				clickSelectParameter(parent, item) {
+					if (this.isEditingMethods) {
+						this.$validator.validateAll().then((result) => {
+							if (result) {
+								this.selectParameter(parent, item);
+							}
+						});
+					} else {
+						this.selectParameter(parent, item);
+					}
+				},
+				selectParameter(parent, item) {
 					this.selectedParameter = _.cloneDeep(item);
 					this.parameter = item;
-					this.selectedParameterIndex = i;
-					this.selectedMethodIndex = m;
+					this.method = parent;
+					this.cleanForParameter();
 					this.$emit('set-child-state', 'edit-parameter');
 					$('.authentication-column, .authorization-column').addClass('column-minimize');
 				},
-				isSelectedParameter(i, m) {
-					return i === this.selectedParameterIndex && m === this.selectedMethodIndex;
+				isSelectedParameter(parent, item) {
+					return parent === this.method.uuid && item === this.parameter.uuid;
 				},
 				updateParameter(item) {
 					this.$validator.validateAll().then((result) => {
 						if (result) {
 							this.parameter = _.cloneDeep(this.newParameter);
 							this.selectedParameter = _.cloneDeep(this.newParameter);
-							this.selectedParameterIndex = null;
-							this.selectedMethodIndex = null;
+							this.method = _.cloneDeep(this.newMethod);
 							this.$emit('set-child-state', '');
 							$('.authentication-column, .authorization-column').removeClass('column-minimize');
 						}
 					});
 				},
 				cancelParameter() {
-					// var index = this.method.parameters.indexOf(this.parameter);
-					// this.method.parameters[index] = this.selectedParameter;
+					var index = this.method.parameters.indexOf(this.parameter);
+					this.method.parameters[index] = this.selectedParameter;
 					this.parameter = _.cloneDeep(this.newParameter);
 					this.selectedParameter = _.cloneDeep(this.newParameter);
 					this.method = _.cloneDeep(this.newMethod);
-					this.selectedParameterIndex = null;
+					this.cleanForParameter();
 					this.$emit('set-child-state', '');
 					$('.authentication-column, .authorization-column').removeClass('column-minimize');
 				},
 			// ■■ Method
 				clickAddMethod() {
+					if (this.isEditingMethods) {
+						this.$validator.validateAll().then((result) => {
+							if (result) {
+								this.openAddMethod(parent);
+							}
+						});
+					} else {
+						this.openAddMethod(parent);
+					}
+				},
+				openAddMethod() {
 					this.$emit('set-child-state', 'add-method');
 					this.method = _.cloneDeep(this.newMethod);
 					this.selectedMethod = _.cloneDeep(this.newMethod);
@@ -334,43 +417,53 @@ define(['Vue', 'axios', 'vee-validate', 'vue-select', 'moment'], function(Vue, a
 					this.$validator.validateAll().then((result) => {
 						if (result) {
 							this.method.created = moment().toISOString();
-							this.addItem(this.api.methods, this.method);
+							this.method.uuid = this.uuidv4();
+							this.addItem(this.ajaxUrl, this.method, this.ajaxHeaders, this.api.methods);
 							this.method = _.cloneDeep(this.newMethod);
-							this.selectedParameter = _.cloneDeep(this.newParameter);
-							this.selectedHeader = _.cloneDeep(this.newHeader);
-							this.selectedParameterIndex = null;
-							this.selectedHeaderIndex = null;
+							this.cleanForMethod();
 							this.$emit('set-child-state', '');
-							return;
 						}
 					});
 				},
+				cleanForMethod() {
+					this.selectedHeader = _.cloneDeep(this.newHeader);
+					this.selectedParameter = _.cloneDeep(this.newParameter);
+					this.parameter = _.cloneDeep(this.newParameter);
+					this.header = _.cloneDeep(this.newHeader);
+				},
 				deleteMethod(item) {
-					this.removeItem(this.api.methods, item);
+					this.removeItem(this.ajaxUrl, item, this.ajaxHeaders, this.api.methods);
+				},
+				clickSelectMethod(item) {
+					if (this.isEditingMethods) {
+						this.$validator.validateAll().then((result) => {
+							if (result) {
+								this.selectMethod(item);
+								$('#method'+item.uuid).collapse('show');
+							}
+						});
+					} else {
+						this.selectMethod(item);
+						$('#method'+item.uuid).collapse('show');
+					}
 				},
 				selectMethod(item, i) {
+					this.$emit('set-child-state', 'edit-method');
 					this.selectedMethod = _.cloneDeep(item);
 					this.method = item;
-					this.selectedMethodIndex = i;
-					this.selectedParameter = _.cloneDeep(this.newParameter);
-					this.selectedHeader = _.cloneDeep(this.newHeader);
-					this.selectedParameterIndex = null;
-					this.selectedHeaderIndex = null;
-					this.$emit('set-child-state', 'edit-method');
+					this.cleanForMethod();
 					$('.authentication-column, .authorization-column').addClass('column-minimize');
 				},
-				isSelectedMethod(i) {
-					return i === this.selectedMethodIndex;
+				isSelectedMethod(item) {
+					return item === this.selectedMethod.uuid;
 				},
 				updateMethod(item) {
 					this.$validator.validateAll().then((result) => {
 						if (result) {
 							this.method = _.cloneDeep(this.newMethod);
 							this.selectedMethod = _.cloneDeep(this.newMethod);
-							this.selectedMethodIndex = null;
 							this.$emit('set-child-state', '');
 							$('.authentication-column, .authorization-column').removeClass('column-minimize');
-							return;
 						}
 					});
 				},
@@ -379,7 +472,7 @@ define(['Vue', 'axios', 'vee-validate', 'vue-select', 'moment'], function(Vue, a
 					this.api.methods[index] = this.selectedMethod;
 					this.method = _.cloneDeep(this.newMethod);
 					this.selectedMethod = _.cloneDeep(this.newMethod);
-					this.selectedMethodIndex = null;
+					this.cleanForMethod();
 					this.$emit('set-child-state', '');
 					$('.authentication-column, .authorization-column').removeClass('column-minimize');
 				},
@@ -395,26 +488,56 @@ define(['Vue', 'axios', 'vee-validate', 'vue-select', 'moment'], function(Vue, a
 					}
 				},
 				
-			selectApi(item, i) {
-				// axios.get('/data/my-api.json?id=' + item.id).then(response => {
-				axios.get('/data/my-api.json').then(response => {
+			selectApi(item, state) {
+				this.beforeCancelApi();
+				axios.get(this.ajaxUrl + '?id=' + item.uuid).then(response => {
 					// this.api = Object.assign(response.data.myApi, item);
 					// this.api = Object.assign({}, item, response.data.myApi);
 					// this.selectedApi = _.cloneDeep(item);
-					this.selectedApiIndex = i;
 					// this.api = response.data.myApi;
 					this.api = Object.assign(item, response.data.myApi);
+					this.$emit('set-state', state);
 					this.selectedApi = _.cloneDeep(this.api);
-					$('#api'+i).collapse('show');
-					if ( this.rootState != 'preview') {
+					// console.log("this.api.uuid: ", this.api.uuid);
+					// $('#api'+this.api.uuid).collapse('show');
+					if ( state != 'preview') {
 						// $('.list-column').addClass('column-minimize');
+						this.$refs.dropImage.removeAllFiles(true);
+						if (this.api.image != '') {
+							this.$refs.dropImage.manuallyAddFile({ size: 123, name: this.api.image }, this.api.image);
+						}
 					}
 				}, error => {
 					console.error(error);
 				});
 			},
 			isSelectedApi(i) {
-				return i === this.selectedApiIndex;
+				return i === this.api.uuid;
+			},
+			wwwwww() {
+				if (this.isChanged) {
+					console.log("this.isChanged: ", this.isChanged);
+					console.log("this.changes: ", this.changes);
+					this.$toast('question', {color: 'red', title: 'CHANGES!', message: this.changes});
+					// console.log("toastAnswer----------: ", this.$toastAnswer() );
+					// this.cancelApi2();
+				} else {
+					this.cancelApi2()
+				}
+			},
+			beforeCancelApi() {
+				if (this.isChanged) {
+					var changes = [];
+					for (var prop in this.changes) {
+						changes.push(prop);
+					}
+					var r = confirm('Are you sure to cancel editing this API?' + '\nCHANGES: ' + changes.join(', '));
+					if (r == true) {
+						this.cancelApi()
+					}
+				} else {
+					this.cancelApi()
+				}
 			},
 			cancelApi() {
 				var index = this.myApiList.indexOf(this.api);
@@ -427,9 +550,13 @@ define(['Vue', 'axios', 'vee-validate', 'vue-select', 'moment'], function(Vue, a
 				this.selectedParameter = _.cloneDeep(this.newParameter);
 				this.header = _.cloneDeep(this.newHeader);
 				this.selectedHeader = _.cloneDeep(this.newHeader);
-				this.selectedApiIndex = null;
 				this.$emit('set-state', 'init');
+				this.$emit('set-child-state', '');
+				this.isEditingMethods = false;
 				$('.column-maximize').removeClass('column-maximize');
+				this.$refs.dropSpecs.removeAllFiles(true);
+				this.$refs.dropImage.removeAllFiles(true);
+				this.specData = '';
 				// $('.list-column').removeClass('column-minimize');
 			},
 			saveApi() {
@@ -440,21 +567,32 @@ define(['Vue', 'axios', 'vee-validate', 'vue-select', 'moment'], function(Vue, a
 				// console.log("this.myApiList[index]: ", this.myApiList[index]);
 				this.api.updated = moment().toISOString();
 				axios.post(this.ajaxUrl, this.api, this.ajaxHeaders).then(response => {
-					console.log("response: ", response);
-					// var xxx = this.myApiList.filter((item) => item.id == this.api.id );
+					// console.log("response: ", response);
+					// this.api = response.data;
+					// this.selectedApi = _.cloneDeep(this.api);
+					this.selectedApi = response.data;
+					this.$toast('success', {message: '<strong>' + this.api.name + '</strong> saved', title: 'API SAVED'});
+					this.isChanged = false;
+					// var xxx = this.myApiList.filter((item) => item.uuid == this.api.uuid );
 					// console.log("xxx: ", xxx);
 				}, error => {
 					alert(error.code + ': ' + error.message);
 				})
+			},
+			chooseSpec() {
+				this.$emit('set-state', 'create');
 			},
 			createApi() {
 				this.$validator.validateAll().then((result) => {
 					if (result) {
 						this.api.created = moment().toISOString();
 						axios.post(this.ajaxUrl, this.api, this.ajaxHeaders).then(response => {
-							this.addItem(this.myApiList, this.api).then(response => {
+							this.addItem(this.ajaxUrl, this.api, this.ajaxHeaders, this.myApiList).then(response => {
 								// alert('Form Submitted!');
 								this.$emit('set-state', 'edit');
+								this.selectedApi = _.cloneDeep(this.api);
+								$('#api'+this.api.uuid).collapse('show');
+								this.$toast('success', {message: '<strong>' + this.api.name + '</strong> successfully registered', title: 'API CREATED'});
 								// $('.list-column').addClass('column-minimize');
 							});
 						}, error => {
@@ -474,32 +612,39 @@ define(['Vue', 'axios', 'vee-validate', 'vue-select', 'moment'], function(Vue, a
 			},
 			getPage(p, d) {
 				var param = d || '';
-				axios.get(this.ajaxApiListUrl + '?page=' + p + param, this.ajaxHeaders)
+				axios.get(abyss.ajax.my_api_list + '?page=' + p + param, this.ajaxHeaders)
 				.then(response => {
-					console.log("p: ", p);
 					this.myApiList = response.data.myApiList;
 					this.paginate = this.makePaginate(response.data);
 				}, error => {
 					console.error(error);
 				});
 			},
-			apiListAction(item) {
+			apiListAction(item, prop, val) {
 				axios.post(this.ajaxUrl, item, this.ajaxHeaders).then(response => {
 					console.log("response: ", response);
+					item[prop] = val;
+					this.$toast('info', {message: prop + ' changed ' + ' to <strong>' + val + '</strong>', title: prop + ': ' + val, position: 'topLeft'})
 				}, error => {
 					alert(error.code + ': ' + error.message);
 				})
 			},
 			categoriesToList() {
-				this.api.categoryList = this.api.categories.map(e => e.name).join(', ');
-				console.log("this.api.categories: ", this.api.categories);
-				console.log("this.api.categoryList: ", this.api.categoryList);
+				if (this.rootState == 'edit' || this.rootState == 'create') {
+					this.api.categoryList = this.api.categories.map(e => e.name).join(', ');
+					console.log("this.api.categories: ", this.api.categories);
+					console.log("this.api.categoryList: ", this.api.categoryList);
+				}
 			},
 			tagsToList() {
-				this.api.tagList = this.api.tags.map(e => e.name).join(', ');
+				if (this.rootState == 'edit' || this.rootState == 'create') {
+					this.api.tagList = this.api.tags.map(e => e.name).join(', ');
+				}
 			},
 			groupsToList() {
-				this.api.groupList = this.api.groups.map(e => e.name).join(', ');
+				if (this.rootState == 'edit' || this.rootState == 'create') {
+					this.api.groupList = this.api.groups.map(e => e.name).join(', ');
+				}
 			},
 			checkAuthentication(a, i) {
 				if (i == 0 && a.enabled == true ) {
@@ -534,65 +679,63 @@ define(['Vue', 'axios', 'vee-validate', 'vue-select', 'moment'], function(Vue, a
 			},
 			getApiOptions(search, loading) {
 				loading(true)
-				axios.get(this.ajaxApiListUrl, {
+				axios.get(abyss.ajax.my_api_list, {
 					params: {
 						q: search
 					}
 				})
 				.then(response => {
-					console.log(response);
 					this.apiOptions = response.data.myApiList;
 					loading(false);
 				})
 			},
 			getCategoryOptions(search, loading) {
 				loading(true)
-				axios.get('/data/api-category-list.json', {
+				axios.get(abyss.ajax.api_category_list, {
 					params: {
 						name: search
 					}
 				})
 				.then((response) => {
-					console.log(response);
 					this.categoryOptions = response.data.categoryList;
 					loading(false);
 				})
 			},
 			getTagOptions(search, loading) {
 				loading(true)
-				axios.get('/data/api-tag-list.json', {
+				axios.get(abyss.ajax.api_tag_list, {
 					params: {
 						name: search
 					}
 				})
 				.then((response) => {
-					console.log(response);
 					this.tagOptions = response.data.tagList;
 					loading(false);
 				})
 			},
 			getGroupOptions(search, loading) {
 				loading(true)
-				axios.get('/data/api-group-list.json', {
+				axios.get(abyss.ajax.api_group_list, {
 					params: {
 						name: search
 					}
 				})
 				.then((response) => {
-					console.log(response);
 					this.groupOptions = response.data.groupList;
 					loading(false);
 				})
 			},
-			difference(object, base) {
-				function changes(object, base) {
-					return _.transform(object, function(result, value, key) {
-						if (!_.isEqual(value, base[key])) {
-							result[key] = (_.isObject(value) && _.isObject(base[key])) ? changes(value, base[key]) : value;
-						}
-					});
-				}
-				return changes(object, base);
+			xxxxx() {
+				// this.api.tags.forEach((value, key) => {
+					// console.log("value, key: ", value, key);
+				// });
+				var newTags = this.api.tags.filter((item) => item.uuid == null );
+				newTags.forEach((value, key) => {
+					value.uuid = this.uuidv4();
+				});
+				// console.log("newTags: ", newTags);
+				this.tagOptions = Object.assign({}, this.tagOptions, this.api.tags);
+				this.$emit('set-menu', this.categoryOptions, this.tagOptions, this.groupOptions, this.stateOptions);
 			},
 		},
 		computed: {
@@ -602,8 +745,26 @@ define(['Vue', 'axios', 'vee-validate', 'vue-select', 'moment'], function(Vue, a
 				handler(val, oldVal) {
 					// console.log('old val', oldVal);
 					// console.log('new val', val);
-					var xxx = this.difference(val, this.selectedApi);
-					console.log("xxx: ", xxx);
+					this.changes = this.checkDiff(val, this.selectedApi);
+					console.log("this.changes: ", this.changes);
+					if ( Object.keys(this.changes).length == 0 || (Object.keys(this.changes).length == 1 && Object.keys(this.changes).some(v => v == 'updated')) ) {
+						this.isChanged = false; 
+					} else {
+						this.isChanged = true; 
+					}
+					console.log("this.isChanged: ", Object.keys(this.changes).length, this.isChanged);
+				},
+				deep: true
+			},
+			childState: {
+				handler(val, oldVal) {
+					console.log('old val', oldVal);
+					console.log('new val', val);
+					if (val == '') {
+						this.isEditingMethods = false;
+					} else {
+						this.isEditingMethods = true;
+					}
 				},
 				deep: true
 			}
@@ -612,7 +773,7 @@ define(['Vue', 'axios', 'vee-validate', 'vue-select', 'moment'], function(Vue, a
 			this.preload();
 		},
 		created() {
-			this.log(this.$options.name);
+			// this.log(this.$options.name);
 			this.$emit('set-page', 'my-apis', 'init');
 			// this.$emit('set-child-state', 'xxx');
 			this.newApi = _.cloneDeep(this.api);

@@ -15,7 +15,7 @@ define(['config', 'jquery', 'bootstrap', 'domready'], function(config, $){
 	UI.layout = {
 		init: function(event, isthy) {
 			// console.log("UI.layout.init: ", isthy, event);
-			$('.preloader-it > .la-anim-1').addClass('la-animate');
+			// $('.preloader-it > .la-anim-1').addClass('la-animate');
 			this.preload();
 			this.makeCarousel();
 			this.navLeft();
@@ -620,6 +620,11 @@ define(['config', 'jquery', 'bootstrap', 'domready'], function(config, $){
 		});
 	};
 	UI.formPicker = function() {
+		if ($('.input-color').length) { 
+			require(['css!colorpicker-css', 'colorpicker'],function(){
+				$('.input-color').initz_inputcolor();
+			});
+		}
 		// console.log("formPicker: ");
 		if ($('.colorpicker').length) { 
 			require(['css!colorpicker-css', 'colorpicker'],function(css1){
@@ -766,7 +771,7 @@ define(['config', 'jquery', 'bootstrap', 'domready'], function(config, $){
 				$(target).toggleClass(cls);
 				$(target).removeClass(remove);
 			}
-			console.log("target: ", i, target, cls, $(target).is('.' + cls));
+			// console.log("target: ", i, target, cls, $(target).is('.' + cls));
 			if ($(target).is('.' + cls)) {
 				$thiz.addClass('active');
 			} else if ($(target).not('.' + cls)) {
@@ -820,6 +825,37 @@ define(['config', 'jquery', 'bootstrap', 'domready'], function(config, $){
 			if ($others.is(':checked')) {
 				$exp.prop('checked', false).change();
 			}
+		});
+	};
+	$.fn.initz_inputcolor = function() { 
+		$(this).each(function(i, el) {
+			var $thiz = $(this);
+			var zbg = $thiz.data('targetbg')||'body';
+			var ztxt = $thiz.data('targettxt')||'h1,h2,h3';
+			var zformat = $thiz.data('format')||'rgba';
+			// var bodyStyle = $(zbg)[0].style;
+			$thiz.colorpicker({
+				format: zformat, 
+				component: '.add-on', 
+				sliders: {
+					saturation: {
+						maxLeft: 200,
+						maxTop: 200
+					},
+					hue: {
+						maxTop: 200
+					},
+					alpha: {
+						maxTop: 200
+					}
+				},
+				// color: bodyStyle.backgroundColor
+			}).on('changeColor', function(ev) {
+				$(zbg).attr('style', 'background-color: ' + ev.color + ' !important');
+				$(ztxt).attr('style', 'color: ' + ev.color + ' !important');
+			}).on('hidePicker', function(ev) {
+			});
+			
 		});
 	};
 	UI.datez = {

@@ -1,22 +1,38 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <body>
-	<div th:fragment="modal" id="responsive-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div th:fragment="modal" id="taxModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 		<div class="modal-dialog">
-			<div class="modal-content">
+			<div class="modal-content" v-if="taxAction == 'add'">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-					<h5 class="modal-title">Add New Group</h5>
+					<h5 class="modal-title">Add New {{taxTitle}}</h5>
 				</div>
 				<div class="modal-body">
 					<div class="form-group">
-						<label for="apiGroupName">Group Name:</label>
-						<input type="text" class="form-control" id="apiGroupName">
+						<label v-bind:for="taxTitle+'Name'">{{taxTitle}} Name:</label>
+						<input type="text" class="form-control" v-bind:id="taxTitle+'Name'" v-model="tax.name">
 					</div>
 				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary btn-rounded" data-dismiss="modal">Close</button>
-					<button type="button" class="btn btn-primary btn-rounded">Add Group</button>
+				<div class="modal-footer d-flex justify-content-between">
+					<button type="button" class="btn btn-secondary btn-rounded text-uppercase" data-dismiss="modal" v-on:click="cancelTax(tax)">Close</button>
+					<button type="button" class="btn btn-primary btn-rounded text-uppercase" data-dismiss="modal" v-on:click="addTax()">Add {{taxTitle}}</button>
+				</div>
+			</div>
+			<div class="modal-content" v-if="taxAction == 'edit'">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+					<h5 class="modal-title">Edit {{taxTitle}}</h5>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<label v-bind:for="taxTitle+'Name'">{{taxTitle}} Name:</label>
+						<input type="text" class="form-control" v-bind:id="taxTitle+'Name'" v-model="tax.name">
+					</div>
+				</div>
+				<div class="modal-footer d-flex justify-content-between">
+					<button type="button" class="btn btn-secondary btn-rounded text-uppercase" data-dismiss="modal" v-on:click="restoreTax(tax)">Close</button>
+					<button type="button" class="btn btn-primary btn-rounded text-uppercase" data-dismiss="modal" v-on:click="editTax(tax)">Save {{taxTitle}}</button>
 				</div>
 			</div>
 		</div>

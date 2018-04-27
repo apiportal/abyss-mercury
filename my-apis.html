@@ -12,7 +12,7 @@
 <div id="portal" class="wrapper" v-bind:class="pageClass">
 	<div th:replace="webroot/frags/layout/navs.htm :: navs"></div>
 	<main class="page-wrapper">
-	<my-apis inline-template v-on:set-state="setState" v-on:set-page="setPage" v-bind:root-state="rootState" v-on:set-child-state="setChildState" v-bind:child-state="childState">
+	<my-apis inline-template v-on:set-state="setState" v-on:set-page="setPage" v-bind:root-state="rootState" v-on:set-child-state="setChildState" v-bind:child-state="childState" v-on:set-menu="setMenu" v-bind.sync="rootCategories">
 		<div class="columns">
 			<aside class="column column-aside list-column">
 				<div class="nicescroll-bar">
@@ -35,27 +35,26 @@
 							<div class="nav-actions dropdown dropdown-hover">
 								<button type="button"><i class="fas fa-ellipsis-h"></i></button>
 								<ul class="dropdown-menu dropdown-menu-right" role="menu" data-dropdown-in="slideInRight" data-dropdown-out="slideOutRight">
-									<li><a href="#" v-on:click="$emit('set-state', 'edit');selectApi(api, index)"><i class="fas fa-edit"></i>Edit</a></li>
+									<li><a href="#" v-on:click="selectApi(api, 'edit')"><i class="fas fa-edit"></i>Edit</a></li>
 									<li><a href="#"><i class="fas fa-code-branch"></i>Create Proxy</a></li>
-									<li><a href="#" v-on:click="$emit('set-state', 'preview');selectApi('api, index')"><i class="fas fa-file-alt"></i>Preview</a></li>
+									<li><a href="#" v-on:click="selectApi(api, 'preview')"><i class="fas fa-file-alt"></i>Preview</a></li>
 									<li class="dropdown-header">VISIBILITY</li>
 									<li role="separator" class="divider"></li>
-									<li><a href="#" v-on:click="api.visibility = 'public'; apiListAction(api)"><i class="fas fa-eye"></i>Public</a></li>
-									<li><a href="#" v-on:click="api.visibility = 'private'; apiListAction(api)"><i class="fas fa-user-secret"></i>Private</a></li>
-									<li><a href="#" v-on:click="api.visibility = 'Only registered users'; apiListAction(api)"><i class="fas fa-user"></i>Only registered users</a></li>
+									<li><a href="#" v-on:click="apiListAction(api, 'visibility', 'public')"><i class="fas fa-eye"></i>Public</a></li>
+									<li><a href="#" v-on:click="apiListAction(api, 'visibility', 'private')"><i class="fas fa-user-secret"></i>Private</a></li>
+									<li><a href="#" v-on:click="apiListAction(api, 'visibility', 'Only registered users')"><i class="fas fa-user"></i>Only registered users</a></li>
 									<li class="dropdown-header">CHANGE STATE</li>
 									<li role="separator" class="divider"></li>
-									<li><a href="#" v-on:click="api.state = 'draft'; apiListAction(api)"><i class="fas fa-circle stat-draft"></i>Draft</a></li>
-									<li><a href="#" v-on:click="api.state = 'staged'; apiListAction(api)"><i class="fas fa-circle stat-staged"></i>Stage</a></li>
-									<li><a href="#" v-on:click="api.state = 'published'; apiListAction(api)"><i class="fas fa-circle stat-published"></i>Publish</a></li>
-									<li><a href="#" v-on:click="api.state = 'promoted'; apiListAction(api)"><i class="fas fa-circle stat-promoted"></i>Promote</a></li>
-									<li><a href="#" v-on:click="api.state = 'demoted'; apiListAction(api)"><i class="fas fa-circle stat-demoted"></i>Demote</a></li>
-									<li><a href="#" v-on:click="api.state = 'retired'; apiListAction(api)"><i class="fas fa-circle stat-retired"></i>Retire</a></li>
-									<li><a href="#" v-on:click="api.state = 'deleted'; apiListAction(api)"><i class="fas fa-trash-alt"></i>Delete</a></li>
+									<li><a href="#" v-on:click="apiListAction(api, 'state', 'draft')"><i class="fas fa-circle stat-draft"></i>Draft</a></li>
+									<li><a href="#" v-on:click="apiListAction(api, 'state', 'staged')"><i class="fas fa-circle stat-staged"></i>Stage</a></li>
+									<li><a href="#" v-on:click="apiListAction(api, 'state', 'published')"><i class="fas fa-circle stat-published"></i>Publish</a></li>
+									<li><a href="#" v-on:click="apiListAction(api, 'state', 'promoted')"><i class="fas fa-circle stat-promoted"></i>Promote</a></li>
+									<li><a href="#" v-on:click="apiListAction(api, 'state', 'demoted')"><i class="fas fa-circle stat-demoted"></i>Demote</a></li>
+									<li><a href="#" v-on:click="apiListAction(api, 'state', 'retired')"><i class="fas fa-circle stat-retired"></i>Retire</a></li>
+									<li><a href="#" v-on:click="apiListAction(api, 'state', 'deleted')"><i class="fas fa-trash-alt"></i>Delete</a></li>
 								</ul>
 							</div>
-							<!-- <a href="#" data-toggle="collapse" v-on:click="getApiDetails(api)" v-bind:data-target="'#api'+index" v-bind:aria-controls="'api'+index"> -->
-							<a href="#" data-toggle="collapse" v-bind:data-target="'#api'+index" v-bind:aria-controls="'api'+index" v-bind:class="{'active': isSelectedApi(index)}">
+							<a href="#" data-toggle="collapse" v-bind:data-target="'#api'+api.uuid" v-bind:aria-controls="'api'+api.uuid" v-bind:class="{'active': isSelectedApi(api.uuid)}">
 								<div class="">
 									<i v-bind:title="api.state" class="fas fa-circle" v-bind:class="'stat-' + api.state"></i>
 									<strong>{{api.name}}</strong> <small class="text-muted">{{api.version}}</small>
@@ -63,7 +62,7 @@
 								<small>Proxies: <strong>{{api.proxies.length}}</strong></small>
 								<small class="text-muted float-right">{{api.created | formatDate}}</small>
 							</a>
-							<ul v-bind:id="'api'+index" class="collapse">
+							<ul v-bind:id="'api'+api.uuid" class="collapse">
 								<li>
 									<div class="px-3 txt-dark border-top">
 										<div class="small pt-2">
@@ -106,7 +105,7 @@
 				</div>
 			</aside>
 			<aside class="column column-aside create-column">
-				<div class="nicescroll-bar" v-if="rootState == 'create' || rootState == 'edit'">
+				<div class="nicescroll-bar">
 					<div class="clearfix border-bottom column-header column-min-button">
 						<h5 class="column-header-title">Basic Information</h5>
 					</div>
@@ -129,6 +128,10 @@
 							<label for="description">Description:</label>
 							<textarea type="text" name="description" id="description" v-model="api.description" class="form-control textarea_editor" placeholder="Enter API's Description"></textarea>
 						</div>
+						<div class="form-group">
+							<label for="qosPolicy">Max Call Capacity (QoS Policy):</label>
+							<input type="text" name="qosPolicy" id="qosPolicy" v-model="api.qosPolicy" class="form-control" placeholder="Max Call Capacity (QoS Policy)">
+						</div>
 						<div id="specsFrom" v-show="rootState == 'create' && api.specs != 'scratch'">
 							<div class="form-group">
 								<span class="radio radio-primary d-inline-block mr-3">
@@ -146,36 +149,30 @@
 									<input type="text" name="specsFileUrl" id="specsFileUrl" class="form-control" placeholder="">
 								</div>
 							</div>
-							<div id="specsFromFile" class="specs-uploads hide">
+							<div id="specsFromFile" class="specs-uploads hide dz-single">
 								<div class="form-group">
-									<div class="dropzone">
-										Click or drop file here
-									</div>
+									<vue-dropzone ref="dropSpecs" id="dropSpecs" :options="dropSpecsOptions" v-on:vdropzone-success="dropSpecsSuccess"></vue-dropzone>
 								</div>
 							</div>
 						</div>
 						<div class="row form-group create-item"><a href="#" data-target=".api-edit-advanced" data-class="edit-item" class="text-link nav-link d-block brd-b js-toggleclass">Advanced</a></div>
 						<div class="api-edit-advanced edit-item">
-							<div class="form-group">
-								<label for="qosPolicy">Max Call Capacity (QoS Policy):</label>
-								<input type="text" name="qosPolicy" id="qosPolicy" v-model="api.qosPolicy" class="form-control" placeholder="Max Call Capacity (QoS Policy)">
+							<div class="form-group dz-single">
+								<label for="group">Add Picture:</label>
+								<vue-dropzone ref="dropImage" id="dropImage" :options="dropImageOptions" v-on:vdropzone-success="dropImageSuccess"></vue-dropzone>
 							</div>
-							<div class="form-group v-select-color-green">
+							<div class="form-group v-select-color-green v-select-inline">
 								<label for="categories">Add to Categories:</label>
 								<v-select label="name" multiple :filterable="true" :options="categoryOptions" @search="getCategoryOptions" v-model="api.categories" :on-change="categoriesToList"></v-select>
 							</div>
-							<div class="form-group v-select-color-purple">
+							<div class="form-group v-select-color-purple v-select-inline">
 								<label for="tags">Add Tags:</label>
 								<v-select label="name" multiple taggable :filterable="false" :options="tagOptions" @search="getTagOptions" v-model="api.tags" :on-change="tagsToList"></v-select>
 							</div>
-							<div class="form-group v-select-color-pink">
+							<div class="form-group v-select-color-pink v-select-inline">
 								<label for="group">Add Group:</label>
 								<v-select label="name" multiple :filterable="false" :options="groupOptions" @search="getGroupOptions" v-model="api.groups" :on-change="groupsToList"></v-select>
 							</div>
-							<!-- <div class="form-group">
-								<label for="group">Add Picture:</label>
-								<vue-dropzone id="drop1" :options="dropzoneOptions"></vue-dropzone>
-							</div> -->
 						</div>
 						<div class="form-group clearfix text-center create-item">
 							<button type="button" class="btn btn-hover btn-rounded float-sm-right" v-on:click="createApi()">CREATE API</button>
@@ -185,7 +182,7 @@
 				</div>
 			</aside>
 			<aside class="column column-aside edit-column authentication-column">
-				<div class="nicescroll-bar" v-if="rootState == 'create' || rootState == 'edit'">
+				<div class="nicescroll-bar">
 					<div class="clearfix column-header column-min-button">
 						<h5 class="column-header-title">Authentication</h5>
 					</div>
@@ -319,7 +316,7 @@
 				</div>
 			</aside>
 			<aside class="column column-aside edit-column authorization-column">
-				<div class="nicescroll-bar" v-if="rootState == 'create' || rootState == 'edit'">
+				<div class="nicescroll-bar">
 					<div class="clearfix column-header column-min-button">
 						<h5 class="column-header-title">Authorization</h5>
 					</div>
@@ -369,13 +366,13 @@
 							<div class="nav-actions dropdown">
 								<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
 								<ul class="dropdown-menu dropdown-menu-right" role="menu">
-									<li><a href="#" v-on:click="selectMethod(method, mindex);" data-toggle="collapse" v-bind:data-target="'#method'+mindex" v-bind:aria-controls="'method'+mindex"><i class="fas fa-edit"></i>Edit</a></li>
-									<li><a href="#" v-on:click="clickAddParameter(method);" data-toggle="collapse" v-bind:data-target="'#method'+mindex" v-bind:aria-controls="'method'+mindex"><i>P</i> Add Parameter</a></li>
-									<li><a href="#" v-on:click="clickAddHeader(method);" data-toggle="collapse" v-bind:data-target="'#method'+mindex" v-bind:aria-controls="'method'+mindex"><i>H</i> Add Header</a></li>
+									<li><a href="#" v-on:click="clickSelectMethod(method);"><i class="fas fa-edit"></i>Edit</a></li>
+									<li><a href="#" v-on:click="clickAddParameter(method);"><i>P</i> Add Parameter</a></li>
+									<li><a href="#" v-on:click="clickAddHeader(method);"><i>H</i> Add Header</a></li>
 									<li><a href="#" v-on:click="deleteMethod(method)"><i class="fas fa-trash-alt"></i>Delete</a></li>
 								</ul>
 							</div>
-							<a href="#" data-toggle="collapse" v-bind:data-target="'#method'+mindex" v-bind:aria-controls="'method'+mindex" v-bind:class="{'active': isSelectedMethod(mindex)}">
+							<a href="#" v-bind:data-toggle="(isEditingMethods !== true) ? 'collapse' : ''" v-bind:data-target="'#method'+method.uuid" v-bind:aria-controls="'method'+method.uuid" v-bind:class="{'active': isSelectedMethod(method.uuid)}">
 								<span class="badge badge-method">{{method.verb}}</span>
 								<strong>{{method.resourcePath}}</strong>
 								<small class="d-block my-1" v-bind:title="method.description">{{method.summary}}</small>
@@ -385,7 +382,7 @@
 									<div class="fol text-right"><span class="text-muted small d-block">Headers</span> {{method.headers.length}}</div>
 								</div>
 							</a>
-							<ul v-bind:id="'method'+mindex" class="collapse">
+							<ul v-bind:id="'method'+method.uuid" class="collapse">
 								<li>
 									<div class="pb-2 px-3 small">{{method.description}}</div>
 									<ul class="nav flex-column nav-controls txt-dark">
@@ -395,11 +392,11 @@
 											</div>
 											<strong class="nav-action-header text-uppercase small">Parameters</strong>
 										</li>
-										<li class="nav-link" v-for="(param, index) in method.parameters" v-bind:class="{'active': isSelectedParameter(index, mindex)}">
+										<li class="nav-link" v-for="(param, index) in method.parameters" v-bind:class="{'active': isSelectedParameter(method.uuid, param.uuid)}">
 											<div class="nav-actions dropdown">
 												<button type="button" data-toggle="dropdown" aria-expanded="false" class="dropdown-toggle"><i class="fas fa-ellipsis-h"></i></button>
 												<ul role="menu" class="dropdown-menu dropdown-menu-right">
-													<li><a href="#" v-on:click="selectParameter(param, index, mindex);"><i class="fas fa-edit"></i>Edit</a></li>
+													<li><a href="#" v-on:click="clickSelectParameter(method, param);"><i class="fas fa-edit"></i>Edit</a></li>
 													<li><a href="#" v-on:click="deleteParameter(method, param)"><i class="fas fa-trash-alt"></i>Delete</a></li>
 												</ul>
 											</div>
@@ -422,11 +419,11 @@
 											</div>
 											<strong class="nav-action-header text-uppercase small">Headers</strong>
 										</li>
-										<li class="nav-link" v-for="(header, index) in method.headers" v-bind:class="{'active': isSelectedHeader(index, mindex)}">
+										<li class="nav-link" v-for="(header, index) in method.headers" v-bind:class="{'active': isSelectedHeader(method.uuid, header.uuid)}">
 											<div class="nav-actions dropdown">
 												<button type="button" data-toggle="dropdown" aria-expanded="false" class="dropdown-toggle"><i class="fas fa-ellipsis-h"></i></button>
 												<ul role="menu" class="dropdown-menu dropdown-menu-right">
-													<li><a href="#" v-on:click="selectHeader(header, index, mindex);"><i class="fas fa-edit"></i>Edit</a></li>
+													<li><a href="#" v-on:click="clickSelectHeader(method, header);"><i class="fas fa-edit"></i>Edit</a></li>
 													<li><a href="#" v-on:click="deleteHeader(method, header)"><i class="fas fa-trash-alt"></i>Delete</a></li>
 												</ul>
 											</div>
@@ -486,9 +483,9 @@
 							<label v-bind:for="'methodDescription'">Description:</label>
 							<input type="text" v-bind:name="'methodDescription'" v-bind:id="'methodDescription'" v-model="method.description" class="form-control" placeholder="">
 						</div>
-						<div class="form-group d-flex justify-content-between ">
+						<div class="form-group text-center d-flex justify-content-between ">
 							<button type="button" class="btn btn-secondary btn-rounded" v-on:click="cancelMethod">CANCEL</button>
-							<button type="button" class="btn btn-hover btn-rounded" v-if="childState == 'add-method'" v-on:click="addMethod">ADD</button>
+							<button type="button" class="btn btn-hover btn-rounded" v-if="childState == 'add-method'" v-on:click="addMethod">ADD METHOD</button>
 							<button type="button" class="btn btn-hover btn-rounded" v-if="childState == 'edit-method'" v-on:click="updateMethod">UPDATE</button>
 						</div>
 					</div>
@@ -535,7 +532,7 @@
 							<label v-bind:for="'parameterDescription'">Description:</label>
 							<input type="text" v-bind:name="'parameterDescription'" v-bind:id="'parameterDescription'" v-model="parameter.description" class="form-control" placeholder="">
 						</div>
-						<div class="form-group text-center">
+						<div class="form-group text-center d-flex justify-content-between">
 							<button type="button" class="btn btn-secondary btn-rounded" v-on:click="cancelParameter()">CANCEL</button>
 							<button type="button" class="btn btn-hover btn-rounded" v-if="childState == 'add-parameter'" v-on:click="addParameter()">ADD</button>
 							<button type="button" class="btn btn-hover btn-rounded" v-if="childState == 'edit-parameter'" v-on:click="updateParameter">UPDATE</button>
@@ -584,7 +581,7 @@
 							<label v-bind:for="'headerDescription'">Description:</label>
 							<input type="text" v-bind:name="'headerDescription'" v-bind:id="'headerDescription'" v-model="header.description" class="form-control" placeholder="">
 						</div>
-						<div class="form-group text-center">
+						<div class="form-group text-center d-flex justify-content-between">
 							<button type="button" class="btn btn-secondary btn-rounded" v-on:click="cancelHeader()">CANCEL</button>
 							<button type="button" class="btn btn-hover btn-rounded" v-if="childState == 'add-header'" v-on:click="addHeader()">ADD</button>
 							<button type="button" class="btn btn-hover btn-rounded" v-if="childState == 'edit-header'" v-on:click="updateHeader">UPDATE</button>
@@ -597,19 +594,19 @@
 					<h4>Register New API</h4>
 					<div class="fow bg-white mb-3">
 						<div class="fol-6 choose">
-							<input type="radio" name="specs" id="scratch" v-on:click="$emit('set-state', 'create')" v-model="api.specs" value="scratch">
+							<input type="radio" name="specs" id="scratch" v-on:click="chooseSpec" v-model="api.specs" value="scratch">
 							<label for="scratch"><span><i class="fas fa-code"></i></span>From Scratch</label>
 						</div>
 						<div class="fol-6 choose">
-							<input type="radio" name="specs" id="swagger" v-on:click="$emit('set-state', 'create')" v-model="api.specs" value="swagger">
+							<input type="radio" name="specs" id="swagger" v-on:click="chooseSpec" v-model="api.specs" value="swagger">
 							<label for="swagger"><span>{...}</span>Swagger</label>
 						</div>
 						<div class="fol-6 choose">
-							<input type="radio" name="specs" id="wsdl" v-on:click="$emit('set-state', 'create')" v-model="api.specs" value="wsdl">
+							<input type="radio" name="specs" id="wsdl" v-on:click="chooseSpec" v-model="api.specs" value="wsdl">
 							<label for="wsdl"><span><i class="fas fa-code"></i></span>WSDL</label>
 						</div>
 						<div class="fol-6 choose">
-							<input type="radio" name="specs" id="wadl" v-on:click="$emit('set-state', 'create')" v-model="api.specs" value="wadl">
+							<input type="radio" name="specs" id="wadl" v-on:click="chooseSpec" v-model="api.specs" value="wadl">
 							<label for="wadl"><span><i class="fas fa-code"></i></span>WADL</label>
 						</div>
 					</div>
@@ -620,15 +617,16 @@
 					<div class="clearfix column-header column-min-button">
 						<h5 class="column-header-title">Editor</h5>
 					</div>
-					<pre class="acedit acedit-single" data-validate="true" data-filetype="@pret" data-theme="@Page.AceTheme">{{api}}</pre>
+					<!-- <pre class="acedit acedit-single" data-validate="true" data-filetype="@pret" data-theme="@Page.AceTheme">{{api}}</pre> -->
+					<pre class="acedit acedit-single" data-validate="true" data-filetype="@pret" data-theme="@Page.AceTheme">{{specData}}</pre>
 				</div>
 				<div class="preview-item" v-if="rootState == 'preview'">
 					<div th:replace="webroot/frags/api/api-preview.htm :: apiPreview"></div>
 				</div>
 			</section>
 			<div class="edit-item btn-float-br">
-				<button type="button" class="btn btn-secondary btn-xl btn-circle" v-on:click="cancelApi()"><i class="fas fa-times"></i></button>
-				<button type="button" class="btn btn-hover btn-xl btn-circle" v-on:click="saveApi()"><i class="fas fa-save"></i></button>
+				<button type="button" class="btn btn-secondary btn-xl btn-circle" v-on:click="beforeCancelApi()"><i class="fas fa-times"></i></button>
+				<button type="button" class="btn btn-primary btn-xl btn-circle" v-bind:class="{'btn-info': isChanged}" v-on:click="saveApi()"><i class="fas fa-save"></i></button>
 			</div>
 		</div>
 	</my-apis>

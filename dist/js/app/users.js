@@ -1,4 +1,4 @@
-define(['Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'moment'], function(Vue, axios, VeeValidate, _, VueSelect, moment) {
+define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'moment'], function(abyss, Vue, axios, VeeValidate, _, VueSelect, moment) {
 	Vue.component('v-select', VueSelect.VueSelect);
 	Vue.component('users', {
 		props: {
@@ -14,34 +14,16 @@ define(['Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'moment'], funct
 				},
 				pageState: 'init',
 				paginate: {},
-				//ajaxUrl: '/abyss/users/management',
-                //ajaxUrl: 'http://192.168.21.99:38082/abyss/api/subject/getAll',
-                ajaxUrl: 'http://' + host + ':38082/abyss/api/subject/getAll',
-				// ajaxUrl: 'http://local.monasdyas.com/api/get?file=http://192.168.10.46:38081/abyss/users/management',
-				// ajaxUrl: 'http://192.168.21.180:18881/000?file=http://192.168.21.180:18881/data/user-list-abyss.json',
-				// ajaxUrl: 'http://local.abyss.com/000?file=http://192.168.10.46:38081/abyss/users/management',
-				// ajaxUrl: 'http://local.abyss.com/000?file=http://local.abyss.com/data/user-list-abyss.json',
-
-				ajaxGroupsUrl: '/abyss/user-groups/management',
-				// ajaxGroupsUrl: 'http://192.168.21.180:18881/000?file=http://192.168.21.180:18881/data/user-group-list-abyss.json',
-				// ajaxGroupsUrl: 'http://local.abyss.com/000?file=http://192.168.10.46:38081/abyss/user-groups/management',
-				// ajaxGroupsUrl: 'http://local.abyss.com/000?file=http://local.abyss.com/data/user-group-list-abyss.json',
-
-				// ajaxPermissionsUrl: '/abyss/user-permissions/management',
-				ajaxPermissionsUrl: '/data/permission-list.json',
-				// ajaxPermissionsUrl: 'http://192.168.21.180:18881/000?file=http://192.168.21.180:18881/data/permission-list.json',
-				// ajaxPermissionsUrl: 'http://local.abyss.com/000?file=http://local.abyss.com/data/permission-list.json',
-				
+				ajaxUrl: abyss.ajax.user_list,
 				ajaxHeaders: {
-
-                    timeout: 10000,
+					timeout: 10000,
 					contentType: 'application/json; charset=utf-8',
 					datatype: 'json',
-                    withCredentials : true,
+					withCredentials : true,
 					headers: {
-                        'Accept': 'application/json',
-                    	'Content-Type': 'application/json'
-                    },
+						'Accept': 'application/json',
+						'Content-Type': 'application/json'
+					}
 				},
 				selected: null,
 				resetPassword: false,
@@ -151,7 +133,7 @@ define(['Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'moment'], funct
 			},
 			getGroupOptions(search, loading) {
 				loading(true)
-				axios.get(this.ajaxGroupsUrl, {
+				axios.get(abyss.ajax.user_group_list, {
 					params: {
 						q: search
 					}
@@ -164,7 +146,7 @@ define(['Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'moment'], funct
 			},
 			getPermissionOptions(search, loading) {
 				loading(true)
-				axios.get(this.ajaxPermissionsUrl, {
+				axios.get(abyss.ajax.permission_list, {
 					params: {
 						q: search
 					}
@@ -206,7 +188,7 @@ define(['Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'moment'], funct
 				// 	}
 				// })
 				var param = d || '';
-                axios.get(this.ajaxUrl + '?page=' + p + param, this.ajaxHeaders)
+				axios.get(this.ajaxUrl + '?page=' + p + param, this.ajaxHeaders)
 				.then(response => {
 					this.userList = response.data.userList;
 					this.paginate = this.makePaginate(response.data);
@@ -234,7 +216,7 @@ define(['Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'moment'], funct
 				return i === this.selected;
 			},
 			deleteUser(item) {
-				this.removeItem(this.userList, item);
+				this.removeItem(this.ajaxUrl, item, this.ajaxHeaders, this.userList);
 			},
 			userAction(act) {
 				this.$validator.validateAll().then((result) => {
@@ -242,17 +224,15 @@ define(['Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'moment'], funct
 					if (result) {
 						if (act == 'add') {
 							this.user.created = moment().toISOString();
-							this.addItem(this.userList, this.user).then(response => {
-								// this.addItem(this.userList, this.user);
+							this.addItem(this.ajaxUrl, this.user, this.ajaxHeaders, this.userList).then(response => {
 								this.$emit('set-state', 'init');
-								// this.resetItem(this.user, this.newUser);
 								this.user = _.cloneDeep(this.newUser);
 								console.log("this.user: ", this.user );
 							});
 						}
 						if (act == 'edit') {
 							this.user.updated = moment().toISOString();
-							this.updateItem(this.userList, this.user).then(response => {
+							this.updateItem(this.ajaxUrl, this.user, this.ajaxHeaders, this.userList).then(response => {
 								this.$emit('set-state', 'init');
 								this.user = _.cloneDeep(this.newUser);
 								this.selected = null;
@@ -279,18 +259,6 @@ define(['Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'moment'], funct
 			this.log(this.$options.name);
 			this.$emit('set-page', 'users', 'init');
 			this.newUser = _.cloneDeep(this.user);
-			// axios.all([
-			// 	axios.get(this.ajaxUrl),
-			// 	// axios.get('/data/create-api.json')
-			// ]).then(
-			// 	axios.spread((userList, create) => {
-			// 		this.userList = userList.data.userList;
-			// 		this.paginate = this.makePaginate(userList.data);
-			// 		// this.$set('paginate', this.makePaginate(userList.data));
-			// 	})
-			// ).catch(error => {
-			// 	console.log(error.response)
-			// });
 			this.getPage(1);
 		}
 	});

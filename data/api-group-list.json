@@ -1,16 +1,28 @@
 {
 	"groupList": [
 		{
-			"id": 1,
+			"uuid": "cc4e71a2-c8ab-4e9e-b0fa-6721ec454da1",
 			"name": "A Group"
 		},
 		{
-			"id": 2,
+			"uuid": "874bf24c-d445-4965-bead-ac450f1f2e82",
 			"name": "B Group"
 		},
 		{
-			"id": 3,
+			"uuid": "24f454b3-3177-46b9-aa42-148d4c4184dc",
 			"name": "C Group"
+		},
+		{
+			"uuid": "8ac76386-cab5-4f8c-98b7-6541d86ad034",
+			"name": "D Group"
+		},
+		{
+			"uuid": "e0700359-b35a-4674-a796-aac2a4e9ae11",
+			"name": "E Group"
+		},
+		{
+			"uuid": "4cfa5eab-b7fb-4258-ac81-7d1fbd73e072",
+			"name": "F Group"
 		}
 	],
 	"totalPages": 6,
