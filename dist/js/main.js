@@ -10,6 +10,7 @@ if(reqVue != null) {
 }
 var reqModules = reqGetModules.split('|');
 reqModules.unshift('config');
+reqModules.unshift('global');
 if(reqVue != null) { 
 	reqModules.push('root', 'app');
 }
@@ -64,6 +65,7 @@ require.config({
 		//// init ////
 		"ace-init": "scripts/ace",
 		"config": "config",
+		"global": "/global",
 		// "vue-my-apis": "/comps/my-apis.htm",
 		"auth": "auth",
 		"error": "error",
@@ -84,6 +86,7 @@ require.config({
 		'slimscroll': ['jquery'],
 		'owlcarousel': ['jquery'],
 		'axios': ['Vue'],
+		'config': ['global'],
 		'vue-snotify': ['Vue'],
 		'vue-dropzone': ['dropzone'],
 		'jq-filepond': ['filepond'],
@@ -94,10 +97,10 @@ require.config({
 		'lodash': { exports: '_'},
 		'filepond': { exports: 'FilePond'},
 		'jq-filepond': { exports: 'FilePond'},
-		'auth': ['config', 'jquery', 'bootstrap'],
-		'error': ['config', 'jquery', 'bootstrap'],
-		'app': ['config', 'jquery', 'bootstrap', 'root'],
-		'root': [reqModules[0], reqModules[1], 'jquery', 'Vue', 'axios', 'lodash']
+		'auth': ['global', 'config', 'jquery', 'bootstrap'],
+		'error': ['global', 'config', 'jquery', 'bootstrap'],
+		'app': ['global', 'config', 'jquery', 'bootstrap', 'root'],
+		'root': [reqModules[0], reqModules[1], reqModules[2], 'jquery', 'Vue', 'axios', 'lodash']
 		// 'app': ['config', 'jquery', 'bootstrap', 'dropdown', 'vee-validate', 'moment', 'lodash']
 	},
 	deps: reqModules
