@@ -219,6 +219,10 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				console.log("file, response ", file, response);
 				this.specData = response.files;
 			},
+			dropSpecsRemoved(file, error, xhr) {
+				console.log("file, error, xhr", file, error, xhr);
+				this.specData = '';
+			},
 			dropImageSuccess(file, response) {
 				console.log("file, response ", file, response);
 				// var image = new Image();
@@ -514,17 +518,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 			isSelectedApi(i) {
 				return i === this.api.uuid;
 			},
-			wwwwww() {
-				if (this.isChanged) {
-					console.log("this.isChanged: ", this.isChanged);
-					console.log("this.changes: ", this.changes);
-					this.$toast('question', {color: 'red', title: 'CHANGES!', message: this.changes});
-					// console.log("toastAnswer----------: ", this.$toastAnswer() );
-					// this.cancelApi2();
-				} else {
-					this.cancelApi2()
-				}
-			},
 			beforeCancelApi() {
 				if (this.isChanged) {
 					var changes = [];
@@ -725,7 +718,18 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					loading(false);
 				})
 			},
-			xxxxx() {
+			wwwwww() {
+				if (this.isChanged) {
+					console.log("this.isChanged: ", this.isChanged);
+					console.log("this.changes: ", this.changes);
+					this.$toast('question', {color: 'red', title: 'CHANGES!', message: this.changes});
+					// console.log("toastAnswer----------: ", this.$toastAnswer() );
+					// this.cancelApi2();
+				} else {
+					this.cancelApi2()
+				}
+			},
+			taxonomies() {
 				// this.api.tags.forEach((value, key) => {
 					// console.log("value, key: ", value, key);
 				// });
@@ -733,9 +737,10 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				newTags.forEach((value, key) => {
 					value.uuid = this.uuidv4();
 				});
-				// console.log("newTags: ", newTags);
+				console.log("newTags: ", newTags);
 				this.tagOptions = Object.assign({}, this.tagOptions, this.api.tags);
-				this.$emit('set-menu', this.categoryOptions, this.tagOptions, this.groupOptions, this.stateOptions);
+				console.log("this.tagOptions: ", this.tagOptions);
+				// this.$emit('set-menu', this.api.categories, this.api.tags., this.api.groups, this.stateOptions);
 			},
 		},
 		computed: {

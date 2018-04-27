@@ -224,19 +224,29 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'moment', 'izitoast', 'vue-izi
 				this.cancelTax();
 			},
 			addTax() {
-				var item = _.cloneDeep(this.tax);
-				item.uuid = this.uuidv4();
-				item.count = 0;
-				this.addItem(abyss.ajax.index, item, this.ajaxHeaders, this.menu.api[this.taxList]).then(response => {
-					console.log("response: ", response);
-					this.cancelTax();
+				this.$validator.validateAll().then((result) => {
+					if (result) {
+						var item = _.cloneDeep(this.tax);
+						item.uuid = this.uuidv4();
+						item.count = 0;
+						this.addItem(abyss.ajax.index, item, this.ajaxHeaders, this.menu.api[this.taxList]).then(response => {
+							console.log("response: ", response);
+							this.cancelTax();
+							$('#taxModal').modal("hide");
+						});
+					}
 				});
 			},
 			editTax() {
-				var item = _.cloneDeep(this.tax);
-				this.updateItem(abyss.ajax.index, item, this.ajaxHeaders, this.menu.api[this.taxList]).then(response => {
-					console.log("response: ", response);
-					this.cancelTax();
+				this.$validator.validateAll().then((result) => {
+					if (result) {
+						var item = _.cloneDeep(this.tax);
+						this.updateItem(abyss.ajax.index, item, this.ajaxHeaders, this.menu.api[this.taxList]).then(response => {
+							console.log("response: ", response);
+							this.cancelTax();
+							$('#taxModal').modal("hide");
+						});
+					}
 				});
 			},
 			setTax(action, title, list, item) {

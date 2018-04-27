@@ -151,7 +151,7 @@
 							</div>
 							<div id="specsFromFile" class="specs-uploads hide dz-single">
 								<div class="form-group">
-									<vue-dropzone ref="dropSpecs" id="dropSpecs" :options="dropSpecsOptions" v-on:vdropzone-success="dropSpecsSuccess"></vue-dropzone>
+									<vue-dropzone ref="dropSpecs" id="dropSpecs" :options="dropSpecsOptions" v-on:vdropzone-success="dropSpecsSuccess" v-on:vdropzone-removed-file="dropSpecsRemoved"></vue-dropzone>
 								</div>
 							</div>
 						</div>
