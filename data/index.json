@@ -1,0 +1,147 @@
+{
+	"defaultStates": [
+		{
+			"id": 1,
+			"name": "draft",
+			"count": 0
+		},
+		{
+			"id": 2,
+			"name": "staged",
+			"count": 0
+		},
+		{
+			"id": 3,
+			"name": "published",
+			"count": 0
+		},
+		{
+			"id": 4,
+			"name": "promoted",
+			"count": 0
+		},
+		{
+			"id": 5,
+			"name": "demoted",
+			"count": 0
+		},
+		{
+			"id": 6,
+			"name": "retired",
+			"count": 0
+		},
+		{
+			"id": 0,
+			"name": "deleted",
+			"count": 0
+		}
+	],
+	"defaultVisibility": [
+		{
+			"id": 1,
+			"name": "public",
+			"icon": "eye",
+			"count": 0
+		},
+		{
+			"id": 2,
+			"name": "private",
+			"icon": "user-secret",
+			"count": 0
+		},
+		{
+			"id": 3,
+			"name": "Only registered users",
+			"icon": "user",
+			"count": 0
+		}
+	],
+	"myApiTagList": [
+		{
+			"uuid": "551f213c-0b28-46ec-96f9-4d799a7a37d0",
+			"name": "A Tag",
+			"count": 10
+		},
+		{
+			"uuid": "5b9f602a-a43c-45da-a990-7078ed7072c3",
+			"name": "B Tag",
+			"count": 20
+		},
+		{
+			"uuid": "efb48e30-c7cc-4909-b4c3-5c5e14562400",
+			"name": "C Tag",
+			"count": 0
+		}
+	],
+	"myApiGroupList": [
+		{
+			"uuid": "cc4e71a2-c8ab-4e9e-b0fa-6721ec454da1",
+			"name": "A Group",
+			"count": 100
+		},
+		{
+			"uuid": "874bf24c-d445-4965-bead-ac450f1f2e82",
+			"name": "B Group",
+			"count": 5
+		},
+		{
+			"uuid": "24f454b3-3177-46b9-aa42-148d4c4184dc",
+			"name": "C Group",
+			"count": 34
+		}
+	],
+	"myApiCategoryList": [
+		{
+			"uuid": "5fa4705d-3445-429b-ba35-cdbfef086033",
+			"name": "A Category",
+			"count": 23
+		},
+		{
+			"uuid": "e389b45e-fb47-4eba-843f-bc1d9b0cffa7",
+			"name": "B Category",
+			"count": 500
+		},
+		{
+			"uuid": "e62158e1-895b-415d-a1ba-e24c595f1d9e",
+			"name": "C Category",
+			"count": 1
+		}
+	],
+	"myApiStateList": [
+		{
+			"id": 1,
+			"name": "published",
+			"count": 1
+		},
+		{
+			"id": 2,
+			"name": "draft",
+			"count": 1
+		},
+		{
+			"id": 3,
+			"name": "staged",
+			"count": 1
+		}
+	],
+	"myApiVisibility": [
+		{
+			"id": 1,
+			"name": "public",
+			"icon": "eye",
+			"count": 3
+		},
+		{
+			"id": 2,
+			"name": "private",
+			"icon": "user-secret",
+			"count": 2
+		},
+		{
+			"id": 3,
+			"name": "Only registered users",
+			"icon": "user",
+			"count": 1
+		}
+	]
+}
