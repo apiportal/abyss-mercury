@@ -12,7 +12,7 @@ define(['global'], function(abyss){
 	var abyssDataList = {
 		user_list: '/api/subject/getAll',
 		user_group_list: '/api/subjectgroup/getAll',
-		// permission_list: '/user-permissions/management',
+		permission_list: '/api/subjectpermission/getAll',
 	}
 	var abyssJsonList = {
 		index: '/index.json',
