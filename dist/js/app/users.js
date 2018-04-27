@@ -15,7 +15,7 @@ define(['Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'moment'], funct
 				pageState: 'init',
 				paginate: {},
 				//ajaxUrl: '/abyss/users/management',
-                ajaxUrl: 'http://localhost:38082/abyss/api/subject/getAll',
+                ajaxUrl: 'http://192.168.21.99:38082/abyss/api/subject/getAll',
 				// ajaxUrl: 'http://local.monasdyas.com/api/get?file=http://192.168.10.46:38081/abyss/users/management',
 				// ajaxUrl: 'http://192.168.21.180:18881/000?file=http://192.168.21.180:18881/data/user-list-abyss.json',
 				// ajaxUrl: 'http://local.abyss.com/000?file=http://192.168.10.46:38081/abyss/users/management',
@@ -32,9 +32,15 @@ define(['Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'moment'], funct
 				// ajaxPermissionsUrl: 'http://local.abyss.com/000?file=http://local.abyss.com/data/permission-list.json',
 				
 				ajaxHeaders: {
+
+                    timeout: 10000,
 					contentType: 'application/json; charset=utf-8',
 					datatype: 'json',
-					headers: {'Content-Type': 'application/json'}
+                    withCredentials : true,
+					headers: {
+                        'Accept': 'application/json',
+                    	'Content-Type': 'application/json'
+                    },
 				},
 				selected: null,
 				resetPassword: false,
@@ -199,7 +205,7 @@ define(['Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'moment'], funct
 				// 	}
 				// })
 				var param = d || '';
-				axios.get(this.ajaxUrl + '?page=' + p + param)
+                axios.get(this.ajaxUrl + '?page=' + p + param, this.ajaxHeaders)
 				.then(response => {
 					this.userList = response.data.userList;
 					this.paginate = this.makePaginate(response.data);
