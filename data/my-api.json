@@ -1,17 +1,17 @@
 {
 	"myApi": {
-		"id": 1,
+		"uuid": "cfb74db9-28ac-4a9d-956f-f8b75f3f2891",
 		"specs": "",
 		"name": "My Api 1",
 		"version": "V.1.0.0",
-		"created": "2017-05-22T00:00:00.000Z",
-		"updated": "2017-05-22T00:00:00.000Z",
+		"created": "2016-03-27T00:00:00.000Z",
+		"updated": "2016-03-27T00:00:00.000Z",
 		"state": "published",
 		"visibility": "public",
 		"context": "/petstore",
 		"baseUrl": "virtserver.swaggerhub.com/monasdyas4/my-petstore/1.0.0",
 		"qosPolicy": "",
-		"image": "",
+		"image": "/uploads/thumb.png",
 		"color": "#006699",
 		"description": "This is a sample Petstore server. You can find out more about Swagger at",
 		"tagList": "A Tag, B Tag, C Tag",
@@ -21,43 +21,43 @@
 		"authorizationList": "No Authorization",
 		"tags": [
 			{
-				"id": 1,
+				"uuid": "dd480b84-c21f-4c51-8f6a-8a019a41e6e8",
 				"name": "A Tag"
 			},
 			{
-				"id": 2,
+				"uuid": "afe5bbb9-af8a-4d0a-9e20-3e753d353e71",
 				"name": "B Tag"
 			},
 			{
-				"id": 3,
+				"uuid": "28e6613a-c161-416c-bf99-9fff53933884",
 				"name": "C Tag"
 			}
 		],
 		"groups": [
 			{
-				"id": 1,
+				"uuid": "bfde60b8-4111-4a53-bb55-e2b255960b5c",
 				"name": "A Group"
 			},
 			{
-				"id": 2,
+				"uuid": "7c487b7c-8842-4837-8fa1-63a7b4dd807f",
 				"name": "B Group"
 			},
 			{
-				"id": 3,
+				"uuid": "1bf3da08-2f9a-444c-b23e-dcc2d80ac674",
 				"name": "C Group"
 			}
 		],
 		"categories": [
 			{
-				"id": 1,
+				"uuid": "df233103-d743-4f9e-95c9-6f1c121c9c50",
 				"name": "A Category"
 			},
 			{
-				"id": 2,
+				"uuid": "942fbcfa-0530-40fe-9c70-9ace2e377a3d",
 				"name": "B Category"
 			},
 			{
-				"id": 3,
+				"uuid": "4356fd9e-709a-4774-8cae-fee4dbc98bcd",
 				"name": "C Category"
 			}
 		],
@@ -127,7 +127,7 @@
 		],
 		"methods": [
 			{
-				"id": 1,
+				"uuid": "c20e962a-3901-482a-aaaf-d528b6d92716",
 				"created": "2017-09-22T00:00:00.000Z",
 				"verb": "GET",
 				"resourcePath": "/pet",
@@ -136,7 +136,7 @@
 				"description": "Pet object that needs to be added to the store",
 				"parameters": [
 					{
-						"id": 1,
+						"uuid": "26d88de9-2b74-4bd6-bf17-d019e751ffe6",
 						"created": "2017-05-22T00:00:00.000Z",
 						"name": "Param 1",
 						"description": "Pet object that needs to be added to the store",
@@ -148,7 +148,7 @@
 						"pattern": "regex"
 					},
 					{
-						"id": 2,
+						"uuid": "aab40dda-b81a-4822-9b3c-460de292b311",
 						"name": "Param 2",
 						"description": "Pet object that needs to be added to the store",
 						"dataType": "String",
@@ -161,7 +161,7 @@
 				],
 				"headers": [
 					{
-						"id": 1,
+						"uuid": "06883eb6-3dfa-4ac5-aeff-540a21b57d06",
 						"created": "2017-05-22T00:00:00.000Z",
 						"name": "Header 1",
 						"description": "Pet object that needs to be added to the store",
@@ -175,7 +175,7 @@
 				]
 			},
 			{
-				"id": 2,
+				"uuid": "5a3f114b-0273-409c-bfa2-afd0c7dfdec7",
 				"created": "2017-05-22T00:00:00.000Z",
 				"verb": "POST",
 				"resourcePath": "/pet/{petId}",
@@ -184,7 +184,7 @@
 				"description": "Pet object that needs to be added to the store",
 				"parameters": [
 					{
-						"id": 1,
+						"uuid": "83b90daa-db71-4fea-88e2-1ae7936982fa",
 						"created": "2017-05-22T00:00:00.000Z",
 						"name": "Param 1",
 						"description": "Pet object that needs to be added to the store",
@@ -198,7 +198,7 @@
 				],
 				"headers": [
 					{
-						"id": 1,
+						"uuid": "00c1f480-deb0-4fca-bf76-b9359ec7eac2",
 						"created": "2017-05-22T00:00:00.000Z",
 						"name": "Header 1",
 						"description": "Pet object that needs to be added to the store",
@@ -212,7 +212,7 @@
 				]
 			},
 			{
-				"id": 3,
+				"uuid": "9da5c336-a1c2-40d3-ba51-c75cccfc45bb",
 				"created": "2017-05-22T00:00:00.000Z",
 				"verb": "PUT",
 				"resourcePath": "/pet",
@@ -223,7 +223,7 @@
 				"headers": []
 			},
 			{
-				"id": 4,
+				"uuid": "e67f0a95-f03e-4516-8d22-8e6b798bcff4",
 				"created": "2017-05-22T00:00:00.000Z",
 				"verb": "DELETE",
 				"resourcePath": "/pet",
@@ -232,7 +232,7 @@
 				"description": "Pet object that needs to be added to the store",
 				"parameters": [
 					{
-						"id": 1,
+						"uuid": "b9e2217f-a7d8-4612-a21b-09e702bf56f4",
 						"created": "2017-05-22T00:00:00.000Z",
 						"name": "Param 1",
 						"description": "Pet object that needs to be added to the store",
@@ -246,7 +246,7 @@
 				],
 				"headers": [
 					{
-						"id": 1,
+						"uuid": "f0ac1e9b-f1e4-435b-9f8f-b39f4b4cae52",
 						"created": "2017-05-22T00:00:00.000Z",
 						"name": "Header 1",
 						"description": "Pet object that needs to be added to the store",
@@ -262,17 +262,17 @@
 		],
 		"proxies": [
 			{
-				"id": 1,
+				"uuid": "6f261fdd-748e-40f2-9357-10ccd201ffaa",
 				"name": "My Proxy 1",
 				"context": "my_proxy_1"
 			},
 			{
-				"id": 2,
+				"uuid": "187e5926-c3fc-44d4-b106-2466ceebc067",
 				"name": "My Proxy 2",
 				"context": "my_proxy_2"
 			},
 			{
-				"id": 3,
+				"uuid": "d2907e38-6eb6-45b8-96a2-447fcfee7c8e",
 				"name": "My Proxy 3",
 				"context": "my_proxy_3"
 			}

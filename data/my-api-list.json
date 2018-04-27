@@ -1,7 +1,7 @@
 {
 	"myApiList": [
 		{
-			"id": 1,
+			"uuid": "cfb74db9-28ac-4a9d-956f-f8b75f3f2891",
 			"name": "My Api 1",
 			"version": "V.2.0.0",
 			"created": "2016-03-27T00:00:00.000Z",
@@ -25,24 +25,24 @@
 			"methods": [],
 			"proxies": [
 				{
-					"id": 1,
+					"uuid": "65bd3e20-ff9c-4570-87c2-61e5447f3d5d",
 					"name": "My Proxy 1",
 					"context": "my_proxy_1"
 				},
 				{
-					"id": 2,
+					"uuid": "9b2858f0-6963-4d7c-91d7-e1e64ac24a22",
 					"name": "My Proxy 2",
 					"context": "my_proxy_2"
 				},
 				{
-					"id": 3,
+					"uuid": "9b4bde91-53e4-411a-9449-5b33afc41c19",
 					"name": "My Proxy 3",
 					"context": "my_proxy_3"
 				}
 			]
 		},
 		{
-			"id": 2,
+			"uuid": "d901d3ba-1423-4de5-b2f8-6f7e4dc5fc4a",
 			"name": "My Api 2",
 			"version": "V.1.0.1",
 			"created": "2017-05-12T00:00:00.000Z",
@@ -66,19 +66,19 @@
 			"methods": [],
 			"proxies": [
 				{
-					"id": 4,
+					"uuid": "c08056ef-5b2a-4541-a0ca-434398c8c2ec",
 					"name": "My Proxy 4",
 					"context": "my_proxy_4"
 				},
 				{
-					"id": 5,
+					"uuid": "d33a96e6-5b55-43a6-8614-bc699cb0b07c",
 					"name": "My Proxy 5",
 					"context": "my_proxy_5"
 				}
 			]
 		},
 		{
-			"id": 3,
+			"uuid": "f143ffb7-8660-4248-b984-86170db55869",
 			"name": "My Api 3",
 			"version": "V.1.0.2",
 			"created": "2017-11-16T00:00:00.000Z",
@@ -103,7 +103,7 @@
 			"proxies": []
 		},
 		{
-			"id": 4,
+			"uuid": "f119692a-cf97-4a90-975a-f714e43efbb6",
 			"name": "My Api 4",
 			"version": "V.1.0.3",
 			"created": "2016-03-07T00:00:00.000Z",
@@ -127,14 +127,14 @@
 			"methods": [],
 			"proxies": [
 				{
-					"id": 1,
+					"uuid": "18c79ab7-89b5-4a72-a0c0-106f72453a40",
 					"name": "My Proxy 1",
 					"context": "my_proxy_1"
 				}
 			]
 		},
 		{
-			"id": 5,
+			"uuid": "121762bb-a106-4fda-8426-0635154482dc",
 			"name": "My Api 5",
 			"version": "V.1.0.4",
 			"created": "2017-05-22T00:00:00.000Z",
@@ -158,27 +158,27 @@
 			"methods": [],
 			"proxies": [
 				{
-					"id": 1,
+					"uuid": "721a62be-6a70-41a0-8dab-3becce121c58",
 					"name": "My Proxy 1",
 					"context": "my_proxy_1"
 				},
 				{
-					"id": 2,
+					"uuid": "2c88a423-c602-4545-89d2-bd17e541d554",
 					"name": "My Proxy 2",
 					"context": "my_proxy_2"
 				},
 				{
-					"id": 3,
+					"uuid": "c13d8f94-2e1a-4074-9370-7501333398f8",
 					"name": "My Proxy 3",
 					"context": "my_proxy_3"
 				},
 				{
-					"id": 4,
+					"uuid": "cb99c197-1e93-40d7-a86b-d08dd031a8db",
 					"name": "My Proxy 4",
 					"context": "my_proxy_4"
 				},
 				{
-					"id": 5,
+					"uuid": "232d47a2-7384-422e-9cf8-ddb1c7930311",
 					"name": "My Proxy 5",
 					"context": "my_proxy_5"
 				}

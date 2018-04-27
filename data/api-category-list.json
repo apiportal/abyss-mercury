@@ -1,16 +1,28 @@
 {
 	"categoryList": [
 		{
-			"id": 1,
+			"uuid": "5fa4705d-3445-429b-ba35-cdbfef086033",
 			"name": "A Category"
 		},
 		{
-			"id": 2,
+			"uuid": "e389b45e-fb47-4eba-843f-bc1d9b0cffa7",
 			"name": "B Category"
 		},
 		{
-			"id": 3,
+			"uuid": "e62158e1-895b-415d-a1ba-e24c595f1d9e",
 			"name": "C Category"
+		},
+		{
+			"uuid": "9f79edd4-4c2e-4ee5-959f-f99339aba50e",
+			"name": "D Category"
+		},
+		{
+			"uuid": "76d75d67-432d-4980-9559-bec966af4e5f",
+			"name": "E Category"
+		},
+		{
+			"uuid": "a6ddc8ae-a025-4e99-ab0d-233dbde4daef",
+			"name": "F Category"
 		}
 	],
 	"totalPages": 6,

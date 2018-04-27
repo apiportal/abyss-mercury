@@ -1,4 +1,4 @@
-define(['Vue', 'axios', 'vee-validate', 'lodash', 'vue-select'], function(Vue, axios, VeeValidate, _, VueSelect) {
+define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select'], function(abyss, Vue, axios, VeeValidate, _, VueSelect) {
 	Vue.component('v-select', VueSelect.VueSelect);
 	Vue.component('index', {
 		props: {
