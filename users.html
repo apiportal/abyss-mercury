@@ -13,7 +13,7 @@
 				<div class="nicescroll--bar">
 					<div class="fow no-gutters">
 						<div class="fol fol-6 form-group mb-0 bg-white">
-							<v-select label="id" :filterable="false" :options="userOptions" @search="getUserOptions" :on-change="filterUser" placeholder="Search Users">
+							<v-select label="subject_name" :filterable="false" :options="userOptions" @search="getUserOptions" :on-change="filterUser" placeholder="Search Users">
 								<span slot="no-options"></span>
 								<template slot="option" slot-scope="option">
 									<strong>{{ option.first_name }} {{ option.last_name }}</strong>
@@ -31,7 +31,7 @@
 							</v-select>
 						</div>
 						<div class="fol form-group mb-0 bg-white">
-							<v-select label="name" :filterable="false" :options="permissionOptions" @search="getPermissionOptions" :on-change="filterPermission" placeholder="Search Permissions">
+							<v-select label="permission" :filterable="false" :options="permissionOptions" @search="getPermissionOptions" :on-change="filterPermission" placeholder="Search Permissions">
 								<span slot="no-options"></span>
 							</v-select>
 						</div>
@@ -204,7 +204,7 @@
 						</div>
 						<div class="form-group v-select-color-green">
 							<h6>Assign Permission to User:</h6>
-							<v-select label="name" multiple :filterable="false" :options="permissionOptions" @search="getPermissionOptions" v-model="user.permissions">
+							<v-select label="permission" multiple :filterable="false" :options="permissionOptions" @search="getPermissionOptions" v-model="user.permissions">
 								<span slot="no-options"></span>
 							</v-select>
 						</div>
