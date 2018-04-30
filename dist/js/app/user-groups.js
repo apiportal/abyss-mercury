@@ -80,7 +80,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 				if (filter == null) {
 					this.getPage(1);
 				} else {
-					this.getPage(1, '&group='+filter.id);
+					this.getPage(1, '&group='+filter.uuid);
 				}
 			},
 			getUserOptions(search, loading) {

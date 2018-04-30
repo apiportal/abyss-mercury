@@ -101,21 +101,21 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 				if (filter == null) {
 					this.getPage(1);
 				} else {
-					this.getPage(1, '&permission='+filter.id);
+					this.getPage(1, '&permission='+filter.uuid);
 				}
 			},
 			filterGroup(filter) {
 				if (filter == null) {
 					this.getPage(1);
 				} else {
-					this.getPage(1, '&group='+filter.id);
+					this.getPage(1, '&group='+filter.uuid);
 				}
 			},
 			filterUser(filter) {
 				if (filter == null) {
 					this.getPage(1);
 				} else {
-					this.getPage(1, '&search='+filter.id);
+					this.getPage(1, '&user='+filter.uuid);
 				}
 			},
 			getUserOptions(search, loading) {
