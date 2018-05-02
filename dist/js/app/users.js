@@ -17,13 +17,13 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 				ajaxUrl: abyss.ajax.user_list,
 				ajaxHeaders: {
 					//timeout: 10000,
-					contentType: 'application/json; charset=utf-8',
-					datatype: 'json',
-					withCredentials : true,
-					headers: {
-						'Accept': 'application/json',
-						'Content-Type': 'application/json'
-					}
+//					contentType: 'application/json; charset=utf-8',
+//					datatype: 'json',
+//					withCredentials : true,
+//					headers: {
+//						'Accept': 'application/json',
+//						'Content-Type': 'application/json'
+//					}
 				},
 				selected: null,
 				resetPassword: false,
@@ -124,14 +124,14 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 					params: {
 						q: search
 					},
-                    timeout: 10000,
-                    contentType: 'application/json; charset=utf-8',
-                    datatype: 'json',
-                    withCredentials : true,
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    }
+                    // timeout: 10000,
+                    // contentType: 'application/json; charset=utf-8',
+                    // datatype: 'json',
+                    // withCredentials : true,
+                    // headers: {
+                    //     'Accept': 'application/json',
+                    //     'Content-Type': 'application/json'
+                    // }
 				})
 				.then(response => {
 					console.log(response);
@@ -145,14 +145,14 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 					params: {
 						q: search
 					},
-                    timeout: 10000,
-                    contentType: 'application/json; charset=utf-8',
-                    datatype: 'json',
-                    withCredentials : true,
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    }
+                    // timeout: 10000,
+                    // contentType: 'application/json; charset=utf-8',
+                    // datatype: 'json',
+                    // withCredentials : true,
+                    // headers: {
+                    //     'Accept': 'application/json',
+                    //     'Content-Type': 'application/json'
+                    // }
 				})
 				.then(response => {
 					console.log(response);
@@ -166,14 +166,14 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 					params: {
 						q: search
 					},
-                    timeout: 10000,
-                    contentType: 'application/json; charset=utf-8',
-                    datatype: 'json',
-                    withCredentials : true,
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    }
+                    // timeout: 10000,
+                    // contentType: 'application/json; charset=utf-8',
+                    // datatype: 'json',
+                    // withCredentials : true,
+                    // headers: {
+                    //     'Accept': 'application/json',
+                    //     'Content-Type': 'application/json'
+                    // }
 				})
 				.then(response => {
 					console.log(response);

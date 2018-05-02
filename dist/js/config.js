@@ -13,11 +13,14 @@ define(['global'], function(abyss){
 		user_list: '/api/subject/getAll',
 		user_group_list: '/api/subjectgroup/getAll',
 		permission_list: '/api/subjectpermission/getAll',
+        //index: '/dashboard/index',
+        my_api_list: '/api/my-apis/getAll',
+        my_api: '/api/my-apis/getAll',
 	}
 	var abyssJsonList = {
 		index: '/index.json',
-		my_api_list: '/my-api-list.json',
-		my_api: '/my-api.json',
+		//my_api_list: '/my-api-list.json',
+		//my_api: '/my-api.json',
 		api_category_list: '/api-category-list.json',
 		api_tag_list: '/api-tag-list.json',
 		api_group_list: '/api-group-list.json',
