@@ -13,13 +13,13 @@
 					<li>
 						<a href="#" class="nav-caret" data-toggle="collapse" data-target="#apiGroups" aria-controls="apiGroups">Groups</a>
 						<ul id="apiGroups" class="collapse">
-							<li><a href="#" data-toggle="modal" data-target="#taxModal" v-on:click="setTax('add', 'Group', 'groups')"><i class="fas fa-fw fa-plus-square"></i>ADD GROUP</a></li>
-							<li class="action" v-for="(group, index) in menu.api.groups">
+							<li><a href="#" data-toggle="modal" data-target="#taxModal" v-on:click="setTax('add', 'Group', 'myApiGroupList')"><i class="fas fa-fw fa-plus-square"></i>ADD GROUP</a></li>
+							<li class="action" v-for="(group, index) in rootData.myApiGroupList">
 								<div class="nav-actions dropdown dropdown-hover">
 									<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
 									<ul class="dropdown-menu" role="menu" data-dropdown-in="slideInLeft" data-dropdown-out="slideOutLeft">
-										<li><a href="#" data-toggle="modal" data-target="#taxModal" v-on:click="setTax('edit', 'Group', 'groups', group)"><i class="fas fa-edit"></i>Edit</a></li>
-										<li><a href="#"v-on:click="deleteTax('groups', group)"><i class="fas fa-trash-alt"></i>Delete</a></li>
+										<li><a href="#" data-toggle="modal" data-target="#taxModal" v-on:click="setTax('edit', 'Group', 'myApiGroupList', group)"><i class="fas fa-edit"></i>Edit</a></li>
+										<li><a href="#"v-on:click="deleteTax('myApiGroupList', 'groups', group)"><i class="fas fa-trash-alt"></i>Delete</a></li>
 									</ul>
 								</div>
 								<a href="#"><i class="fas fa-fw fa-object-group txt-pink"></i>{{group.name}}<span class="badge badge-pill badge-outline">{{group.count}}</span></a></li>
@@ -28,13 +28,13 @@
 					<li>
 						<a href="#" class="nav-caret" data-toggle="collapse" data-target="#apiTags" aria-controls="apiTags">Tags</a>
 						<ul id="apiTags" class="collapse">
-							<li><a href="#" data-toggle="modal" data-target="#taxModal" v-on:click="setTax('add', 'Tag', 'tags')"><i class="fas fa-fw fa-plus-square"></i>ADD TAG</a></li>
-							<li class="action" v-for="(tag, index) in menu.api.tags">
+							<li><a href="#" data-toggle="modal" data-target="#taxModal" v-on:click="setTax('add', 'Tag', 'myApiTagList')"><i class="fas fa-fw fa-plus-square"></i>ADD TAG</a></li>
+							<li class="action" v-for="(tag, index) in rootData.myApiTagList">
 								<div class="nav-actions dropdown dropdown-hover">
 									<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
 									<ul class="dropdown-menu" role="menu" data-dropdown-in="slideInLeft" data-dropdown-out="slideOutLeft">
-										<li><a href="#" data-toggle="modal" data-target="#taxModal" v-on:click="setTax('edit', 'Tag', 'tags', tag)"><i class="fas fa-edit"></i>Edit</a></li>
-										<li><a href="#"v-on:click="deleteTax('tags', tag)"><i class="fas fa-trash-alt"></i>Delete</a></li>
+										<li><a href="#" data-toggle="modal" data-target="#taxModal" v-on:click="setTax('edit', 'Tag', 'myApiTagList', tag)"><i class="fas fa-edit"></i>Edit</a></li>
+										<li><a href="#"v-on:click="deleteTax('myApiTagList', 'tags', tag)"><i class="fas fa-trash-alt"></i>Delete</a></li>
 									</ul>
 								</div>
 								<a href="#"><i class="fas fa-fw fa-stop txt-purple"></i>{{tag.name}}<span class="badge badge-pill badge-outline">{{tag.count}}</span></a></li>
@@ -43,13 +43,13 @@
 					<li>
 						<a href="#" class="nav-caret" data-toggle="collapse" data-target="#apiCategories" aria-controls="apiCategories">Categories</a>
 						<ul id="apiCategories" class="collapse">
-							<li><a href="#" data-toggle="modal" data-target="#taxModal" v-on:click="setTax('add', 'Category', 'categories')"><i class="fas fa-fw fa-plus-square"></i>ADD CATEGORY</a></li>
-							<li class="action" v-for="(category, index) in menu.api.categories">
+							<li><a href="#" data-toggle="modal" data-target="#taxModal" v-on:click="setTax('add', 'Category', 'myApiCategoryList')"><i class="fas fa-fw fa-plus-square"></i>ADD CATEGORY</a></li>
+							<li class="action" v-for="(category, index) in rootData.myApiCategoryList">
 								<div class="nav-actions dropdown dropdown-hover">
 									<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
 									<ul class="dropdown-menu" role="menu" data-dropdown-in="slideInLeft" data-dropdown-out="slideOutLeft">
-										<li><a href="#" data-toggle="modal" data-target="#taxModal" v-on:click="setTax('edit', 'Category', 'categories', category)"><i class="fas fa-edit"></i>Edit</a></li>
-										<li><a href="#"v-on:click="deleteTax('categories', category)"><i class="fas fa-trash-alt"></i>Delete</a></li>
+										<li><a href="#" data-toggle="modal" data-target="#taxModal" v-on:click="setTax('edit', 'Category', 'myApiCategoryList', category)"><i class="fas fa-edit"></i>Edit</a></li>
+										<li><a href="#"v-on:click="deleteTax('myApiCategoryList', 'categories', category)"><i class="fas fa-trash-alt"></i>Delete</a></li>
 									</ul>
 								</div>
 								<a href="#"><i class="fas fa-fw fa-stop txt-green"></i>{{category.name}}<span class="badge badge-pill badge-outline">{{category.count}}</span></a></li>
@@ -58,13 +58,13 @@
 					<li>
 						<a href="#" class="nav-caret" data-toggle="collapse" data-target="#apiStates" aria-controls="apiStates">States</a>
 						<ul id="apiStates" class="collapse">
-							<li v-for="(state, index) in menu.api.states"><a href="#"><i v-bind:class="'fas fa-circle stat-' + state.name"></i>{{state.name}}<span class="badge badge-pill badge-outline">{{state.count}}</span></a></li>
+							<li v-for="(state, index) in rootData.myApiStateList"><a href="#" v-bind:title="state.description"><i v-bind:class="'fas fa-circle stat-' + state.name"></i>{{state.name}}<span class="badge badge-pill badge-outline">{{state.count}}</span></a></li>
 						</ul>
 					</li>
 					<li>
 						<a href="#" class="nav-caret" data-toggle="collapse" data-target="#apiVisibility" aria-controls="apiVisibility">Visibility</a>
 						<ul id="apiVisibility" class="collapse">
-							<li v-for="(visible, index) in menu.api.visibility"><a href="#"><i v-bind:class="'fas fa-' + visible.icon"></i>{{visible.name}}<span class="badge badge-pill badge-outline">{{visible.count}}</span></a></li>
+							<li v-for="(visible, index) in rootData.myApiVisibilityList"><a href="#"><i v-bind:class="'fas ico-visibility-' + visible.id"></i>{{visible.name}}<span class="badge badge-pill badge-outline">{{visible.count}}</span></a></li>
 						</ul>
 					</li>
 				</ul>

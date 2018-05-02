@@ -9,7 +9,7 @@
 				<div class="thumb" v-if="!api.image" :style="{ 'background-color': api.color }">{{api.name}}</div>
 			</div>
 			<div class="py-3">
-				<span class="float-right text-uppercase py-1"><span class="small">{{api.state}}</span><i class="fas fa-circle ml-1" v-bind:class="'stat-' + api.state"></i></span>
+				<span class="float-right text-uppercase py-1"><span class="small">{{api.state.name}}</span><i class="fas fa-circle ml-1" v-bind:class="'stat-' + api.state.name"></i></span>
 				<h4 class="mb-0"><strong>{{api.name}}</strong></h4>
 				<p class="small">{{api.version}}</p>
 				<p>{{api.description}}</p>
@@ -46,7 +46,7 @@
 					<div class="fow form-row">
 						<p class="fol-6">
 							<label class="d-block font-weight-bold text-uppercase">Visibility</label>
-							<span class="text-capitalize">{{api.visibility}}</span>
+							<span class="text-capitalize">{{api.visibility.name}}</span>
 						</p>
 						<p class="fol-6">
 							<label class="d-block font-weight-bold text-uppercase">State</label>
