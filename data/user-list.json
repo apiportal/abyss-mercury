@@ -12,30 +12,26 @@
 			"directory": "Internal Directory",
 			"groups": [
 				{
-					"id": 1,
-					"name": "A Group"
+					"uuid": "dbcadc32-c16c-4c95-b6f3-bcc6d26b7744",
+					"group_name": "admin"
 				},
 				{
-					"id": 2,
-					"name": "B Group"
-				},
-				{
-					"id": 3,
-					"name": "C Group"
+					"uuid": "0f6f8ebd-8e4e-4cd6-a03d-16b07a1d93db",
+					"group_name": "developer"
 				}
 			],
 			"permissions": [
 				{
-					"id": 1,
-					"name": "Add, edit, delete API"
+					"uuid": "dc221d15-9dc6-4ebe-84ab-5a8f5edf4c12",
+					"permission": "Add, edit, delete API"
 				},
 				{
-					"id": 2,
-					"name": "Add, edit, delete APP"
+					"uuid": "313c2a4e-6eb0-4a6c-b3da-f2b1be08945d",
+					"permission": "Add, edit, delete APP"
 				},
 				{
-					"id": 3,
-					"name": "Add, edit, delete Proxy"
+					"uuid": "416d94e1-9129-4e69-9fea-986d999ec32b",
+					"permission": "Add, edit, delete Proxy"
 				}
 			]
 		},
@@ -51,30 +47,26 @@
 			"directory": "Internal Directory",
 			"groups": [
 				{
-					"id": 1,
-					"name": "A Group"
+					"uuid": "dbcadc32-c16c-4c95-b6f3-bcc6d26b7744",
+					"group_name": "admin"
 				},
 				{
-					"id": 2,
-					"name": "B Group"
-				},
-				{
-					"id": 3,
-					"name": "C Group"
+					"uuid": "0f6f8ebd-8e4e-4cd6-a03d-16b07a1d93db",
+					"group_name": "developer"
 				}
 			],
 			"permissions": [
 				{
-					"id": 1,
-					"name": "Add, edit, delete API"
+					"uuid": "dc221d15-9dc6-4ebe-84ab-5a8f5edf4c12",
+					"permission": "Add, edit, delete API"
 				},
 				{
-					"id": 2,
-					"name": "Add, edit, delete APP"
+					"uuid": "313c2a4e-6eb0-4a6c-b3da-f2b1be08945d",
+					"permission": "Add, edit, delete APP"
 				},
 				{
-					"id": 3,
-					"name": "Add, edit, delete Proxy"
+					"uuid": "416d94e1-9129-4e69-9fea-986d999ec32b",
+					"permission": "Add, edit, delete Proxy"
 				}
 			]
 		},
@@ -90,30 +82,26 @@
 			"directory": "Internal Directory",
 			"groups": [
 				{
-					"id": 1,
-					"name": "A Group"
+					"uuid": "dbcadc32-c16c-4c95-b6f3-bcc6d26b7744",
+					"group_name": "admin"
 				},
 				{
-					"id": 2,
-					"name": "B Group"
-				},
-				{
-					"id": 3,
-					"name": "C Group"
+					"uuid": "0f6f8ebd-8e4e-4cd6-a03d-16b07a1d93db",
+					"group_name": "developer"
 				}
 			],
 			"permissions": [
 				{
-					"id": 1,
-					"name": "Add, edit, delete API"
+					"uuid": "dc221d15-9dc6-4ebe-84ab-5a8f5edf4c12",
+					"permission": "Add, edit, delete API"
 				},
 				{
-					"id": 2,
-					"name": "Add, edit, delete APP"
+					"uuid": "313c2a4e-6eb0-4a6c-b3da-f2b1be08945d",
+					"permission": "Add, edit, delete APP"
 				},
 				{
-					"id": 3,
-					"name": "Add, edit, delete Proxy"
+					"uuid": "416d94e1-9129-4e69-9fea-986d999ec32b",
+					"permission": "Add, edit, delete Proxy"
 				}
 			]
 		},
@@ -129,30 +117,26 @@
 			"directory": "Internal Directory",
 			"groups": [
 				{
-					"id": 1,
-					"name": "A Group"
+					"uuid": "dbcadc32-c16c-4c95-b6f3-bcc6d26b7744",
+					"group_name": "admin"
 				},
 				{
-					"id": 2,
-					"name": "B Group"
-				},
-				{
-					"id": 3,
-					"name": "C Group"
+					"uuid": "0f6f8ebd-8e4e-4cd6-a03d-16b07a1d93db",
+					"group_name": "developer"
 				}
 			],
 			"permissions": [
 				{
-					"id": 1,
-					"name": "Add, edit, delete API"
+					"uuid": "dc221d15-9dc6-4ebe-84ab-5a8f5edf4c12",
+					"permission": "Add, edit, delete API"
 				},
 				{
-					"id": 2,
-					"name": "Add, edit, delete APP"
+					"uuid": "313c2a4e-6eb0-4a6c-b3da-f2b1be08945d",
+					"permission": "Add, edit, delete APP"
 				},
 				{
-					"id": 3,
-					"name": "Add, edit, delete Proxy"
+					"uuid": "416d94e1-9129-4e69-9fea-986d999ec32b",
+					"permission": "Add, edit, delete Proxy"
 				}
 			]
 		},
@@ -168,30 +152,26 @@
 			"directory": "Internal Directory",
 			"groups": [
 				{
-					"id": 1,
-					"name": "A Group"
+					"uuid": "dbcadc32-c16c-4c95-b6f3-bcc6d26b7744",
+					"group_name": "admin"
 				},
 				{
-					"id": 2,
-					"name": "B Group"
-				},
-				{
-					"id": 3,
-					"name": "C Group"
+					"uuid": "0f6f8ebd-8e4e-4cd6-a03d-16b07a1d93db",
+					"group_name": "developer"
 				}
 			],
 			"permissions": [
 				{
-					"id": 1,
-					"name": "Add, edit, delete API"
+					"uuid": "dc221d15-9dc6-4ebe-84ab-5a8f5edf4c12",
+					"permission": "Add, edit, delete API"
 				},
 				{
-					"id": 2,
-					"name": "Add, edit, delete APP"
+					"uuid": "313c2a4e-6eb0-4a6c-b3da-f2b1be08945d",
+					"permission": "Add, edit, delete APP"
 				},
 				{
-					"id": 3,
-					"name": "Add, edit, delete Proxy"
+					"uuid": "416d94e1-9129-4e69-9fea-986d999ec32b",
+					"permission": "Add, edit, delete Proxy"
 				}
 			]
 		},
@@ -207,30 +187,26 @@
 			"directory": "Internal Directory",
 			"groups": [
 				{
-					"id": 1,
-					"name": "A Group"
+					"uuid": "dbcadc32-c16c-4c95-b6f3-bcc6d26b7744",
+					"group_name": "admin"
 				},
 				{
-					"id": 2,
-					"name": "B Group"
-				},
-				{
-					"id": 3,
-					"name": "C Group"
+					"uuid": "0f6f8ebd-8e4e-4cd6-a03d-16b07a1d93db",
+					"group_name": "developer"
 				}
 			],
 			"permissions": [
 				{
-					"id": 1,
-					"name": "Add, edit, delete API"
+					"uuid": "dc221d15-9dc6-4ebe-84ab-5a8f5edf4c12",
+					"permission": "Add, edit, delete API"
 				},
 				{
-					"id": 2,
-					"name": "Add, edit, delete APP"
+					"uuid": "313c2a4e-6eb0-4a6c-b3da-f2b1be08945d",
+					"permission": "Add, edit, delete APP"
 				},
 				{
-					"id": 3,
-					"name": "Add, edit, delete Proxy"
+					"uuid": "416d94e1-9129-4e69-9fea-986d999ec32b",
+					"permission": "Add, edit, delete Proxy"
 				}
 			]
 		}

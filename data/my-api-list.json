@@ -6,8 +6,15 @@
 			"version": "V.2.0.0",
 			"created": "2016-03-27T00:00:00.000Z",
 			"updated": "2016-03-27T00:00:00.000Z",
-			"state": "published",
-			"visibility": "only registered users",
+			"state": {
+				"id": 4,
+				"name": "Published",
+				"description": "When API Developers stage the APIs in his own private sandbox API environment and successfully test, API Developers | Administrators stage the APIs in the public sandbox API environment"
+			},
+			"visibility": {
+				"id": 3,
+				"name": "Only registered users"
+			},
 			"authenticationList": "No Auth",
 			"authorizationList": "No Authz",
 			"context": "/petstore",
@@ -19,7 +26,6 @@
 			"tagList": "A Tag, B Tag, C Tag",
 			"groupList": "A Group, B Group, C Group",
 			"categoryList": "A Category, B Category, C Category",
-			"test": {"kkk": "vvv"},
 			"authentication": [],
 			"authorization": [],
 			"methods": [],
@@ -47,8 +53,16 @@
 			"version": "V.1.0.1",
 			"created": "2017-05-12T00:00:00.000Z",
 			"updated": "2017-05-12T00:00:00.000Z",
-			"state": "draft",
-			"visibility": "public",
+			"state": {
+				"id": 2,
+				"uuid": "724c1538-5d4c-4890-9255-f88192c59e4f",
+				"name": "Draft",
+				"description": "The draft state for an API is when an API definition is not staged"
+			},
+			"visibility": {
+				"id": 1,
+				"name": "Public"
+			},
 			"authenticationList": "Basic Auth",
 			"authorizationList": "No Authz",
 			"context": "/petstore",
@@ -60,7 +74,6 @@
 			"tagList": "technology",
 			"groupList": "recent",
 			"categoryList": "",
-			"test": {"kkk": "vvv"},
 			"authentication": [],
 			"authorization": [],
 			"methods": [],
@@ -83,8 +96,16 @@
 			"version": "V.1.0.2",
 			"created": "2017-11-16T00:00:00.000Z",
 			"updated": "2017-11-16T00:00:00.000Z",
-			"state": "staged",
-			"visibility": "public",
+			"state": {
+				"id": 3,
+				"uuid": "5452bca7-34e1-4436-8a38-2f5fbd5493fb",
+				"name": "Staged",
+				"description": "When the APIs have been successfully registered or created, API Developer stages the APIs in his own private sandbox API environment"
+			},
+			"visibility": {
+				"id": 1,
+				"name": "Public"
+			},
 			"authenticationList": "API Key Auth",
 			"authorizationList": "API Key Authz",
 			"context": "/petstore",
@@ -96,7 +117,6 @@
 			"tagList": "test",
 			"groupList": "",
 			"categoryList": "Category 2",
-			"test": {"kkk": "vvv"},
 			"authentication": [],
 			"authorization": [],
 			"methods": [],
@@ -108,8 +128,15 @@
 			"version": "V.1.0.3",
 			"created": "2016-03-07T00:00:00.000Z",
 			"updated": "2016-03-07T00:00:00.000Z",
-			"state": "published",
-			"visibility": "public",
+			"state": {
+				"id": 4,
+				"name": "Published",
+				"description": "When API Developers stage the APIs in his own private sandbox API environment and successfully test, API Developers | Administrators stage the APIs in the public sandbox API environment"
+			},
+			"visibility": {
+				"id": 1,
+				"name": "Public"
+			},
 			"authenticationList": "oAuth 2.0",
 			"authorizationList": "API Key Authz",
 			"context": "/petstore",
@@ -121,7 +148,6 @@
 			"tagList": "tag1,tag2,tag3",
 			"groupList": "",
 			"categoryList": "",
-			"test": {"kkk": "vvv"},
 			"authentication": [],
 			"authorization": [],
 			"methods": [],
@@ -139,8 +165,15 @@
 			"version": "V.1.0.4",
 			"created": "2017-05-22T00:00:00.000Z",
 			"updated": "2017-05-22T00:00:00.000Z",
-			"state": "published",
-			"visibility": "public",
+			"state": {
+				"id": 4,
+				"name": "Published",
+				"description": "When API Developers stage the APIs in his own private sandbox API environment and successfully test, API Developers | Administrators stage the APIs in the public sandbox API environment"
+			},
+			"visibility": {
+				"id": 2,
+				"name": "Private"
+			},
 			"authenticationList": "LDAP Auth",
 			"authorizationList": "API Key Authz",
 			"context": "/petstore",
@@ -152,7 +185,6 @@
 			"tagList": "",
 			"groupList": "",
 			"categoryList": "",
-			"test": {"kkk": "vvv"},
 			"authentication": [],
 			"authorization": [],
 			"methods": [],

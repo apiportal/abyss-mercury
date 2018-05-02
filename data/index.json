@@ -1,59 +1,101 @@
 {
-	"defaultStates": [
+	"user": {
+		"name": null,
+		"surname": null,
+		"avatar": null,
+		"status": null,
+		"settings": {
+			"darkSidebar": false
+		},
+		"notifications": []
+	},
+	"myApiStateList": [
 		{
 			"id": 1,
-			"name": "draft",
+			"uuid": "e4b08221-e010-4f13-af75-68323fc2f54e",
+			"name": "Initial",
+			"description": "Initial State of API just after creation",
 			"count": 0
 		},
 		{
 			"id": 2,
-			"name": "staged",
-			"count": 0
+			"uuid": "724c1538-5d4c-4890-9255-f88192c59e4f",
+			"name": "Draft",
+			"description": "The draft state for an API is when an API definition is not staged",
+			"count": 1
 		},
 		{
 			"id": 3,
-			"name": "published",
-			"count": 0
+			"uuid": "5452bca7-34e1-4436-8a38-2f5fbd5493fb",
+			"name": "Staged",
+			"description": "When the APIs have been successfully registered or created, API Developer stages the APIs in his own private sandbox API environment",
+			"count": 1
 		},
 		{
 			"id": 4,
-			"name": "promoted",
-			"count": 0
+			"uuid": "932ed6c0-2efa-4a15-8005-554e974dd0e8",
+			"name": "Published",
+			"description": "When API Developers stage the APIs in his own private sandbox API environment and successfully test, API Developers | Administrators stage the APIs in the public sandbox API environment",
+			"count": 3
 		},
 		{
 			"id": 5,
-			"name": "demoted",
+			"uuid": "8fd99551-6707-48cc-9cc7-1fabeb07add1",
+			"name": "Promoted",
+			"description": "After the APIs are published in the public sandbox API environment, API administrators can promote and deploy APIs to the production API environment",
 			"count": 0
 		},
 		{
 			"id": 6,
-			"name": "retired",
+			"uuid": "21380b85-b825-480d-ac64-36152b7786f5",
+			"name": "Demoted",
+			"description": "After the APIs are demoted from the production API environment, API developers re-stage into their own stage area",
 			"count": 0
 		},
 		{
-			"id": 0,
-			"name": "deleted",
+			"id": 7,
+			"uuid": "67b34239-efb3-4d61-8f1d-55ca57c774c3",
+			"name": "Deprecated",
+			"description": "When API administrators deprecate APIs, they flag the APIs with a date when they will be retired from API Catalog. API consumers can see the planned retirement date in API Portal. The APIs are deprecated in both the sandbox API and production API environments",
+			"count": 0
+		},
+		{
+			"id": 8,
+			"uuid": "f8a6cf74-51a2-4e3b-be1a-eec38ea7f2e5",
+			"name": "Retired",
+			"description": "When the APIs are retired, API administrators unpublish the APIs from API Catalog. The retired APIs are no longer available to API consumers or client applications. The APIs are retired in both the sandbox API and production API environments",
+			"count": 0
+		},
+		{
+			"id": 9,
+			"uuid": "1f27e512-477a-4d1f-949a-68869b592065",
+			"name": "Archived",
+			"description": "When you archive an API, the API version can neither be viewed nor can its Plans be subscribed to, and all of the associated APIs are taken offline. The API version is not displayed by default in the APIs list",
+			"count": 0
+		},
+		{
+			"id": 10,
+			"uuid": "9bfdd88b-8eb9-4d05-ba12-64b31734724f",
+			"name": "Removed",
+			"description": "Final state of API after removal from Portfolio",
 			"count": 0
 		}
 	],
-	"defaultVisibility": [
+	"myApiVisibilityList": [
 		{
 			"id": 1,
-			"name": "public",
-			"icon": "eye",
-			"count": 0
+			"name": "Public",
+			"count": 3
 		},
 		{
 			"id": 2,
-			"name": "private",
-			"icon": "user-secret",
-			"count": 0
+			"name": "Private",
+			"count": 1
 		},
 		{
 			"id": 3,
 			"name": "Only registered users",
-			"icon": "user",
-			"count": 0
+			"count": 1
 		}
 	],
 	"myApiTagList": [
@@ -70,7 +112,7 @@
 		{
 			"uuid": "efb48e30-c7cc-4909-b4c3-5c5e14562400",
 			"name": "C Tag",
-			"count": 0
+			"count": 10
 		}
 	],
 	"myApiGroupList": [
@@ -104,43 +146,6 @@
 		{
 			"uuid": "e62158e1-895b-415d-a1ba-e24c595f1d9e",
 			"name": "C Category",
-			"count": 1
-		}
-	],
-	"myApiStateList": [
-		{
-			"id": 1,
-			"name": "published",
-			"count": 1
-		},
-		{
-			"id": 2,
-			"name": "draft",
-			"count": 1
-		},
-		{
-			"id": 3,
-			"name": "staged",
-			"count": 1
-		}
-	],
-	"myApiVisibility": [
-		{
-			"id": 1,
-			"name": "public",
-			"icon": "eye",
-			"count": 3
-		},
-		{
-			"id": 2,
-			"name": "private",
-			"icon": "user-secret",
-			"count": 2
-		},
-		{
-			"id": 3,
-			"name": "Only registered users",
-			"icon": "user",
 			"count": 1
 		}
 	]

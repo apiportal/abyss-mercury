@@ -6,8 +6,15 @@
 		"version": "V.1.0.0",
 		"created": "2016-03-27T00:00:00.000Z",
 		"updated": "2016-03-27T00:00:00.000Z",
-		"state": "published",
-		"visibility": "public",
+		"state": {
+			"id": 4,
+			"name": "Published",
+			"description": "When API Developers stage the APIs in his own private sandbox API environment and successfully test, API Developers | Administrators stage the APIs in the public sandbox API environment"
+		},
+		"visibility": {
+			"id": 1,
+			"name": "Public"
+		},
 		"context": "/petstore",
 		"baseUrl": "virtserver.swaggerhub.com/monasdyas4/my-petstore/1.0.0",
 		"qosPolicy": "",
@@ -21,43 +28,43 @@
 		"authorizationList": "No Authorization",
 		"tags": [
 			{
-				"uuid": "dd480b84-c21f-4c51-8f6a-8a019a41e6e8",
+				"uuid": "551f213c-0b28-46ec-96f9-4d799a7a37d0",
 				"name": "A Tag"
 			},
 			{
-				"uuid": "afe5bbb9-af8a-4d0a-9e20-3e753d353e71",
+				"uuid": "5b9f602a-a43c-45da-a990-7078ed7072c3",
 				"name": "B Tag"
 			},
 			{
-				"uuid": "28e6613a-c161-416c-bf99-9fff53933884",
+				"uuid": "efb48e30-c7cc-4909-b4c3-5c5e14562400",
 				"name": "C Tag"
 			}
 		],
 		"groups": [
 			{
-				"uuid": "bfde60b8-4111-4a53-bb55-e2b255960b5c",
+				"uuid": "cc4e71a2-c8ab-4e9e-b0fa-6721ec454da1",
 				"name": "A Group"
 			},
 			{
-				"uuid": "7c487b7c-8842-4837-8fa1-63a7b4dd807f",
+				"uuid": "874bf24c-d445-4965-bead-ac450f1f2e82",
 				"name": "B Group"
 			},
 			{
-				"uuid": "1bf3da08-2f9a-444c-b23e-dcc2d80ac674",
+				"uuid": "24f454b3-3177-46b9-aa42-148d4c4184dc",
 				"name": "C Group"
 			}
 		],
 		"categories": [
 			{
-				"uuid": "df233103-d743-4f9e-95c9-6f1c121c9c50",
+				"uuid": "5fa4705d-3445-429b-ba35-cdbfef086033",
 				"name": "A Category"
 			},
 			{
-				"uuid": "942fbcfa-0530-40fe-9c70-9ace2e377a3d",
+				"uuid": "e389b45e-fb47-4eba-843f-bc1d9b0cffa7",
 				"name": "B Category"
 			},
 			{
-				"uuid": "4356fd9e-709a-4774-8cae-fee4dbc98bcd",
+				"uuid": "e62158e1-895b-415d-a1ba-e24c595f1d9e",
 				"name": "C Category"
 			}
 		],

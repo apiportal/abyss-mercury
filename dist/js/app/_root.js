@@ -95,6 +95,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'moment', 'izitoast', 'vue-izi
 				})
 			},
 			addItem(url, item, head, arr) {
+				// return axios.put(url, item, head).then(response => {
 				return axios.post(url, item, head).then(response => {
 					arr.push(item);
 					return response;
@@ -105,9 +106,11 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'moment', 'izitoast', 'vue-izi
 			removeItem(url, item, head, arr) {
 				var r = confirm('Are you sure to delete?');
 				if (r == true) {
-					axios.post(url, item, head).then(response => {
+					// return axios.delete(url, item, head).then(response => {
+					return axios.post(url, item, head).then(response => {
 						var index = arr.indexOf(item);
 						arr.splice(index, 1);
+						return response;
 					}, error => {
 						console.error(error);
 					});
@@ -173,38 +176,12 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'moment', 'izitoast', 'vue-izi
 				datatype: 'json',
 				headers: {'Content-Type': 'application/json'}
 			},
-			user: {
-				name: null,
-				surname: null,
-				avatar: null,
-				status: null,
-				settings: {
-					darkSidebar: false
-				},
-				notifications: []
-			},
-			rootCategories: [],
+			rootData: {},
 			taxAction: '',
 			taxTitle: '',
 			taxList: '',
 			tax: {},
 			selectedTax: {},
-			menu: {
-				api: {
-					groups: [],
-					tags: [],
-					categories: [],
-					states: [],
-					visibility: [],
-				},
-				proxy: {
-					groups: [],
-					tags: [],
-					categories: [],
-					states: [],
-					visibility: [],
-				}
-			},
 			end: []
 		},
 		methods: {
@@ -215,12 +192,24 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'moment', 'izitoast', 'vue-izi
 				this.taxTitle = '';
 				this.taxList = '';
 			},
-			deleteTax(list, item) {
-				this.removeItem(abyss.ajax.index, item, this.ajaxHeaders, this.menu.api[list]);
+			deleteTax(list, editing, item) {
+				console.log("this.rootData[list]: ", this.rootData[list]);
+				this.removeItem(abyss.ajax.index, item, this.ajaxHeaders, this.rootData[list]).then(response => {
+					console.log("response: ", response );
+					// ■■ update user's api groups, tags, categories and reload my api list
+					this.$refs.refMyApis.getPage(1);
+					if (this.rootState == 'edit' || this.rootState == 'create') {
+						// ?????
+						// var index = this.$refs.refMyApis.api[editing].indexOf(item);
+						var index = this.$refs.refMyApis.api[editing].findIndex(el => el.uuid == item.uuid);
+						this.$refs.refMyApis.api[editing].splice(index, 1);
+						// this.$refs.refMyApis.selectApi(this.$refs.refMyApis.api, 'edit');
+					}
+				});
 			},
 			restoreTax(item) {
-				var index = this.menu.api[this.taxList].indexOf(item);
-				this.menu.api[this.taxList][index] = this.selectedTax;
+				var index = this.rootData[this.taxList].indexOf(item);
+				this.rootData[this.taxList][index] = this.selectedTax;
 				this.cancelTax();
 			},
 			addTax() {
@@ -229,7 +218,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'moment', 'izitoast', 'vue-izi
 						var item = _.cloneDeep(this.tax);
 						item.uuid = this.uuidv4();
 						item.count = 0;
-						this.addItem(abyss.ajax.index, item, this.ajaxHeaders, this.menu.api[this.taxList]).then(response => {
+						this.addItem(abyss.ajax.index, item, this.ajaxHeaders, this.rootData[this.taxList]).then(response => {
 							console.log("response: ", response);
 							this.cancelTax();
 							$('#taxModal').modal("hide");
@@ -241,7 +230,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'moment', 'izitoast', 'vue-izi
 				this.$validator.validateAll().then((result) => {
 					if (result) {
 						var item = _.cloneDeep(this.tax);
-						this.updateItem(abyss.ajax.index, item, this.ajaxHeaders, this.menu.api[this.taxList]).then(response => {
+						this.updateItem(abyss.ajax.index, item, this.ajaxHeaders, this.rootData[this.taxList]).then(response => {
 							console.log("response: ", response);
 							this.cancelTax();
 							$('#taxModal').modal("hide");
@@ -257,23 +246,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'moment', 'izitoast', 'vue-izi
 					this.selectedTax = _.cloneDeep(item);
 					this.tax = item;
 				}
-			},
-			getMenu(data) {
-				// this.categoryOptions = data.myApiCategoryList;
-				// this.tagOptions = data.myApiTagList;
-				// this.groupOptions = data.myApiGroupList;
-				// this.stateOptions = data.myApiStateList;
-				this.menu.api.groups = data.myApiGroupList;
-				this.menu.api.tags = data.myApiTagList;
-				this.menu.api.categories = data.myApiCategoryList;
-				this.menu.api.states = Object.assign(data.defaultStates, data.myApiStateList);
-				this.menu.api.visibility = Object.assign(data.defaultVisibility, data.myApiVisibility);
-			},
-			setMenu(categories, tags, groups, states) {
-				this.menu.api.groups = groups;
-				this.menu.api.tags = tags;
-				this.menu.api.categories = categories;
-				this.menu.api.states = states;
 			},
 			setPage(page, state) {
 				this.pageCurrent = page;
@@ -317,6 +289,22 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'moment', 'izitoast', 'vue-izi
 					// alert('Correct them errors!');
 				});
 			},
+			getRootData2222() {
+				console.log("getRootData: ", this);
+				axios.get(abyss.ajax.index, this.ajaxHeaders)
+				.then((response) => {
+					this.rootData = response.data;
+				});
+			},
+			getRootData() {
+				console.log("getRootData: ", this);
+				return axios.get(abyss.ajax.index, this.ajaxHeaders).then(response => {
+					this.rootData = response.data;
+					return response;
+				}, error => {
+					console.error(error);
+				});
+			},
 		},
 		computed: {
 		},
@@ -326,10 +314,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'moment', 'izitoast', 'vue-izi
 		},
 		created() {
 			// this.log(this.$options.name);
-			axios.get(abyss.ajax.index, this.ajaxHeaders)
-			.then((response) => {
-				this.getMenu(response.data);
-			});
+			this.getRootData();
 		}
 	});
 });
