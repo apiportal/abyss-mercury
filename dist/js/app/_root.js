@@ -1,5 +1,11 @@
 // define(['Vue', 'axios', 'vee-validate', 'moment'], function (Vue, axios, VeeValidate, moment) {
 define(['config', 'Vue', 'axios', 'vee-validate', 'moment', 'izitoast', 'vue-izitoast'], function (abyss, Vue, axios, VeeValidate, moment, iziToast) {
+
+	axios.defaults.headers.common['Accept'] = 'application/json';
+	axios.defaults.headers.common['Content-Type'] = 'application/json';
+	axios.defaults.withCredentials = true;
+	axios.defaults.timeout = 10000;
+	axios.defaults.responseType = 'json';
 	// Window.Vue = Vue;
 	// Window.Vue.use(VueIziToast);
 	// Vue.prototype.$toast = VueIziToast;
