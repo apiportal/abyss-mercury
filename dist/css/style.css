@@ -11128,7 +11128,7 @@ button.close {
 .dropdown-menu > .active > a, .dropdown-menu > .active > a:hover, .dropdown-menu > .active > a:focus {
   text-decoration: none;
   outline: 0;
-  background-color: rgba(0, 153, 255, 0.2);
+  background-color: rgba(0, 153, 255, 0.07);
   color: #212121; }
 
 .dropdown-menu > .disabled > a, .dropdown-menu > .disabled > a:hover, .dropdown-menu > .disabled > a:focus {
@@ -15821,6 +15821,15 @@ th.asc, th.desc {
 
 th.desc:before {
   content: "\f0d8"; }
+
+.ico-visibility-1:before {
+  content: "\f06e"; }
+
+.ico-visibility-2:before {
+  content: "\f21b"; }
+
+.ico-visibility-3:before {
+  content: "\f007"; }
 
 .stat-draft {
   color: #8b8e91; }

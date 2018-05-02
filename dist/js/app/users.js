@@ -101,21 +101,21 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 				if (filter == null) {
 					this.getPage(1);
 				} else {
-					this.getPage(1, '&permission='+filter.id);
+					this.getPage(1, '&permission='+filter.uuid);
 				}
 			},
 			filterGroup(filter) {
 				if (filter == null) {
 					this.getPage(1);
 				} else {
-					this.getPage(1, '&group='+filter.id);
+					this.getPage(1, '&group='+filter.uuid);
 				}
 			},
 			filterUser(filter) {
 				if (filter == null) {
 					this.getPage(1);
 				} else {
-					this.getPage(1, '&search='+filter.id);
+					this.getPage(1, '&user='+filter.uuid);
 				}
 			},
 			getUserOptions(search, loading) {
@@ -186,16 +186,16 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 				// this.userList.forEach(function (value, key) {
 					value.permissions = [
 						{
-							"id": 1,
-							"name": "Add, edit, delete API"
+							"uuid": "dc221d15-9dc6-4ebe-84ab-5a8f5edf4c12",
+							"permission": "Add, edit, delete API"
 						},
 						{
-							"id": 2,
-							"name": "Add, edit, delete APP"
+							"uuid": "313c2a4e-6eb0-4a6c-b3da-f2b1be08945d",
+							"permission": "Add, edit, delete APP"
 						},
 						{
-							"id": 3,
-							"name": "Add, edit, delete Proxy"
+							"uuid": "416d94e1-9129-4e69-9fea-986d999ec32b",
+							"permission": "Add, edit, delete Proxy"
 						}
 					]
 					value.loginCount = 5;

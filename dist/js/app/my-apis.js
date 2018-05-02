@@ -10,7 +10,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 		props: {
 			rootState: { type: String },
 			childState: { type: String },
-			rootCategories: { type: Array }
+			rootData: { type: Object }
 		},
 		data() {
 			return {
@@ -566,6 +566,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					this.selectedApi = response.data;
 					this.$toast('success', {message: '<strong>' + this.api.name + '</strong> saved', title: 'API SAVED'});
 					this.isChanged = false;
+					this.taxonomies();
 					// var xxx = this.myApiList.filter((item) => item.uuid == this.api.uuid );
 					// console.log("xxx: ", xxx);
 				}, error => {
@@ -587,6 +588,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 								$('#api'+this.api.uuid).collapse('show');
 								this.$toast('success', {message: '<strong>' + this.api.name + '</strong> successfully registered', title: 'API CREATED'});
 								// $('.list-column').addClass('column-minimize');
+								this.taxonomies();
 							});
 						}, error => {
 							alert(error.code + ': ' + error.message);
@@ -609,18 +611,69 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				.then(response => {
 					this.myApiList = response.data.myApiList;
 					this.paginate = this.makePaginate(response.data);
+					console.log("getPage: ", response.data.myApiList);
 				}, error => {
 					console.error(error);
 				});
 			},
-			apiListAction(item, prop, val) {
+			apiChangeVisibility222(item, val) {
+				var slcVisibility = this.rootData.myApiVisibilityList.find((el) => el.id == val );
+				var curVisibility = this.rootData.myApiVisibilityList.find((el) => el.id == item.visibility.id );
+				if (slcVisibility.id != curVisibility.id) {
+					item.visibility = slcVisibility;
+					axios.post(this.ajaxUrl, item, this.ajaxHeaders).then(response => {
+						console.log("response: ", response);
+						curVisibility.count -= 1;
+						slcVisibility.count += 1;
+						this.$toast('info', {message: 'Visibility changed ' + ' to <strong>' + slcVisibility.name + '</strong>', title: 'Visibility: ' + slcVisibility.name, position: 'topLeft'});
+					}, error => {
+						alert(error.code + ': ' + error.message);
+					});
+				}
+			},
+			apiChangeVisibility(item, val) {
+				var slcVisibility = this.rootData.myApiVisibilityList.find((el) => el.id == val );
+				var curVisibility = this.rootData.myApiVisibilityList.find((el) => el.id == item.visibility.id );
+				console.log("slcVisibility.id, curVisibility.id: ", slcVisibility.id, curVisibility.id);
+				if (slcVisibility.id != curVisibility.id) {
+					item.visibility = slcVisibility;
+					axios.post(this.ajaxUrl, item, this.ajaxHeaders).then(response => {
+						console.log("response1: ", response);
+						this.$emit('get-root-data');
+						console.log("response2: ", response);
+						this.$toast('info', {message: 'Visibility changed ' + ' to <strong>' + slcVisibility.name + '</strong>', title: 'Visibility: ' + slcVisibility.name, position: 'topLeft'});
+					}, error => {
+						alert(error.code + ': ' + error.message);
+					});
+				}
+			},
+			apiChangeState(item, val) {
+				var slcState = this.rootData.myApiStateList.find((el) => el.name == val );
+				var curState = this.rootData.myApiStateList.find((el) => el.name == item.state.name );
+				if (slcState.id != curState.id) {
+					item.state = slcState;
+					axios.post(this.ajaxUrl, item, this.ajaxHeaders).then(response => {
+						console.log("response1: ", response);
+						this.$emit('get-root-data');
+						console.log("response2: ", response);
+						this.$toast('info', {message: 'State changed ' + ' to <strong>' + slcState.name + '</strong>', title: 'State: ' + slcState.name, position: 'topLeft'});
+					}, error => {
+						alert(error.code + ': ' + error.message);
+					});
+				}
+			},
+			apiChangeState222(item, val) {
+				var slcState = this.rootData.myApiStateList.find((el) => el.name == val );
+				var curState = this.rootData.myApiStateList.find((el) => el.name == item.state.name );
+				item.state = slcState;
 				axios.post(this.ajaxUrl, item, this.ajaxHeaders).then(response => {
 					console.log("response: ", response);
-					item[prop] = val;
-					this.$toast('info', {message: prop + ' changed ' + ' to <strong>' + val + '</strong>', title: prop + ': ' + val, position: 'topLeft'})
+					curState.count -= 1;
+					slcState.count += 1;
+					this.$toast('info', {message: 'State changed ' + ' to <strong>' + val + '</strong>', title: 'State: ' + val, position: 'topLeft'});
 				}, error => {
 					alert(error.code + ': ' + error.message);
-				})
+				});
 			},
 			categoriesToList() {
 				if (this.rootState == 'edit' || this.rootState == 'create') {
@@ -634,7 +687,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					this.api.tagList = this.api.tags.map(e => e.name).join(', ');
 				}
 			},
-			groupsToList() {
+			groupsToList(item) {
 				if (this.rootState == 'edit' || this.rootState == 'create') {
 					this.api.groupList = this.api.groups.map(e => e.name).join(', ');
 				}
@@ -702,11 +755,12 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					}
 				})
 				.then((response) => {
-					this.tagOptions = response.data.tagList;
+					// this.tagOptions = response.data.tagList;
+					this.tagOptions = _.unionBy(this.rootData.myApiTagList, response.data.tagList, 'uuid');
 					loading(false);
 				})
 			},
-			getGroupOptions(search, loading) {
+			/*getGroupOptions(search, loading) {
 				loading(true)
 				axios.get(abyss.ajax.api_group_list, {
 					params: {
@@ -717,7 +771,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					this.groupOptions = response.data.groupList;
 					loading(false);
 				})
-			},
+			},*/
 			wwwwww() {
 				if (this.isChanged) {
 					console.log("this.isChanged: ", this.isChanged);
@@ -730,17 +784,20 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				}
 			},
 			taxonomies() {
-				// this.api.tags.forEach((value, key) => {
-					// console.log("value, key: ", value, key);
-				// });
 				var newTags = this.api.tags.filter((item) => item.uuid == null );
 				newTags.forEach((value, key) => {
 					value.uuid = this.uuidv4();
+					value.count = 1;
 				});
-				console.log("newTags: ", newTags);
-				this.tagOptions = Object.assign({}, this.tagOptions, this.api.tags);
-				console.log("this.tagOptions: ", this.tagOptions);
-				// this.$emit('set-menu', this.api.categories, this.api.tags., this.api.groups, this.stateOptions);
+				// this.api.tags.forEach((value, key) => {
+				// 	if(this.rootData.myApiTagList.findIndex(obj => obj.uuid == value.uuid) == -1) {
+				// 	// if(this.rootData.myApiTagList.indexOf(value) == -1) {
+				// 		this.rootData.myApiTagList.push(value);
+				// 	}
+				// });
+				console.log("diffffff: ", _.differenceBy(this.rootData.myApiTagList, this.api.tags, 'uuid'));
+				this.rootData.myApiTagList = _.unionBy(this.rootData.myApiTagList, this.api.tags, 'uuid');
+				this.rootData.myApiCategoryList = _.unionBy(this.rootData.myApiCategoryList, this.api.categories, 'uuid');
 			},
 		},
 		computed: {
@@ -786,6 +843,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 			this.newParameter = _.cloneDeep(this.parameter);
 			this.newHeader = _.cloneDeep(this.header);
 			this.getPage(1);
+
 		}
 	});
 });
