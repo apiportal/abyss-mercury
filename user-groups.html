@@ -30,7 +30,7 @@
 							<th class="td-action-1"></th>
 							<th class="td-action-1"></th>
 						</tr>
-						<tr v-for="(group, index) in sortBy(sort, groupList)" v-bind:class="{'active': isSelected(index), 'text-muted': !group.is_enabled}">
+						<tr v-for="(group, index) in sortBy(sort, groupList)" v-bind:key="group.uuid" v-bind:class="{'active': isSelected(index), 'text-muted': !group.is_enabled}">
 							<td class="text-center">
 								<i class="fas fa-circle" title="Not Enabled" v-if="!group.is_enabled"></i>
 								<i class="fas fa-check-circle txt-green" title="Enabled" v-if="group.is_enabled"></i>

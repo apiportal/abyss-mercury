@@ -29,15 +29,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				pageState: 'init',
 				paginate: {},
 				ajaxUrl: abyss.ajax.my_api,
-				ajaxHeaders: {
-                    // contentType: 'application/json; charset=utf-8',
-                    // datatype: 'json',
-                    // withCredentials : true,
-                    // headers: {
-                    //     'Accept': 'application/json',
-                    //     'Content-Type': 'application/json'
-                    // }
-				},
+				ajaxHeaders: {},
 				api: {
 					uuid: "00000000-0000-0000-0000-000000000000",
 					specs: '',

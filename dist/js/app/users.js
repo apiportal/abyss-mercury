@@ -15,16 +15,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 				pageState: 'init',
 				paginate: {},
 				ajaxUrl: abyss.ajax.user_list,
-				ajaxHeaders: {
-					//timeout: 10000,
-//					contentType: 'application/json; charset=utf-8',
-//					datatype: 'json',
-//					withCredentials : true,
-//					headers: {
-//						'Accept': 'application/json',
-//						'Content-Type': 'application/json'
-//					}
-				},
+				ajaxHeaders: {},
 				selected: null,
 				resetPassword: false,
 				userOLD: {
@@ -123,15 +114,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 				axios.get(this.ajaxUrl, {
 					params: {
 						q: search
-					},
-                    // timeout: 10000,
-                    // contentType: 'application/json; charset=utf-8',
-                    // datatype: 'json',
-                    // withCredentials : true,
-                    // headers: {
-                    //     'Accept': 'application/json',
-                    //     'Content-Type': 'application/json'
-                    // }
+					}
 				})
 				.then(response => {
 					console.log(response);
@@ -144,15 +127,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 				axios.get(abyss.ajax.user_group_list, {
 					params: {
 						q: search
-					},
-                    // timeout: 10000,
-                    // contentType: 'application/json; charset=utf-8',
-                    // datatype: 'json',
-                    // withCredentials : true,
-                    // headers: {
-                    //     'Accept': 'application/json',
-                    //     'Content-Type': 'application/json'
-                    // }
+					}
 				})
 				.then(response => {
 					console.log(response);
@@ -165,15 +140,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 				axios.get(abyss.ajax.permission_list, {
 					params: {
 						q: search
-					},
-                    // timeout: 10000,
-                    // contentType: 'application/json; charset=utf-8',
-                    // datatype: 'json',
-                    // withCredentials : true,
-                    // headers: {
-                    //     'Accept': 'application/json',
-                    //     'Content-Type': 'application/json'
-                    // }
+					}
 				})
 				.then(response => {
 					console.log(response);

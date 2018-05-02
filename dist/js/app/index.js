@@ -16,11 +16,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select'], funct
 				paginate: {},
 				ajaxUrl: '/data/my-api-list.json',
 				testUrl: 'http://local.doodle.com/api',
-				ajaxHeaders: {
-					contentType: 'application/json',
-					datatype: 'json',
-					headers: {'Content-Type': 'application/json'}
-				},
+				ajaxHeaders: {},
 				selected: null,
 				resetPassword: false,
 				user: {

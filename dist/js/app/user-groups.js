@@ -16,16 +16,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 				pageState: 'init',
 				paginate: {},
 				ajaxUrl: abyss.ajax.user_group_list,
-				ajaxHeaders: {
-                    //timeout: 10000,
-                    contentType: 'application/json; charset=utf-8',
-                    datatype: 'json',
-                    withCredentials : true,
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    }
-                },
+				ajaxHeaders: {},
 				selected: null,
 				resetPassword: false,
 				groupOLD: {
@@ -88,15 +79,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 				axios.get(abyss.ajax.user_list, {
 					params: {
 						q: search
-					},
-                    timeout: 10000,
-                    contentType: 'application/json; charset=utf-8',
-                    datatype: 'json',
-                    withCredentials : true,
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    }
+					}
 				})
 				.then(response => {
 					console.log(response);
@@ -109,16 +92,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 				axios.get(this.ajaxUrl, {
 					params: {
 						q: search
-					},
-                    timeout: 10000,
-                    contentType: 'application/json; charset=utf-8',
-                    datatype: 'json',
-                    withCredentials : true,
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    }
-                })
+					}
+				})
 				.then(response => {
 					console.log(response);
 					this.groupOptions = response.data.groupList;
@@ -130,15 +105,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 				axios.get(abyss.ajax.permission_list, {
 					params: {
 						q: search
-					},
-                    timeout: 10000,
-                    contentType: 'application/json; charset=utf-8',
-                    datatype: 'json',
-                    withCredentials : true,
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    }
+					}
 				})
 				.then(response => {
 					console.log(response);
@@ -149,7 +116,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 			fakeData() { // delete
 				this.groupList.forEach((value, key) => {
 				// this.userList.forEach(function (value, key) {
-				    value.permissions = [
+					value.permissions = [
 						{
 							"uuid": "dc221d15-9dc6-4ebe-84ab-5a8f5edf4c12",
 							"permission": "Add, edit, delete API"

@@ -50,7 +50,7 @@
 							<th class="td-action-1"></th>
 							<th class="td-action-1"></th>
 						</tr>
-						<tr v-for="(user, index) in sortBy(sort, userList)" v-bind:class="{'active': isSelected(index)}">
+						<tr v-for="(user, index) in sortBy(sort, userList)" v-bind:key="user.uuid" v-bind:class="{'active': isSelected(index)}">
 							<td class="text-center">
 								<i class="fas fa-circle" title="Not Activated" v-if="!user.is_activated"></i>
 								<i class="fas fa-check-circle txt-green" title="Activated" v-if="user.is_activated"></i>

@@ -177,11 +177,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'moment', 'izitoast', 'vue-izi
 			childState: '',
 			pageClassPrefix: 'vs',
 			pageClass: '',
-			ajaxHeaders: {
-				contentType: 'application/json',
-				datatype: 'json',
-				headers: {'Content-Type': 'application/json'}
-			},
+			ajaxHeaders: {},
 			rootData: {},
 			taxAction: '',
 			taxTitle: '',

@@ -31,7 +31,7 @@
 						<span slot="no-options"></span>
 					</v-select>
 					<ul class="nav flex-column nav-controls nav-controls-first">
-						<li v-for="(api, index) in sortBy(sortApi, myApiList)">
+						<li v-for="(api, index) in sortBy(sortApi, myApiList)" v-bind:key="api.uuid">
 							<div class="nav-actions dropdown dropdown-hover">
 								<button type="button"><i class="fas fa-ellipsis-h"></i></button>
 								<ul class="dropdown-menu dropdown-menu-right" role="menu" data-dropdown-in="slideInRight" data-dropdown-out="slideOutRight">
