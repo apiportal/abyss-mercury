@@ -20,10 +20,10 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 				resetPassword: false,
 				user: {
 					// "id": null,
-					"uuid": null,
+					// "uuid": null,
 					// "organization_id": null,
 					"created": null,
-					"updated": null,
+					// "updated": null,
 					// "deleted": null,
 					// "is_deleted": null,
 					// "crud_subject_id": null,
@@ -39,7 +39,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 					// "effective_end_date": null,
 					"password": null,
 					// "password_salt": null,
-					"picture": null,
+					// "picture": null,
 					// "total_login_count": null,
 					// "failed_login_count": null,
 					// "invalid_password_attempt_count": null,
@@ -197,7 +197,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 						if (act == 'add') {
 							this.user.created = moment().toISOString();
 							this.addItem(abyss.ajax.user_add, this.user, this.ajaxHeaders, this.userList).then(response => {
-								// console.log("this.user: ", JSON.stringify(this.user, null, '\t') );
+								console.log("this.user: ", JSON.stringify(this.user, null, '\t') );
 								this.$emit('set-state', 'init');
 								this.user = _.cloneDeep(this.newUser);
 							});
