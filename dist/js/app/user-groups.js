@@ -83,7 +83,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 				})
 				.then(response => {
 					console.log(response);
-					this.userOptions = response.data.userList;
+					this.userOptions = response.data.respDataList;
 					loading(false);
 				})
 			},
@@ -96,7 +96,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 				})
 				.then(response => {
 					console.log(response);
-					this.groupOptions = response.data.groupList;
+					this.groupOptions = response.data.respDataList;
 					loading(false);
 				})
 			},
@@ -109,7 +109,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 				})
 				.then(response => {
 					console.log(response);
-					this.permissionOptions = response.data.permissionList;
+					this.permissionOptions = response.data.respDataList;
 					loading(false);
 				})
 			},
@@ -136,14 +136,14 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 			getPage(p, d) {
 				// axios.get(this.ajaxUrl).then(response => {
 				// 	console.log("p: ", p);
-				// 	this.groupList = response.data.groupList;
+				// 	this.groupList = response.data.respDataList;
 				// }, error => {
 				// 	console.error(error);
 				// });
 				var param = d || '';
 				axios.get(this.ajaxUrl + '?page=' + p + param, this.ajaxHeaders)
 				.then(response => {
-					this.groupList = response.data.groupList;
+					this.groupList = response.data.respDataList;
 					this.paginate = this.makePaginate(response.data);
 					// this.fakeData(); // delete
 					console.log("this.groupList: ", JSON.stringify(this.groupList, null, '\t') );

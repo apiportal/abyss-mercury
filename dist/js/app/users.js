@@ -96,7 +96,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 				})
 				.then(response => {
 					console.log(response);
-					this.userOptions = response.data.userList;
+					this.userOptions = response.data.respDataList;
 					loading(false);
 				})
 			},
@@ -109,7 +109,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 				})
 				.then(response => {
 					console.log(response);
-					this.groupOptions = response.data.groupList;
+					this.groupOptions = response.data.respDataList;
 					loading(false);
 				})
 			},
@@ -122,7 +122,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 				})
 				.then(response => {
 					console.log(response);
-					this.permissionOptions = response.data.permissionList;
+					this.permissionOptions = response.data.respDataList;
 					loading(false);
 				})
 			},
@@ -162,7 +162,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 				var param = d || '';
 				axios.get(this.ajaxUrl + '?page=' + p + param, this.ajaxHeaders)
 				.then(response => {
-					this.userList = response.data.userList;
+					this.userList = response.data.respDataList;
 					this.paginate = this.makePaginate(response.data);
 					// this.fakeData(); // delete
 					console.log("this.userList: ", JSON.stringify(this.userList, null, '\t') );
