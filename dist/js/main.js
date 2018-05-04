@@ -73,6 +73,7 @@ require.config({
 		"test": "app/_test",
 		"testJs": "app/_testJs",
 		"index": "app/index",
+		"my-apis-old": "app/my-apis-old",
 		"my-apis": "app/my-apis",
 		"users": "app/users",
 		"user-groups": "app/user-groups",

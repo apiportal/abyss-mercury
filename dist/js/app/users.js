@@ -165,6 +165,15 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 							"permission": "Add, edit, delete Proxy"
 						}
 					]
+					value.groups =  [
+						{
+							"uuid": "dbcadc32-c16c-4c95-b6f3-bcc6d26b7744",
+							"group_name": "admin"
+						}, {
+							"uuid": "0f6f8ebd-8e4e-4cd6-a03d-16b07a1d93db",
+							"group_name": "developer"
+						}
+					],
 					value.loginCount = 5;
 					value.lastLogin = "2018-04-12T14:48:00.000Z";
 					value.failedLoginCount = 1;
@@ -183,8 +192,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 				.then(response => {
 					this.userList = response.data.userList;
 					this.paginate = this.makePaginate(response.data);
-					this.fakeData(); // delete
-					console.log("this.userList: ", this.userList);
+					// this.fakeData(); // delete
+					console.log("this.userList: ", JSON.stringify(this.userList, null, '\t') );
 				}, error => {
 					console.error(error);
 				});
@@ -216,9 +225,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 						if (act == 'add') {
 							this.user.created = moment().toISOString();
 							this.addItem(this.ajaxUrl, this.user, this.ajaxHeaders, this.userList).then(response => {
+								// console.log("this.user: ", JSON.stringify(this.user, null, '\t') );
 								this.$emit('set-state', 'init');
 								this.user = _.cloneDeep(this.newUser);
-								console.log("this.user: ", this.user );
 							});
 						}
 						if (act == 'edit') {

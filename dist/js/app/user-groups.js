@@ -145,8 +145,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 				.then(response => {
 					this.groupList = response.data.groupList;
 					this.paginate = this.makePaginate(response.data);
-					this.fakeData(); // delete
-					console.log("this.groupList: ", this.groupList);
+					// this.fakeData(); // delete
+					console.log("this.groupList: ", JSON.stringify(this.groupList, null, '\t') );
 				}, error => {
 					console.error(error);
 				});
@@ -179,9 +179,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 							postItem.effective_start_date = moment(this.group.effective_start_date).toISOString();
 							postItem.effective_end_date = moment(this.group.effective_end_date).toISOString();
 							this.addItem(this.ajaxUrl, postItem, this.ajaxHeaders, this.groupList).then(response => {
+								// console.log("this.group: ", JSON.stringify(postItem, null, '\t') );
 								this.$emit('set-state', 'init');
 								this.group = _.cloneDeep(this.newGroup);
-								console.log("this.group: ", this.group );
 							});
 						}
 						if (act == 'edit') {

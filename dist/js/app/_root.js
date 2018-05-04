@@ -3,7 +3,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'moment', 'izitoast', 'vue-izi
 
 	axios.defaults.headers.common['Accept'] = 'application/json';
 	axios.defaults.headers.common['Content-Type'] = 'application/json';
-	axios.defaults.withCredentials = true;
+	axios.defaults.withCredentials = abyss.abyssCredentials;
 	axios.defaults.timeout = 10000;
 	axios.defaults.responseType = 'json';
 	// Window.Vue = Vue;
@@ -149,6 +149,20 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'moment', 'izitoast', 'vue-izi
 				//   function (item) { return item.sortData.a; },
 				//   function (item) { return item.sortData.b; }
 				// ], ["asc", "desc"]);
+			},
+			nestedResolve( path, obj ) {
+				return path.split('.').reduce( function( prev, curr ) {
+					return prev ? prev[curr] : undefined;
+				}, obj || this );
+			},
+			sortByNested(srt, arr) {
+				if (srt.type == String) {
+					return _.orderBy(arr, [item => this.nestedResolve(srt.key, item).toLowerCase()], srt.order);
+				} else if (srt.type == Array) {
+					return _.orderBy(arr, (item) => { return this.nestedResolve(srt.key, item).length; }, srt.order);
+				} else {
+					return _.orderBy(arr, srt.key, srt.order);
+				}
 			},
 			sortList(srt, key, typ, ord) {
 				if (key === srt.key) {

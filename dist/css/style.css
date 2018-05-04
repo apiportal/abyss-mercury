@@ -15831,22 +15831,22 @@ th.desc:before {
 .ico-visibility-3:before {
   content: "\f007"; }
 
-.stat-draft {
+.stat-2 {
   color: #8b8e91; }
 
-.stat-staged {
+.stat-3 {
   color: #6f42c1; }
 
-.stat-published {
+.stat-4 {
   color: #4cac00; }
 
-.stat-promoted {
+.stat-5 {
   color: #00bbbb; }
 
-.stat-demoted {
+.stat-6 {
   color: #ec7700; }
 
-.stat-retired {
+.stat-8 {
   color: #e31e1e; }
 
 .stat-Draft {
