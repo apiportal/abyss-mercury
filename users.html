@@ -44,8 +44,8 @@
 							<th class="td-name" v-bind:class="sort.order" v-on:click="sortList(sort, 'subject_name', String)">Username / Email</th>
 							<th class="td-name" v-bind:class="sort.order" v-on:click="sortList(sort, 'display_name', String)">Display Name</th>
 							<th class="td-datetime-x" v-bind:class="sort.order" v-on:click="sortList(sort, 'created', Date)">Created / Updated / Deleted</th>
-							<th class="td-datetime" v-bind:class="sort.order" v-on:click="sortList(sort, 'loginCount', Number)">Logins</th>
-							<th class="td-datetime" v-bind:class="sort.order" v-on:click="sortList(sort, 'failedLoginCount', Number)">Failed Logins</th>
+							<th class="td-datetime" v-bind:class="sort.order" v-on:click="sortList(sort, 'total_login_count', Number)">Logins</th>
+							<th class="td-datetime" v-bind:class="sort.order" v-on:click="sortList(sort, 'failed_login_count', Number)">Failed Logins</th>
 							<th class="td-long"></th>
 							<th class="td-action-1"></th>
 							<th class="td-action-1"></th>
@@ -83,18 +83,18 @@
 								<div class="d-flex align-items-center">
 									<div class="d-block small">
 										<strong class="d-block">LAST LOGIN</strong>
-										<span class="d-block">{{user.lastLogin | formatDateTime}}</span>
+										<span class="d-block">{{user.last_login_at | formatDateTime}}</span>
 									</div>
-									<strong class="ml-auto">{{user.loginCount}}</strong>
+									<strong class="ml-auto">{{user.total_login_count}}</strong>
 								</div>
 							</td>
 							<td>
 								<div class="d-flex align-items-center">
 									<div class="d-block small">
 										<strong class="d-block">LAST FAILED</strong>
-										<span class="d-block">{{user.lastFailedLogin | formatDateTime}}</span>
+										<span class="d-block">{{user.last_failed_login_at | formatDateTime}}</span>
 									</div>
-									<strong class="ml-auto">{{user.failedLoginCount}}</strong>
+									<strong class="ml-auto">{{user.failed_login_count}}</strong>
 								</div>
 							</td>
 							<td>

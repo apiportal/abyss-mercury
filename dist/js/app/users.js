@@ -18,43 +18,41 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 				ajaxHeaders: {},
 				selected: null,
 				resetPassword: false,
-				userOLD: {
-					"id": 0,
-					"fullName": "",
-					"userName": "",
-					"email": "",
-					"notify": true,
-					"loginCount": 0,
-					"lastLogin": "",
-					"failedLoginCount": 0,
-					"lastFailedLogin": "",
-					"directory": "Internal Directory",
-					"groups": [],
-					"permissions": []
-				},
 				user: {
+					"id": null,
 					"uuid": null,
+					"organization_id": null,
 					"created": null,
 					"updated": null,
-					"deleted": null, // ? what is the difference
-					"is_deleted": null, // ? what is the difference
+					"deleted": null,
+					"is_deleted": null,
+					"crud_subject_id": null,
 					"is_activated": null,
+					"subject_type_id": null,
 					"subject_name": null,
 					"first_name": null,
 					"last_name": null,
 					"display_name": null,
 					"email": null,
+					"secondary_email": null,
 					"effective_start_date": null,
 					"effective_end_date": null,
-
-					"notify": true,
-					"loginCount": 0,
-					"lastLogin": null,
-					"failedLoginCount": 0,
-					"lastFailedLogin": null,
-					"directory": "Internal Directory",
+					"password": null,
+					"password_salt": null,
+					"picture": null,
+					"total_login_count": null,
+					"failed_login_count": null,
+					"invalid_password_attempt_count": null,
+					"is_password_change_required": null,
+					"password_expires_at": null,
+					"last_login_at": null,
+					"last_password_change_at": null,
+					"last_authenticated_at": null,
+					"last_failed_login_at": null,
 					"groups": [],
-					"permissions": []
+					"permissions": [],
+					"directory": "Internal Directory",
+					"notify": true
 				},
 				selectedUser: {},
 				newUser: {},
@@ -68,26 +66,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 			}
 		},
 		methods: {
-			/*onSearch(search, loading) {
-				loading(true);
-				this.search(loading, search, this);
-			},
-			search: (loading, search, vm) => {
-				fetch(
-					'https://api.github.com/search/repositories?q=${escape(search)}'
-				).then(res => {
-					res.json().then(json => (vm.groupOptions = json.items));
-					loading(false);
-				});
-			},*/
-			/*search: _.debounce((loading, search, vm) => {
-				fetch(
-					`https://api.github.com/search/repositories?q=${escape(search)}`
-				).then(res => {
-					res.json().then(json => (vm.groupOptions = json.items));
-					loading(false);
-				});
-			}, 350),*/
 			filterPermission(filter) {
 				if (filter == null) {
 					this.getPage(1);
@@ -150,7 +128,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 			},
 			fakeData() { // delete
 				this.userList.forEach((value, key) => {
-				// this.userList.forEach(function (value, key) {
 					value.permissions = [
 						{
 							"uuid": "dc221d15-9dc6-4ebe-84ab-5a8f5edf4c12",
@@ -182,11 +159,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 				});
 			},
 			getPage(p, d) {
-				// axios.get(this.ajaxUrl, {
-				// 	params: {
-				// 		page: p
-				// 	}
-				// })
 				var param = d || '';
 				axios.get(this.ajaxUrl + '?page=' + p + param, this.ajaxHeaders)
 				.then(response => {
