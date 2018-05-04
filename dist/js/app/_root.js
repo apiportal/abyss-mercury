@@ -93,7 +93,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'moment', 'izitoast', 'vue-izi
 			// 	// return obj;
 			// },
 			updateItem(url, item, head, arr) {
-				return axios.post(url, item, head).then(response => {
+				return axios.put(url, item, head).then(response => {
+				// return axios.post(url, item, head).then(response => {
 					return response;
 				}, error => {
 					console.error(error);
@@ -101,8 +102,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'moment', 'izitoast', 'vue-izi
 				})
 			},
 			addItem(url, item, head, arr) {
-				// return axios.put(url, item, head).then(response => {
 				return axios.post(url, item, head).then(response => {
+				// return axios.post(url, item, head).then(response => {
 					arr.push(item);
 					return response;
 				}, error => {
@@ -112,8 +113,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'moment', 'izitoast', 'vue-izi
 			removeItem(url, item, head, arr) {
 				var r = confirm('Are you sure to delete?');
 				if (r == true) {
-					// return axios.delete(url, item, head).then(response => {
-					return axios.post(url, item, head).then(response => {
+					return axios.delete(url, item, head).then(response => {
+					// return axios.post(url, item, head).then(response => {
 						var index = arr.indexOf(item);
 						arr.splice(index, 1);
 						return response;
