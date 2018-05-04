@@ -188,7 +188,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 				return i === this.selected;
 			},
 			deleteUser(item) {
-				this.removeItem(this.ajaxUrl, item, this.ajaxHeaders, this.userList);
+				this.removeItem(abyss.ajax.user_delete, item, this.ajaxHeaders, this.userList);
 			},
 			userAction(act) {
 				this.$validator.validateAll().then((result) => {
@@ -196,7 +196,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 					if (result) {
 						if (act == 'add') {
 							this.user.created = moment().toISOString();
-							this.addItem(this.ajaxUrl, this.user, this.ajaxHeaders, this.userList).then(response => {
+							this.addItem(abyss.ajax.user_add, this.user, this.ajaxHeaders, this.userList).then(response => {
 								// console.log("this.user: ", JSON.stringify(this.user, null, '\t') );
 								this.$emit('set-state', 'init');
 								this.user = _.cloneDeep(this.newUser);
@@ -204,7 +204,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 						}
 						if (act == 'edit') {
 							this.user.updated = moment().toISOString();
-							this.updateItem(this.ajaxUrl, this.user, this.ajaxHeaders, this.userList).then(response => {
+							this.updateItem(abyss.ajax.user_update, this.user, this.ajaxHeaders, this.userList).then(response => {
 								this.$emit('set-state', 'init');
 								this.user = _.cloneDeep(this.newUser);
 								this.selected = null;
