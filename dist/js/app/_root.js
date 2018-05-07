@@ -317,6 +317,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'moment', 'izitoast', 'vue-izi
 				console.log("getRootData: ", this);
 				return axios.get(abyss.ajax.index, this.ajaxHeaders).then(response => {
 					this.rootData = response.data;
+                    console.log("this.rootData: ", this.rootData);
 					return response;
 				}, error => {
 					console.error(error);
