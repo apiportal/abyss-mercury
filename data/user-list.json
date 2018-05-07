@@ -5,10 +5,10 @@
 			"fullName": "A Name Surname",
 			"userName": "myUserName",
 			"email": "myemail@email.com",
-			"loginCount": 200,
-			"lastLogin": "2011-10-05T14:48:00.000Z",
-			"failedLoginCount": 0,
-			"lastFailedLogin": "2011-10-05T14:48:00.000Z",
+			"total_login_count": 200,
+			"last_login_at": "2011-10-05T14:48:00.000Z",
+			"failed_login_count": 0,
+			"last_failed_login_at": "2011-10-05T14:48:00.000Z",
 			"directory": "Internal Directory",
 			"groups": [
 				{
@@ -40,10 +40,10 @@
 			"fullName": "B Name Surname",
 			"userName": "myUserName",
 			"email": "myemail@email.com",
-			"loginCount": 122,
-			"lastLogin": "2011-10-05T14:48:00.000Z",
-			"failedLoginCount": 12,
-			"lastFailedLogin": "2011-10-05T14:48:00.000Z",
+			"total_login_count": 122,
+			"last_login_at": "2011-10-05T14:48:00.000Z",
+			"failed_login_count": 12,
+			"last_failed_login_at": "2011-10-05T14:48:00.000Z",
 			"directory": "Internal Directory",
 			"groups": [
 				{
@@ -75,10 +75,10 @@
 			"fullName": "C Name Surname",
 			"userName": "myUserName",
 			"email": "myemail@email.com",
-			"loginCount": 89,
-			"lastLogin": "2011-10-05T14:48:00.000Z",
-			"failedLoginCount": 6,
-			"lastFailedLogin": "2011-10-05T14:48:00.000Z",
+			"total_login_count": 89,
+			"last_login_at": "2011-10-05T14:48:00.000Z",
+			"failed_login_count": 6,
+			"last_failed_login_at": "2011-10-05T14:48:00.000Z",
 			"directory": "Internal Directory",
 			"groups": [
 				{
@@ -110,10 +110,10 @@
 			"fullName": "D Name Surname",
 			"userName": "myUserName",
 			"email": "myemail@email.com",
-			"loginCount": 45,
-			"lastLogin": "2011-10-05T14:48:00.000Z",
-			"failedLoginCount": 8,
-			"lastFailedLogin": "2011-10-05T14:48:00.000Z",
+			"total_login_count": 45,
+			"last_login_at": "2011-10-05T14:48:00.000Z",
+			"failed_login_count": 8,
+			"last_failed_login_at": "2011-10-05T14:48:00.000Z",
 			"directory": "Internal Directory",
 			"groups": [
 				{
@@ -145,10 +145,10 @@
 			"fullName": "E Name Surname",
 			"userName": "myUserName",
 			"email": "myemail@email.com",
-			"loginCount": 777,
-			"lastLogin": "2011-10-05T14:48:00.000Z",
-			"failedLoginCount": 8,
-			"lastFailedLogin": "2011-10-05T14:48:00.000Z",
+			"total_login_count": 777,
+			"last_login_at": "2011-10-05T14:48:00.000Z",
+			"failed_login_count": 8,
+			"last_failed_login_at": "2011-10-05T14:48:00.000Z",
 			"directory": "Internal Directory",
 			"groups": [
 				{
@@ -180,10 +180,10 @@
 			"fullName": "F Name Surname",
 			"userName": "myUserName",
 			"email": "myemail@email.com",
-			"loginCount": 54,
-			"lastLogin": "2011-10-05T14:48:00.000Z",
-			"failedLoginCount": 3,
-			"lastFailedLogin": "2011-10-05T14:48:00.000Z",
+			"total_login_count": 54,
+			"last_login_at": "2011-10-05T14:48:00.000Z",
+			"failed_login_count": 3,
+			"last_failed_login_at": "2011-10-05T14:48:00.000Z",
 			"directory": "Internal Directory",
 			"groups": [
 				{

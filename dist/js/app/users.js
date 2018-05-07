@@ -151,10 +151,10 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 							"group_name": "developer"
 						}
 					],
-					value.loginCount = 5;
-					value.lastLogin = "2018-04-12T14:48:00.000Z";
-					value.failedLoginCount = 1;
-					value.lastFailedLogin = "2018-04-10T11:15:00.000Z";
+					value.total_login_count = 5;
+					value.last_login_at = "2018-04-12T14:48:00.000Z";
+					value.failed_login_count = 1;
+					value.last_failed_login_at = "2018-04-10T11:15:00.000Z";
 					value.directory = "Internal Directory";
 				});
 			},
@@ -205,6 +205,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 						if (act == 'edit') {
 							this.user.updated = moment().toISOString();
 							this.updateItem(abyss.ajax.user_update, this.user, this.ajaxHeaders, this.userList).then(response => {
+								console.log("this.user: ", JSON.stringify(this.user, null, '\t') );
 								this.$emit('set-state', 'init');
 								this.user = _.cloneDeep(this.newUser);
 								this.selected = null;

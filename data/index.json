@@ -1,13 +1,23 @@
 {
 	"user": {
-		"name": null,
-		"surname": null,
-		"avatar": null,
-		"status": null,
+		"uuid": "32c9c734-11cb-44c9-b06f-0b52e076672d",
+		"organization_id": 0,
+		"subject_name": "faik",
+		"first_name": "FAIK",
+		"last_name": "SAGLAR",
+		"display_name": "FAIK SAGLAR",
+		"email": "faik.saglar@verapi.com",
+		"picture": null,
+		"total_login_count": 7,
+		"failed_login_count": 5,
+		"invalid_password_attempt_count": 2,
+		"is_password_change_required": false,
+		"password_expires_at": null,
+		"last_login_at": null,
+		"last_failed_login_at": null,
 		"settings": {
 			"darkSidebar": false
-		},
-		"notifications": []
+		}
 	},
 	"myApiStateList": [
 		{
@@ -33,10 +43,10 @@
 		},
 		{
 			"id": 4,
-			"uuid": "932ed6c0-2efa-4a15-8005-554e974dd0e8",
+			"uuid": "79392fc7-9713-4819-80d5-c5798c3e33c4",
 			"name": "Published",
 			"description": "When API Developers stage the APIs in his own private sandbox API environment and successfully test, API Developers | Administrators stage the APIs in the public sandbox API environment",
-			"count": 3
+			"count": 5
 		},
 		{
 			"id": 5,
@@ -84,16 +94,19 @@
 	"myApiVisibilityList": [
 		{
 			"id": 1,
+			"uuid": "2e7b5131-71ee-4c53-b021-79aa14daf87a",
 			"name": "Public",
-			"count": 3
+			"count": 5
 		},
 		{
 			"id": 2,
+			"uuid": "162a8e12-e586-4f5b-972d-aa28a6822778",
 			"name": "Private",
 			"count": 1
 		},
 		{
 			"id": 3,
+			"uuid": "035da1d3-ab80-4dbd-a56b-c350a7636b15",
 			"name": "Only registered users",
 			"count": 1
 		}
