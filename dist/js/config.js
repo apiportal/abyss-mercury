@@ -12,7 +12,7 @@ define(['global'], function(abyss){
 	var abyssJsonLocation = abyssProtocol + '://' + abyssHost + ':' + abyssJsonPort + '/' + abyssJsonPath;
 	var abyssDataList = {
 		user_list: '/api/subject/getAll',
-		user_add: '/api/subject/getAll',
+		user_add: '/api/subject/addSubject',
 		user_update: '/api/subject/getAll',
 		user_delete: '/api/subject/getAll',
 		user_group_list: '/api/subjectgroup/getAll',
