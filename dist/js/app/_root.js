@@ -1,5 +1,6 @@
 // define(['Vue', 'axios', 'vee-validate', 'moment'], function (Vue, axios, VeeValidate, moment) {
-define(['config', 'Vue', 'axios', 'vee-validate', 'moment', 'izitoast', 'vue-izitoast'], function (abyss, Vue, axios, VeeValidate, moment, iziToast) {
+// define(['config', 'Vue', 'axios', 'vee-validate', 'tiny-cookie', 'vue-cookie', 'moment', 'izitoast', 'vue-izitoast'], function (abyss, Vue, axios, VeeValidate, Cookie, VueCookie, moment, iziToast) {
+define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izitoast', 'vue-izitoast'], function (abyss, Vue, axios, VeeValidate, VueCookie, moment, iziToast) {
 
 	axios.defaults.headers.common['Accept'] = 'application/json';
 	axios.defaults.headers.common['Content-Type'] = 'application/json';
@@ -11,6 +12,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'moment', 'izitoast', 'vue-izi
 	// Vue.prototype.$toast = VueIziToast;
 	Vue.use(MyToaster);
 	Vue.use(VeeValidate);
+	Vue.use(VueCookie);
 	const dictionary = {
 		en: {
 			attributes: {
@@ -313,11 +315,10 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'moment', 'izitoast', 'vue-izi
 					this.rootData = response.data;
 				});
 			},
-			getRootData() {
-				console.log("getRootData: ", this);
-				return axios.get(abyss.ajax.index, this.ajaxHeaders).then(response => {
+			getRootData(id) {
+				return axios.get(abyss.ajax.index + '?q=' + id, this.ajaxHeaders).then(response => {
 					this.rootData = response.data;
-                    console.log("this.rootData: ", this.rootData);
+					console.log("this.rootData: ", this.rootData);
 					return response;
 				}, error => {
 					console.error(error);
@@ -331,8 +332,12 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'moment', 'izitoast', 'vue-izi
 			// this.setChildState('child');
 		},
 		created() {
+			// this.$cookie.set('abyss.principal.uuid', '9820d2aa-eb02-4a58-8cc5-8b9a89504df9', 1); //one day
+			var principal = this.$cookie.get('abyss.principal.uuid');
+			console.log("principal: ", principal);
+			// this.$cookie.delete('abyss.principal.uuid');
 			// this.log(this.$options.name);
-			this.getRootData();
+			this.getRootData(principal);
 		}
 	});
 });

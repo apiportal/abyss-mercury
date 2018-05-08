@@ -22,24 +22,24 @@
 	"myApiStateList": [
 		{
 			"id": 1,
-			"uuid": "e4b08221-e010-4f13-af75-68323fc2f54e",
+			"uuid": "6235ce49-9393-46a8-b4f6-0e03bce5d7b8",
 			"name": "Initial",
 			"description": "Initial State of API just after creation",
 			"count": 0
 		},
 		{
 			"id": 2,
-			"uuid": "724c1538-5d4c-4890-9255-f88192c59e4f",
+			"uuid": "5423bc88-b9c0-4ae4-9707-e7012d984534",
 			"name": "Draft",
 			"description": "The draft state for an API is when an API definition is not staged",
-			"count": 1
+			"count": 0
 		},
 		{
 			"id": 3,
-			"uuid": "5452bca7-34e1-4436-8a38-2f5fbd5493fb",
+			"uuid": "131ba5b9-e72e-4b16-acff-fd95936bfe8c",
 			"name": "Staged",
 			"description": "When the APIs have been successfully registered or created, API Developer stages the APIs in his own private sandbox API environment",
-			"count": 1
+			"count": 0
 		},
 		{
 			"id": 4,
@@ -50,42 +50,42 @@
 		},
 		{
 			"id": 5,
-			"uuid": "8fd99551-6707-48cc-9cc7-1fabeb07add1",
+			"uuid": "0955b15c-917f-4f0f-9fe4-409b3219ccc6",
 			"name": "Promoted",
 			"description": "After the APIs are published in the public sandbox API environment, API administrators can promote and deploy APIs to the production API environment",
 			"count": 0
 		},
 		{
 			"id": 6,
-			"uuid": "21380b85-b825-480d-ac64-36152b7786f5",
+			"uuid": "9ee187f2-cbc1-4570-80d8-a6c34b8cada9",
 			"name": "Demoted",
 			"description": "After the APIs are demoted from the production API environment, API developers re-stage into their own stage area",
 			"count": 0
 		},
 		{
 			"id": 7,
-			"uuid": "67b34239-efb3-4d61-8f1d-55ca57c774c3",
+			"uuid": "97fb4cb8-28b6-4408-8f7b-22b0c803bb73",
 			"name": "Deprecated",
 			"description": "When API administrators deprecate APIs, they flag the APIs with a date when they will be retired from API Catalog. API consumers can see the planned retirement date in API Portal. The APIs are deprecated in both the sandbox API and production API environments",
 			"count": 0
 		},
 		{
 			"id": 8,
-			"uuid": "f8a6cf74-51a2-4e3b-be1a-eec38ea7f2e5",
+			"uuid": "d8fd2f9f-6200-4659-ac42-3441ef39f9c8",
 			"name": "Retired",
 			"description": "When the APIs are retired, API administrators unpublish the APIs from API Catalog. The retired APIs are no longer available to API consumers or client applications. The APIs are retired in both the sandbox API and production API environments",
 			"count": 0
 		},
 		{
 			"id": 9,
-			"uuid": "1f27e512-477a-4d1f-949a-68869b592065",
+			"uuid": "add22b25-e404-4c2d-9fb9-f7147698ddb1",
 			"name": "Archived",
 			"description": "When you archive an API, the API version can neither be viewed nor can its Plans be subscribed to, and all of the associated APIs are taken offline. The API version is not displayed by default in the APIs list",
 			"count": 0
 		},
 		{
 			"id": 10,
-			"uuid": "9bfdd88b-8eb9-4d05-ba12-64b31734724f",
+			"uuid": "73c31573-6dbd-47d6-90a2-a7bb760c9d4e",
 			"name": "Removed",
 			"description": "Final state of API after removal from Portfolio",
 			"count": 0
@@ -100,66 +100,52 @@
 		},
 		{
 			"id": 2,
-			"uuid": "162a8e12-e586-4f5b-972d-aa28a6822778",
+			"uuid": "72038656-c8d8-4278-8125-c7ff69a0a4a5",
 			"name": "Private",
-			"count": 1
+			"count": 0
 		},
 		{
 			"id": 3,
-			"uuid": "035da1d3-ab80-4dbd-a56b-c350a7636b15",
-			"name": "Only registered users",
-			"count": 1
+			"uuid": "7afb7f42-8b07-4972-81e3-3595fa4d2cb0",
+			"name": "Closed-Group",
+			"count": 0
 		}
 	],
 	"myApiTagList": [
 		{
-			"uuid": "551f213c-0b28-46ec-96f9-4d799a7a37d0",
-			"name": "A Tag",
-			"count": 10
+			"uuid": "f27b3952-955d-4571-a2e3-b7a9bc2e894c",
+			"name": "animals",
+			"count": 1
 		},
 		{
-			"uuid": "5b9f602a-a43c-45da-a990-7078ed7072c3",
-			"name": "B Tag",
-			"count": 20
-		},
-		{
-			"uuid": "efb48e30-c7cc-4909-b4c3-5c5e14562400",
-			"name": "C Tag",
-			"count": 10
+			"uuid": "b0360528-3760-493a-ae8d-60bfda2c1a1f",
+			"name": "pet",
+			"count": 1
 		}
 	],
 	"myApiGroupList": [
 		{
-			"uuid": "cc4e71a2-c8ab-4e9e-b0fa-6721ec454da1",
-			"name": "A Group",
-			"count": 100
-		},
-		{
-			"uuid": "874bf24c-d445-4965-bead-ac450f1f2e82",
-			"name": "B Group",
+			"uuid": "254dc26b-2a6d-4cd1-908d-4b170e8fb08c",
+			"name": "Examples",
 			"count": 5
-		},
-		{
-			"uuid": "24f454b3-3177-46b9-aa42-148d4c4184dc",
-			"name": "C Group",
-			"count": 34
 		}
 	],
 	"myApiCategoryList": [
 		{
-			"uuid": "5fa4705d-3445-429b-ba35-cdbfef086033",
-			"name": "A Category",
-			"count": 23
+			"uuid": "3c30a832-ff49-4e30-9bca-3da622ea4037",
+			"name": "Commerce",
+			"count": 2
 		},
 		{
-			"uuid": "e389b45e-fb47-4eba-843f-bc1d9b0cffa7",
-			"name": "B Category",
-			"count": 500
+			"uuid": "924482c3-2e44-4337-971c-5de05a7327ed",
+			"name": "Travel",
+			"count": 1
 		},
 		{
-			"uuid": "e62158e1-895b-415d-a1ba-e24c595f1d9e",
-			"name": "C Category",
+			"uuid": "469c735b-0c76-4596-87ff-4d0607bcae9c",
+			"name": "Transportation",
 			"count": 1
 		}
-	]
+	],
+	"statusCode": "200"
 }
