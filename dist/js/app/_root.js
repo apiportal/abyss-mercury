@@ -308,14 +308,15 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 					// alert('Correct them errors!');
 				});
 			},
-			getRootData2222() {
-				console.log("getRootData: ", this);
-				axios.get(abyss.ajax.index, this.ajaxHeaders)
-				.then((response) => {
+			getRootData(id) {
+				axios.get(abyss.ajax.index + '?q=' + id, this.ajaxHeaders).then(response => {
 					this.rootData = response.data;
+					console.log("this.rootData: ", this.rootData);
+				}, error => {
+					console.error(error);
 				});
 			},
-			getRootData(id) {
+			getRootData222(id) {
 				return axios.get(abyss.ajax.index + '?q=' + id, this.ajaxHeaders).then(response => {
 					this.rootData = response.data;
 					console.log("this.rootData: ", this.rootData);
