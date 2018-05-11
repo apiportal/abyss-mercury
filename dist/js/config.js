@@ -1,6 +1,7 @@
 define(['global'], function(abyss){
 	var isAbyssSandbox = abyssSandbox;
-	var abyssProtocol = 'http';
+	var abyssProtocol = hostProtocol;
+    console.log("abyssProtocol: ", abyssProtocol);
 	var abyssHost = host;
 	console.log("abyssHost: ", abyssHost);
 	var abyssPort = '38082';
