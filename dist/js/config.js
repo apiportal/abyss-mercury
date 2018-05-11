@@ -4,8 +4,8 @@ define(['global'], function(abyss){
     console.log("abyssProtocol: ", abyssProtocol);
 	var abyssHost = host;
 	console.log("abyssHost: ", abyssHost);
-	var abyssPort = '38082';
-	var abyssJsonPort = '38081';
+	var abyssPort = hostPort;
+	var abyssJsonPort = hostJsonPort;
 	var abyssPath = 'abyss';
 	var abyssJsonPath = 'data';
 	var abyssCredentials = true;
