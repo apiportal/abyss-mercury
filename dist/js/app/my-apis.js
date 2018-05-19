@@ -57,20 +57,20 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					},
 					"externalDocs": {},
 					"x-abyss-platform": {
-						"api_state_id": null,
-						"api_visibility_id": null,
-						"business_api_id": null,
-						"change_log": null,
+						"apistateid": null,
+						"apivisibilityid": null,
+						"businessapiid": null,
+						"changelog": null,
 						"color": null,
 						"created": null,
-						"data_format": null,
+						"dataformat": null,
 						"deleted": null,
 						"deployed": null,
 						"image": null,
-						"is_deleted": null,
-						"is_proxy_api": false,
-						"language_name": null,
-						"language_version": null,
+						"isdeleted": null,
+						"isproxyapi": false,
+						"languagename": null,
+						"languageversion": null,
 						"updated": null,
 						"uuid": "00000000-0000-0000-0000-000000000000",
 						"tags": [],
@@ -663,7 +663,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					this.myApiList = response.data.openApiList;
 					this.paginate = this.makePaginate(response.data);
 					console.log("getPage: ", response.data.openApiList);
-					console.log("getPage: ", response.data.openApiList[0]['x-abyss-platform'].api_visibility_id);
+					console.log("getPage: ", response.data.openApiList[0]['x-abyss-platform'].apivisibilityid);
 				}, error => {
 					console.error(error);
 				});
@@ -685,9 +685,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 			},
 			apiChangeVisibility222(item, val) {
 				var slcVisibility = this.rootData.myApiVisibilityList.find((el) => el.id == val );
-				var curVisibility = this.rootData.myApiVisibilityList.find((el) => el.id == item['x-abyss-platform'].api_visibility_id );
+				var curVisibility = this.rootData.myApiVisibilityList.find((el) => el.id == item['x-abyss-platform'].apivisibilityid );
 				if (slcVisibility.id != curVisibility.id) {
-					item['x-abyss-platform'].api_visibility_id = slcVisibility.id;
+					item['x-abyss-platform'].apivisibilityid = slcVisibility.id;
 					axios.post(this.ajaxUrl, item, this.ajaxHeaders).then(response => {
 						console.log("response: ", response);
 						curVisibility.count -= 1;
@@ -700,9 +700,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 			},
 			apiChangeVisibility(item, val) {
 				var slcVisibility = this.rootData.myApiVisibilityList.find((el) => el.id == val );
-				var curVisibility = this.rootData.myApiVisibilityList.find((el) => el.id == item['x-abyss-platform'].api_visibility_id );
+				var curVisibility = this.rootData.myApiVisibilityList.find((el) => el.id == item['x-abyss-platform'].apivisibilityid );
 				if (slcVisibility.id != curVisibility.id) {
-					item['x-abyss-platform'].api_visibility_id = slcVisibility.id;
+					item['x-abyss-platform'].apivisibilityid = slcVisibility.id;
 					axios.post(this.ajaxUrl, item, this.ajaxHeaders).then(response => {
 						console.log("response1: ", response);
 						this.$emit('get-root-data');
@@ -715,9 +715,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 			},
 			apiChangeState(item, val) {
 				var slcState = this.rootData.myApiStateList.find((el) => el.id == val );
-				var curState = this.rootData.myApiStateList.find((el) => el.id == item['x-abyss-platform'].api_state_id );
+				var curState = this.rootData.myApiStateList.find((el) => el.id == item['x-abyss-platform'].apistateid );
 				if (slcState.id != curState.id) {
-					item['x-abyss-platform'].api_state_id = slcState.id;
+					item['x-abyss-platform'].apistateid = slcState.id;
 					axios.post(this.ajaxUrl, item, this.ajaxHeaders).then(response => {
 						console.log("response1: ", response);
 						this.$emit('get-root-data');
@@ -733,8 +733,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 			},
 			apiChangeState222(item, val) {
 				var slcState = this.rootData.myApiStateList.find((el) => el.id == val );
-				var curState = this.rootData.myApiStateList.find((el) => el.id == item['x-abyss-platform'].api_state_id );
-				item['x-abyss-platform'].api_state_id = slcState.id;
+				var curState = this.rootData.myApiStateList.find((el) => el.id == item['x-abyss-platform'].apistateid );
+				item['x-abyss-platform'].apistateid = slcState.id;
 				axios.post(this.ajaxUrl, item, this.ajaxHeaders).then(response => {
 					console.log("response: ", response);
 					curState.count -= 1;
