@@ -746,19 +746,25 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 			},
 			categoriesToList() {
 				if (this.rootState == 'edit' || this.rootState == 'create') {
-					this.api['x-abyss-platform'].categoryList = this.api['x-abyss-platform'].categories.map(e => e.name).join(', ');
-					console.log("this.api['x-abyss-platform'].categories: ", this.api['x-abyss-platform'].categories);
-					console.log("this.api['x-abyss-platform'].categoryList: ", this.api['x-abyss-platform'].categoryList);
+					if (this.api['x-abyss-platform'].categories != null) {
+						this.api['x-abyss-platform'].categoryList = this.api['x-abyss-platform'].categories.map(e => e.name).join(', ');
+						console.log("this.api['x-abyss-platform'].categories: ", this.api['x-abyss-platform'].categories);
+						console.log("this.api['x-abyss-platform'].categoryList: ", this.api['x-abyss-platform'].categoryList);
+					}
 				}
 			},
 			tagsToList() {
 				if (this.rootState == 'edit' || this.rootState == 'create') {
-					this.api['x-abyss-platform'].tagList = this.api['x-abyss-platform'].tags.map(e => e.name).join(', ');
+					if (this.api['x-abyss-platform'].tags != null) {
+						this.api['x-abyss-platform'].tagList = this.api['x-abyss-platform'].tags.map(e => e.name).join(', ');
+					}
 				}
 			},
 			groupsToList(item) {
-				if (this.rootState == 'edit' || this.rootState == 'create') {
-					this.api['x-abyss-platform'].groupList = this.api['x-abyss-platform'].groups.map(e => e.name).join(', ');
+				if (this.api['x-abyss-platform'].groups != null) {
+					if (this.rootState == 'edit' || this.rootState == 'create') {
+						this.api['x-abyss-platform'].groupList = this.api['x-abyss-platform'].groups.map(e => e.name).join(', ');
+					}
 				}
 			},
 			checkAuthentication(a, i) {

@@ -46,23 +46,23 @@
 									<li><a href="#" v-on:click="selectApi(api, 'preview')"><i class="fas fa-file-alt"></i>Preview</a></li>
 									<li class="dropdown-header">VISIBILITY</li>
 									<li role="separator" class="divider"></li>
-									<li v-bind:class="{'active': api['x-abyss-platform'].api_visibility_id == 1}" ><a href="#" v-on:click="apiChangeVisibility(api, 1)"><i class="fas fa-eye"></i>Public</a></li>
-									<li v-bind:class="{'active': api['x-abyss-platform'].api_visibility_id == 2}" ><a href="#" v-on:click="apiChangeVisibility(api, 2)"><i class="fas fa-user-secret"></i>Private</a></li>
-									<li v-bind:class="{'active': api['x-abyss-platform'].api_visibility_id == 3}" ><a href="#" v-on:click="apiChangeVisibility(api, 3)"><i class="fas fa-user"></i>Only registered users</a></li>
+									<li v-bind:class="{'active': api['x-abyss-platform'].apivisibilityid == 1}" ><a href="#" v-on:click="apiChangeVisibility(api, 1)"><i class="fas fa-eye"></i>Public</a></li>
+									<li v-bind:class="{'active': api['x-abyss-platform'].apivisibilityid == 2}" ><a href="#" v-on:click="apiChangeVisibility(api, 2)"><i class="fas fa-user-secret"></i>Private</a></li>
+									<li v-bind:class="{'active': api['x-abyss-platform'].apivisibilityid == 3}" ><a href="#" v-on:click="apiChangeVisibility(api, 3)"><i class="fas fa-user"></i>Only registered users</a></li>
 									<li class="dropdown-header">CHANGE STATE</li>
 									<li role="separator" class="divider"></li>
-									<li v-bind:class="{'active': api['x-abyss-platform'].api_state_id == 2}"><a href="#" v-on:click="apiChangeState(api, 2)"><i class="fas fa-circle stat-2"></i>Draft</a></li>
-									<li v-bind:class="{'active': api['x-abyss-platform'].api_state_id == 3}"><a href="#" v-on:click="apiChangeState(api, 3)"><i class="fas fa-circle stat-3"></i>Stage</a></li>
-									<li v-bind:class="{'active': api['x-abyss-platform'].api_state_id == 4}"><a href="#" v-on:click="apiChangeState(api, 4)"><i class="fas fa-circle stat-4"></i>Publish</a></li>
-									<li v-bind:class="{'active': api['x-abyss-platform'].api_state_id == 5}"><a href="#" v-on:click="apiChangeState(api, 5)"><i class="fas fa-circle stat-5"></i>Promote</a></li>
-									<li v-bind:class="{'active': api['x-abyss-platform'].api_state_id == 6}"><a href="#" v-on:click="apiChangeState(api, 6)"><i class="fas fa-circle stat-6"></i>Demote</a></li>
-									<li v-bind:class="{'active': api['x-abyss-platform'].api_state_id == 8}"><a href="#" v-on:click="apiChangeState(api, 8)"><i class="fas fa-circle stat-8"></i>Retire</a></li>
-									<li v-bind:class="{'active': api['x-abyss-platform'].api_state_id == 10}"><a href="#" v-on:click="apiChangeState(api, 10)"><i class="fas fa-trash-alt"></i>Delete</a></li>
+									<li v-bind:class="{'active': api['x-abyss-platform'].apistateid == 2}"><a href="#" v-on:click="apiChangeState(api, 2)"><i class="fas fa-circle stat-2"></i>Draft</a></li>
+									<li v-bind:class="{'active': api['x-abyss-platform'].apistateid == 3}"><a href="#" v-on:click="apiChangeState(api, 3)"><i class="fas fa-circle stat-3"></i>Stage</a></li>
+									<li v-bind:class="{'active': api['x-abyss-platform'].apistateid == 4}"><a href="#" v-on:click="apiChangeState(api, 4)"><i class="fas fa-circle stat-4"></i>Publish</a></li>
+									<li v-bind:class="{'active': api['x-abyss-platform'].apistateid == 5}"><a href="#" v-on:click="apiChangeState(api, 5)"><i class="fas fa-circle stat-5"></i>Promote</a></li>
+									<li v-bind:class="{'active': api['x-abyss-platform'].apistateid == 6}"><a href="#" v-on:click="apiChangeState(api, 6)"><i class="fas fa-circle stat-6"></i>Demote</a></li>
+									<li v-bind:class="{'active': api['x-abyss-platform'].apistateid == 8}"><a href="#" v-on:click="apiChangeState(api, 8)"><i class="fas fa-circle stat-8"></i>Retire</a></li>
+									<li v-bind:class="{'active': api['x-abyss-platform'].apistateid == 10}"><a href="#" v-on:click="apiChangeState(api, 10)"><i class="fas fa-trash-alt"></i>Delete</a></li>
 								</ul>
 							</div>
 							<a href="#" data-toggle="collapse" v-bind:data-target="'#api'+api['x-abyss-platform'].uuid" v-bind:aria-controls="'api'+api['x-abyss-platform'].uuid" v-bind:class="{'active': isSelectedApi(api['x-abyss-platform'].uuid)}">
 								<div class="">
-									<i v-bind:title="apiGetStateName(api['x-abyss-platform'].api_state_id)" class="fas fa-circle" v-bind:class="'stat-' + api['x-abyss-platform'].api_state_id"></i>
+									<i v-bind:title="apiGetStateName(api['x-abyss-platform'].apistateid)" class="fas fa-circle" v-bind:class="'stat-' + api['x-abyss-platform'].apistateid"></i>
 									<strong>{{api.info.title}}</strong> <small class="text-muted">{{api.info.version}}</small>
 								</div>
 								<small>Proxies: <strong>{{api['x-abyss-platform'].proxies_summary.length}}</strong></small>
@@ -74,8 +74,8 @@
 										<div class="small pt-2">
 											<p><strong class="d-block text-uppercase">Base URL</strong> <span class="d-block text-truncate" v-bind:title="api.servers[0].url">{{api.servers[0].url}}</span></p>
 											<div class="fow form-row">
-												<p class="fol-6"><strong class="d-block text-uppercase">Visibility</strong><span class="text-capitalize">{{apiGetVisibilityName(api['x-abyss-platform'].api_visibility_id)}}</span></p>
-												<p class="fol-6"><strong class="d-block text-uppercase">State</strong><span class="text-capitalize">{{apiGetStateName(api['x-abyss-platform'].api_state_id)}}</span></p>
+												<p class="fol-6"><strong class="d-block text-uppercase">Visibility</strong><span class="text-capitalize">{{apiGetVisibilityName(api['x-abyss-platform'].apivisibilityid)}}</span></p>
+												<p class="fol-6"><strong class="d-block text-uppercase">State</strong><span class="text-capitalize">{{apiGetStateName(api['x-abyss-platform'].apistateid)}}</span></p>
 											</div>
 											<div class="fow form-row">
 												<p class="fol-6"><strong class="d-block text-uppercase">Authentication</strong>{{apiGetAuthentications(api)}}</p>
@@ -186,14 +186,11 @@
 					<div class="clearfix column-header column-min-button">
 						<h5 class="column-header-title">Authentication</h5>
 					</div>
-					<ul class="nav flex-column nav-controls mb-3">
+					<!-- <ul class="nav flex-column nav-controls mb-3">
 						<li class="collapse-check" v-for="(securityVal, securityKey) in api.components.securitySchemes">
-							<!-- <div class="switch switch-primary ml-auto">
-								<input type="checkbox" name="authentication" v-bind:id="'authentication'+securityKey" v-model="authen.enabled" v-on:change="checkAuthentication(authen, index)" class="js-collapse-check" v-bind:disabled="authen.disabled"> <label v-bind:for="'authentication'+securityKey"></label>
-							</div> -->
 							<h6>{{securityKey}}</h6>
 							<p class="xxx" v-for="(authenVal, authenKey) in securityVal">{{authenKey}}: {{authenVal}}</p>
-					</ul>
+					</ul> -->
 					<ul class="nav flex-column nav-controls mb-3">
 						<li class="collapse-check" v-for="(authen, index) in api.authentication" v-bind:class="{'disabled': authen.disabled}">
 							<div class="switch switch-primary ml-auto">
