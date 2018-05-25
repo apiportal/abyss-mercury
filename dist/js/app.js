@@ -263,6 +263,23 @@ define(['config', 'jquery', 'bootstrap', 'domready'], function(config, $){
 				$(this).parents('.column').removeClass('column-maximize');
 				$(targets).removeClass('column-minimize');
 			});*/
+			$(document).on('show.bs.collapse', '.field-controls > .collapse', function (e) {
+				$(this).parent().addClass('active');
+				$(this).parent().siblings().children('.collapse').not(this).collapse('hide');
+				if ($(this).is('.column-maximize-toggle')) {
+					var targets = $(this).data('targets') || '';
+					$(this).parents('.column').addClass('column-maximize');
+					$(targets).addClass('column-minimize');
+				}
+			});
+			$(document).on('hide.bs.collapse', '.field-controls > .collapse', function (e) {
+				$(this).parent().removeClass('active');
+				if ($(this).is('.column-maximize-toggle')) {
+					var targets = $(this).data('targets') || '';
+					$(this).parents('.column').removeClass('column-maximize');
+					$(targets).removeClass('column-minimize');
+				}
+			});
 			$(document).on('show.bs.collapse', '.nav-controls > li .collapse', function (e) {
 				$(this).parent().siblings().children('.collapse').not(this).collapse('hide');
 				if ($(this).is('.column-maximize-toggle')) {

@@ -1,145 +1,107 @@
 {
 	"statusCode": "200",
-	"openApiList": [
-		{
-			"info": {
-				"title": "Partner API",
-				"contact": {
-					"email": "support@aske-futurskill.com"
-				},
-				"version": "1.0.2",
-				"description": "This is the model of the partner API"
+	"openApiList": [{
+		"info": {
+			"title": "Partner API",
+			"contact": {
+				"email": "support@aske-futurskill.com"
 			},
-			"paths": {
-				"/reports": {
-					"get": {
-						"tags": ["reports"],
-						"summary": "Get the specified report",
-						"responses": {
-							"200": {
-								"content": {
-									"application/json": {
-										"schema": {
-											"$ref": "#/components/schemas/report"
-										}
+			"version": "1.0.2",
+			"description": "This is the model of the partner API"
+		},
+		"paths": {
+			"/reports": {
+				"get": {
+					"tags": ["reports"],
+					"summary": "Get the specified report",
+					"responses": {
+						"200": {
+							"content": {
+								"application/json": {
+									"schema": {
+										"$ref": "#/components/schemas/report"
 									}
-								},
-								"description": "report found"
+								}
 							},
-							"401": {
-								"content": {
-									"application/json": {}
-								},
-								"description": "Unauthorized"
-							},
-							"404": {
-								"content": {
-									"appplication/json": {}
-								},
-								"description": "report not found"
-							},
-							"500": {
-								"content": {
-									"appplication/json": {}
-								},
-								"description": "Server error occurred"
-							}
+							"description": "report found"
 						},
-						"parameters": [
-							{
-								"in": "query",
-								"name": "testId",
-								"schema": {
-									"type": "integer",
-									"format": "int64"
-								},
-								"example": 123456,
-								"required": true,
-								"description": "Id of the test associate to the report to return"
-								},
-							{
-								"in": "query",
-								"name": "candidateId",
-								"schema": {
-									"type": "integer",
-									"format": "int64"
-								},
-								"example": 123456,
-								"required": true,
-								"description": "Id of the candidate associate to the report to return"
-								},
-							{
-								"in": "query",
-								"name": "reportId",
-								"schema": {
-									"type": "integer",
-									"format": "int64"
-								},
-								"example": 123456,
-								"required": false,
-								"description": "Id of the specific report to return (in case of mutliple reports for a test)"
-								},
-							{
-								"in": "query",
-								"name": "language",
-								"schema": {
-									"type": "string"
-								},
-								"example": "fr-FR",
-								"required": false,
-								"description": "Language of the report to return (fr-FR by default)"
-								},
-							{
-								"in": "query",
-								"name": "format",
-								"schema": {
-									"$ref": "#/components/schemas/reportFormat"
-								},
-								"required": false,
-								"description": "Format of the report to return"
-							}
-						],
-						"description": "Query the database for the specified testId and candidateId and return the report.",
-						"operationId": "getReport"
-					}
-				},
-				"/candidates": {
-					"post": {
-						"tags": ["candidates"],
-						"summary": "create a new candidate",
-						"responses": {
-							"201": {
-								"content": {
-									"application/json": {
-										"schema": {
-											"$ref": "#/components/schemas/candidate"
-										}
-									}
-								},
-								"description": "candidate created successfully"
+						"401": {
+							"content": {
+								"application/json": {}
 							},
-							"401": {
-								"content": {
-									"application/json": {}
-								},
-								"description": "Unauthorized"
-							},
-							"422": {
-								"content": {
-									"appplication/json": {}
-								},
-								"description": "Input could not be parsed"
-							},
-							"500": {
-								"content": {
-									"appplication/json": {}
-								},
-								"description": "Server error occurred"
-							}
+							"description": "Unauthorized"
 						},
-						"description": "Creates a new candidate",
-						"operationId": "createCandidate",
-						"requestBody": {
+						"404": {
+							"content": {
+								"appplication/json": {}
+							},
+							"description": "report not found"
+						},
+						"500": {
+							"content": {
+								"appplication/json": {}
+							},
+							"description": "Server error occurred"
+						}
+					},
+					"parameters": [{
+						"in": "query",
+						"name": "testId",
+						"schema": {
+							"type": "integer",
+							"format": "int64"
+						},
+						"example": 123456,
+						"required": true,
+						"description": "Id of the test associate to the report to return"
+					}, {
+						"in": "query",
+						"name": "candidateId",
+						"schema": {
+							"type": "integer",
+							"format": "int64"
+						},
+						"example": 123456,
+						"required": true,
+						"description": "Id of the candidate associate to the report to return"
+					}, {
+						"in": "query",
+						"name": "reportId",
+						"schema": {
+							"type": "integer",
+							"format": "int64"
+						},
+						"example": 123456,
+						"required": false,
+						"description": "Id of the specific report to return (in case of mutliple reports for a test)"
+					}, {
+						"in": "query",
+						"name": "language",
+						"schema": {
+							"type": "string"
+						},
+						"example": "fr-FR",
+						"required": false,
+						"description": "Language of the report to return (fr-FR by default)"
+					}, {
+						"in": "query",
+						"name": "format",
+						"schema": {
+							"$ref": "#/components/schemas/reportFormat"
+						},
+						"required": false,
+						"description": "Format of the report to return"
+					}],
+					"description": "Query the database for the specified testId and candidateId and return the report.",
+					"operationId": "getReport"
+				}
+			},
+			"/candidates": {
+				"post": {
+					"tags": ["candidates"],
+					"summary": "create a new candidate",
+					"responses": {
+						"201": {
 							"content": {
 								"application/json": {
 									"schema": {
@@ -147,113 +109,47 @@
 									}
 								}
 							},
-							"description": "Candidate to add"
+							"description": "candidate created successfully"
+						},
+						"401": {
+							"content": {
+								"application/json": {}
+							},
+							"description": "Unauthorized"
+						},
+						"422": {
+							"content": {
+								"appplication/json": {}
+							},
+							"description": "Input could not be parsed"
+						},
+						"500": {
+							"content": {
+								"appplication/json": {}
+							},
+							"description": "Server error occurred"
 						}
-					}
-				},
-				"/testResults": {
-					"get": {
-						"tags": ["testResults"],
-						"summary": "Get the specified test Results",
-						"responses": {
-							"200": {
-								"content": {
-									"application/json": {
-										"schema": {
-											"$ref": "#/components/schemas/testResult"
-										}
-									}
-								},
-								"description": "test results found"
-							},
-							"401": {
-								"content": {
-									"application/json": {}
-								},
-								"description": "Unauthorized"
-							},
-							"404": {
-								"content": {
-									"appplication/json": {}
-								},
-								"description": "test results not found"
-							},
-							"500": {
-								"content": {
-									"appplication/json": {}
-								},
-								"description": "Server error occurred"
-							}
-						},
-						"parameters": [
-							{
-								"in": "query",
-								"name": "testId",
-								"schema": {
-									"type": "integer",
-									"format": "int64"
-								},
-								"example": 123456,
-								"required": true,
-								"description": "Id of the test associate to the test results to return"
-							},
-							{
-								"in": "query",
-								"name": "candidateId",
-								"schema": {
-									"type": "integer",
-									"format": "int64"
-								},
-								"example": 123456,
-								"required": true,
-								"description": "Id of the candidate associate to the test results to return"
-							}
-						],
-						"description": "Query the database for the specified testId and candidateId and return the associated test results.",
-						"operationId": "getTestResults"
 					},
-					"post": {
-						"tags": ["testResults"],
-						"summary": "create a new test result",
-						"responses": {
-							"201": {
-								"content": {
-									"application/json": {
-										"schema": {
-											"$ref": "#/components/schemas/testResult"
-										}
-									}
-								},
-								"description": "test result created successfully"
-							},
-							"401": {
-								"content": {
-									"application/json": {}
-								},
-								"description": "Unauthorized"
-							},
-							"409": {
-								"content": {
-									"appplication/json": {}
-								},
-								"description": "test result already exists"
-							},
-							"422": {
-								"content": {
-									"appplication/json": {}
-								},
-								"description": "Input could not be parsed"
-							},
-							"500": {
-								"content": {
-									"appplication/json": {}
-								},
-								"description": "Server error occurred"
+					"description": "Creates a new candidate",
+					"operationId": "createCandidate",
+					"requestBody": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/candidate"
+								}
 							}
 						},
-						"description": "Creates a new test result",
-						"operationId": "createTestResult",
-						"requestBody": {
+						"description": "Candidate to add"
+					}
+				}
+			},
+			"/testResults": {
+				"get": {
+					"tags": ["testResults"],
+					"summary": "Get the specified test Results",
+					"responses": {
+						"200": {
 							"content": {
 								"application/json": {
 									"schema": {
@@ -261,113 +157,110 @@
 									}
 								}
 							},
-							"description": "result to add"
+							"description": "test results found"
+						},
+						"401": {
+							"content": {
+								"application/json": {}
+							},
+							"description": "Unauthorized"
+						},
+						"404": {
+							"content": {
+								"appplication/json": {}
+							},
+							"description": "test results not found"
+						},
+						"500": {
+							"content": {
+								"appplication/json": {}
+							},
+							"description": "Server error occurred"
 						}
-					}
-				},
-				"/registrations": {
-					"get": {
-						"tags": ["registrations"],
-						"summary": "Get the specified registration",
-						"responses": {
-							"200": {
-								"content": {
-									"application/json": {
-										"schema": {
-											"$ref": "#/components/schemas/registration"
-										}
-									}
-								},
-								"description": "registration found"
-							},
-							"401": {
-								"content": {
-									"application/json": {}
-								},
-								"description": "Unauthorized"
-							},
-							"404": {
-								"content": {
-									"appplication/json": {}
-								},
-								"description": "registration not found"
-							},
-							"500": {
-								"content": {
-									"appplication/json": {}
-								},
-								"description": "Server error occurred"
-							}
-						},
-						"parameters": [
-							{
-								"in": "query",
-								"name": "testId",
-								"schema": {
-									"type": "integer",
-									"format": "int64"
-								},
-								"example": 123456,
-								"required": true,
-								"description": "Id of the test associate to the registration to return"
-							},
-							{
-								"in": "query",
-								"name": "candidateId",
-								"schema": {
-									"type": "integer",
-									"format": "int64"
-								},
-								"example": 123456,
-								"required": true,
-								"description": "Id of the candidate associate to the registration to return"
-							}
-						],
-						"description": "Query the database for the specified testId and candidateId and return the associated registration.",
-						"operationId": "getRegistration"
 					},
-					"post": {
-						"tags": ["registrations"],
-						"summary": "create a new registration",
-						"responses": {
-							"201": {
-								"content": {
-									"application/json": {
-										"schema": {
-											"$ref": "#/components/schemas/registration"
-										}
+					"parameters": [{
+						"in": "query",
+						"name": "testId",
+						"schema": {
+							"type": "integer",
+							"format": "int64"
+						},
+						"example": 123456,
+						"required": true,
+						"description": "Id of the test associate to the test results to return"
+					}, {
+						"in": "query",
+						"name": "candidateId",
+						"schema": {
+							"type": "integer",
+							"format": "int64"
+						},
+						"example": 123456,
+						"required": true,
+						"description": "Id of the candidate associate to the test results to return"
+					}],
+					"description": "Query the database for the specified testId and candidateId and return the associated test results.",
+					"operationId": "getTestResults"
+				},
+				"post": {
+					"tags": ["testResults"],
+					"summary": "create a new test result",
+					"responses": {
+						"201": {
+							"content": {
+								"application/json": {
+									"schema": {
+										"$ref": "#/components/schemas/testResult"
 									}
-								},
-								"description": "registration created successfully"
+								}
 							},
-							"401": {
-								"content": {
-									"application/json": {}
-								},
-								"description": "Unauthorized"
+							"description": "test result created successfully"
+						},
+						"401": {
+							"content": {
+								"application/json": {}
 							},
-							"409": {
-								"content": {
-									"appplication/json": {}
-								},
-								"description": "registration already exists"
+							"description": "Unauthorized"
+						},
+						"409": {
+							"content": {
+								"appplication/json": {}
 							},
-							"422": {
-								"content": {
-									"appplication/json": {}
-								},
-								"description": "Input could not be parsed"
+							"description": "test result already exists"
+						},
+						"422": {
+							"content": {
+								"appplication/json": {}
 							},
-							"500": {
-								"content": {
-									"appplication/json": {}
-								},
-								"description": "Server error occurred"
+							"description": "Input could not be parsed"
+						},
+						"500": {
+							"content": {
+								"appplication/json": {}
+							},
+							"description": "Server error occurred"
+						}
+					},
+					"description": "Creates a new test result",
+					"operationId": "createTestResult",
+					"requestBody": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/testResult"
+								}
 							}
 						},
-						"description": "Creates a new registration",
-						"operationId": "createRegistration",
-						"requestBody": {
+						"description": "result to add"
+					}
+				}
+			},
+			"/registrations": {
+				"get": {
+					"tags": ["registrations"],
+					"summary": "Get the specified registration",
+					"responses": {
+						"200": {
 							"content": {
 								"application/json": {
 									"schema": {
@@ -375,2052 +268,2040 @@
 									}
 								}
 							},
-							"description": "registration to add"
+							"description": "registration found"
+						},
+						"401": {
+							"content": {
+								"application/json": {}
+							},
+							"description": "Unauthorized"
+						},
+						"404": {
+							"content": {
+								"appplication/json": {}
+							},
+							"description": "registration not found"
+						},
+						"500": {
+							"content": {
+								"appplication/json": {}
+							},
+							"description": "Server error occurred"
 						}
-					}
+					},
+					"parameters": [{
+						"in": "query",
+						"name": "testId",
+						"schema": {
+							"type": "integer",
+							"format": "int64"
+						},
+						"example": 123456,
+						"required": true,
+						"description": "Id of the test associate to the registration to return"
+					}, {
+						"in": "query",
+						"name": "candidateId",
+						"schema": {
+							"type": "integer",
+							"format": "int64"
+						},
+						"example": 123456,
+						"required": true,
+						"description": "Id of the candidate associate to the registration to return"
+					}],
+					"description": "Query the database for the specified testId and candidateId and return the associated registration.",
+					"operationId": "getRegistration"
 				},
-				"/authentication": {
-					"get": {
-						"tags": ["authentication"],
-						"summary": "Get a Web Token from a clientId and a password.",
-						"security": [],
-						"responses": {
-							"201": {
-								"content": {
-									"application/json": {
-										"schema": {
-											"type": "object",
-											"properties": {
-												"token": {
-													"type": "string"
-												}
+				"post": {
+					"tags": ["registrations"],
+					"summary": "create a new registration",
+					"responses": {
+						"201": {
+							"content": {
+								"application/json": {
+									"schema": {
+										"$ref": "#/components/schemas/registration"
+									}
+								}
+							},
+							"description": "registration created successfully"
+						},
+						"401": {
+							"content": {
+								"application/json": {}
+							},
+							"description": "Unauthorized"
+						},
+						"409": {
+							"content": {
+								"appplication/json": {}
+							},
+							"description": "registration already exists"
+						},
+						"422": {
+							"content": {
+								"appplication/json": {}
+							},
+							"description": "Input could not be parsed"
+						},
+						"500": {
+							"content": {
+								"appplication/json": {}
+							},
+							"description": "Server error occurred"
+						}
+					},
+					"description": "Creates a new registration",
+					"operationId": "createRegistration",
+					"requestBody": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/registration"
+								}
+							}
+						},
+						"description": "registration to add"
+					}
+				}
+			},
+			"/authentication": {
+				"get": {
+					"tags": ["authentication"],
+					"summary": "Get a Web Token from a clientId and a password.",
+					"security": [],
+					"responses": {
+						"201": {
+							"content": {
+								"application/json": {
+									"schema": {
+										"type": "object",
+										"properties": {
+											"token": {
+												"type": "string"
 											}
 										}
 									}
-								},
-								"description": "Token created"
+								}
 							},
-							"401": {
-								"content": {
-									"application/json": {}
-								},
-								"description": "Unauthorized"
-							},
-							"500": {
-								"content": {
-									"appplication/json": {}
-								},
-								"description": "Server error occurred"
-							}
+							"description": "Token created"
 						},
-						"parameters": [
-							{
-								"in": "query",
-								"name": "clientId",
-								"schema": {
-									"type": "string"
-								},
-								"example": "ASkE",
-								"required": true,
-								"description": "Id of the client"
+						"401": {
+							"content": {
+								"application/json": {}
 							},
-							{
-								"in": "query",
-								"name": "password",
-								"schema": {
-									"type": "string"
-								},
-								"example": "secretpassword",
-								"required": true,
-								"description": "Password of the client"
-							}
-						],
-						"description": "Validates the provided username and password. If validation is sucessful, returns a Web Token to be used for subsequent calls.",
-						"operationId": "getAuthentication"
-					}
-				},
-				"/candidates/{candidateId}": {
-					"get": {
-						"tags": ["candidates"],
-						"summary": "Get the specified candidate",
-						"responses": {
-							"200": {
-								"content": {
-									"application/json": {
-										"schema": {
-											"$ref": "#/components/schemas/candidate"
-										}
-									}
-								},
-								"description": "candidate found"
-							},
-							"401": {
-								"content": {
-									"application/json": {}
-								},
-								"description": "Unauthorized"
-							},
-							"404": {
-								"content": {
-									"appplication/json": {}
-								},
-								"description": "candidate not found"
-							},
-							"500": {
-								"content": {
-									"appplication/json": {}
-								},
-								"description": "Server error occurred"
-							}
+							"description": "Unauthorized"
 						},
-						"parameters": [
-							{
-								"in": "path",
-								"name": "candidateId",
-								"schema": {
-									"type": "integer",
-									"format": "int64"
-								},
-								"example": 123456,
-								"required": true,
-								"description": "Id of the candidate to return"
-							}
-						],
-						"description": "Query the database for the specified candidateId and return the associated candidate.",
-						"operationId": "getCandidate"
+						"500": {
+							"content": {
+								"appplication/json": {}
+							},
+							"description": "Server error occurred"
+						}
 					},
-					"put": {
-						"tags": ["candidates"],
-						"summary": "Update specified candidate",
-						"responses": {
-							"205": {
-								"content": {
-									"application/json": {
-										"schema": {
-											"$ref": "#/components/schemas/candidate"
-										}
-									}
-								},
-								"description": "candidate updated successfully"
-							},
-							"401": {
-								"content": {
-									"application/json": {}
-								},
-								"description": "Unauthorized"
-							},
-							"404": {
-								"content": {
-									"appplication/json": {}
-								},
-								"description": "candidate not found"
-							},
-							"422": {
-								"content": {
-									"appplication/json": {}
-								},
-								"description": "Input could not be parsed"
-							},
-							"500": {
-								"content": {
-									"appplication/json": {}
-								},
-								"description": "Server error occurred"
-							}
+					"parameters": [{
+						"in": "query",
+						"name": "clientId",
+						"schema": {
+							"type": "string"
 						},
-						"parameters": [
-							{
-								"in": "path",
-								"name": "candidateId",
-								"schema": {
-									"type": "integer",
-									"format": "int64"
-								},
-								"example": 123456,
-								"required": true,
-								"description": "Id of the person object to update"
-							}
-						],
-						"description": "Query the database for the specified pandidate object and update it with the provided data",
-						"operationId": "updateCandidate",
-						"requestBody": {
+						"example": "ASkE",
+						"required": true,
+						"description": "Id of the client"
+					}, {
+						"in": "query",
+						"name": "password",
+						"schema": {
+							"type": "string"
+						},
+						"example": "secretpassword",
+						"required": true,
+						"description": "Password of the client"
+					}],
+					"description": "Validates the provided username and password. If validation is sucessful, returns a Web Token to be used for subsequent calls.",
+					"operationId": "getAuthentication"
+				}
+			},
+			"/candidates/{candidateId}": {
+				"get": {
+					"tags": ["candidates"],
+					"summary": "Get the specified candidate",
+					"responses": {
+						"200": {
 							"content": {
 								"application/json": {
 									"schema": {
 										"$ref": "#/components/schemas/candidate"
 									}
 								}
-							}
-						}
-					},
-					"delete": {
-						"tags": ["candidates"],
-						"summary": "Remove the candidate object",
-						"responses": {
-							"204": {
-								"content": {
-									"application/json": {}
-								},
-								"description": "candidate removed"
 							},
-							"401": {
-								"content": {
-									"application/json": {}
-								},
-								"description": "Unauthorized"
-							},
-							"404": {
-								"content": {
-									"appplication/json": {}
-								},
-								"description": "candidate not found"
-							},
-							"500": {
-								"content": {
-									"appplication/json": {}
-								},
-								"description": "Server error occurred"
-							}
+							"description": "candidate found"
 						},
-						"parameters": [
-							{
-								"in": "path",
-								"name": "candidateId",
-								"schema": {
-									"type": "integer",
-									"format": "int64"
-								},
-								"example": 123456,
-								"required": true,
-								"description": "Id of the candidate to return"
-							}
-						],
-						"description": "Query the database for the specified candidateId and remove it.",
-						"operationId": "deleteCandidate"
-					}
-				}
-			},
-			"openapi": "3.0.0",
-			"servers": [
-				{
-					"url": "https://virtserver.swaggerhub.com/Aske-FuturSkill/PartnerAPI/1.0",
-					"description": "SwaggerHub API Auto Mocking"
-				},
-				{
-					"url": "https://partner.api.host.com/api/1.0/"
-				}
-			],
-			"security": [
-				{
-				"bearerAuth": []
-				}
-			],
-			"components": {
-				"schemas": {
-					"score": {
-						"type": "number",
-						"format": "float",
-						"maximum": 1,
-						"minimum": -1
-					},
-					"report": {
-						"type": "object",
-						"properties": {
-							"value": {
-								"type": "string"
+						"401": {
+							"content": {
+								"application/json": {}
 							},
-							"format": {
-								"$ref": "#/components/schemas/reportFormat"
-							},
-							"testId": {
-								"type": "integer",
-								"format": "int64",
-								"example": 1234567890
-							},
-							"language": {
-								"type": "string",
-								"example": "fr-FR"
-							},
-							"reportId": {
-								"type": "integer",
-								"format": "int64",
-								"example": 1234567890,
-								"nullable": true
-							},
-							"candidateId": {
-								"type": "integer",
-								"format": "int64",
-								"example": 1234567890
-							}
-						}
-					},
-					"result": {
-						"type": "object",
-						"properties": {
-							"id": {
-								"type": "integer",
-								"format": "int64"
-							},
-							"name": {
-								"type": "string"
-							},
-							"score": {
-								"$ref": "#/components/schemas/score"
-							},
-							"feedback": {
-								"type": "string"
-							}
-						}
-					},
-					"status": {
-						"enum": ["1", "2", "3"],
-						"type": "string",
-						"description": "1: notStarted, 2: inProgress, 3: finished"
-					},
-					"candidate": {
-						"type": "object",
-						"properties": {
-							"id": {
-								"type": "integer",
-								"format": "int64",
-								"example": 1234567890
-							},
-							"tests": {
-								"type": "array",
-								"items": {
-									"type": "object",
-									"properties": {
-										"status": {
-											"$ref": "#/components/schemas/status"
-										},
-										"testId": {
-											"type": "integer",
-											"format": "int64",
-											"example": 1234567890
-										}
-									}
-								},
-								"uniqueItems": false
-							},
-							"gender": {
-								"enum": ["1", "2"],
-								"type": "string",
-								"example": "1",
-								"description": "1 for Male, 2 for Female"
-							},
-							"language": {
-								"type": "string",
-								"example": "fr-FR"
-							},
-							"lastName": {
-								"type": "string",
-								"example": "Dupont"
-							},
-							"firstName": {
-								"type": "string",
-								"example": "Jean"
-							}
-						}
-					},
-					"testResult": {
-						"type": "object",
-						"properties": {
-							"testId": {
-								"type": "integer",
-								"format": "int64",
-								"example": 1234567890
-							},
-							"endDate": {
-								"type": "string",
-								"format": "date-time"
-							},
-							"language": {
-								"type": "string",
-								"example": "fr-FR"
-							},
-							"startDate": {
-								"type": "string",
-								"format": "date-time"
-							},
-							"candidateId": {
-								"type": "integer",
-								"format": "int64",
-								"example": 1234567890
-							},
-							"elapsedTime": {
-								"type": "string"
-							},
-							"globalscore": {
-								"$ref": "#/components/schemas/score"
-							},
-							"skillsResult": {
-								"type": "array",
-								"items": {
-									"$ref": "#/components/schemas/result"
-								}
-							},
-							"elementResult": {
-								"type": "array",
-								"items": {
-									"$ref": "#/components/schemas/result"
-								}
-							},
-							"askeAccesToken": {
-								"type": "string",
-								"example": "db6366ed-1ec6-4bb2-9f02-b9947f794584"
-							}
-						}
-					},
-					"registration": {
-						"type": "object",
-						"properties": {
-							"url": {
-								"type": "string",
-								"example": "https://partner.host.com/test/1234567890/run/123465789/fr-FR"
-							},
-							"status": {
-								"$ref": "#/components/schemas/status"
-							},
-							"testId": {
-								"type": "integer",
-								"format": "int64",
-								"example": 1234567890
-							},
-							"callback": {
-								"type": "string",
-								"example": "http://aske-futurskill.com/portal/public/api/results"
-							},
-							"language": {
-								"type": "string",
-								"example": "fr-FR"
-							},
-							"redirect": {
-								"type": "string",
-								"example": ""
-							},
-							"candidateId": {
-								"type": "integer",
-								"format": "int64",
-								"example": 1234567890
-							},
-							"askeAccessToken": {
-								"type": "string",
-								"example": "db6366ed-1ec6-4bb2-9f02-b9947f794584"
-							},
-							"registrationDate": {
-								"type": "string",
-								"format": "date-time"
-							}
-						}
-					},
-					"reportFormat": {
-						"enum": ["1", "2", "3", "4", "5"],
-						"type": "string",
-						"description": "1: URL, 2: PDF, 3: HTML, 4: Document, 5: Table"
-					}
-				},
-				"securitySchemes": {
-					"bearerAuth": {
-						"type": "http",
-						"scheme": "bearer",
-						"bearerFormat": "JSONWebToken"
-					}
-				}
-			},
-			"x-abyss-platform": {
-				"uuid": "16f2437c-1914-418b-a390-a59b88b63ed4",
-				"organization_id": 0,
-				"created": "2018-03-02T13:01:39.082502",
-				"updated": "2018-05-02T13:01:39.082502",
-				"deleted": null,
-				"isdeleted": 0,
-				"crud_subject_id": 1,
-				"subject_id": 501,
-				"isproxyapi": false,
-				"apistateid": 4,
-				"apivisibilityid": 1,
-				"languagename": "OpenAPI",
-				"languageversion": "3.0.0",
-				"dataformat": 1,
-				"businessapiid": null,
-				"image": null,
-				"color": null,
-				"deployed": null,
-				"changelog": null,
-				"tags": null,
-				"groups": [
-					{
-						"uuid": "254dc26b-2a6d-4cd1-908d-4b170e8fb08c",
-						"name": "Examples"
-					}
-				],
-				"categories": null,
-				"proxies_summary": [
-					{
-						"uuid": "65bd3e20-ff9c-4570-87c2-61e5447f3d5d",
-						"name": "My Proxy 1",
-						"context": "my_proxy_1"
-					},
-					{
-						"uuid": "9b2858f0-6963-4d7c-91d7-e1e64ac24a22",
-						"name": "My Proxy 2",
-						"context": "my_proxy_2"
-					}
-				]
-			}
-		},
-		{
-			"info": {
-				"title": "Swagger Petstore",
-				"contact": {
-					"email": "apiteam@swagger.io"
-				},
-				"license": {
-					"url": "http://www.apache.org/licenses/LICENSE-2.0.html",
-					"name": "Apache 2.0"
-				},
-				"version": "1.0.0",
-				"description": "This is a sample server Petstore server.  You can find out more about Swagger at [http://swagger.io](http://swagger.io) or on [irc.freenode.net, #swagger](http://swagger.io/irc/).  For this sample, you can use the api key `special-key` to test the authorization filters.",
-				"termsOfService": "http://swagger.io/terms/"
-			},
-			"tags": [
-				{
-					"name": "pet",
-					"description": "Everything about your Pets",
-					"externalDocs": {
-						"url": "http://swagger.io",
-						"description": "Find out more"
-					}
-				},
-				{
-					"name": "store",
-					"description": "Access to Petstore orders"
-				},
-				{
-					"name": "user",
-					"description": "Operations about user",
-					"externalDocs": {
-						"url": "http://swagger.io",
-						"description": "Find out more about our store"
-					}
-				}
-			],
-			"paths": {
-				"/pet": {
-					"put": {
-						"tags": ["pet"],
-						"summary": "Update an existing pet",
-						"security": [
-							{
-								"petstore_auth": ["write:pets",
-								"read:pets"]
-							}
-						],
-						"responses": {
-							"400": {
-								"description": "Invalid ID supplied"
-							},
-							"404": {
-								"description": "Pet not found"
-							},
-							"405": {
-								"description": "Validation exception"
-							}
+							"description": "Unauthorized"
 						},
-						"parameters": [],
-						"description": "",
-						"operationId": "updatePet",
-						"requestBody": {
-							"$ref": "#/components/requestBodies/Pet"
+						"404": {
+							"content": {
+								"appplication/json": {}
+							},
+							"description": "candidate not found"
+						},
+						"500": {
+							"content": {
+								"appplication/json": {}
+							},
+							"description": "Server error occurred"
 						}
 					},
-					"post": {
-						"tags": ["pet"],
-						"summary": "Add a new pet to the store",
-						"security": [
-							{
-								"petstore_auth": ["write:pets",
-								"read:pets"]
-							}
-						],
-						"responses": {
-							"405": {
-								"description": "Invalid input"
-							}
+					"parameters": [{
+						"in": "path",
+						"name": "candidateId",
+						"schema": {
+							"type": "integer",
+							"format": "int64"
 						},
-						"parameters": [],
-						"description": "",
-						"operationId": "addPet",
-						"requestBody": {
-							"$ref": "#/components/requestBodies/Pet"
-						}
-					}
+						"example": 123456,
+						"required": true,
+						"description": "Id of the candidate to return"
+					}],
+					"description": "Query the database for the specified candidateId and return the associated candidate.",
+					"operationId": "getCandidate"
 				},
-				"/user": {
-					"post": {
-						"tags": ["user"],
-						"summary": "Create user",
-						"responses": {
-							"default": {
-								"description": "successful operation"
-							}
-						},
-						"parameters": [],
-						"description": "This can only be done by the logged in user.",
-						"operationId": "createUser",
-						"requestBody": {
+				"put": {
+					"tags": ["candidates"],
+					"summary": "Update specified candidate",
+					"responses": {
+						"205": {
 							"content": {
 								"application/json": {
 									"schema": {
-										"$ref": "#/components/schemas/User"
+										"$ref": "#/components/schemas/candidate"
 									}
 								}
 							},
-							"description": "Created user object"
+							"description": "candidate updated successfully"
+						},
+						"401": {
+							"content": {
+								"application/json": {}
+							},
+							"description": "Unauthorized"
+						},
+						"404": {
+							"content": {
+								"appplication/json": {}
+							},
+							"description": "candidate not found"
+						},
+						"422": {
+							"content": {
+								"appplication/json": {}
+							},
+							"description": "Input could not be parsed"
+						},
+						"500": {
+							"content": {
+								"appplication/json": {}
+							},
+							"description": "Server error occurred"
+						}
+					},
+					"parameters": [{
+						"in": "path",
+						"name": "candidateId",
+						"schema": {
+							"type": "integer",
+							"format": "int64"
+						},
+						"example": 123456,
+						"required": true,
+						"description": "Id of the person object to update"
+					}],
+					"description": "Query the database for the specified pandidate object and update it with the provided data",
+					"operationId": "updateCandidate",
+					"requestBody": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/candidate"
+								}
+							}
 						}
 					}
 				},
-				"/user/login": {
-					"get": {
-						"tags": ["user"],
-						"summary": "Logs user into the system",
-						"responses": {
-							"200": {
-								"content": {
-									"application/xml": {
-										"schema": {
-											"type": "string"
-										}
-									},
-									"application/json": {
-										"schema": {
-											"type": "string"
-										}
-									}
-								},
-								"headers": {
-									"X-Rate-Limit": {
-										"schema": {
-											"type": "integer",
-											"format": "int32"
-										},
-										"description": "calls per hour allowed by the user"
-									},
-									"X-Expires-After": {
-										"schema": {
-											"type": "string",
-											"format": "date-time"
-										},
-										"description": "date in UTC when token expires"
-									}
-								},
-								"description": "successful operation"
+				"delete": {
+					"tags": ["candidates"],
+					"summary": "Remove the candidate object",
+					"responses": {
+						"204": {
+							"content": {
+								"application/json": {}
 							},
-							"400": {
-								"description": "Invalid username/password supplied"
-							}
+							"description": "candidate removed"
 						},
-						"parameters": [
-							{
-								"in": "query",
-								"name": "username",
-								"schema": {
-									"type": "string"
-								},
-								"required": true,
-								"description": "The user name for login"
+						"401": {
+							"content": {
+								"application/json": {}
 							},
-							{
-								"in": "query",
-								"name": "password",
-								"schema": {
-									"type": "string"
-								},
-								"required": true,
-								"description": "The password for login in clear text"
-							}
-						],
-						"description": "",
-						"operationId": "loginUser"
+							"description": "Unauthorized"
+						},
+						"404": {
+							"content": {
+								"appplication/json": {}
+							},
+							"description": "candidate not found"
+						},
+						"500": {
+							"content": {
+								"appplication/json": {}
+							},
+							"description": "Server error occurred"
+						}
+					},
+					"parameters": [{
+						"in": "path",
+						"name": "candidateId",
+						"schema": {
+							"type": "integer",
+							"format": "int64"
+						},
+						"example": 123456,
+						"required": true,
+						"description": "Id of the candidate to return"
+					}],
+					"description": "Query the database for the specified candidateId and remove it.",
+					"operationId": "deleteCandidate"
+				}
+			}
+		},
+		"openapi": "3.0.0",
+		"servers": [{
+			"url": "https://virtserver.swaggerhub.com/Aske-FuturSkill/PartnerAPI/1.0",
+			"description": "SwaggerHub API Auto Mocking"
+		}, {
+			"url": "https://partner.api.host.com/api/1.0/"
+		}],
+		"security": [{
+			"bearerAuth": []
+		}],
+		"components": {
+			"schemas": {
+				"score": {
+					"type": "number",
+					"format": "float",
+					"maximum": 1,
+					"minimum": -1
+				},
+				"report": {
+					"type": "object",
+					"properties": {
+						"value": {
+							"type": "string"
+						},
+						"format": {
+							"$ref": "#/components/schemas/reportFormat"
+						},
+						"testId": {
+							"type": "integer",
+							"format": "int64",
+							"example": 1234567890
+						},
+						"language": {
+							"type": "string",
+							"example": "fr-FR"
+						},
+						"reportId": {
+							"type": "integer",
+							"format": "int64",
+							"example": 1234567890,
+							"nullable": true
+						},
+						"candidateId": {
+							"type": "integer",
+							"format": "int64",
+							"example": 1234567890
+						}
 					}
 				},
-				"/pet/{petId}": {
-					"get": {
-						"tags": ["pet"],
-						"summary": "Find pet by ID",
-						"security": [
-							{
-								"api_key": []
-							}
-						],
-						"responses": {
-							"200": {
-								"content": {
-									"application/xml": {
-										"schema": {
-											"$ref": "#/components/schemas/Pet"
-										}
+				"result": {
+					"type": "object",
+					"properties": {
+						"id": {
+							"type": "integer",
+							"format": "int64"
+						},
+						"name": {
+							"type": "string"
+						},
+						"score": {
+							"$ref": "#/components/schemas/score"
+						},
+						"feedback": {
+							"type": "string"
+						}
+					}
+				},
+				"status": {
+					"enum": ["1", "2", "3"],
+					"type": "string",
+					"description": "1: notStarted, 2: inProgress, 3: finished"
+				},
+				"candidate": {
+					"type": "object",
+					"properties": {
+						"id": {
+							"type": "integer",
+							"format": "int64",
+							"example": 1234567890
+						},
+						"tests": {
+							"type": "array",
+							"items": {
+								"type": "object",
+								"properties": {
+									"status": {
+										"$ref": "#/components/schemas/status"
 									},
-									"application/json": {
-										"schema": {
-											"$ref": "#/components/schemas/Pet"
-										}
+									"testId": {
+										"type": "integer",
+										"format": "int64",
+										"example": 1234567890
 									}
-								},
-								"description": "successful operation"
+								}
 							},
-							"400": {
-								"description": "Invalid ID supplied"
-							},
-							"404": {
-								"description": "Pet not found"
+							"uniqueItems": false
+						},
+						"gender": {
+							"enum": ["1", "2"],
+							"type": "string",
+							"example": "1",
+							"description": "1 for Male, 2 for Female"
+						},
+						"language": {
+							"type": "string",
+							"example": "fr-FR"
+						},
+						"lastName": {
+							"type": "string",
+							"example": "Dupont"
+						},
+						"firstName": {
+							"type": "string",
+							"example": "Jean"
+						}
+					}
+				},
+				"testResult": {
+					"type": "object",
+					"properties": {
+						"testId": {
+							"type": "integer",
+							"format": "int64",
+							"example": 1234567890
+						},
+						"endDate": {
+							"type": "string",
+							"format": "date-time"
+						},
+						"language": {
+							"type": "string",
+							"example": "fr-FR"
+						},
+						"startDate": {
+							"type": "string",
+							"format": "date-time"
+						},
+						"candidateId": {
+							"type": "integer",
+							"format": "int64",
+							"example": 1234567890
+						},
+						"elapsedTime": {
+							"type": "string"
+						},
+						"globalscore": {
+							"$ref": "#/components/schemas/score"
+						},
+						"skillsResult": {
+							"type": "array",
+							"items": {
+								"$ref": "#/components/schemas/result"
 							}
 						},
-						"parameters": [
-							{
-								"in": "path",
-								"name": "petId",
-								"schema": {
-									"type": "integer",
-									"format": "int64"
-								},
-								"required": true,
-								"description": "ID of pet to return"
+						"elementResult": {
+							"type": "array",
+							"items": {
+								"$ref": "#/components/schemas/result"
 							}
-						],
-						"description": "Returns a single pet",
-						"operationId": "getPetById"
+						},
+						"askeAccesToken": {
+							"type": "string",
+							"example": "db6366ed-1ec6-4bb2-9f02-b9947f794584"
+						}
+					}
+				},
+				"registration": {
+					"type": "object",
+					"properties": {
+						"url": {
+							"type": "string",
+							"example": "https://partner.host.com/test/1234567890/run/123465789/fr-FR"
+						},
+						"status": {
+							"$ref": "#/components/schemas/status"
+						},
+						"testId": {
+							"type": "integer",
+							"format": "int64",
+							"example": 1234567890
+						},
+						"callback": {
+							"type": "string",
+							"example": "http://aske-futurskill.com/portal/public/api/results"
+						},
+						"language": {
+							"type": "string",
+							"example": "fr-FR"
+						},
+						"redirect": {
+							"type": "string",
+							"example": ""
+						},
+						"candidateId": {
+							"type": "integer",
+							"format": "int64",
+							"example": 1234567890
+						},
+						"askeAccessToken": {
+							"type": "string",
+							"example": "db6366ed-1ec6-4bb2-9f02-b9947f794584"
+						},
+						"registrationDate": {
+							"type": "string",
+							"format": "date-time"
+						}
+					}
+				},
+				"reportFormat": {
+					"enum": ["1", "2", "3", "4", "5"],
+					"type": "string",
+					"description": "1: URL, 2: PDF, 3: HTML, 4: Document, 5: Table"
+				}
+			},
+			"securitySchemes": {
+				"bearerAuth": {
+					"type": "http",
+					"scheme": "bearer",
+					"bearerFormat": "JSONWebToken"
+				}
+			}
+		},
+		"x-abyss-platform": {
+			"uuid": "16f2437c-1914-418b-a390-a59b88b63ed4",
+			"organizationid": 0,
+			"created": "2018-05-02T13:01:39.082502",
+			"updated": "2018-05-02T13:01:39.082502",
+			"deleted": null,
+			"isdeleted": false,
+			"crudsubjectid": 1,
+			"subjectid": 501,
+			"isproxyapi": false,
+			"apistateid": 4,
+			"apivisibilityid": 1,
+			"languagename": "OpenAPI",
+			"languageversion": "3.0.0",
+			"dataformat": 1,
+			"originaldocument": "openapi: 3.0.0\nservers:\n# Added by API Auto Mocking Plugin\n  - description: SwaggerHub API Auto Mocking\n    url: https://virtserver.swaggerhub.com/Aske-FuturSkill/PartnerAPI/1.0\n  - url: 'https://partner.api.host.com/api/1.0/'\ninfo:\n  description: This is the model of the partner API\n  version: \"1.0.2\"\n  title: Partner API\n  contact:\n    email: support@aske-futurskill.com\n\ncomponents:\n  securitySchemes:\n    bearerAuth:\n      type: http\n      scheme: bearer\n      bearerFormat: JSONWebToken\n\n  schemas:\n\n    candidate:\n      type: object\n      properties:\n        id:\n          type: integer\n          format: int64\n          example: 1234567890\n        firstName:\n          type: string\n          example: Jean\n        lastName:\n          type: string\n          example: Dupont\n        gender:\n          type: string\n          example: '1'\n          description: '1 for Male, 2 for Female'\n          enum:\n            - '1'\n            - '2'\n        language:\n          type: string\n          example: fr-FR\n        tests:\n          type: array\n          uniqueItems: false\n          items:\n            type: object\n            properties:\n              testId:\n                type: integer\n                format: int64\n                example: 1234567890\n              status:\n                $ref: '#/components/schemas/status'\n\n    registration:\n      type: object\n      properties:\n        candidateId:\n          type: integer\n          format: int64\n          example: 1234567890\n        testId:\n          type: integer\n          format: int64\n          example: 1234567890\n        registrationDate:\n          type: string\n          format: date-time\n        status:\n          $ref: '#/components/schemas/status'\n        language:\n          type: string\n          example: fr-FR\n        url:\n          type: string\n          example: 'https://partner.host.com/test/1234567890/run/123465789/fr-FR'\n        callback:\n          type: string\n          example: 'http://aske-futurskill.com/portal/public/api/results'\n        redirect:\n          type: string\n          example: ''\n        askeAccessToken:\n          type: string\n          example: 'db6366ed-1ec6-4bb2-9f02-b9947f794584'\n\n    testResult:\n      type: object\n      properties:\n        candidateId:\n          type: integer\n          format: int64\n          example: 1234567890\n        testId:\n          type: integer\n          format: int64\n          example: 1234567890\n        askeAccesToken:\n          type: string\n          example: 'db6366ed-1ec6-4bb2-9f02-b9947f794584'\n        globalscore:\n          $ref: '#/components/schemas/score'\n        language:\n          type: string\n          example: fr-FR\n        startDate:\n          type: string\n          format: date-time\n        endDate:\n          type: string\n          format: date-time\n        elapsedTime:\n          type: string\n        skillsResult:\n          type: array\n          items:\n            $ref: '#/components/schemas/result'\n        elementResult:\n          type: array\n          items:\n            $ref: '#/components/schemas/result'\n\n    result:\n      type: object\n      properties:\n        id:\n          type: integer\n          format: int64\n        name:\n          type: string\n        feedback:\n          type: string\n        score:\n          $ref: '#/components/schemas/score'\n\n    report:\n      type: object\n      properties:\n        candidateId:\n          type: integer\n          format: int64\n          example: 1234567890\n        testId:\n          type: integer\n          format: int64\n          example: 1234567890\n        reportId:\n          type: integer\n          format: int64\n          nullable: true\n          example: 1234567890\n        language:\n          type: string\n          example: fr-FR\n        format:\n          $ref: '#/components/schemas/reportFormat'\n        value:\n          type: string\n\n    score:\n      type: number\n      format: float\n      minimum: -1\n      maximum: 1\n\n    status:\n      type: string\n      description: '1: notStarted, 2: inProgress, 3: finished'\n      enum:\n        - '1'\n        - '2'\n        - '3'\n\n    reportFormat:\n      type: string\n      description: '1: URL, 2: PDF, 3: HTML, 4: Document, 5: Table'\n      enum:\n        - '1'\n        - '2'\n        - '3'\n        - '4'\n        - '5'\n\nsecurity:\n  - bearerAuth: []\n  \npaths:\n  /authentication:\n    get:\n      operationId: getAuthentication\n      summary: Get a Web Token from a clientId and a password.\n      description: Validates the provided username and password. If validation is sucessful, returns a Web Token to be used for subsequent calls.\n      security: []\n      tags:\n        - authentication\n      parameters:\n        - in: query\n          name: clientId\n          schema:\n            type: string\n          required: true\n          description: Id of the client\n          example: ASkE\n        - in: query\n          name: password\n          schema:\n            type: string\n          required: true\n          description: Password of the client\n          example: secretpassword\n      responses:\n        '201':\n          description: Token created\n          content:\n            application/json:\n              schema:\n                type: object\n                properties:\n                  token:\n                    type: string\n        '401':\n          description: Unauthorized\n          content:\n            application/json: {}\n        '500':\n          description: Server error occurred\n          content:\n            appplication/json: {}\n\n  /candidates:\n    post:\n      tags:\n        - candidates\n      summary: create a new candidate\n      operationId: createCandidate\n      description: Creates a new candidate\n      requestBody:\n        content:\n          application/json:\n            schema:\n              $ref: '#/components/schemas/candidate'\n        description: Candidate to add\n      responses:\n        '201':\n          description: candidate created successfully\n          content:\n            application/json:\n              schema:\n                $ref: '#/components/schemas/candidate'\n        '401':\n          description: Unauthorized\n          content:\n            application/json: {}\n        '422':\n          description: Input could not be parsed\n          content:\n            appplication/json: {}\n        '500':\n          description: Server error occurred\n          content:\n            appplication/json: {}\n\n  /candidates/{candidateId}:\n    get:\n      operationId: getCandidate\n      summary: Get the specified candidate\n      description: >-\n        Query the database for the specified candidateId and return the associated candidate.\n      tags:\n        - candidates\n      parameters:\n        - in: path\n          name: candidateId\n          schema:\n            type: integer\n            format: int64\n          required: true\n          description: Id of the candidate to return\n          example: 123456\n      responses:\n        '200':\n          description: candidate found\n          content:\n            application/json:\n              schema:\n                $ref: '#/components/schemas/candidate'\n        '401':\n          description: Unauthorized\n          content:\n            application/json: {}\n        '404':\n          description: candidate not found\n          content:\n            appplication/json: {}\n        '500':\n          description: Server error occurred\n          content:\n            appplication/json: {}\n    put:\n      operationId: updateCandidate\n      summary: Update specified candidate\n      description: Query the database for the specified pandidate object and update it with the provided data\n      tags:\n        - candidates\n      parameters:\n        - in: path\n          name: candidateId\n          schema:\n            type: integer\n            format: int64\n          required: true\n          description: Id of the person object to update\n          example: 123456\n      requestBody:\n        content:\n          application/json:\n            schema:\n              $ref: '#/components/schemas/candidate'\n      responses:\n        '205':\n          description: candidate updated successfully\n          content:\n            application/json:\n              schema:\n                $ref: '#/components/schemas/candidate'\n        '401':\n          description: Unauthorized\n          content:\n            application/json: {}\n        '404':\n          description: candidate not found\n          content:\n            appplication/json: {}\n        '422':\n          description: Input could not be parsed\n          content:\n            appplication/json: {}\n        '500':\n          description: Server error occurred\n          content:\n            appplication/json: {}\n    delete:\n      operationId: deleteCandidate\n      summary: Remove the candidate object\n      description: >-\n        Query the database for the specified candidateId and remove it.\n      tags:\n        - candidates\n      parameters:\n        - in: path\n          name: candidateId\n          schema:\n            type: integer\n            format: int64\n          required: true\n          description: Id of the candidate to return\n          example: 123456\n      responses:\n        '204':\n          description: candidate removed\n          content:\n            application/json: {}\n        '401':\n          description: Unauthorized\n          content:\n            application/json: {}\n        '404':\n          description: candidate not found\n          content:\n            appplication/json: {}\n        '500':\n          description: Server error occurred\n          content:\n            appplication/json: {}\n\n  /registrations:\n    get:\n      operationId: getRegistration\n      summary: Get the specified registration\n      description: >-\n        Query the database for the specified testId and candidateId and return the associated registration.\n      tags:\n        - registrations\n      parameters:\n        - in: query\n          name: testId\n          schema:\n            type: integer\n            format: int64\n          required: true\n          description: Id of the test associate to the registration to return\n          example: 123456\n        - in: query\n          name: candidateId\n          schema:\n            type: integer\n            format: int64\n          required: true\n          description: Id of the candidate associate to the registration to return\n          example: 123456\n      responses:\n        '200':\n          description: registration found\n          content:\n            application/json:\n              schema:\n                $ref: '#/components/schemas/registration'\n        '401':\n          description: Unauthorized\n          content:\n            application/json: {}\n        '404':\n          description: registration not found\n          content:\n            appplication/json: {}\n        '500':\n          description: Server error occurred\n          content:\n            appplication/json: {}\n    post:\n      tags:\n        - registrations\n      summary: create a new registration\n      operationId: createRegistration\n      description: Creates a new registration\n      requestBody:\n        content:\n          application/json:\n            schema:\n              $ref: '#/components/schemas/registration'\n        description: registration to add\n      responses:\n        '201':\n          description: registration created successfully\n          content:\n            application/json:\n              schema:\n                $ref: '#/components/schemas/registration'\n        '401':\n          description: Unauthorized\n          content:\n            application/json: {}\n        '409':\n          description: registration already exists\n          content:\n            appplication/json: {}\n        '422':\n          description: Input could not be parsed\n          content:\n            appplication/json: {}\n        '500':\n          description: Server error occurred\n          content:\n            appplication/json: {}\n\n  /testResults:\n    get:\n      operationId: getTestResults\n      summary: Get the specified test Results\n      description: >-\n        Query the database for the specified testId and candidateId and return the associated test results.\n      tags:\n        - testResults\n      parameters:\n        - in: query\n          name: testId\n          schema:\n            type: integer\n            format: int64\n          required: true\n          description: Id of the test associate to the test results to return\n          example: 123456\n        - in: query\n          name: candidateId\n          schema:\n            type: integer\n            format: int64\n          required: true\n          description: Id of the candidate associate to the test results to return\n          example: 123456\n      responses:\n        '200':\n          description: test results found\n          content:\n            application/json:\n              schema:\n                $ref: '#/components/schemas/testResult'\n        '401':\n          description: Unauthorized\n          content:\n            application/json: {}\n        '404':\n          description: test results not found\n          content:\n            appplication/json: {}\n        '500':\n          description: Server error occurred\n          content:\n            appplication/json: {}\n    post:\n      tags:\n        - testResults\n      summary: create a new test result\n      operationId: createTestResult\n      description: Creates a new test result\n      requestBody:\n        content:\n          application/json:\n            schema:\n              $ref: '#/components/schemas/testResult'\n        description: result to add\n      responses:\n        '201':\n          description: test result created successfully\n          content:\n            application/json:\n              schema:\n                $ref: '#/components/schemas/testResult'\n        '401':\n          description: Unauthorized\n          content:\n            application/json: {}\n        '409':\n          description: test result already exists\n          content:\n            appplication/json: {}\n        '422':\n          description: Input could not be parsed\n          content:\n            appplication/json: {}\n        '500':\n          description: Server error occurred\n          content:\n            appplication/json: {}\n \n  /reports:\n    get:\n      operationId: getReport\n      summary: Get the specified report\n      description: >-\n        Query the database for the specified testId and candidateId and return the report.\n      tags:\n        - reports\n      parameters:\n        - in: query\n          name: testId\n          schema:\n            type: integer\n            format: int64\n          required: true\n          description: Id of the test associate to the report to return\n          example: 123456\n        - in: query\n          name: candidateId\n          schema:\n            type: integer\n            format: int64\n          required: true\n          description: Id of the candidate associate to the report to return\n          example: 123456\n        - in: query\n          name: reportId\n          schema:\n            type: integer\n            format: int64\n          required: false\n          description: Id of the specific report to return (in case of mutliple reports for a test)\n          example: 123456\n        - in: query\n          name: language\n          schema:\n            type: string\n          required: false\n          description: Language of the report to return (fr-FR by default)\n          example: fr-FR\n        - in: query\n          name: format\n          schema:\n            $ref: '#/components/schemas/reportFormat'\n          required: false\n          description: Format of the report to return\n      responses:\n        '200':\n          description: report found\n          content:\n            application/json:\n              schema:\n                $ref: '#/components/schemas/report'\n        '401':\n          description: Unauthorized\n          content:\n            application/json: {}\n        '404':\n          description: report not found\n          content:\n            appplication/json: {}\n        '500':\n          description: Server error occurred\n          content:\n            appplication/json: {}",
+			"businessapiid": null,
+			"image": null,
+			"color": null,
+			"deployed": null,
+			"changelog": null,
+			"tags": null,
+			"groups": [{
+				"uuid": "254dc26b-2a6d-4cd1-908d-4b170e8fb08c",
+				"name": "Examples"
+			}],
+			"categories": null,
+			"proxies_summary": [{
+				"uuid": "65bd3e20-ff9c-4570-87c2-61e5447f3d5d",
+				"name": "My Proxy 1",
+				"context": "my_proxy_1"
+			}, {
+				"uuid": "9b2858f0-6963-4d7c-91d7-e1e64ac24a22",
+				"name": "My Proxy 2",
+				"context": "my_proxy_2"
+			}, {
+				"uuid": "9b4bde91-53e4-411a-9449-5b33afc41c19",
+				"name": "My Proxy 3",
+				"context": "my_proxy_3"
+			}]
+		}
+	}, {
+		"info": {
+			"title": "Swagger Petstore",
+			"contact": {
+				"email": "apiteam@swagger.io"
+			},
+			"license": {
+				"url": "http://www.apache.org/licenses/LICENSE-2.0.html",
+				"name": "Apache 2.0"
+			},
+			"version": "1.0.0",
+			"description": "This is a sample server Petstore server.  You can find out more about Swagger at [http://swagger.io](http://swagger.io) or on [irc.freenode.net, #swagger](http://swagger.io/irc/).  For this sample, you can use the api key `special-key` to test the authorization filters.",
+			"termsOfService": "http://swagger.io/terms/"
+		},
+		"tags": [{
+			"name": "pet",
+			"description": "Everything about your Pets",
+			"externalDocs": {
+				"url": "http://swagger.io",
+				"description": "Find out more"
+			}
+		}, {
+			"name": "store",
+			"description": "Access to Petstore orders"
+		}, {
+			"name": "user",
+			"description": "Operations about user",
+			"externalDocs": {
+				"url": "http://swagger.io",
+				"description": "Find out more about our store"
+			}
+		}],
+		"paths": {
+			"/pet": {
+				"put": {
+					"tags": ["pet"],
+					"summary": "Update an existing pet",
+					"security": [{
+						"petstore_auth": ["write:pets", "read:pets"]
+					}],
+					"responses": {
+						"400": {
+							"description": "Invalid ID supplied"
+						},
+						"404": {
+							"description": "Pet not found"
+						},
+						"405": {
+							"description": "Validation exception"
+						}
 					},
-					"post": {
-						"tags": ["pet"],
-						"summary": "Updates a pet in the store with form data",
-						"security": [
-							{
-								"petstore_auth": ["write:pets",
-								"read:pets"]
-							}
-						],
-						"responses": {
-							"405": {
-								"description": "Invalid input"
+					"parameters": [],
+					"description": "",
+					"operationId": "updatePet",
+					"requestBody": {
+						"$ref": "#/components/requestBodies/Pet"
+					}
+				},
+				"post": {
+					"tags": ["pet"],
+					"summary": "Add a new pet to the store",
+					"security": [{
+						"petstore_auth": ["write:pets", "read:pets"]
+					}],
+					"responses": {
+						"405": {
+							"description": "Invalid input"
+						}
+					},
+					"parameters": [],
+					"description": "",
+					"operationId": "addPet",
+					"requestBody": {
+						"$ref": "#/components/requestBodies/Pet"
+					}
+				}
+			},
+			"/user": {
+				"post": {
+					"tags": ["user"],
+					"summary": "Create user",
+					"responses": {
+						"default": {
+							"description": "successful operation"
+						}
+					},
+					"parameters": [],
+					"description": "This can only be done by the logged in user.",
+					"operationId": "createUser",
+					"requestBody": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/User"
+								}
 							}
 						},
-						"parameters": [
-							{
-								"in": "path",
-								"name": "petId",
-								"schema": {
-									"type": "integer",
-									"format": "int64"
-								},
-								"required": true,
-								"description": "ID of pet that needs to be updated"
-							}
-						],
-						"description": "",
-						"operationId": "updatePetWithForm",
-						"requestBody": {
+						"description": "Created user object"
+					}
+				}
+			},
+			"/user/login": {
+				"get": {
+					"tags": ["user"],
+					"summary": "Logs user into the system",
+					"responses": {
+						"200": {
 							"content": {
-								"application/x-www-form-urlencoded": {
+								"application/xml": {
 									"schema": {
-										"type": "object",
-										"properties": {
-											"name": {
-												"type": "string"
-											},
-											"status": {
-												"type": "string"
-											}
-										}
+										"type": "string"
+									}
+								},
+								"application/json": {
+									"schema": {
+										"type": "string"
 									}
 								}
 							},
-							"description": "Updated name of the pet"
+							"headers": {
+								"X-Rate-Limit": {
+									"schema": {
+										"type": "integer",
+										"format": "int32"
+									},
+									"description": "calls per hour allowed by the user"
+								},
+								"X-Expires-After": {
+									"schema": {
+										"type": "string",
+										"format": "date-time"
+									},
+									"description": "date in UTC when token expires"
+								}
+							},
+							"description": "successful operation"
+						},
+						"400": {
+							"description": "Invalid username/password supplied"
 						}
 					},
-					"delete": {
-						"tags": ["pet"],
-						"summary": "Deletes a pet",
-						"security": [
-							{
-								"petstore_auth": ["write:pets",
-								"read:pets"]
-							}
-						],
-						"responses": {
-							"400": {
-								"description": "Invalid ID supplied"
-							},
-							"404": {
-								"description": "Pet not found"
-							}
+					"parameters": [{
+						"in": "query",
+						"name": "username",
+						"schema": {
+							"type": "string"
 						},
-						"parameters": [
-							{
-								"in": "header",
-								"name": "api_key",
-								"schema": {
-									"type": "string"
-								},
-								"required": false
-							},
-							{
-								"in": "path",
-								"name": "petId",
-								"schema": {
-									"type": "integer",
-									"format": "int64"
-								},
-								"required": true,
-								"description": "Pet id to delete"
-							}
-						],
-						"description": "",
-						"operationId": "deletePet"
-					}
-				},
-				"/store/order": {
-					"post": {
-						"tags": ["store"],
-						"summary": "Place an order for a pet",
-						"responses": {
-							"200": {
-								"content": {
-									"application/xml": {
-										"schema": {
-											"$ref": "#/components/schemas/Order"
-										}
-									},
-									"application/json": {
-										"schema": {
-											"$ref": "#/components/schemas/Order"
-										}
+						"required": true,
+						"description": "The user name for login"
+					}, {
+						"in": "query",
+						"name": "password",
+						"schema": {
+							"type": "string"
+						},
+						"required": true,
+						"description": "The password for login in clear text"
+					}],
+					"description": "",
+					"operationId": "loginUser"
+				}
+			},
+			"/pet/{petId}": {
+				"get": {
+					"tags": ["pet"],
+					"summary": "Find pet by ID",
+					"security": [{
+						"api_key": []
+					}],
+					"responses": {
+						"200": {
+							"content": {
+								"application/xml": {
+									"schema": {
+										"$ref": "#/components/schemas/Pet"
 									}
 								},
-								"description": "successful operation"
+								"application/json": {
+									"schema": {
+										"$ref": "#/components/schemas/Pet"
+									}
+								}
 							},
-							"400": {
-								"description": "Invalid Order"
+							"description": "successful operation"
+						},
+						"400": {
+							"description": "Invalid ID supplied"
+						},
+						"404": {
+							"description": "Pet not found"
+						}
+					},
+					"parameters": [{
+						"in": "path",
+						"name": "petId",
+						"schema": {
+							"type": "integer",
+							"format": "int64"
+						},
+						"required": true,
+						"description": "ID of pet to return"
+					}],
+					"description": "Returns a single pet",
+					"operationId": "getPetById"
+				},
+				"post": {
+					"tags": ["pet"],
+					"summary": "Updates a pet in the store with form data",
+					"security": [{
+						"petstore_auth": ["write:pets", "read:pets"]
+					}],
+					"responses": {
+						"405": {
+							"description": "Invalid input"
+						}
+					},
+					"parameters": [{
+						"in": "path",
+						"name": "petId",
+						"schema": {
+							"type": "integer",
+							"format": "int64"
+						},
+						"required": true,
+						"description": "ID of pet that needs to be updated"
+					}],
+					"description": "",
+					"operationId": "updatePetWithForm",
+					"requestBody": {
+						"content": {
+							"application/x-www-form-urlencoded": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"status": {
+											"type": "string"
+										}
+									}
+								}
 							}
 						},
-						"parameters": [],
-						"description": "",
-						"operationId": "placeOrder",
-						"requestBody": {
+						"description": "Updated name of the pet"
+					}
+				},
+				"delete": {
+					"tags": ["pet"],
+					"summary": "Deletes a pet",
+					"security": [{
+						"petstore_auth": ["write:pets", "read:pets"]
+					}],
+					"responses": {
+						"400": {
+							"description": "Invalid ID supplied"
+						},
+						"404": {
+							"description": "Pet not found"
+						}
+					},
+					"parameters": [{
+						"in": "header",
+						"name": "api_key",
+						"schema": {
+							"type": "string"
+						},
+						"required": false
+					}, {
+						"in": "path",
+						"name": "petId",
+						"schema": {
+							"type": "integer",
+							"format": "int64"
+						},
+						"required": true,
+						"description": "Pet id to delete"
+					}],
+					"description": "",
+					"operationId": "deletePet"
+				}
+			},
+			"/store/order": {
+				"post": {
+					"tags": ["store"],
+					"summary": "Place an order for a pet",
+					"responses": {
+						"200": {
 							"content": {
+								"application/xml": {
+									"schema": {
+										"$ref": "#/components/schemas/Order"
+									}
+								},
 								"application/json": {
 									"schema": {
 										"$ref": "#/components/schemas/Order"
 									}
 								}
 							},
-							"description": "order placed for purchasing the pet"
+							"description": "successful operation"
+						},
+						"400": {
+							"description": "Invalid Order"
 						}
-					}
-				},
-				"/user/logout": {
-					"get": {
-						"tags": ["user"],
-						"summary": "Logs out current logged in user session",
-						"responses": {
-							"default": {
-								"description": "successful operation"
-							}
-						},
-						"parameters": [],
-						"description": "",
-						"operationId": "logoutUser"
-					}
-				},
-				"/pet/findByTags": {
-					"get": {
-						"tags": ["pet"],
-						"summary": "Finds Pets by tags",
-						"security": [
-							{
-								"petstore_auth": ["write:pets",
-								"read:pets"]
-							}
-						],
-						"responses": {
-							"200": {
-								"content": {
-									"application/xml": {
-										"schema": {
-											"type": "array",
-											"items": {
-												"$ref": "#/components/schemas/Pet"
-											}
-										}
-									},
-									"application/json": {
-										"schema": {
-											"type": "array",
-											"items": {
-												"$ref": "#/components/schemas/Pet"
-											}
-										}
-									}
-								},
-								"description": "successful operation"
-							},
-							"400": {
-								"description": "Invalid tag value"
-							}
-						},
-						"deprecated": true,
-						"parameters": [
-							{
-								"in": "query",
-								"name": "tags",
-								"schema": {
-									"type": "array",
-									"items": {
-										"type": "string"
-									}
-								},
-								"explode": true,
-								"required": true,
-								"description": "Tags to filter by"
-							}
-						],
-						"description": "Muliple tags can be provided with comma separated strings. Use tag1, tag2, tag3 for testing.",
-						"operationId": "findPetsByTags"
-					}
-				},
-				"/store/inventory": {
-					"get": {
-						"tags": ["store"],
-						"summary": "Returns pet inventories by status",
-						"security": [
-							{
-								"api_key": []
-							}
-						],
-						"responses": {
-							"200": {
-								"content": {
-									"application/json": {
-										"schema": {
-											"type": "object",
-											"additionalProperties": {
-												"type": "integer",
-												"format": "int32"
-											}
-										}
-									}
-								},
-								"description": "successful operation"
-							}
-						},
-						"parameters": [],
-						"description": "Returns a map of status codes to quantities",
-						"operationId": "getInventory"
-					}
-				},
-				"/user/{username}": {
-					"get": {
-						"tags": ["user"],
-						"summary": "Get user by user name",
-						"responses": {
-							"200": {
-								"content": {
-									"application/xml": {
-										"schema": {
-											"$ref": "#/components/schemas/User"
-										}
-									},
-									"application/json": {
-										"schema": {
-											"$ref": "#/components/schemas/User"
-										}
-									}
-								},
-								"description": "successful operation"
-							},
-							"400": {
-								"description": "Invalid username supplied"
-							},
-							"404": {
-								"description": "User not found"
-							}
-						},
-						"parameters": [
-							{
-								"in": "path",
-								"name": "username",
-								"schema": {
-									"type": "string"
-								},
-								"required": true,
-								"description": "The name that needs to be fetched. Use user1 for testing. "
-							}
-						],
-						"description": "",
-						"operationId": "getUserByName"
 					},
-					"put": {
-						"tags": ["user"],
-						"summary": "Updated user",
-						"responses": {
-							"400": {
-								"description": "Invalid user supplied"
-							},
-							"404": {
-								"description": "User not found"
+					"parameters": [],
+					"description": "",
+					"operationId": "placeOrder",
+					"requestBody": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Order"
+								}
 							}
 						},
-						"parameters": [
-							{
-								"in": "path",
-								"name": "username",
-								"schema": {
-									"type": "string"
-								},
-								"required": true,
-								"description": "name that need to be updated"
-							}
-						],
-						"description": "This can only be done by the logged in user.",
-						"operationId": "updateUser",
-						"requestBody": {
+						"description": "order placed for purchasing the pet"
+					}
+				}
+			},
+			"/user/logout": {
+				"get": {
+					"tags": ["user"],
+					"summary": "Logs out current logged in user session",
+					"responses": {
+						"default": {
+							"description": "successful operation"
+						}
+					},
+					"parameters": [],
+					"description": "",
+					"operationId": "logoutUser"
+				}
+			},
+			"/pet/findByTags": {
+				"get": {
+					"tags": ["pet"],
+					"summary": "Finds Pets by tags",
+					"security": [{
+						"petstore_auth": ["write:pets", "read:pets"]
+					}],
+					"responses": {
+						"200": {
 							"content": {
+								"application/xml": {
+									"schema": {
+										"type": "array",
+										"items": {
+											"$ref": "#/components/schemas/Pet"
+										}
+									}
+								},
+								"application/json": {
+									"schema": {
+										"type": "array",
+										"items": {
+											"$ref": "#/components/schemas/Pet"
+										}
+									}
+								}
+							},
+							"description": "successful operation"
+						},
+						"400": {
+							"description": "Invalid tag value"
+						}
+					},
+					"deprecated": true,
+					"parameters": [{
+						"in": "query",
+						"name": "tags",
+						"schema": {
+							"type": "array",
+							"items": {
+								"type": "string"
+							}
+						},
+						"explode": true,
+						"required": true,
+						"description": "Tags to filter by"
+					}],
+					"description": "Muliple tags can be provided with comma separated strings. Use tag1, tag2, tag3 for testing.",
+					"operationId": "findPetsByTags"
+				}
+			},
+			"/store/inventory": {
+				"get": {
+					"tags": ["store"],
+					"summary": "Returns pet inventories by status",
+					"security": [{
+						"api_key": []
+					}],
+					"responses": {
+						"200": {
+							"content": {
+								"application/json": {
+									"schema": {
+										"type": "object",
+										"additionalProperties": {
+											"type": "integer",
+											"format": "int32"
+										}
+									}
+								}
+							},
+							"description": "successful operation"
+						}
+					},
+					"parameters": [],
+					"description": "Returns a map of status codes to quantities",
+					"operationId": "getInventory"
+				}
+			},
+			"/user/{username}": {
+				"get": {
+					"tags": ["user"],
+					"summary": "Get user by user name",
+					"responses": {
+						"200": {
+							"content": {
+								"application/xml": {
+									"schema": {
+										"$ref": "#/components/schemas/User"
+									}
+								},
 								"application/json": {
 									"schema": {
 										"$ref": "#/components/schemas/User"
 									}
 								}
 							},
-							"description": "Updated user object"
+							"description": "successful operation"
+						},
+						"400": {
+							"description": "Invalid username supplied"
+						},
+						"404": {
+							"description": "User not found"
 						}
 					},
-					"delete": {
-						"tags": ["user"],
-						"summary": "Delete user",
-						"responses": {
-							"400": {
-								"description": "Invalid username supplied"
-							},
-							"404": {
-								"description": "User not found"
-							}
+					"parameters": [{
+						"in": "path",
+						"name": "username",
+						"schema": {
+							"type": "string"
 						},
-						"parameters": [
-							{
-								"in": "path",
-								"name": "username",
-								"schema": {
-									"type": "string"
-								},
-								"required": true,
-								"description": "The name that needs to be deleted"
-							}
-						],
-						"description": "This can only be done by the logged in user.",
-						"operationId": "deleteUser"
-					}
+						"required": true,
+						"description": "The name that needs to be fetched. Use user1 for testing. "
+					}],
+					"description": "",
+					"operationId": "getUserByName"
 				},
-				"/pet/findByStatus": {
-					"get": {
-						"tags": ["pet"],
-						"summary": "Finds Pets by status",
-						"security": [
-							{
-								"petstore_auth": ["write:pets",
-								"read:pets"]
-							}
-						],
-						"responses": {
-							"200": {
-								"content": {
-									"application/xml": {
-										"schema": {
-											"type": "array",
-											"items": {
-												"$ref": "#/components/schemas/Pet"
-											}
-										}
-									},
-									"application/json": {
-										"schema": {
-											"type": "array",
-											"items": {
-												"$ref": "#/components/schemas/Pet"
-											}
-										}
-									}
-								},
-								"description": "successful operation"
-							},
-							"400": {
-								"description": "Invalid status value"
-							}
+				"put": {
+					"tags": ["user"],
+					"summary": "Updated user",
+					"responses": {
+						"400": {
+							"description": "Invalid user supplied"
 						},
-						"parameters": [
-							{
-								"in": "query",
-								"name": "status",
-								"schema": {
-									"type": "array",
-									"items": {
-										"enum": ["available",
-										"pending",
-										"sold"],
-										"type": "string",
-										"default": "available"
-									}
-								},
-								"explode": true,
-								"required": true,
-								"description": "Status values that need to be considered for filter"
-							}
-						],
-						"description": "Multiple status values can be provided with comma separated strings",
-						"operationId": "findPetsByStatus"
-					}
-				},
-				"/user/createWithList": {
-					"post": {
-						"tags": ["user"],
-						"summary": "Creates list of users with given input array",
-						"responses": {
-							"default": {
-								"description": "successful operation"
-							}
-						},
-						"parameters": [],
-						"description": "",
-						"operationId": "createUsersWithListInput",
-						"requestBody": {
-							"$ref": "#/components/requestBodies/UserArray"
+						"404": {
+							"description": "User not found"
 						}
-					}
-				},
-				"/user/createWithArray": {
-					"post": {
-						"tags": ["user"],
-						"summary": "Creates list of users with given input array",
-						"responses": {
-							"default": {
-								"description": "successful operation"
-							}
-						},
-						"parameters": [],
-						"description": "",
-						"operationId": "createUsersWithArrayInput",
-						"requestBody": {
-							"$ref": "#/components/requestBodies/UserArray"
-						}
-					}
-				},
-				"/store/order/{orderId}": {
-					"get": {
-						"tags": ["store"],
-						"summary": "Find purchase order by ID",
-						"responses": {
-							"200": {
-								"content": {
-									"application/xml": {
-										"schema": {
-											"$ref": "#/components/schemas/Order"
-										}
-									},
-									"application/json": {
-										"schema": {
-											"$ref": "#/components/schemas/Order"
-										}
-									}
-								},
-								"description": "successful operation"
-							},
-							"400": {
-								"description": "Invalid ID supplied"
-							},
-							"404": {
-								"description": "Order not found"
-							}
-						},
-						"parameters": [
-							{
-								"in": "path",
-								"name": "orderId",
-								"schema": {
-									"type": "integer",
-									"format": "int64",
-									"maximum": 10,
-									"minimum": 1
-								},
-								"required": true,
-								"description": "ID of pet that needs to be fetched"
-							}
-						],
-						"description": "For valid response try integer IDs with value >= 1 and <= 10. Other values will generated exceptions",
-						"operationId": "getOrderById"
 					},
-					"delete": {
-						"tags": ["store"],
-						"summary": "Delete purchase order by ID",
-						"responses": {
-							"400": {
-								"description": "Invalid ID supplied"
-							},
-							"404": {
-								"description": "Order not found"
-							}
+					"parameters": [{
+						"in": "path",
+						"name": "username",
+						"schema": {
+							"type": "string"
 						},
-						"parameters": [
-							{
-								"in": "path",
-								"name": "orderId",
+						"required": true,
+						"description": "name that need to be updated"
+					}],
+					"description": "This can only be done by the logged in user.",
+					"operationId": "updateUser",
+					"requestBody": {
+						"content": {
+							"application/json": {
 								"schema": {
-									"type": "integer",
-									"format": "int64",
-									"minimum": 1
-								},
-								"required": true,
-								"description": "ID of the order that needs to be deleted"
-							}
-						],
-						"description": "For valid response try integer IDs with positive integer value. Negative or non-integer values will generate API errors",
-						"operationId": "deleteOrder"
-					}
-				},
-				"/pet/{petId}/uploadImage": {
-					"post": {
-						"tags": ["pet"],
-						"summary": "uploads an image",
-						"security": [
-							{
-								"petstore_auth": ["write:pets",
-								"read:pets"]
-							}
-						],
-						"responses": {
-							"200": {
-								"content": {
-									"application/json": {
-										"schema": {
-											"$ref": "#/components/schemas/ApiResponse"
-										}
-									}
-								},
-								"description": "successful operation"
-							}
-						},
-						"parameters": [
-							{
-								"in": "path",
-								"name": "petId",
-								"schema": {
-									"type": "integer",
-									"format": "int64"
-								},
-								"required": true,
-								"description": "ID of pet to update"
-							}
-						],
-						"description": "",
-						"operationId": "uploadFile",
-						"requestBody": {
-							"content": {
-								"application/octet-stream": {
-									"schema": {
-										"type": "string",
-										"format": "binary"
-									}
+									"$ref": "#/components/schemas/User"
 								}
-							},
-							"description": "file to upload"
-						}
+							}
+						},
+						"description": "Updated user object"
 					}
+				},
+				"delete": {
+					"tags": ["user"],
+					"summary": "Delete user",
+					"responses": {
+						"400": {
+							"description": "Invalid username supplied"
+						},
+						"404": {
+							"description": "User not found"
+						}
+					},
+					"parameters": [{
+						"in": "path",
+						"name": "username",
+						"schema": {
+							"type": "string"
+						},
+						"required": true,
+						"description": "The name that needs to be deleted"
+					}],
+					"description": "This can only be done by the logged in user.",
+					"operationId": "deleteUser"
 				}
 			},
-			"openapi": "3.0.0-RC1",
-			"servers": [
-				{
-					"url": "http://petstore.swagger.io/v2"
-				}
-			],
-			"x-origin": [
-				{
-					"url": "http://petstore.swagger.io/v2/swagger.json",
-					"format": "swagger",
-					"version": "2.0",
-					"converter": {
-						"url": "https://github.com/mermade/swagger2openapi",
-						"version": "2.2.0"
-					}
-				}
-			],
-			"components": {
-				"headers": {},
-				"schemas": {
-					"Pet": {
-						"xml": {
-							"name": "Pet"
-						},
-						"type": "object",
-						"required": ["name", "photoUrls"],
-						"properties": {
-							"id": {
-								"type": "integer",
-								"format": "int64"
-							},
-							"name": {
-								"type": "string",
-								"example": "doggie"
-							},
-							"tags": {
-								"xml": {
-									"name": "tag",
-									"wrapped": true
+			"/pet/findByStatus": {
+				"get": {
+					"tags": ["pet"],
+					"summary": "Finds Pets by status",
+					"security": [{
+						"petstore_auth": ["write:pets", "read:pets"]
+					}],
+					"responses": {
+						"200": {
+							"content": {
+								"application/xml": {
+									"schema": {
+										"type": "array",
+										"items": {
+											"$ref": "#/components/schemas/Pet"
+										}
+									}
 								},
-								"type": "array",
-								"items": {
-									"$ref": "#/components/schemas/Tag"
+								"application/json": {
+									"schema": {
+										"type": "array",
+										"items": {
+											"$ref": "#/components/schemas/Pet"
+										}
+									}
 								}
 							},
-							"status": {
+							"description": "successful operation"
+						},
+						"400": {
+							"description": "Invalid status value"
+						}
+					},
+					"parameters": [{
+						"in": "query",
+						"name": "status",
+						"schema": {
+							"type": "array",
+							"items": {
 								"enum": ["available", "pending", "sold"],
 								"type": "string",
-								"description": "pet status in the store"
-							},
-							"category": {
-								"$ref": "#/components/schemas/Category"
-							},
-							"photoUrls": {
-								"xml": {
-									"name": "photoUrl",
-									"wrapped": true
-								},
-								"type": "array",
-								"items": {
-									"type": "string"
-								}
-							}
-						}
-					},
-					"Tag": {
-						"xml": {
-							"name": "Tag"
-						},
-						"type": "object",
-						"properties": {
-							"id": {
-								"type": "integer",
-								"format": "int64"
-							},
-							"name": {
-								"type": "string"
-							}
-						}
-					},
-					"User": {
-						"xml": {
-							"name": "User"
-						},
-						"type": "object",
-						"properties": {
-							"id": {
-								"type": "integer",
-								"format": "int64"
-							},
-							"email": {
-								"type": "string"
-							},
-							"phone": {
-								"type": "string"
-							},
-							"lastName": {
-								"type": "string"
-							},
-							"password": {
-								"type": "string"
-							},
-							"username": {
-								"type": "string"
-							},
-							"firstName": {
-								"type": "string"
-							},
-							"userStatus": {
-								"type": "integer",
-								"format": "int32",
-								"description": "User Status"
-							}
-						}
-					},
-					"Order": {
-						"xml": {
-							"name": "Order"
-						},
-						"type": "object",
-						"properties": {
-							"id": {
-								"type": "integer",
-								"format": "int64"
-							},
-							"petId": {
-								"type": "integer",
-								"format": "int64"
-							},
-							"status": {
-								"enum": ["placed", "approved", "delivered"],
-								"type": "string",
-								"description": "Order Status"
-							},
-							"complete": {
-								"type": "boolean",
-								"default": false
-							},
-							"quantity": {
-								"type": "integer",
-								"format": "int32"
-							},
-							"shipDate": {
-								"type": "string",
-								"format": "date-time"
-							}
-						}
-					},
-					"Category": {
-						"xml": {
-							"name": "Category"
-						},
-						"type": "object",
-						"properties": {
-							"id": {
-								"type": "integer",
-								"format": "int64"
-							},
-							"name": {
-								"type": "string"
-							}
-						}
-					},
-					"ApiResponse": {
-						"type": "object",
-						"properties": {
-							"code": {
-								"type": "integer",
-								"format": "int32"
-							},
-							"type": {
-								"type": "string"
-							},
-							"message": {
-								"type": "string"
-							}
-						}
-					}
-				},
-				"examples": {},
-				"responses": {},
-				"parameters": {},
-				"requestBodies": {
-					"Pet": {
-						"content": {
-							"application/xml": {
-								"schema": {
-									"$ref": "#/components/schemas/Pet"
-								}
-							},
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Pet"
-								}
+								"default": "available"
 							}
 						},
-						"description": "Pet object that needs to be added to the store"
-					},
-					"UserArray": {
-						"content": {
-							"application/json": {
-								"schema": {
-									"type": "array",
-									"items": {
-										"$ref": "#/components/schemas/User"
-									}
-								}
-							}
-						},
-						"description": "List of user object"
-					}
-				},
-				"securitySchemes": {
-					"api_key": {
-						"in": "header",
-						"name": "api_key",
-						"type": "apiKey"
-					},
-					"petstore_auth": {
-						"type": "oauth2",
-						"flows": {
-							"implicit": {
-								"scopes": {
-									"read:pets": "read your pets",
-									"write:pets": "modify pets in your account"
-								},
-								"authorizationUrl": "http://petstore.swagger.io/oauth/dialog"
-							}
+						"explode": true,
+						"required": true,
+						"description": "Status values that need to be considered for filter"
+					}],
+					"description": "Multiple status values can be provided with comma separated strings",
+					"operationId": "findPetsByStatus"
+				}
+			},
+			"/user/createWithList": {
+				"post": {
+					"tags": ["user"],
+					"summary": "Creates list of users with given input array",
+					"responses": {
+						"default": {
+							"description": "successful operation"
 						}
+					},
+					"parameters": [],
+					"description": "",
+					"operationId": "createUsersWithListInput",
+					"requestBody": {
+						"$ref": "#/components/requestBodies/UserArray"
 					}
 				}
 			},
-			"externalDocs": {
-				"url": "http://swagger.io",
-				"description": "Find out more about Swagger"
-			},
-			"x-abyss-platform": {
-				"uuid": "6d41aeef-a4e5-4b76-a1e5-dcd8fcdc35c4",
-				"organization_id": 0,
-				"created": "2018-05-02T13:01:39.082502",
-				"updated": "2018-05-02T13:01:39.082502",
-				"deleted": null,
-				"isdeleted": 0,
-				"crud_subject_id": 1,
-				"subject_id": 501,
-				"isproxyapi": false,
-				"apistateid": 4,
-				"apivisibilityid": 1,
-				"languagename": "OpenAPI",
-				"languageversion": "3.0",
-				"dataformat": 0,
-				"businessapiid": null,
-				"image": null,
-				"color": null,
-				"deployed": null,
-				"changelog": null,
-				"tags": [
-					{
-						"uuid": "b0360528-3760-493a-ae8d-60bfda2c1a1f",
-						"name": "pet"
+			"/user/createWithArray": {
+				"post": {
+					"tags": ["user"],
+					"summary": "Creates list of users with given input array",
+					"responses": {
+						"default": {
+							"description": "successful operation"
+						}
 					},
-					{
-						"uuid": "f27b3952-955d-4571-a2e3-b7a9bc2e894c",
-						"name": "animals"
+					"parameters": [],
+					"description": "",
+					"operationId": "createUsersWithArrayInput",
+					"requestBody": {
+						"$ref": "#/components/requestBodies/UserArray"
 					}
-				],
-				"groups": [
-					{
-						"uuid": "254dc26b-2a6d-4cd1-908d-4b170e8fb08c",
-						"name": "Examples"
-					}
-				],
-				"categories": [
-					{
-						"uuid": "3c30a832-ff49-4e30-9bca-3da622ea4037",
-						"name": "Commerce"
-					}
-				],
-				"proxies_summary": [
-					{
-						"uuid": "65bd3e20-ff9c-4570-87c2-61e5447f3d5d",
-						"name": "My Proxy 1",
-						"context": "my_proxy_1"
-					}
-				]
-			}
-		},
-		{
-			"info": {
-				"title": "Uber API",
-				"version": "1.0.0",
-				"description": "Move your app forward with the Uber API"
+				}
 			},
-			"paths": {
-				"/me": {
-					"get": {
-						"tags": ["User"],
-						"summary": "User Profile",
-						"responses": {
-							"200": {
-								"content": {
-									"application/json": {
-										"schema": {
-											"$ref": "#/components/schemas/Profile"
-										}
+			"/store/order/{orderId}": {
+				"get": {
+					"tags": ["store"],
+					"summary": "Find purchase order by ID",
+					"responses": {
+						"200": {
+							"content": {
+								"application/xml": {
+									"schema": {
+										"$ref": "#/components/schemas/Order"
 									}
 								},
-								"description": "Profile information for a user"
+								"application/json": {
+									"schema": {
+										"$ref": "#/components/schemas/Order"
+									}
+								}
 							},
-							"default": {
-								"content": {
-									"application/json": {
-										"schema": {
-											"$ref": "#/components/schemas/Error"
-										}
-									}
-								},
-								"description": "Unexpected error"
-							}
+							"description": "successful operation"
 						},
-						"description": "The User Profile endpoint returns information about the Uber user that has authorized with the application."
-					}
+						"400": {
+							"description": "Invalid ID supplied"
+						},
+						"404": {
+							"description": "Order not found"
+						}
+					},
+					"parameters": [{
+						"in": "path",
+						"name": "orderId",
+						"schema": {
+							"type": "integer",
+							"format": "int64",
+							"maximum": 10,
+							"minimum": 1
+						},
+						"required": true,
+						"description": "ID of pet that needs to be fetched"
+					}],
+					"description": "For valid response try integer IDs with value >= 1 and <= 10. Other values will generated exceptions",
+					"operationId": "getOrderById"
 				},
-				"/history": {
-					"get": {
-						"tags": ["User"],
-						"summary": "User Activity",
-						"responses": {
-							"200": {
-								"content": {
-									"application/json": {
-										"schema": {
-											"$ref": "#/components/schemas/Activities"
-										}
-									}
-								},
-								"description": "History information for the given user"
-							},
-							"default": {
-								"content": {
-									"application/json": {
-										"schema": {
-											"$ref": "#/components/schemas/Error"
-										}
-									}
-								},
-								"description": "Unexpected error"
-							}
+				"delete": {
+					"tags": ["store"],
+					"summary": "Delete purchase order by ID",
+					"responses": {
+						"400": {
+							"description": "Invalid ID supplied"
 						},
-						"parameters": [
-							{
-								"in": "query",
-								"name": "offset",
-								"schema": {
-									"type": "integer",
-									"format": "int32"
-								},
-								"description": "Offset the list of returned results by this amount. Default is zero."
-							},
-							{
-								"in": "query",
-								"name": "limit",
-								"schema": {
-									"type": "integer",
-									"format": "int32"
-								},
-								"description": "Number of items to retrieve. Default is 5, maximum is 100."
-							}
-						],
-						"description": "The User Activity endpoint returns data about a user's lifetime activity with Uber. The response will include pickup locations and times, dropoff locations and times, the distance of past requests, and information about which products were requested.<br><br>The history array in the response will have a maximum length based on the limit parameter. The response value count may exceed limit, therefore subsequent API requests may be necessary."
-					}
-				},
-				"/products": {
-					"get": {
-						"tags": ["Products"],
-						"summary": "Product Types",
-						"security": [
-							{
-								"apikey": []
-							}
-						],
-						"responses": {
-							"200": {
-								"content": {
-									"application/json": {
-										"schema": {
-											"$ref": "#/components/schemas/ProductList"
-										}
-									}
-								},
-								"description": "An array of products"
-							},
-							"default": {
-								"content": {
-									"application/json": {
-										"schema": {
-											"$ref": "#/components/schemas/Error"
-										}
-									}
-								},
-								"description": "Unexpected error"
-							}
+						"404": {
+							"description": "Order not found"
+						}
+					},
+					"parameters": [{
+						"in": "path",
+						"name": "orderId",
+						"schema": {
+							"type": "integer",
+							"format": "int64",
+							"minimum": 1
 						},
-						"parameters": [
-							{
-								"in": "query",
-								"name": "latitude",
-								"schema": {
-									"type": "number",
-									"format": "double"
-								},
-								"required": true,
-								"description": "Latitude component of location."
-							},
-							{
-								"in": "query",
-								"name": "longitude",
-								"schema": {
-									"type": "number",
-									"format": "double"
-								},
-								"required": true,
-								"description": "Longitude component of location."
-							}
-						],
-						"description": "The Products endpoint returns information about the Uber products offered at a given location. The response includes the display name and other details about each product, and lists the products in the proper display order."
-					}
-				},
-				"/estimates/time": {
-					"get": {
-						"tags": ["Estimates"],
-						"summary": "Time Estimates",
-						"responses": {
-							"200": {
-								"content": {
-									"application/json": {
-										"schema": {
-											"type": "array",
-											"items": {
-												"$ref": "#/components/schemas/Product"
-											}
-										}
+						"required": true,
+						"description": "ID of the order that needs to be deleted"
+					}],
+					"description": "For valid response try integer IDs with positive integer value. Negative or non-integer values will generate API errors",
+					"operationId": "deleteOrder"
+				}
+			},
+			"/pet/{petId}/uploadImage": {
+				"post": {
+					"tags": ["pet"],
+					"summary": "uploads an image",
+					"security": [{
+						"petstore_auth": ["write:pets", "read:pets"]
+					}],
+					"responses": {
+						"200": {
+							"content": {
+								"application/json": {
+									"schema": {
+										"$ref": "#/components/schemas/ApiResponse"
 									}
-								},
-								"description": "An array of products"
+								}
 							},
-							"default": {
-								"content": {
-									"application/json": {
-										"schema": {
-											"$ref": "#/components/schemas/Error"
-										}
-									}
-								},
-								"description": "Unexpected error"
-							}
+							"description": "successful operation"
+						}
+					},
+					"parameters": [{
+						"in": "path",
+						"name": "petId",
+						"schema": {
+							"type": "integer",
+							"format": "int64"
 						},
-						"parameters": [
-							{
-								"in": "query",
-								"name": "start_latitude",
-								"schema": {
-									"type": "number",
-									"format": "double"
-								},
-								"required": true,
-								"description": "Latitude component of start location."
-							},
-							{
-								"in": "query",
-								"name": "start_longitude",
-								"schema": {
-									"type": "number",
-									"format": "double"
-								},
-								"required": true,
-								"description": "Longitude component of start location."
-							},
-							{
-								"in": "query",
-								"name": "customer_uuid",
+						"required": true,
+						"description": "ID of pet to update"
+					}],
+					"description": "",
+					"operationId": "uploadFile",
+					"requestBody": {
+						"content": {
+							"application/octet-stream": {
 								"schema": {
 									"type": "string",
-									"format": "uuid"
-								},
-								"description": "Unique customer identifier to be used for experience customization."
-							},
-							{
-								"in": "query",
-								"name": "product_id",
-								"schema": {
-									"type": "string"
-								},
-								"description": "Unique identifier representing a specific product for a given latitude & longitude."
-							}
-						],
-						"description": "The Time Estimates endpoint returns ETAs for all products offered at a given location, with the responses expressed as integers in seconds. We recommend that this endpoint be called every minute to provide the most accurate, up-to-date ETAs."
-					}
-				},
-				"/estimates/price": {
-					"get": {
-						"tags": ["Estimates"],
-						"summary": "Price Estimates",
-						"responses": {
-							"200": {
-								"content": {
-									"application/json": {
-										"schema": {
-											"type": "array",
-											"items": {
-												"$ref": "#/components/schemas/PriceEstimate"
-											}
-										}
-									}
-								},
-								"description": "An array of price estimates by product"
-							},
-							"default": {
-								"content": {
-									"application/json": {
-										"schema": {
-											"$ref": "#/components/schemas/Error"
-										}
-									}
-								},
-								"description": "Unexpected error"
+									"format": "binary"
+								}
 							}
 						},
-						"parameters": [
-							{
-								"in": "query",
-								"name": "start_latitude",
-								"schema": {
-									"type": "number",
-									"format": "double"
-								},
-								"required": true,
-								"description": "Latitude component of start location."
+						"description": "file to upload"
+					}
+				}
+			}
+		},
+		"openapi": "3.0.0-RC1",
+		"servers": [{
+			"url": "http://petstore.swagger.io/v2"
+		}],
+		"x-origin": [{
+			"url": "http://petstore.swagger.io/v2/swagger.json",
+			"format": "swagger",
+			"version": "2.0",
+			"converter": {
+				"url": "https://github.com/mermade/swagger2openapi",
+				"version": "2.2.0"
+			}
+		}],
+		"components": {
+			"headers": {},
+			"schemas": {
+				"Pet": {
+					"xml": {
+						"name": "Pet"
+					},
+					"type": "object",
+					"required": ["name", "photoUrls"],
+					"properties": {
+						"id": {
+							"type": "integer",
+							"format": "int64"
+						},
+						"name": {
+							"type": "string",
+							"example": "doggie"
+						},
+						"tags": {
+							"xml": {
+								"name": "tag",
+								"wrapped": true
 							},
-							{
-								"in": "query",
-								"name": "start_longitude",
-								"schema": {
-									"type": "number",
-									"format": "double"
-								},
-								"required": true,
-								"description": "Longitude component of start location."
-							},
-							{
-								"in": "query",
-								"name": "end_latitude",
-								"schema": {
-									"type": "number",
-									"format": "double"
-								},
-								"required": true,
-								"description": "Latitude component of end location."
-							},
-							{
-								"in": "query",
-								"name": "end_longitude",
-								"schema": {
-									"type": "number",
-									"format": "double"
-								},
-								"required": true,
-								"description": "Longitude component of end location."
+							"type": "array",
+							"items": {
+								"$ref": "#/components/schemas/Tag"
 							}
-						],
-						"description": "The Price Estimates endpoint returns an estimated price range for each product offered at a given location. The price estimate is provided as a formatted string with the full price range and the localized currency symbol.<br><br>The response also includes low and high estimates, and the [ISO 4217](http://en.wikipedia.org/wiki/ISO_4217) currency code for situations requiring currency conversion. When surge is active for a particular product, its surge_multiplier will be greater than 1, but the price estimate already factors in this multiplier."
+						},
+						"status": {
+							"enum": ["available", "pending", "sold"],
+							"type": "string",
+							"description": "pet status in the store"
+						},
+						"category": {
+							"$ref": "#/components/schemas/Category"
+						},
+						"photoUrls": {
+							"xml": {
+								"name": "photoUrl",
+								"wrapped": true
+							},
+							"type": "array",
+							"items": {
+								"type": "string"
+							}
+						}
+					}
+				},
+				"Tag": {
+					"xml": {
+						"name": "Tag"
+					},
+					"type": "object",
+					"properties": {
+						"id": {
+							"type": "integer",
+							"format": "int64"
+						},
+						"name": {
+							"type": "string"
+						}
+					}
+				},
+				"User": {
+					"xml": {
+						"name": "User"
+					},
+					"type": "object",
+					"properties": {
+						"id": {
+							"type": "integer",
+							"format": "int64"
+						},
+						"email": {
+							"type": "string"
+						},
+						"phone": {
+							"type": "string"
+						},
+						"lastName": {
+							"type": "string"
+						},
+						"password": {
+							"type": "string"
+						},
+						"username": {
+							"type": "string"
+						},
+						"firstName": {
+							"type": "string"
+						},
+						"userStatus": {
+							"type": "integer",
+							"format": "int32",
+							"description": "User Status"
+						}
+					}
+				},
+				"Order": {
+					"xml": {
+						"name": "Order"
+					},
+					"type": "object",
+					"properties": {
+						"id": {
+							"type": "integer",
+							"format": "int64"
+						},
+						"petId": {
+							"type": "integer",
+							"format": "int64"
+						},
+						"status": {
+							"enum": ["placed", "approved", "delivered"],
+							"type": "string",
+							"description": "Order Status"
+						},
+						"complete": {
+							"type": "boolean",
+							"default": false
+						},
+						"quantity": {
+							"type": "integer",
+							"format": "int32"
+						},
+						"shipDate": {
+							"type": "string",
+							"format": "date-time"
+						}
+					}
+				},
+				"Category": {
+					"xml": {
+						"name": "Category"
+					},
+					"type": "object",
+					"properties": {
+						"id": {
+							"type": "integer",
+							"format": "int64"
+						},
+						"name": {
+							"type": "string"
+						}
+					}
+				},
+				"ApiResponse": {
+					"type": "object",
+					"properties": {
+						"code": {
+							"type": "integer",
+							"format": "int32"
+						},
+						"type": {
+							"type": "string"
+						},
+						"message": {
+							"type": "string"
+						}
 					}
 				}
 			},
-			"openapi": "3.0.0",
-			"servers": [
-				{
-					"url": "https://api.uber.com/v1"
-				}
-			],
-			"components": {
-				"schemas": {
-					"Error": {
-						"properties": {
-							"code": {
-								"type": "integer",
-								"format": "int32"
-							},
-							"fields": {
-								"type": "string"
-							},
-							"message": {
-								"type": "string"
+			"examples": {},
+			"responses": {},
+			"parameters": {},
+			"requestBodies": {
+				"Pet": {
+					"content": {
+						"application/xml": {
+							"schema": {
+								"$ref": "#/components/schemas/Pet"
+							}
+						},
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/Pet"
 							}
 						}
 					},
-					"Product": {
-						"properties": {
-							"image": {
-								"type": "string",
-								"description": "Image URL representing the product."
-							},
-							"capacity": {
-								"type": "integer",
-								"description": "Capacity of product. For example, 4 people."
-							},
-							"product_id": {
-								"type": "string",
-								"description": "Unique identifier representing a specific product for a given latitude & longitude. For example, uberX in San Francisco will have a different product_id than uberX in Los Angeles."
-							},
-							"description": {
-								"type": "string",
-								"description": "Description of product."
-							},
-							"display_name": {
-								"type": "string",
-								"description": "Display name of product."
-							}
-						}
-					},
-					"Profile": {
-						"properties": {
-							"email": {
-								"type": "string",
-								"description": "Email address of the Uber user"
-							},
-							"picture": {
-								"type": "string",
-								"description": "Image URL of the Uber user."
-							},
-							"last_name": {
-								"type": "string",
-								"description": "Last name of the Uber user."
-							},
-							"first_name": {
-								"type": "string",
-								"description": "First name of the Uber user."
-							},
-							"promo_code": {
-								"type": "string",
-								"description": "Promo code of the Uber user."
-							}
-						}
-					},
-					"Activity": {
-						"properties": {
-							"uuid": {
-								"type": "string",
-								"description": "Unique identifier for the activity"
-							}
-						}
-					},
-					"Activities": {
-						"properties": {
-							"count": {
-								"type": "integer",
-								"format": "int32",
-								"description": "Total number of items available."
-							},
-							"limit": {
-								"type": "integer",
-								"format": "int32",
-								"description": "Number of items to retrieve (100 max)."
-							},
-							"offset": {
-								"type": "integer",
-								"format": "int32",
-								"description": "Position in pagination."
-							},
-							"history": {
+					"description": "Pet object that needs to be added to the store"
+				},
+				"UserArray": {
+					"content": {
+						"application/json": {
+							"schema": {
 								"type": "array",
 								"items": {
-									"$ref": "#/components/schemas/Activity"
+									"$ref": "#/components/schemas/User"
 								}
 							}
 						}
 					},
-					"ProductList": {
-						"properties": {
-							"products": {
-								"type": "array",
-								"items": {
-									"$ref": "#/components/schemas/Product"
-								},
-								"description": "Contains the list of products"
-							}
+					"description": "List of user object"
+				}
+			},
+			"securitySchemes": {
+				"api_key": {
+					"in": "header",
+					"name": "api_key",
+					"type": "apiKey"
+				},
+				"petstore_auth": {
+					"type": "oauth2",
+					"flows": {
+						"implicit": {
+							"scopes": {
+								"read:pets": "read your pets",
+								"write:pets": "modify pets in your account"
+							},
+							"authorizationUrl": "http://petstore.swagger.io/oauth/dialog"
+						}
+					}
+				}
+			}
+		},
+		"externalDocs": {
+			"url": "http://swagger.io",
+			"description": "Find out more about Swagger"
+		},
+		"x-abyss-platform": {
+			"uuid": "6d41aeef-a4e5-4b76-a1e5-dcd8fcdc35c4",
+			"organizationid": 0,
+			"created": "2018-05-02T13:01:39.082502",
+			"updated": "2018-05-02T13:01:39.082502",
+			"deleted": null,
+			"isdeleted": false,
+			"crudsubjectid": 1,
+			"subjectid": 501,
+			"isproxyapi": false,
+			"apistateid": 4,
+			"apivisibilityid": 1,
+			"languagename": "OpenAPI",
+			"languageversion": "3.0",
+			"dataformat": 0,
+			"originaldocument": "{\r\n  \"openapi\": \"3.0.0-RC1\",\r\n  \"servers\": [\r\n    {\r\n      \"url\": \"http://petstore.swagger.io/v2\"\r\n    }\r\n  ],\r\n  \"x-origin\": [\r\n    {\r\n      \"url\": \"http://petstore.swagger.io/v2/swagger.json\",\r\n      \"format\": \"swagger\",\r\n      \"version\": \"2.0\",\r\n      \"converter\": {\r\n        \"url\": \"https://github.com/mermade/swagger2openapi\",\r\n        \"version\": \"2.2.0\"\r\n      }\r\n    }\r\n  ],\r\n  \"info\": {\r\n    \"description\": \"This is a sample server Petstore server.  You can find out more about Swagger at [http://swagger.io](http://swagger.io) or on [irc.freenode.net, #swagger](http://swagger.io/irc/).  For this sample, you can use the api key `special-key` to test the authorization filters.\",\r\n    \"version\": \"1.0.0\",\r\n    \"title\": \"Swagger Petstore\",\r\n    \"termsOfService\": \"http://swagger.io/terms/\",\r\n    \"contact\": {\r\n      \"email\": \"apiteam@swagger.io\"\r\n    },\r\n    \"license\": {\r\n      \"name\": \"Apache 2.0\",\r\n      \"url\": \"http://www.apache.org/licenses/LICENSE-2.0.html\"\r\n    }\r\n  },\r\n  \"tags\": [\r\n    {\r\n      \"name\": \"pet\",\r\n      \"description\": \"Everything about your Pets\",\r\n      \"externalDocs\": {\r\n        \"description\": \"Find out more\",\r\n        \"url\": \"http://swagger.io\"\r\n      }\r\n    },\r\n    {\r\n      \"name\": \"store\",\r\n      \"description\": \"Access to Petstore orders\"\r\n    },\r\n    {\r\n      \"name\": \"user\",\r\n      \"description\": \"Operations about user\",\r\n      \"externalDocs\": {\r\n        \"description\": \"Find out more about our store\",\r\n        \"url\": \"http://swagger.io\"\r\n      }\r\n    }\r\n  ],\r\n  \"paths\": {\r\n    \"/pet\": {\r\n      \"post\": {\r\n        \"tags\": [\r\n          \"pet\"\r\n        ],\r\n        \"summary\": \"Add a new pet to the store\",\r\n        \"description\": \"\",\r\n        \"operationId\": \"addPet\",\r\n        \"parameters\": [],\r\n        \"responses\": {\r\n          \"405\": {\r\n            \"description\": \"Invalid input\"\r\n          }\r\n        },\r\n        \"security\": [\r\n          {\r\n            \"petstore_auth\": [\r\n              \"write:pets\",\r\n              \"read:pets\"\r\n            ]\r\n          }\r\n        ],\r\n        \"requestBody\": {\r\n          \"$ref\": \"#/components/requestBodies/Pet\"\r\n        }\r\n      },\r\n      \"put\": {\r\n        \"tags\": [\r\n          \"pet\"\r\n        ],\r\n        \"summary\": \"Update an existing pet\",\r\n        \"description\": \"\",\r\n        \"operationId\": \"updatePet\",\r\n        \"parameters\": [],\r\n        \"responses\": {\r\n          \"400\": {\r\n            \"description\": \"Invalid ID supplied\"\r\n          },\r\n          \"404\": {\r\n            \"description\": \"Pet not found\"\r\n          },\r\n          \"405\": {\r\n            \"description\": \"Validation exception\"\r\n          }\r\n        },\r\n        \"security\": [\r\n          {\r\n            \"petstore_auth\": [\r\n              \"write:pets\",\r\n              \"read:pets\"\r\n            ]\r\n          }\r\n        ],\r\n        \"requestBody\": {\r\n          \"$ref\": \"#/components/requestBodies/Pet\"\r\n        }\r\n      }\r\n    },\r\n    \"/pet/findByStatus\": {\r\n      \"get\": {\r\n        \"tags\": [\r\n          \"pet\"\r\n        ],\r\n        \"summary\": \"Finds Pets by status\",\r\n        \"description\": \"Multiple status values can be provided with comma separated strings\",\r\n        \"operationId\": \"findPetsByStatus\",\r\n        \"parameters\": [\r\n          {\r\n            \"name\": \"status\",\r\n            \"in\": \"query\",\r\n            \"description\": \"Status values that need to be considered for filter\",\r\n            \"required\": true,\r\n            \"explode\": true,\r\n            \"schema\": {\r\n              \"type\": \"array\",\r\n              \"items\": {\r\n                \"type\": \"string\",\r\n                \"enum\": [\r\n                  \"available\",\r\n                  \"pending\",\r\n                  \"sold\"\r\n                ],\r\n                \"default\": \"available\"\r\n              }\r\n            }\r\n          }\r\n        ],\r\n        \"responses\": {\r\n          \"200\": {\r\n            \"description\": \"successful operation\",\r\n            \"content\": {\r\n              \"application/xml\": {\r\n                \"schema\": {\r\n                  \"type\": \"array\",\r\n                  \"items\": {\r\n                    \"$ref\": \"#/components/schemas/Pet\"\r\n                  }\r\n                }\r\n              },\r\n              \"application/json\": {\r\n                \"schema\": {\r\n                  \"type\": \"array\",\r\n                  \"items\": {\r\n                    \"$ref\": \"#/components/schemas/Pet\"\r\n                  }\r\n                }\r\n              }\r\n            }\r\n          },\r\n          \"400\": {\r\n            \"description\": \"Invalid status value\"\r\n          }\r\n        },\r\n        \"security\": [\r\n          {\r\n            \"petstore_auth\": [\r\n              \"write:pets\",\r\n              \"read:pets\"\r\n            ]\r\n          }\r\n        ]\r\n      }\r\n    },\r\n    \"/pet/findByTags\": {\r\n      \"get\": {\r\n        \"tags\": [\r\n          \"pet\"\r\n        ],\r\n        \"summary\": \"Finds Pets by tags\",\r\n        \"description\": \"Muliple tags can be provided with comma separated strings. Use tag1, tag2, tag3 for testing.\",\r\n        \"operationId\": \"findPetsByTags\",\r\n        \"parameters\": [\r\n          {\r\n            \"name\": \"tags\",\r\n            \"in\": \"query\",\r\n            \"description\": \"Tags to filter by\",\r\n            \"required\": true,\r\n            \"explode\": true,\r\n            \"schema\": {\r\n              \"type\": \"array\",\r\n              \"items\": {\r\n                \"type\": \"string\"\r\n              }\r\n            }\r\n          }\r\n        ],\r\n        \"responses\": {\r\n          \"200\": {\r\n            \"description\": \"successful operation\",\r\n            \"content\": {\r\n              \"application/xml\": {\r\n                \"schema\": {\r\n                  \"type\": \"array\",\r\n                  \"items\": {\r\n                    \"$ref\": \"#/components/schemas/Pet\"\r\n                  }\r\n                }\r\n              },\r\n              \"application/json\": {\r\n                \"schema\": {\r\n                  \"type\": \"array\",\r\n                  \"items\": {\r\n                    \"$ref\": \"#/components/schemas/Pet\"\r\n                  }\r\n                }\r\n              }\r\n            }\r\n          },\r\n          \"400\": {\r\n            \"description\": \"Invalid tag value\"\r\n          }\r\n        },\r\n        \"security\": [\r\n          {\r\n            \"petstore_auth\": [\r\n              \"write:pets\",\r\n              \"read:pets\"\r\n            ]\r\n          }\r\n        ],\r\n        \"deprecated\": true\r\n      }\r\n    },\r\n    \"/pet/{petId}\": {\r\n      \"get\": {\r\n        \"tags\": [\r\n          \"pet\"\r\n        ],\r\n        \"summary\": \"Find pet by ID\",\r\n        \"description\": \"Returns a single pet\",\r\n        \"operationId\": \"getPetById\",\r\n        \"parameters\": [\r\n          {\r\n            \"name\": \"petId\",\r\n            \"in\": \"path\",\r\n            \"description\": \"ID of pet to return\",\r\n            \"required\": true,\r\n            \"schema\": {\r\n              \"type\": \"integer\",\r\n              \"format\": \"int64\"\r\n            }\r\n          }\r\n        ],\r\n        \"responses\": {\r\n          \"200\": {\r\n            \"description\": \"successful operation\",\r\n            \"content\": {\r\n              \"application/xml\": {\r\n                \"schema\": {\r\n                  \"$ref\": \"#/components/schemas/Pet\"\r\n                }\r\n              },\r\n              \"application/json\": {\r\n                \"schema\": {\r\n                  \"$ref\": \"#/components/schemas/Pet\"\r\n                }\r\n              }\r\n            }\r\n          },\r\n          \"400\": {\r\n            \"description\": \"Invalid ID supplied\"\r\n          },\r\n          \"404\": {\r\n            \"description\": \"Pet not found\"\r\n          }\r\n        },\r\n        \"security\": [\r\n          {\r\n            \"api_key\": []\r\n          }\r\n        ]\r\n      },\r\n      \"post\": {\r\n        \"tags\": [\r\n          \"pet\"\r\n        ],\r\n        \"summary\": \"Updates a pet in the store with form data\",\r\n        \"description\": \"\",\r\n        \"operationId\": \"updatePetWithForm\",\r\n        \"parameters\": [\r\n          {\r\n            \"name\": \"petId\",\r\n            \"in\": \"path\",\r\n            \"description\": \"ID of pet that needs to be updated\",\r\n            \"required\": true,\r\n            \"schema\": {\r\n              \"type\": \"integer\",\r\n              \"format\": \"int64\"\r\n            }\r\n          }\r\n        ],\r\n        \"responses\": {\r\n          \"405\": {\r\n            \"description\": \"Invalid input\"\r\n          }\r\n        },\r\n        \"security\": [\r\n          {\r\n            \"petstore_auth\": [\r\n              \"write:pets\",\r\n              \"read:pets\"\r\n            ]\r\n          }\r\n        ],\r\n        \"requestBody\": {\r\n          \"content\": {\r\n            \"application/x-www-form-urlencoded\": {\r\n              \"schema\": {\r\n                \"type\": \"object\",\r\n                \"properties\": {\r\n                  \"name\": {\r\n                    \"type\": \"string\"\r\n                  },\r\n                  \"status\": {\r\n                    \"type\": \"string\"\r\n                  }\r\n                }\r\n              }\r\n            }\r\n          },\r\n          \"description\": \"Updated name of the pet\"\r\n        }\r\n      },\r\n      \"delete\": {\r\n        \"tags\": [\r\n          \"pet\"\r\n        ],\r\n        \"summary\": \"Deletes a pet\",\r\n        \"description\": \"\",\r\n        \"operationId\": \"deletePet\",\r\n        \"parameters\": [\r\n          {\r\n            \"name\": \"api_key\",\r\n            \"in\": \"header\",\r\n            \"required\": false,\r\n            \"schema\": {\r\n              \"type\": \"string\"\r\n            }\r\n          },\r\n          {\r\n            \"name\": \"petId\",\r\n            \"in\": \"path\",\r\n            \"description\": \"Pet id to delete\",\r\n            \"required\": true,\r\n            \"schema\": {\r\n              \"type\": \"integer\",\r\n              \"format\": \"int64\"\r\n            }\r\n          }\r\n        ],\r\n        \"responses\": {\r\n          \"400\": {\r\n            \"description\": \"Invalid ID supplied\"\r\n          },\r\n          \"404\": {\r\n            \"description\": \"Pet not found\"\r\n          }\r\n        },\r\n        \"security\": [\r\n          {\r\n            \"petstore_auth\": [\r\n              \"write:pets\",\r\n              \"read:pets\"\r\n            ]\r\n          }\r\n        ]\r\n      }\r\n    },\r\n    \"/pet/{petId}/uploadImage\": {\r\n      \"post\": {\r\n        \"tags\": [\r\n          \"pet\"\r\n        ],\r\n        \"summary\": \"uploads an image\",\r\n        \"description\": \"\",\r\n        \"operationId\": \"uploadFile\",\r\n        \"parameters\": [\r\n          {\r\n            \"name\": \"petId\",\r\n            \"in\": \"path\",\r\n            \"description\": \"ID of pet to update\",\r\n            \"required\": true,\r\n            \"schema\": {\r\n              \"type\": \"integer\",\r\n              \"format\": \"int64\"\r\n            }\r\n          }\r\n        ],\r\n        \"responses\": {\r\n          \"200\": {\r\n            \"description\": \"successful operation\",\r\n            \"content\": {\r\n              \"application/json\": {\r\n                \"schema\": {\r\n                  \"$ref\": \"#/components/schemas/ApiResponse\"\r\n                }\r\n              }\r\n            }\r\n          }\r\n        },\r\n        \"security\": [\r\n          {\r\n            \"petstore_auth\": [\r\n              \"write:pets\",\r\n              \"read:pets\"\r\n            ]\r\n          }\r\n        ],\r\n        \"requestBody\": {\r\n          \"content\": {\r\n            \"application/octet-stream\": {\r\n              \"schema\": {\r\n                \"type\": \"string\",\r\n                \"format\": \"binary\"\r\n              }\r\n            }\r\n          },\r\n          \"description\": \"file to upload\"\r\n        }\r\n      }\r\n    },\r\n    \"/store/inventory\": {\r\n      \"get\": {\r\n        \"tags\": [\r\n          \"store\"\r\n        ],\r\n        \"summary\": \"Returns pet inventories by status\",\r\n        \"description\": \"Returns a map of status codes to quantities\",\r\n        \"operationId\": \"getInventory\",\r\n        \"parameters\": [],\r\n        \"responses\": {\r\n          \"200\": {\r\n            \"description\": \"successful operation\",\r\n            \"content\": {\r\n              \"application/json\": {\r\n                \"schema\": {\r\n                  \"type\": \"object\",\r\n                  \"additionalProperties\": {\r\n                    \"type\": \"integer\",\r\n                    \"format\": \"int32\"\r\n                  }\r\n                }\r\n              }\r\n            }\r\n          }\r\n        },\r\n        \"security\": [\r\n          {\r\n            \"api_key\": []\r\n          }\r\n        ]\r\n      }\r\n    },\r\n    \"/store/order\": {\r\n      \"post\": {\r\n        \"tags\": [\r\n          \"store\"\r\n        ],\r\n        \"summary\": \"Place an order for a pet\",\r\n        \"description\": \"\",\r\n        \"operationId\": \"placeOrder\",\r\n        \"parameters\": [],\r\n        \"responses\": {\r\n          \"200\": {\r\n            \"description\": \"successful operation\",\r\n            \"content\": {\r\n              \"application/xml\": {\r\n                \"schema\": {\r\n                  \"$ref\": \"#/components/schemas/Order\"\r\n                }\r\n              },\r\n              \"application/json\": {\r\n                \"schema\": {\r\n                  \"$ref\": \"#/components/schemas/Order\"\r\n                }\r\n              }\r\n            }\r\n          },\r\n          \"400\": {\r\n            \"description\": \"Invalid Order\"\r\n          }\r\n        },\r\n        \"requestBody\": {\r\n          \"content\": {\r\n            \"application/json\": {\r\n              \"schema\": {\r\n                \"$ref\": \"#/components/schemas/Order\"\r\n              }\r\n            }\r\n          },\r\n          \"description\": \"order placed for purchasing the pet\"\r\n        }\r\n      }\r\n    },\r\n    \"/store/order/{orderId}\": {\r\n      \"get\": {\r\n        \"tags\": [\r\n          \"store\"\r\n        ],\r\n        \"summary\": \"Find purchase order by ID\",\r\n        \"description\": \"For valid response try integer IDs with value >= 1 and <= 10. Other values will generated exceptions\",\r\n        \"operationId\": \"getOrderById\",\r\n        \"parameters\": [\r\n          {\r\n            \"name\": \"orderId\",\r\n            \"in\": \"path\",\r\n            \"description\": \"ID of pet that needs to be fetched\",\r\n            \"required\": true,\r\n            \"schema\": {\r\n              \"type\": \"integer\",\r\n              \"format\": \"int64\",\r\n              \"minimum\": 1,\r\n              \"maximum\": 10\r\n            }\r\n          }\r\n        ],\r\n        \"responses\": {\r\n          \"200\": {\r\n            \"description\": \"successful operation\",\r\n            \"content\": {\r\n              \"application/xml\": {\r\n                \"schema\": {\r\n                  \"$ref\": \"#/components/schemas/Order\"\r\n                }\r\n              },\r\n              \"application/json\": {\r\n                \"schema\": {\r\n                  \"$ref\": \"#/components/schemas/Order\"\r\n                }\r\n              }\r\n            }\r\n          },\r\n          \"400\": {\r\n            \"description\": \"Invalid ID supplied\"\r\n          },\r\n          \"404\": {\r\n            \"description\": \"Order not found\"\r\n          }\r\n        }\r\n      },\r\n      \"delete\": {\r\n        \"tags\": [\r\n          \"store\"\r\n        ],\r\n        \"summary\": \"Delete purchase order by ID\",\r\n        \"description\": \"For valid response try integer IDs with positive integer value. Negative or non-integer values will generate API errors\",\r\n        \"operationId\": \"deleteOrder\",\r\n        \"parameters\": [\r\n          {\r\n            \"name\": \"orderId\",\r\n            \"in\": \"path\",\r\n            \"description\": \"ID of the order that needs to be deleted\",\r\n            \"required\": true,\r\n            \"schema\": {\r\n              \"type\": \"integer\",\r\n              \"format\": \"int64\",\r\n              \"minimum\": 1\r\n            }\r\n          }\r\n        ],\r\n        \"responses\": {\r\n          \"400\": {\r\n            \"description\": \"Invalid ID supplied\"\r\n          },\r\n          \"404\": {\r\n            \"description\": \"Order not found\"\r\n          }\r\n        }\r\n      }\r\n    },\r\n    \"/user\": {\r\n      \"post\": {\r\n        \"tags\": [\r\n          \"user\"\r\n        ],\r\n        \"summary\": \"Create user\",\r\n        \"description\": \"This can only be done by the logged in user.\",\r\n        \"operationId\": \"createUser\",\r\n        \"parameters\": [],\r\n        \"responses\": {\r\n          \"default\": {\r\n            \"description\": \"successful operation\"\r\n          }\r\n        },\r\n        \"requestBody\": {\r\n          \"content\": {\r\n            \"application/json\": {\r\n              \"schema\": {\r\n                \"$ref\": \"#/components/schemas/User\"\r\n              }\r\n            }\r\n          },\r\n          \"description\": \"Created user object\"\r\n        }\r\n      }\r\n    },\r\n    \"/user/createWithArray\": {\r\n      \"post\": {\r\n        \"tags\": [\r\n          \"user\"\r\n        ],\r\n        \"summary\": \"Creates list of users with given input array\",\r\n        \"description\": \"\",\r\n        \"operationId\": \"createUsersWithArrayInput\",\r\n        \"parameters\": [],\r\n        \"responses\": {\r\n          \"default\": {\r\n            \"description\": \"successful operation\"\r\n          }\r\n        },\r\n        \"requestBody\": {\r\n          \"$ref\": \"#/components/requestBodies/UserArray\"\r\n        }\r\n      }\r\n    },\r\n    \"/user/createWithList\": {\r\n      \"post\": {\r\n        \"tags\": [\r\n          \"user\"\r\n        ],\r\n        \"summary\": \"Creates list of users with given input array\",\r\n        \"description\": \"\",\r\n        \"operationId\": \"createUsersWithListInput\",\r\n        \"parameters\": [],\r\n        \"responses\": {\r\n          \"default\": {\r\n            \"description\": \"successful operation\"\r\n          }\r\n        },\r\n        \"requestBody\": {\r\n          \"$ref\": \"#/components/requestBodies/UserArray\"\r\n        }\r\n      }\r\n    },\r\n    \"/user/login\": {\r\n      \"get\": {\r\n        \"tags\": [\r\n          \"user\"\r\n        ],\r\n        \"summary\": \"Logs user into the system\",\r\n        \"description\": \"\",\r\n        \"operationId\": \"loginUser\",\r\n        \"parameters\": [\r\n          {\r\n            \"name\": \"username\",\r\n            \"in\": \"query\",\r\n            \"description\": \"The user name for login\",\r\n            \"required\": true,\r\n            \"schema\": {\r\n              \"type\": \"string\"\r\n            }\r\n          },\r\n          {\r\n            \"name\": \"password\",\r\n            \"in\": \"query\",\r\n            \"description\": \"The password for login in clear text\",\r\n            \"required\": true,\r\n            \"schema\": {\r\n              \"type\": \"string\"\r\n            }\r\n          }\r\n        ],\r\n        \"responses\": {\r\n          \"200\": {\r\n            \"description\": \"successful operation\",\r\n            \"headers\": {\r\n              \"X-Rate-Limit\": {\r\n                \"description\": \"calls per hour allowed by the user\",\r\n                \"schema\": {\r\n                  \"type\": \"integer\",\r\n                  \"format\": \"int32\"\r\n                }\r\n              },\r\n              \"X-Expires-After\": {\r\n                \"description\": \"date in UTC when token expires\",\r\n                \"schema\": {\r\n                  \"type\": \"string\",\r\n                  \"format\": \"date-time\"\r\n                }\r\n              }\r\n            },\r\n            \"content\": {\r\n              \"application/xml\": {\r\n                \"schema\": {\r\n                  \"type\": \"string\"\r\n                }\r\n              },\r\n              \"application/json\": {\r\n                \"schema\": {\r\n                  \"type\": \"string\"\r\n                }\r\n              }\r\n            }\r\n          },\r\n          \"400\": {\r\n            \"description\": \"Invalid username/password supplied\"\r\n          }\r\n        }\r\n      }\r\n    },\r\n    \"/user/logout\": {\r\n      \"get\": {\r\n        \"tags\": [\r\n          \"user\"\r\n        ],\r\n        \"summary\": \"Logs out current logged in user session\",\r\n        \"description\": \"\",\r\n        \"operationId\": \"logoutUser\",\r\n        \"parameters\": [],\r\n        \"responses\": {\r\n          \"default\": {\r\n            \"description\": \"successful operation\"\r\n          }\r\n        }\r\n      }\r\n    },\r\n    \"/user/{username}\": {\r\n      \"get\": {\r\n        \"tags\": [\r\n          \"user\"\r\n        ],\r\n        \"summary\": \"Get user by user name\",\r\n        \"description\": \"\",\r\n        \"operationId\": \"getUserByName\",\r\n        \"parameters\": [\r\n          {\r\n            \"name\": \"username\",\r\n            \"in\": \"path\",\r\n            \"description\": \"The name that needs to be fetched. Use user1 for testing. \",\r\n            \"required\": true,\r\n            \"schema\": {\r\n              \"type\": \"string\"\r\n            }\r\n          }\r\n        ],\r\n        \"responses\": {\r\n          \"200\": {\r\n            \"description\": \"successful operation\",\r\n            \"content\": {\r\n              \"application/xml\": {\r\n                \"schema\": {\r\n                  \"$ref\": \"#/components/schemas/User\"\r\n                }\r\n              },\r\n              \"application/json\": {\r\n                \"schema\": {\r\n                  \"$ref\": \"#/components/schemas/User\"\r\n                }\r\n              }\r\n            }\r\n          },\r\n          \"400\": {\r\n            \"description\": \"Invalid username supplied\"\r\n          },\r\n          \"404\": {\r\n            \"description\": \"User not found\"\r\n          }\r\n        }\r\n      },\r\n      \"put\": {\r\n        \"tags\": [\r\n          \"user\"\r\n        ],\r\n        \"summary\": \"Updated user\",\r\n        \"description\": \"This can only be done by the logged in user.\",\r\n        \"operationId\": \"updateUser\",\r\n        \"parameters\": [\r\n          {\r\n            \"name\": \"username\",\r\n            \"in\": \"path\",\r\n            \"description\": \"name that need to be updated\",\r\n            \"required\": true,\r\n            \"schema\": {\r\n              \"type\": \"string\"\r\n            }\r\n          }\r\n        ],\r\n        \"responses\": {\r\n          \"400\": {\r\n            \"description\": \"Invalid user supplied\"\r\n          },\r\n          \"404\": {\r\n            \"description\": \"User not found\"\r\n          }\r\n        },\r\n        \"requestBody\": {\r\n          \"content\": {\r\n            \"application/json\": {\r\n              \"schema\": {\r\n                \"$ref\": \"#/components/schemas/User\"\r\n              }\r\n            }\r\n          },\r\n          \"description\": \"Updated user object\"\r\n        }\r\n      },\r\n      \"delete\": {\r\n        \"tags\": [\r\n          \"user\"\r\n        ],\r\n        \"summary\": \"Delete user\",\r\n        \"description\": \"This can only be done by the logged in user.\",\r\n        \"operationId\": \"deleteUser\",\r\n        \"parameters\": [\r\n          {\r\n            \"name\": \"username\",\r\n            \"in\": \"path\",\r\n            \"description\": \"The name that needs to be deleted\",\r\n            \"required\": true,\r\n            \"schema\": {\r\n              \"type\": \"string\"\r\n            }\r\n          }\r\n        ],\r\n        \"responses\": {\r\n          \"400\": {\r\n            \"description\": \"Invalid username supplied\"\r\n          },\r\n          \"404\": {\r\n            \"description\": \"User not found\"\r\n          }\r\n        }\r\n      }\r\n    }\r\n  },\r\n  \"externalDocs\": {\r\n    \"description\": \"Find out more about Swagger\",\r\n    \"url\": \"http://swagger.io\"\r\n  },\r\n  \"components\": {\r\n    \"schemas\": {\r\n      \"Order\": {\r\n        \"type\": \"object\",\r\n        \"properties\": {\r\n          \"id\": {\r\n            \"type\": \"integer\",\r\n            \"format\": \"int64\"\r\n          },\r\n          \"petId\": {\r\n            \"type\": \"integer\",\r\n            \"format\": \"int64\"\r\n          },\r\n          \"quantity\": {\r\n            \"type\": \"integer\",\r\n            \"format\": \"int32\"\r\n          },\r\n          \"shipDate\": {\r\n            \"type\": \"string\",\r\n            \"format\": \"date-time\"\r\n          },\r\n          \"status\": {\r\n            \"type\": \"string\",\r\n            \"description\": \"Order Status\",\r\n            \"enum\": [\r\n              \"placed\",\r\n              \"approved\",\r\n              \"delivered\"\r\n            ]\r\n          },\r\n          \"complete\": {\r\n            \"type\": \"boolean\",\r\n            \"default\": false\r\n          }\r\n        },\r\n        \"xml\": {\r\n          \"name\": \"Order\"\r\n        }\r\n      },\r\n      \"Category\": {\r\n        \"type\": \"object\",\r\n        \"properties\": {\r\n          \"id\": {\r\n            \"type\": \"integer\",\r\n            \"format\": \"int64\"\r\n          },\r\n          \"name\": {\r\n            \"type\": \"string\"\r\n          }\r\n        },\r\n        \"xml\": {\r\n          \"name\": \"Category\"\r\n        }\r\n      },\r\n      \"User\": {\r\n        \"type\": \"object\",\r\n        \"properties\": {\r\n          \"id\": {\r\n            \"type\": \"integer\",\r\n            \"format\": \"int64\"\r\n          },\r\n          \"username\": {\r\n            \"type\": \"string\"\r\n          },\r\n          \"firstName\": {\r\n            \"type\": \"string\"\r\n          },\r\n          \"lastName\": {\r\n            \"type\": \"string\"\r\n          },\r\n          \"email\": {\r\n            \"type\": \"string\"\r\n          },\r\n          \"password\": {\r\n            \"type\": \"string\"\r\n          },\r\n          \"phone\": {\r\n            \"type\": \"string\"\r\n          },\r\n          \"userStatus\": {\r\n            \"type\": \"integer\",\r\n            \"format\": \"int32\",\r\n            \"description\": \"User Status\"\r\n          }\r\n        },\r\n        \"xml\": {\r\n          \"name\": \"User\"\r\n        }\r\n      },\r\n      \"Tag\": {\r\n        \"type\": \"object\",\r\n        \"properties\": {\r\n          \"id\": {\r\n            \"type\": \"integer\",\r\n            \"format\": \"int64\"\r\n          },\r\n          \"name\": {\r\n            \"type\": \"string\"\r\n          }\r\n        },\r\n        \"xml\": {\r\n          \"name\": \"Tag\"\r\n        }\r\n      },\r\n      \"Pet\": {\r\n        \"type\": \"object\",\r\n        \"required\": [\r\n          \"name\",\r\n          \"photoUrls\"\r\n        ],\r\n        \"properties\": {\r\n          \"id\": {\r\n            \"type\": \"integer\",\r\n            \"format\": \"int64\"\r\n          },\r\n          \"category\": {\r\n            \"$ref\": \"#/components/schemas/Category\"\r\n          },\r\n          \"name\": {\r\n            \"type\": \"string\",\r\n            \"example\": \"doggie\"\r\n          },\r\n          \"photoUrls\": {\r\n            \"type\": \"array\",\r\n            \"xml\": {\r\n              \"name\": \"photoUrl\",\r\n              \"wrapped\": true\r\n            },\r\n            \"items\": {\r\n              \"type\": \"string\"\r\n            }\r\n          },\r\n          \"tags\": {\r\n            \"type\": \"array\",\r\n            \"xml\": {\r\n              \"name\": \"tag\",\r\n              \"wrapped\": true\r\n            },\r\n            \"items\": {\r\n              \"$ref\": \"#/components/schemas/Tag\"\r\n            }\r\n          },\r\n          \"status\": {\r\n            \"type\": \"string\",\r\n            \"description\": \"pet status in the store\",\r\n            \"enum\": [\r\n              \"available\",\r\n              \"pending\",\r\n              \"sold\"\r\n            ]\r\n          }\r\n        },\r\n        \"xml\": {\r\n          \"name\": \"Pet\"\r\n        }\r\n      },\r\n      \"ApiResponse\": {\r\n        \"type\": \"object\",\r\n        \"properties\": {\r\n          \"code\": {\r\n            \"type\": \"integer\",\r\n            \"format\": \"int32\"\r\n          },\r\n          \"type\": {\r\n            \"type\": \"string\"\r\n          },\r\n          \"message\": {\r\n            \"type\": \"string\"\r\n          }\r\n        }\r\n      }\r\n    },\r\n    \"responses\": {},\r\n    \"parameters\": {},\r\n    \"examples\": {},\r\n    \"requestBodies\": {\r\n      \"Pet\": {\r\n        \"content\": {\r\n          \"application/json\": {\r\n            \"schema\": {\r\n              \"$ref\": \"#/components/schemas/Pet\"\r\n            }\r\n          },\r\n          \"application/xml\": {\r\n            \"schema\": {\r\n              \"$ref\": \"#/components/schemas/Pet\"\r\n            }\r\n          }\r\n        },\r\n        \"description\": \"Pet object that needs to be added to the store\"\r\n      },\r\n      \"UserArray\": {\r\n        \"content\": {\r\n          \"application/json\": {\r\n            \"schema\": {\r\n              \"type\": \"array\",\r\n              \"items\": {\r\n                \"$ref\": \"#/components/schemas/User\"\r\n              }\r\n            }\r\n          }\r\n        },\r\n        \"description\": \"List of user object\"\r\n      }\r\n    },\r\n    \"securitySchemes\": {\r\n      \"petstore_auth\": {\r\n        \"type\": \"oauth2\",\r\n        \"flows\": {\r\n          \"implicit\": {\r\n            \"authorizationUrl\": \"http://petstore.swagger.io/oauth/dialog\",\r\n            \"scopes\": {\r\n              \"write:pets\": \"modify pets in your account\",\r\n              \"read:pets\": \"read your pets\"\r\n            }\r\n          }\r\n        }\r\n      },\r\n      \"api_key\": {\r\n        \"type\": \"apiKey\",\r\n        \"name\": \"api_key\",\r\n        \"in\": \"header\"\r\n      }\r\n    },\r\n    \"headers\": {}\r\n  }\r\n}",
+			"businessapiid": null,
+			"image": null,
+			"color": null,
+			"deployed": null,
+			"changelog": null,
+			"tags": [{
+				"uuid": "f27b3952-955d-4571-a2e3-b7a9bc2e894c",
+				"name": "animals"
+			}, {
+				"uuid": "b0360528-3760-493a-ae8d-60bfda2c1a1f",
+				"name": "pet"
+			}],
+			"groups": [{
+				"uuid": "254dc26b-2a6d-4cd1-908d-4b170e8fb08c",
+				"name": "Examples"
+			}],
+			"categories": [{
+				"uuid": "3c30a832-ff49-4e30-9bca-3da622ea4037",
+				"name": "Commerce"
+			}],
+			"proxies_summary": [{
+				"uuid": "65bd3e20-ff9c-4570-87c2-61e5447f3d5d",
+				"name": "My Proxy 1",
+				"context": "my_proxy_1"
+			}, {
+				"uuid": "9b2858f0-6963-4d7c-91d7-e1e64ac24a22",
+				"name": "My Proxy 2",
+				"context": "my_proxy_2"
+			}, {
+				"uuid": "9b4bde91-53e4-411a-9449-5b33afc41c19",
+				"name": "My Proxy 3",
+				"context": "my_proxy_3"
+			}]
+		}
+	}, {
+		"info": {
+			"title": "Uber API",
+			"version": "1.0.0",
+			"description": "Move your app forward with the Uber API"
+		},
+		"paths": {
+			"/me": {
+				"get": {
+					"tags": ["User"],
+					"summary": "User Profile",
+					"responses": {
+						"200": {
+							"content": {
+								"application/json": {
+									"schema": {
+										"$ref": "#/components/schemas/Profile"
+									}
+								}
+							},
+							"description": "Profile information for a user"
+						},
+						"default": {
+							"content": {
+								"application/json": {
+									"schema": {
+										"$ref": "#/components/schemas/Error"
+									}
+								}
+							},
+							"description": "Unexpected error"
 						}
 					},
-					"PriceEstimate": {
-						"properties": {
-							"estimate": {
-								"type": "string",
-								"description": "Formatted string of estimate in local currency of the start location. Estimate could be a range, a single number (flat rate) or \"Metered\" for TAXI."
+					"description": "The User Profile endpoint returns information about the Uber user that has authorized with the application."
+				}
+			},
+			"/history": {
+				"get": {
+					"tags": ["User"],
+					"summary": "User Activity",
+					"responses": {
+						"200": {
+							"content": {
+								"application/json": {
+									"schema": {
+										"$ref": "#/components/schemas/Activities"
+									}
+								}
 							},
-							"product_id": {
-								"type": "string",
-								"description": "Unique identifier representing a specific product for a given latitude & longitude. For example, uberX in San Francisco will have a different product_id than uberX in Los Angeles"
+							"description": "History information for the given user"
+						},
+						"default": {
+							"content": {
+								"application/json": {
+									"schema": {
+										"$ref": "#/components/schemas/Error"
+									}
+								}
 							},
-							"display_name": {
-								"type": "string",
-								"description": "Display name of product."
+							"description": "Unexpected error"
+						}
+					},
+					"parameters": [{
+						"in": "query",
+						"name": "offset",
+						"schema": {
+							"type": "integer",
+							"format": "int32"
+						},
+						"description": "Offset the list of returned results by this amount. Default is zero."
+					}, {
+						"in": "query",
+						"name": "limit",
+						"schema": {
+							"type": "integer",
+							"format": "int32"
+						},
+						"description": "Number of items to retrieve. Default is 5, maximum is 100."
+					}],
+					"description": "The User Activity endpoint returns data about a user's lifetime activity with Uber. The response will include pickup locations and times, dropoff locations and times, the distance of past requests, and information about which products were requested.<br><br>The history array in the response will have a maximum length based on the limit parameter. The response value count may exceed limit, therefore subsequent API requests may be necessary."
+				}
+			},
+			"/products": {
+				"get": {
+					"tags": ["Products"],
+					"summary": "Product Types",
+					"security": [{
+						"apikey": []
+					}],
+					"responses": {
+						"200": {
+							"content": {
+								"application/json": {
+									"schema": {
+										"$ref": "#/components/schemas/ProductList"
+									}
+								}
 							},
-							"low_estimate": {
-								"type": "number",
-								"description": "Lower bound of the estimated price."
+							"description": "An array of products"
+						},
+						"default": {
+							"content": {
+								"application/json": {
+									"schema": {
+										"$ref": "#/components/schemas/Error"
+									}
+								}
 							},
-							"currency_code": {
-								"type": "string",
-								"description": "[ISO 4217](http://en.wikipedia.org/wiki/ISO_4217) currency code."
+							"description": "Unexpected error"
+						}
+					},
+					"parameters": [{
+						"in": "query",
+						"name": "latitude",
+						"schema": {
+							"type": "number",
+							"format": "double"
+						},
+						"required": true,
+						"description": "Latitude component of location."
+					}, {
+						"in": "query",
+						"name": "longitude",
+						"schema": {
+							"type": "number",
+							"format": "double"
+						},
+						"required": true,
+						"description": "Longitude component of location."
+					}],
+					"description": "The Products endpoint returns information about the Uber products offered at a given location. The response includes the display name and other details about each product, and lists the products in the proper display order."
+				}
+			},
+			"/estimates/time": {
+				"get": {
+					"tags": ["Estimates"],
+					"summary": "Time Estimates",
+					"responses": {
+						"200": {
+							"content": {
+								"application/json": {
+									"schema": {
+										"type": "array",
+										"items": {
+											"$ref": "#/components/schemas/Product"
+										}
+									}
+								}
 							},
-							"high_estimate": {
-								"type": "number",
-								"description": "Upper bound of the estimated price."
+							"description": "An array of products"
+						},
+						"default": {
+							"content": {
+								"application/json": {
+									"schema": {
+										"$ref": "#/components/schemas/Error"
+									}
+								}
 							},
-							"surge_multiplier": {
-								"type": "number",
-								"description": "Expected surge multiplier. Surge is active if surge_multiplier is greater than 1. Price estimate already factors in the surge multiplier."
+							"description": "Unexpected error"
+						}
+					},
+					"parameters": [{
+						"in": "query",
+						"name": "start_latitude",
+						"schema": {
+							"type": "number",
+							"format": "double"
+						},
+						"required": true,
+						"description": "Latitude component of start location."
+					}, {
+						"in": "query",
+						"name": "start_longitude",
+						"schema": {
+							"type": "number",
+							"format": "double"
+						},
+						"required": true,
+						"description": "Longitude component of start location."
+					}, {
+						"in": "query",
+						"name": "customer_uuid",
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						},
+						"description": "Unique customer identifier to be used for experience customization."
+					}, {
+						"in": "query",
+						"name": "product_id",
+						"schema": {
+							"type": "string"
+						},
+						"description": "Unique identifier representing a specific product for a given latitude & longitude."
+					}],
+					"description": "The Time Estimates endpoint returns ETAs for all products offered at a given location, with the responses expressed as integers in seconds. We recommend that this endpoint be called every minute to provide the most accurate, up-to-date ETAs."
+				}
+			},
+			"/estimates/price": {
+				"get": {
+					"tags": ["Estimates"],
+					"summary": "Price Estimates",
+					"responses": {
+						"200": {
+							"content": {
+								"application/json": {
+									"schema": {
+										"type": "array",
+										"items": {
+											"$ref": "#/components/schemas/PriceEstimate"
+										}
+									}
+								}
+							},
+							"description": "An array of price estimates by product"
+						},
+						"default": {
+							"content": {
+								"application/json": {
+									"schema": {
+										"$ref": "#/components/schemas/Error"
+									}
+								}
+							},
+							"description": "Unexpected error"
+						}
+					},
+					"parameters": [{
+						"in": "query",
+						"name": "start_latitude",
+						"schema": {
+							"type": "number",
+							"format": "double"
+						},
+						"required": true,
+						"description": "Latitude component of start location."
+					}, {
+						"in": "query",
+						"name": "start_longitude",
+						"schema": {
+							"type": "number",
+							"format": "double"
+						},
+						"required": true,
+						"description": "Longitude component of start location."
+					}, {
+						"in": "query",
+						"name": "end_latitude",
+						"schema": {
+							"type": "number",
+							"format": "double"
+						},
+						"required": true,
+						"description": "Latitude component of end location."
+					}, {
+						"in": "query",
+						"name": "end_longitude",
+						"schema": {
+							"type": "number",
+							"format": "double"
+						},
+						"required": true,
+						"description": "Longitude component of end location."
+					}],
+					"description": "The Price Estimates endpoint returns an estimated price range for each product offered at a given location. The price estimate is provided as a formatted string with the full price range and the localized currency symbol.<br><br>The response also includes low and high estimates, and the [ISO 4217](http://en.wikipedia.org/wiki/ISO_4217) currency code for situations requiring currency conversion. When surge is active for a particular product, its surge_multiplier will be greater than 1, but the price estimate already factors in this multiplier."
+				}
+			}
+		},
+		"openapi": "3.0.0",
+		"servers": [{
+			"url": "https://api.uber.com/v1"
+		}],
+		"components": {
+			"schemas": {
+				"Error": {
+					"properties": {
+						"code": {
+							"type": "integer",
+							"format": "int32"
+						},
+						"fields": {
+							"type": "string"
+						},
+						"message": {
+							"type": "string"
+						}
+					}
+				},
+				"Product": {
+					"properties": {
+						"image": {
+							"type": "string",
+							"description": "Image URL representing the product."
+						},
+						"capacity": {
+							"type": "integer",
+							"description": "Capacity of product. For example, 4 people."
+						},
+						"product_id": {
+							"type": "string",
+							"description": "Unique identifier representing a specific product for a given latitude & longitude. For example, uberX in San Francisco will have a different product_id than uberX in Los Angeles."
+						},
+						"description": {
+							"type": "string",
+							"description": "Description of product."
+						},
+						"display_name": {
+							"type": "string",
+							"description": "Display name of product."
+						}
+					}
+				},
+				"Profile": {
+					"properties": {
+						"email": {
+							"type": "string",
+							"description": "Email address of the Uber user"
+						},
+						"picture": {
+							"type": "string",
+							"description": "Image URL of the Uber user."
+						},
+						"last_name": {
+							"type": "string",
+							"description": "Last name of the Uber user."
+						},
+						"first_name": {
+							"type": "string",
+							"description": "First name of the Uber user."
+						},
+						"promo_code": {
+							"type": "string",
+							"description": "Promo code of the Uber user."
+						}
+					}
+				},
+				"Activity": {
+					"properties": {
+						"uuid": {
+							"type": "string",
+							"description": "Unique identifier for the activity"
+						}
+					}
+				},
+				"Activities": {
+					"properties": {
+						"count": {
+							"type": "integer",
+							"format": "int32",
+							"description": "Total number of items available."
+						},
+						"limit": {
+							"type": "integer",
+							"format": "int32",
+							"description": "Number of items to retrieve (100 max)."
+						},
+						"offset": {
+							"type": "integer",
+							"format": "int32",
+							"description": "Position in pagination."
+						},
+						"history": {
+							"type": "array",
+							"items": {
+								"$ref": "#/components/schemas/Activity"
 							}
 						}
 					}
 				},
-				"securitySchemes": {
-					"apikey": {
-						"in": "query",
-						"name": "server_token",
-						"type": "apiKey"
+				"ProductList": {
+					"properties": {
+						"products": {
+							"type": "array",
+							"items": {
+								"$ref": "#/components/schemas/Product"
+							},
+							"description": "Contains the list of products"
+						}
+					}
+				},
+				"PriceEstimate": {
+					"properties": {
+						"estimate": {
+							"type": "string",
+							"description": "Formatted string of estimate in local currency of the start location. Estimate could be a range, a single number (flat rate) or \"Metered\" for TAXI."
+						},
+						"product_id": {
+							"type": "string",
+							"description": "Unique identifier representing a specific product for a given latitude & longitude. For example, uberX in San Francisco will have a different product_id than uberX in Los Angeles"
+						},
+						"display_name": {
+							"type": "string",
+							"description": "Display name of product."
+						},
+						"low_estimate": {
+							"type": "number",
+							"description": "Lower bound of the estimated price."
+						},
+						"currency_code": {
+							"type": "string",
+							"description": "[ISO 4217](http://en.wikipedia.org/wiki/ISO_4217) currency code."
+						},
+						"high_estimate": {
+							"type": "number",
+							"description": "Upper bound of the estimated price."
+						},
+						"surge_multiplier": {
+							"type": "number",
+							"description": "Expected surge multiplier. Surge is active if surge_multiplier is greater than 1. Price estimate already factors in the surge multiplier."
+						}
 					}
 				}
 			},
-			"x-abyss-platform": {
-				"uuid": "5b352965-9bc4-4c48-a881-323734bed307",
-				"organization_id": 0,
-				"created": "2018-04-02T13:01:39.082502",
-				"updated": "2018-05-02T13:01:39.082502",
-				"deleted": null,
-				"isdeleted": 0,
-				"crud_subject_id": 1,
-				"subject_id": 501,
-				"isproxyapi": false,
-				"apistateid": 4,
-				"apivisibilityid": 1,
-				"languagename": "OpenAPI",
-				"languageversion": "3.0.0",
-				"dataformat": 1,
-				"businessapiid": null,
-				"image": null,
-				"color": null,
-				"deployed": null,
-				"changelog": null,
-				"tags": null,
-				"groups": [
-					{
-						"uuid": "254dc26b-2a6d-4cd1-908d-4b170e8fb08c",
-						"name": "Examples"
-					}
-				],
-				"categories": [
-					{
-						"uuid": "924482c3-2e44-4337-971c-5de05a7327ed",
-						"name": "Travel"
-					},
-					{
-						"uuid": "469c735b-0c76-4596-87ff-4d0607bcae9c",
-						"name": "Transportation"
-					}
-				],
-				"proxies_summary": [
-					{
-						"uuid": "65bd3e20-ff9c-4570-87c2-61e5447f3d5d",
-						"name": "My Proxy 1",
-						"context": "my_proxy_1"
-					},
-					{
-						"uuid": "9b2858f0-6963-4d7c-91d7-e1e64ac24a22",
-						"name": "My Proxy 2",
-						"context": "my_proxy_2"
-					},
-					{
-						"uuid": "9b4bde91-53e4-411a-9449-5b33afc41c19",
-						"name": "My Proxy 3",
-						"context": "my_proxy_3"
-					}
-				]
+			"securitySchemes": {
+				"apikey": {
+					"in": "query",
+					"name": "server_token",
+					"type": "apiKey"
+				}
 			}
+		},
+		"x-abyss-platform": {
+			"uuid": "5b352965-9bc4-4c48-a881-323734bed307",
+			"organizationid": 0,
+			"created": "2018-05-02T13:01:39.082502",
+			"updated": "2018-05-02T13:01:39.082502",
+			"deleted": null,
+			"isdeleted": false,
+			"crudsubjectid": 1,
+			"subjectid": 501,
+			"isproxyapi": false,
+			"apistateid": 4,
+			"apivisibilityid": 1,
+			"languagename": "OpenAPI",
+			"languageversion": "3.0.0",
+			"dataformat": 1,
+			"originaldocument": "# this is an example of the Uber API\r\n# as a demonstration of an API spec in YAML\r\nopenapi: \"3.0.0\"\r\ninfo:\r\n  title: Uber API\r\n  description: Move your app forward with the Uber API\r\n  version: \"1.0.0\"\r\nservers:\r\n  - url: https://api.uber.com/v1\r\npaths:\r\n  /products:\r\n    get:\r\n      summary: Product Types\r\n      description: The Products endpoint returns information about the Uber products offered at a given location. The response includes the display name and other details about each product, and lists the products in the proper display order.\r\n      parameters:\r\n        - name: latitude\r\n          in: query\r\n          description: Latitude component of location.\r\n          required: true\r\n          schema:\r\n            type: number\r\n            format: double\r\n        - name: longitude\r\n          in: query\r\n          description: Longitude component of location.\r\n          required: true\r\n          schema:\r\n            type: number\r\n            format: double\r\n      security: \r\n        - apikey: []\r\n      tags: \r\n        - Products\r\n      responses:  \r\n        200:\r\n          description: An array of products\r\n          content:\r\n            application/json:\r\n              schema:\r\n                $ref: \"#/components/schemas/ProductList\"\r\n        default:\r\n          description: Unexpected error\r\n          content:\r\n            application/json:\r\n              schema:\r\n                $ref: \"#/components/schemas/Error\"\r\n  /estimates/price:\r\n    get:\r\n      summary: Price Estimates\r\n      description: The Price Estimates endpoint returns an estimated price range for each product offered at a given location. The price estimate is provided as a formatted string with the full price range and the localized currency symbol.<br><br>The response also includes low and high estimates, and the [ISO 4217](http://en.wikipedia.org/wiki/ISO_4217) currency code for situations requiring currency conversion. When surge is active for a particular product, its surge_multiplier will be greater than 1, but the price estimate already factors in this multiplier.\r\n      parameters:\r\n        - name: start_latitude\r\n          in: query\r\n          description: Latitude component of start location.\r\n          required: true\r\n          schema:\r\n            type: number\r\n            format: double\r\n        - name: start_longitude\r\n          in: query\r\n          description: Longitude component of start location.\r\n          required: true\r\n          schema:\r\n            type: number\r\n            format: double\r\n        - name: end_latitude\r\n          in: query\r\n          description: Latitude component of end location.\r\n          required: true\r\n          schema:\r\n            type: number\r\n            format: double\r\n        - name: end_longitude\r\n          in: query\r\n          description: Longitude component of end location.\r\n          required: true\r\n          schema:\r\n            type: number\r\n            format: double\r\n      tags: \r\n        - Estimates\r\n      responses:  \r\n        200:\r\n          description: An array of price estimates by product\r\n          content:\r\n            application/json:\r\n              schema:\r\n                type: array\r\n                items:\r\n                  $ref: \"#/components/schemas/PriceEstimate\"\r\n        default:\r\n          description: Unexpected error\r\n          content:\r\n            application/json:\r\n              schema:\r\n                $ref: \"#/components/schemas/Error\"\r\n  /estimates/time:\r\n    get:\r\n      summary: Time Estimates\r\n      description: The Time Estimates endpoint returns ETAs for all products offered at a given location, with the responses expressed as integers in seconds. We recommend that this endpoint be called every minute to provide the most accurate, up-to-date ETAs.\r\n      parameters:\r\n        - name: start_latitude\r\n          in: query\r\n          description: Latitude component of start location.\r\n          required: true\r\n          schema:\r\n            type: number\r\n            format: double\r\n        - name: start_longitude\r\n          in: query\r\n          description: Longitude component of start location.\r\n          required: true\r\n          schema:\r\n            type: number\r\n            format: double\r\n        - name: customer_uuid\r\n          in: query\r\n          schema:\r\n            type: string\r\n            format: uuid\r\n          description: Unique customer identifier to be used for experience customization.\r\n        - name: product_id\r\n          in: query\r\n          schema:\r\n            type: string\r\n          description: Unique identifier representing a specific product for a given latitude & longitude.\r\n      tags: \r\n        - Estimates\r\n      responses:  \r\n        200:\r\n          description: An array of products\r\n          content:\r\n            application/json:\r\n              schema:\r\n                type: array\r\n                items:\r\n                  $ref: \"#/components/schemas/Product\"\r\n        default:\r\n          description: Unexpected error\r\n          content:\r\n            application/json:\r\n              schema:\r\n                $ref: \"#/components/schemas/Error\"\r\n  /me:\r\n    get:\r\n      summary: User Profile\r\n      description: The User Profile endpoint returns information about the Uber user that has authorized with the application.\r\n      tags: \r\n        - User\r\n      responses:\r\n        200:\r\n          description: Profile information for a user\r\n          content:\r\n            application/json:\r\n              schema:\r\n                $ref: \"#/components/schemas/Profile\"\r\n        default:\r\n          description: Unexpected error\r\n          content:\r\n            application/json:\r\n              schema:\r\n                $ref: \"#/components/schemas/Error\"\r\n  /history:\r\n    get:\r\n      summary: User Activity\r\n      description: The User Activity endpoint returns data about a user's lifetime activity with Uber. The response will include pickup locations and times, dropoff locations and times, the distance of past requests, and information about which products were requested.<br><br>The history array in the response will have a maximum length based on the limit parameter. The response value count may exceed limit, therefore subsequent API requests may be necessary.\r\n      parameters:\r\n        - name: offset\r\n          in: query\r\n          schema:\r\n            type: integer\r\n            format: int32\r\n          description: Offset the list of returned results by this amount. Default is zero.\r\n        - name: limit\r\n          in: query\r\n          schema:\r\n            type: integer\r\n            format: int32 \r\n          description: Number of items to retrieve. Default is 5, maximum is 100.\r\n      tags: \r\n        - User\r\n      responses:\r\n        200:\r\n          description: History information for the given user\r\n          content:\r\n            application/json:\r\n              schema:\r\n                $ref: \"#/components/schemas/Activities\"\r\n        default:\r\n          description: Unexpected error\r\n          content:\r\n            application/json:\r\n              schema:\r\n                $ref: \"#/components/schemas/Error\"\r\ncomponents:\r\n  securitySchemes:\r\n    apikey:\r\n      type: apiKey\r\n      name: server_token\r\n      in: query\r\n  schemas:\r\n    Product:\r\n      properties:\r\n        product_id:\r\n          type: string\r\n          description: Unique identifier representing a specific product for a given latitude & longitude. For example, uberX in San Francisco will have a different product_id than uberX in Los Angeles.\r\n        description:\r\n          type: string\r\n          description: Description of product.\r\n        display_name:\r\n          type: string\r\n          description: Display name of product.\r\n        capacity:\r\n          type: integer\r\n          description: Capacity of product. For example, 4 people.\r\n        image:\r\n          type: string\r\n          description: Image URL representing the product.\r\n    ProductList:\r\n      properties:\r\n        products:\r\n          description: Contains the list of products\r\n          type: array\r\n          items: \r\n            $ref: \"#/components/schemas/Product\"\r\n    PriceEstimate:\r\n      properties:\r\n        product_id:\r\n          type: string\r\n          description: Unique identifier representing a specific product for a given latitude & longitude. For example, uberX in San Francisco will have a different product_id than uberX in Los Angeles\r\n        currency_code:\r\n          type: string\r\n          description: \"[ISO 4217](http://en.wikipedia.org/wiki/ISO_4217) currency code.\"\r\n        display_name:\r\n          type: string\r\n          description: Display name of product.\r\n        estimate: \r\n          type: string\r\n          description: Formatted string of estimate in local currency of the start location. Estimate could be a range, a single number (flat rate) or \"Metered\" for TAXI.\r\n        low_estimate:\r\n          type: number\r\n          description: Lower bound of the estimated price.\r\n        high_estimate:\r\n          type: number\r\n          description: Upper bound of the estimated price.\r\n        surge_multiplier:\r\n          type: number\r\n          description: Expected surge multiplier. Surge is active if surge_multiplier is greater than 1. Price estimate already factors in the surge multiplier.\r\n    Profile:\r\n      properties:\r\n        first_name:\r\n          type: string\r\n          description: First name of the Uber user.\r\n        last_name:\r\n          type: string\r\n          description: Last name of the Uber user.\r\n        email:\r\n          type: string\r\n          description: Email address of the Uber user\r\n        picture:\r\n          type: string\r\n          description: Image URL of the Uber user.\r\n        promo_code:\r\n          type: string\r\n          description: Promo code of the Uber user.   \r\n    Activity:\r\n      properties:\r\n        uuid:\r\n          type: string\r\n          description: Unique identifier for the activity\r\n    Activities:\r\n      properties:\r\n        offset:\r\n          type: integer\r\n          format: int32\r\n          description: Position in pagination.\r\n        limit:\r\n          type: integer\r\n          format: int32\r\n          description: Number of items to retrieve (100 max).\r\n        count:\r\n          type: integer\r\n          format: int32\r\n          description: Total number of items available.\r\n        history:\r\n          type: array\r\n          items:\r\n            $ref: \"#/components/schemas/Activity\"\r\n    Error:\r\n      properties:\r\n        code:\r\n          type: integer\r\n          format: int32\r\n        message:\r\n          type: string\r\n        fields:\r\n          type: string\r\n        ",
+			"businessapiid": null,
+			"image": null,
+			"color": null,
+			"deployed": null,
+			"changelog": null,
+			"tags": null,
+			"groups": [{
+				"uuid": "254dc26b-2a6d-4cd1-908d-4b170e8fb08c",
+				"name": "Examples"
+			}],
+			"categories": [{
+				"uuid": "924482c3-2e44-4337-971c-5de05a7327ed",
+				"name": "Travel"
+			}, {
+				"uuid": "469c735b-0c76-4596-87ff-4d0607bcae9c",
+				"name": "Transportation"
+			}],
+			"proxies_summary": [{
+				"uuid": "65bd3e20-ff9c-4570-87c2-61e5447f3d5d",
+				"name": "My Proxy 1",
+				"context": "my_proxy_1"
+			}, {
+				"uuid": "9b2858f0-6963-4d7c-91d7-e1e64ac24a22",
+				"name": "My Proxy 2",
+				"context": "my_proxy_2"
+			}, {
+				"uuid": "9b4bde91-53e4-411a-9449-5b33afc41c19",
+				"name": "My Proxy 3",
+				"context": "my_proxy_3"
+			}]
 		}
-	],
+	}],
 	"totalPages": 1,
 	"totalItems": 3,
 	"pageSize": 30,

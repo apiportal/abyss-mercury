@@ -32,7 +32,7 @@ define(['global'], function(abyss){
 		permission_list: '/permission-list.json',
 	}
 	if (isAbyssSandbox === true) {
-		if (location.host == 'local.abyss.com' || location.host == 'localhost:7882') {
+		if (location.host == 'local.abyss.com' || location.host == 'localhost:7882' || location.host == 'localhost:7880') {
 			abyssLocation = 'http://local.abyss.com/000?file=http://local.abyss.com/data';
 			abyssJsonLocation = abyssLocation;
 			abyssCredentials = false;

@@ -63,6 +63,7 @@ require.config({
 		// "v-lazy-img": "comps/v-lazy-img",
 		// "VueLazyBackgroundImage": "comps/VueLazyBackgroundImage",
 		// "PasswordStrengthMeter": "app/PasswordStrengthMeter.htm",
+		"openapi": "app/openapi",
 
 		//// init ////
 		"ace-init": "scripts/ace",

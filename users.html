@@ -13,20 +13,20 @@
 				<div class="nicescroll--bar">
 					<div class="fow no-gutters">
 						<div class="fol fol-6 form-group mb-0 bg-white">
-							<v-select label="subject_name" :filterable="false" :options="userOptions" @search="getUserOptions" :on-change="filterUser" placeholder="Search Users">
+							<v-select label="subjectname" :filterable="false" :options="userOptions" @search="getUserOptions" :on-change="filterUser" placeholder="Search Users">
 								<span slot="no-options"></span>
 								<template slot="option" slot-scope="option">
-									<strong>{{ option.first_name }} {{ option.last_name }}</strong>
-									<div>{{ option.subject_name }}</div>
+									<strong>{{ option.firstname }} {{ option.lastname }}</strong>
+									<div>{{ option.subjectname }}</div>
 									<small>{{ option.email }}</small>
 								</template>
 								<template slot="selected-option" slot-scope="option">
-									<strong>{{ option.first_name }} {{ option.last_name }}</strong> <em>{{ option.subject_name }}</em> <small>{{ option.email }}</small>
+									<strong>{{ option.firstname }} {{ option.lastname }}</strong> <em>{{ option.subjectname }}</em> <small>{{ option.email }}</small>
 								</template>
 							</v-select>
 						</div>
 						<div class="fol form-group mb-0 bg-white">
-							<v-select label="group_name" :filterable="false" :options="groupOptions" @search="getGroupOptions" :on-change="filterGroup" placeholder="Search Groups">
+							<v-select label="groupname" :filterable="false" :options="groupOptions" @search="getGroupOptions" :on-change="filterGroup" placeholder="Search Groups">
 								<span slot="no-options"></span>
 							</v-select>
 						</div>
@@ -38,32 +38,32 @@
 					</div>
 					<table class="table table-hover table-bordered table-edge">
 						<tr>
-							<th class="td-bool" v-bind:class="sort.order" v-on:click="sortList(sort, 'is_activated', Boolean)">Status</th>
-							<th class="td-name" v-bind:class="sort.order" v-on:click="sortList(sort, 'first_name', String)">First Name</th>
-							<th class="td-name" v-bind:class="sort.order" v-on:click="sortList(sort, 'last_name', String)">Last Name</th>
-							<th class="td-name" v-bind:class="sort.order" v-on:click="sortList(sort, 'subject_name', String)">Username / Email</th>
-							<th class="td-name" v-bind:class="sort.order" v-on:click="sortList(sort, 'display_name', String)">Display Name</th>
+							<th class="td-bool" v-bind:class="sort.order" v-on:click="sortList(sort, 'isactivated', Boolean)">Status</th>
+							<th class="td-name" v-bind:class="sort.order" v-on:click="sortList(sort, 'firstname', String)">First Name</th>
+							<th class="td-name" v-bind:class="sort.order" v-on:click="sortList(sort, 'lastname', String)">Last Name</th>
+							<th class="td-name" v-bind:class="sort.order" v-on:click="sortList(sort, 'subjectname', String)">Username / Email</th>
+							<th class="td-name" v-bind:class="sort.order" v-on:click="sortList(sort, 'displayname', String)">Display Name</th>
 							<th class="td-datetime-x" v-bind:class="sort.order" v-on:click="sortList(sort, 'created', Date)">Created / Updated / Deleted</th>
-							<th class="td-datetime" v-bind:class="sort.order" v-on:click="sortList(sort, 'total_login_count', Number)">Logins</th>
-							<th class="td-datetime" v-bind:class="sort.order" v-on:click="sortList(sort, 'failed_login_count', Number)">Failed Logins</th>
+							<th class="td-datetime" v-bind:class="sort.order" v-on:click="sortList(sort, 'totallogincount', Number)">Logins</th>
+							<th class="td-datetime" v-bind:class="sort.order" v-on:click="sortList(sort, 'failedlogincount', Number)">Failed Logins</th>
 							<th class="td-long"></th>
 							<th class="td-action-1"></th>
 							<th class="td-action-1"></th>
 						</tr>
 						<tr v-for="(user, index) in sortBy(sort, userList)" v-bind:key="user.uuid" v-bind:class="{'active': isSelected(index)}">
 							<td class="text-center">
-								<i class="fas fa-circle" title="Not Activated" v-if="!user.is_activated"></i>
-								<i class="fas fa-check-circle txt-green" title="Activated" v-if="user.is_activated"></i>
-								<i class="fas fa-times-circle txt-red" title="Deleted" v-if="user.is_deleted"></i>
+								<i class="fas fa-circle" title="Not Activated" v-if="!user.isactivated"></i>
+								<i class="fas fa-check-circle txt-green" title="Activated" v-if="user.isactivated"></i>
+								<i class="fas fa-times-circle txt-red" title="Deleted" v-if="user.isdeleted"></i>
 							</td>
-							<td>{{ user.first_name }}</td>
-							<td>{{ user.last_name }}</td>
+							<td>{{ user.firstname }}</td>
+							<td>{{ user.lastname }}</td>
 							<td>
-								<div class="d-block">{{user.subject_name}}</div>
+								<div class="d-block">{{user.subjectname}}</div>
 								<small class="d-block">{{user.email}}</small>
 							</td>
 							<td>
-								{{user.display_name}}
+								{{user.displayname}}
 							</td>
 							<td>
 								<div>
@@ -74,7 +74,7 @@
 									<strong class="small">UPDATED:</strong>
 									<small>{{user.updated | formatDateTime}}</small>
 								</div>
-								<div v-if="user.is_deleted">
+								<div v-if="user.isdeleted">
 									<strong class="small">DELETED:</strong>
 									<small>{{user.deleted | formatDateTime}}</small>
 								</div>
@@ -83,25 +83,25 @@
 								<div class="d-flex align-items-center">
 									<div class="d-block small">
 										<strong class="d-block">LAST LOGIN</strong>
-										<span class="d-block">{{user.last_login_at | formatDateTime}}</span>
+										<span class="d-block">{{user.lastloginat | formatDateTime}}</span>
 									</div>
-									<strong class="ml-auto">{{user.total_login_count}}</strong>
+									<strong class="ml-auto">{{user.totallogincount}}</strong>
 								</div>
 							</td>
 							<td>
 								<div class="d-flex align-items-center">
 									<div class="d-block small">
 										<strong class="d-block">LAST FAILED</strong>
-										<span class="d-block">{{user.last_failed_login_at | formatDateTime}}</span>
+										<span class="d-block">{{user.lastfailedloginat | formatDateTime}}</span>
 									</div>
-									<strong class="ml-auto">{{user.failed_login_count}}</strong>
+									<strong class="ml-auto">{{user.failedlogincount}}</strong>
 								</div>
 							</td>
 							<td>
 								<div class="">
 									<strong class="small">GROUP:</strong>
 									<small v-for="(u, index) in user.groups">
-										{{u.group_name}}<span v-if="index != (user.groups.length - 1)">, </span>
+										{{u.groupname}}<span v-if="index != (user.groups.length - 1)">, </span>
 									</small>
 								</div>
 								<div class="">
@@ -133,25 +133,25 @@
 						<h5 class="column-header-title" v-if="rootState == 'edit'">Edit User</h5>
 					</div>
 					<div class="p-3">
-						<div class="form-group" v-bind:class="{ 'has-error': errors.has('first_name') }">
-							<label for="first_name">First Name:</label>
-							<input type="text" name="first_name" id="first_name" v-model="user.first_name" v-validate="'required|min:2|alpha_spaces'" class="form-control" placeholder="First Name">
-							<em v-bind:class="{ 'show': errors.has('first_name') }">{{ errors.first('first_name') }}</em>
+						<div class="form-group" v-bind:class="{ 'has-error': errors.has('firstname') }">
+							<label for="firstname">First Name:</label>
+							<input type="text" name="firstname" id="firstname" v-model="user.firstname" v-validate="'required|min:2|alpha_spaces'" class="form-control" placeholder="First Name">
+							<em v-bind:class="{ 'show': errors.has('firstname') }">{{ errors.first('firstname') }}</em>
 						</div>
-						<div class="form-group" v-bind:class="{ 'has-error': errors.has('last_name') }">
-							<label for="last_name">Last Name:</label>
-							<input type="text" name="last_name" id="last_name" v-model="user.last_name" v-validate="'required|min:2|alpha'" class="form-control" placeholder="Last Name">
-							<em v-bind:class="{ 'show': errors.has('last_name') }">{{ errors.first('last_name') }}</em>
+						<div class="form-group" v-bind:class="{ 'has-error': errors.has('lastname') }">
+							<label for="lastname">Last Name:</label>
+							<input type="text" name="lastname" id="lastname" v-model="user.lastname" v-validate="'required|min:2|alpha'" class="form-control" placeholder="Last Name">
+							<em v-bind:class="{ 'show': errors.has('lastname') }">{{ errors.first('lastname') }}</em>
 						</div>
-						<div class="form-group" v-bind:class="{ 'has-error': errors.has('subject_name') }">
-							<label for="subject_name">UserName:</label>
-							<input type="text" name="subject_name" id="subject_name" v-model="user.subject_name" v-validate="{required: true, regex: /^[0-9A-Z_@.-]*$/i, min: 3}" class="form-control" placeholder="subject_name">
-							<em v-bind:class="{ 'show': errors.has('subject_name') }">{{ errors.first('subject_name') }}</em>
+						<div class="form-group" v-bind:class="{ 'has-error': errors.has('subjectname') }">
+							<label for="subjectname">UserName:</label>
+							<input type="text" name="subjectname" id="subjectname" v-model="user.subjectname" v-validate="{required: true, regex: /^[0-9A-Z_@.-]*$/i, min: 3}" class="form-control" placeholder="subjectname">
+							<em v-bind:class="{ 'show': errors.has('subjectname') }">{{ errors.first('subjectname') }}</em>
 						</div>
-						<div class="form-group" v-bind:class="{ 'has-error': errors.has('display_name') }">
-							<label for="display_name">Display Name:</label>
-							<input type="text" name="display_name" id="display_name" v-model="user.display_name" v-validate="{required: true, alpha_spaces: true, min: 3, max: 30}" class="form-control" placeholder="display_name">
-							<em v-bind:class="{ 'show': errors.has('display_name') }">{{ errors.first('display_name') }}</em>
+						<div class="form-group" v-bind:class="{ 'has-error': errors.has('displayname') }">
+							<label for="displayname">Display Name:</label>
+							<input type="text" name="displayname" id="displayname" v-model="user.displayname" v-validate="{required: true, alpha_spaces: true, min: 3, max: 30}" class="form-control" placeholder="displayname">
+							<em v-bind:class="{ 'show': errors.has('displayname') }">{{ errors.first('displayname') }}</em>
 						</div>
 						<div class="form-group" v-bind:class="{ 'has-error': errors.has('email') }">
 							<label for="email">Email:</label>
@@ -198,7 +198,7 @@
 						</div>
 						<div class="form-group v-select-color-pink">
 							<h6>Add User to Group:</h6>
-							<v-select label="group_name" multiple :filterable="false" :options="groupOptions" @search="getGroupOptions" v-model="user.groups">
+							<v-select label="groupname" multiple :filterable="false" :options="groupOptions" @search="getGroupOptions" v-model="user.groups">
 								<span slot="no-options"></span>
 							</v-select>
 						</div>

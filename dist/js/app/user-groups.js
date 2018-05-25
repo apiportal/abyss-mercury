@@ -9,7 +9,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 			return {
 				isLoading: true,
 				sort: {
-					key: 'group_name',
+					key: 'groupname',
 					type: String,
 					order: 'asc'
 				},
@@ -35,12 +35,12 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 					"created": null,
 					"updated": null,
 					"deleted": null,
-					"is_deleted": 0,
-					"is_enabled": 1,
-					"group_name": null,
+					"isdeleted": 0,
+					"isenabled": 1,
+					"groupname": null,
 					"description": null,
-					"effective_start_date": null,
-					"effective_end_date": null,
+					"effectivestartdate": null,
+					"effectiveenddate": null,
 
 					"userCount": 0,
 					"permissions": [],
@@ -176,8 +176,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 						if (act == 'add') {
 							this.group.created = moment().toISOString();
 							var postItem = _.cloneDeep(this.group);
-							postItem.effective_start_date = moment(this.group.effective_start_date).toISOString();
-							postItem.effective_end_date = moment(this.group.effective_end_date).toISOString();
+							postItem.effectivestartdate = moment(this.group.effectivestartdate).toISOString();
+							postItem.effectiveenddate = moment(this.group.effectiveenddate).toISOString();
 							this.addItem(this.ajaxUrl, postItem, this.ajaxHeaders, this.groupList).then(response => {
 								// console.log("this.group: ", JSON.stringify(postItem, null, '\t') );
 								this.$emit('set-state', 'init');
@@ -187,8 +187,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 						if (act == 'edit') {
 							this.group.updated = moment().toISOString();
 							var postItem = _.cloneDeep(this.group);
-							postItem.effective_start_date = moment(this.group.effective_start_date).toISOString();
-							postItem.effective_end_date = moment(this.group.effective_end_date).toISOString();
+							postItem.effectivestartdate = moment(this.group.effectivestartdate).toISOString();
+							postItem.effectiveenddate = moment(this.group.effectiveenddate).toISOString();
 							console.log("postItem: ", postItem);
 							this.updateItem(this.ajaxUrl, postItem, this.ajaxHeaders, this.groupList).then(response => {
 								console.log("response: ", response);

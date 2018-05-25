@@ -57,8 +57,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					},
 					"externalDocs": {},
 					"x-abyss-platform": {
-						"apistateid": null,
-						"apivisibilityid": null,
+						"apistateid": 1,
+						"apivisibilityid": 2,
 						"businessapiid": null,
 						"changelog": null,
 						"color": null,

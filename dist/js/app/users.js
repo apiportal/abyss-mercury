@@ -8,7 +8,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 			return {
 				isLoading: true,
 				sort: {
-					key: 'first_name',
+					key: 'firstname',
 					type: String,
 					order: 'asc'
 				},
@@ -18,7 +18,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 				ajaxHeaders: {},
 				selected: null,
 				resetPassword: false,
-				user: {
+				userOld: {
 					// "id": null,
 					// "uuid": null,
 					// "organization_id": null,
@@ -53,6 +53,37 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 					"permissions": [],
 					"directory": "Internal Directory",
 					"notify": true
+				},
+				user: {
+					"uuid": null,
+					"organizationid": null,
+					"created": null,
+					"updated": null,
+					"deleted": null,
+					"isdeleted": false,
+					"crudsubjectid": null,
+					"isactivated": false,
+					"subjecttypeid": null,
+					"subjectname": null,
+					"firstname": null,
+					"lastname": null,
+					"displayname": null,
+					"email": null,
+					"secondaryemail": null,
+					"effectivestartdate": null,
+					"effectiveenddate": null,
+					"picture": null,
+					"totallogincount": null,
+					"failedlogincount": null,
+					"invalidpasswordattemptcount": null,
+					"ispasswordchangerequired": true,
+					"passwordexpiresat": null,
+					"lastloginat": null,
+					"lastpasswordchangeat": null,
+					"lastauthenticatedat": null,
+					"lastfailedloginat": null,
+					"groups": null,
+					"permissions": null
 				},
 				selectedUser: {},
 				newUser: {},
@@ -145,16 +176,16 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 					value.groups =  [
 						{
 							"uuid": "dbcadc32-c16c-4c95-b6f3-bcc6d26b7744",
-							"group_name": "admin"
+							"groupname": "admin"
 						}, {
 							"uuid": "0f6f8ebd-8e4e-4cd6-a03d-16b07a1d93db",
-							"group_name": "developer"
+							"groupname": "developer"
 						}
 					],
-					value.total_login_count = 5;
-					value.last_login_at = "2018-04-12T14:48:00.000Z";
-					value.failed_login_count = 1;
-					value.last_failed_login_at = "2018-04-10T11:15:00.000Z";
+					value.totallogincount = 5;
+					value.lastloginat = "2018-04-12T14:48:00.000Z";
+					value.failedlogincount = 1;
+					value.lastfailedloginat = "2018-04-10T11:15:00.000Z";
 					value.directory = "Internal Directory";
 				});
 			},
@@ -218,12 +249,12 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 			},
 		},
 		watch: {
-			newUser: {
-				handler(val, oldVal) {
-					console.log('Item Changed', oldVal.permissions, '----', val.permissions.length)
-				},
-				deep: true
-			}
+			// newUser: {
+			// 	handler(val, oldVal) {
+			// 		console.log('Item Changed', oldVal.permissions, '----', val.permissions.length)
+			// 	},
+			// 	deep: true
+			// }
 		},
 		mounted() {
 			this.preload();

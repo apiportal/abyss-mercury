@@ -1,0 +1,642 @@
+﻿<!DOCTYPE html>
+<html class=" vs-my-apis" lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:include="webroot/frags/layout/head.htm :: header">
+<script src="/dist/js/lib/jquery.min.js"></script>
+<script src="/dist/js/lib/thymus.min.js" id="thymus"
+	data-thx-base-path="." data-thx-frag-extension=".htm"
+	data-thx-head-frag="th:include=webroot/frags/layout/head.htm :: header"
+	data-thx-preload-js="/dist/js/loader.js"
+	data-thx-onfrags="fragsListener();" data-thx-onfrag="fragListener()"></script>
+</head>
+<body>
+<div id="portal" class="wrapper" v-bind:class="pageClass">
+	<div th:replace="webroot/frags/layout/navs.htm :: navs"></div>
+	<main class="page-wrapper">
+	<my-apis inline-template ref="refMyApis" v-on:set-state="setState" v-on:set-page="setPage" v-bind:root-state="rootState" v-on:set-child-state="setChildState" v-bind:child-state="childState" v-on:get-root-data="getRootData" v-bind:root-data="rootData">
+		<div class="columns">
+			<aside class="column column-aside list-column">
+				<div class="nicescroll-bar">
+					<div class="clearfix column-header column-min-button">
+						<div class="dropdown column-header-button">
+							<button type="button" class="dropdown-toggle btn btn-lg btn-link txt-link btn-square" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
+							<ul class="dropdown-menu dropdown-menu-right" role="menu">
+								<li><a href="#" v-on:click="sortList(sortApi, 'info.title', String)"><i class="fas fa-sort"></i>Sort by Name</a></li>
+								<li><a href="#" v-on:click="sortList(sortApi, 'x-abyss-platform.created', Date);"><i class="fas fa-calendar-alt"></i>Sort by Date</a></li>
+								<li><a href="#" v-on:click="sortList(sortApi, 'x-abyss-platform.proxies_summary', Array)"><i class="fas fa-code-branch"></i>Sort by Proxies</a></li>
+							</ul>
+						</div>
+						<h5 class="column-header-title">My APIs <small>All</small></h5>
+					</div>
+					<v-select label="info.title" :filterable="false" :options="apiOptions" @search="getApiOptions" :on-change="filterApi" placeholder="Search API">
+						<span slot="no-options"></span>
+						<template slot="option" slot-scope="option">
+							<div>{{ option.info.title }}</div>
+						</template>
+						<template slot="selected-option" slot-scope="option">
+							<div>{{ option.info.title }}</div>
+						</template>
+					</v-select>
+					<ul class="nav flex-column nav-controls nav-controls-first">
+						<li v-for="(api, index) in sortByNested(sortApi, myApiList)" v-bind:key="api['x-abyss-platform'].uuid">
+							<div class="nav-actions dropdown dropdown-hover">
+								<button type="button"><i class="fas fa-ellipsis-h"></i></button>
+								<ul class="dropdown-menu dropdown-menu-right" role="menu" data-dropdown-in="slideInRight" data-dropdown-out="slideOutRight">
+									<li><a href="#" v-on:click="selectApi(api, 'edit')"><i class="fas fa-edit"></i>Edit</a></li>
+									<li><a href="#"><i class="fas fa-code-branch"></i>Create Proxy</a></li>
+									<li><a href="#" v-on:click="selectApi(api, 'preview')"><i class="fas fa-file-alt"></i>Preview</a></li>
+									<li class="dropdown-header">VISIBILITY</li>
+									<li role="separator" class="divider"></li>
+									<li v-bind:class="{'active': api['x-abyss-platform'].apivisibilityid == 1}" ><a href="#" v-on:click="apiChangeVisibility(api, 1)"><i class="fas fa-eye"></i>Public</a></li>
+									<li v-bind:class="{'active': api['x-abyss-platform'].apivisibilityid == 2}" ><a href="#" v-on:click="apiChangeVisibility(api, 2)"><i class="fas fa-user-secret"></i>Private</a></li>
+									<li v-bind:class="{'active': api['x-abyss-platform'].apivisibilityid == 3}" ><a href="#" v-on:click="apiChangeVisibility(api, 3)"><i class="fas fa-user"></i>Only registered users</a></li>
+									<li class="dropdown-header">CHANGE STATE</li>
+									<li role="separator" class="divider"></li>
+									<li v-bind:class="{'active': api['x-abyss-platform'].apistateid == 2}"><a href="#" v-on:click="apiChangeState(api, 2)"><i class="fas fa-circle stat-2"></i>Draft</a></li>
+									<li v-bind:class="{'active': api['x-abyss-platform'].apistateid == 3}"><a href="#" v-on:click="apiChangeState(api, 3)"><i class="fas fa-circle stat-3"></i>Stage</a></li>
+									<li v-bind:class="{'active': api['x-abyss-platform'].apistateid == 4}"><a href="#" v-on:click="apiChangeState(api, 4)"><i class="fas fa-circle stat-4"></i>Publish</a></li>
+									<li v-bind:class="{'active': api['x-abyss-platform'].apistateid == 5}"><a href="#" v-on:click="apiChangeState(api, 5)"><i class="fas fa-circle stat-5"></i>Promote</a></li>
+									<li v-bind:class="{'active': api['x-abyss-platform'].apistateid == 6}"><a href="#" v-on:click="apiChangeState(api, 6)"><i class="fas fa-circle stat-6"></i>Demote</a></li>
+									<li v-bind:class="{'active': api['x-abyss-platform'].apistateid == 8}"><a href="#" v-on:click="apiChangeState(api, 8)"><i class="fas fa-circle stat-8"></i>Retire</a></li>
+									<li v-bind:class="{'active': api['x-abyss-platform'].apistateid == 10}"><a href="#" v-on:click="apiChangeState(api, 10)"><i class="fas fa-trash-alt"></i>Delete</a></li>
+								</ul>
+							</div>
+							<a href="#" data-toggle="collapse" v-bind:data-target="'#api'+api['x-abyss-platform'].uuid" v-bind:aria-controls="'api'+api['x-abyss-platform'].uuid" v-bind:class="{'active': isSelectedApi(api['x-abyss-platform'].uuid)}">
+								<div class="">
+									<i v-bind:title="apiGetStateName(api['x-abyss-platform'].apistateid)" class="fas fa-circle" v-bind:class="'stat-' + api['x-abyss-platform'].apistateid"></i>
+									<strong>{{api.info.title}}</strong> <small class="text-muted">{{api.info.version}}</small>
+								</div>
+								<small>Proxies: <strong>{{api['x-abyss-platform'].proxies_summary.length}}</strong></small>
+								<small class="text-muted float-right">{{api['x-abyss-platform'].created | formatDate}}</small>
+							</a>
+							<ul v-bind:id="'api'+api['x-abyss-platform'].uuid" class="collapse">
+								<li>
+									<div class="px-3 txt-dark border-top">
+										<div class="small pt-2">
+											<p><strong class="d-block text-uppercase">Base URL</strong> <span class="d-block text-truncate" v-bind:title="api.servers[0].url">{{api.servers[0].url}}</span></p>
+											<div class="fow form-row">
+												<p class="fol-6"><strong class="d-block text-uppercase">Visibility</strong><span class="text-capitalize">{{apiGetVisibilityName(api['x-abyss-platform'].apivisibilityid)}}</span></p>
+												<p class="fol-6"><strong class="d-block text-uppercase">State</strong><span class="text-capitalize">{{apiGetStateName(api['x-abyss-platform'].apistateid)}}</span></p>
+											</div>
+											<div class="fow form-row">
+												<p class="fol-6"><strong class="d-block text-uppercase">Authentication</strong>{{apiGetAuthentications(api)}}</p>
+												<p class="fol-6"><strong class="d-block text-uppercase">Authorization</strong>{{api.authorizationList}}</p>
+											</div>
+											<p><strong class="d-block text-uppercase">Categories</strong>{{api['x-abyss-platform'].categoryList}}</p>
+											<p><strong class="d-block text-uppercase">Tags</strong>{{api['x-abyss-platform'].tagList}}</p>
+											<p><strong class="d-block text-uppercase">Groups</strong>{{api['x-abyss-platform'].groupList}}</p>
+											<p><small class="d-block">{{api.info.description}}</small></p>
+										</div>
+										<ul class="row nav flex-column nav-controls mt-2">
+											<li class="nav-link small">
+												<strong class="d-block text-uppercase">PROXIES</strong>
+											</li>
+											<li class="nav-link" v-for="(proxy, index) in api['x-abyss-platform'].proxies_summary">
+												<div class="nav-actions dropdown dropdown-hover">
+													<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
+													<ul class="dropdown-menu dropdown-menu-right" role="menu" data-dropdown-in="slideInRight" data-dropdown-out="slideOutRight">
+														<li><a href="#" v-on:click="$emit('set-state', 'edit')"><i class="fas fa-edit"></i>Edit</a></li>
+														<li><a href="#"><i class="fas fa-trash-alt"></i>Delete</a></li>
+														<li><a href="#"><i class="fas fa-file-alt"></i>Preview</a></li>
+													</ul>
+												</div>
+												{{proxy.name}}
+											</li>
+										</ul>
+									</div>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</aside>
+			<aside class="column column-aside create-column">
+				<div class="nicescroll-bar">
+					<div class="clearfix border-bottom column-header column-min-button">
+						<h5 class="column-header-title">Basic Information</h5>
+					</div>
+					<div class="p-3">
+						<div class="form-group" v-bind:class="{'input': true, 'has-error': errors.has('apiName') }">
+							<label for="apiName">API Name:</label>
+							<input type="text" name="apiName" id="apiName" v-model="api.info.title" v-validate="'required'" class="form-control" placeholder="Enter your API name">
+							<em v-bind:class="{ 'show': errors.has('apiName') }">{{ errors.first('apiName') }}</em>
+						</div>
+						<div class="form-group">
+							<label for="baseUrl">Base Url:</label>
+							<input type="text" name="baseUrl" id="baseUrl" v-model="api.servers[0].url" class="form-control" placeholder="Enter API's Base Url">
+						</div>
+						<div class="form-group">
+							<label for="description">Description:</label>
+							<textarea type="text" name="description" id="description" v-model="api.info.description" class="form-control textarea_editor" placeholder="Enter API's Description"></textarea>
+						</div>
+						<div class="form-group">
+							<label for="qosPolicy">Max Call Capacity (QoS Policy) ???:</label>
+							<input type="text" name="qosPolicy" id="qosPolicy" v-model="api['x-abyss-platform'].qosPolicy" class="form-control" placeholder="Max Call Capacity (QoS Policy)">
+						</div>
+						<div id="specsFrom" v-show="rootState == 'create' && api['x-abyss-platform'].specs != 'scratch'">
+							<div class="form-group">
+								<span class="radio radio-primary d-inline-block mr-3">
+									<input type="radio" name="specsUpload" id="specsUrl" class="js-switchclass" data-all=".specs-uploads" data-target="#specsFromUrl" data-class="show" checked>
+									<label for="specsUrl">From URL</label>
+								</span>
+								<span class="radio radio-primary d-inline-block">
+									<input type="radio" name="specsUpload" id="specsFile" class="js-switchclass" data-all=".specs-uploads" data-target="#specsFromFile" data-class="show">
+									<label for="specsFile">From File</label>
+								</span>
+							</div>
+							<div id="specsFromUrl" class="specs-uploads hide show">
+								<div class="form-group">
+									<label for="specsFileUrl">URL:</label>
+									<input type="text" name="specsFileUrl" id="specsFileUrl" class="form-control" placeholder="">
+								</div>
+							</div>
+							<div id="specsFromFile" class="specs-uploads hide dz-single">
+								<div class="form-group">
+									<vue-dropzone ref="dropSpecs" id="dropSpecs" :options="dropSpecsOptions" v-on:vdropzone-success="dropSpecsSuccess" v-on:vdropzone-removed-file="dropSpecsRemoved"></vue-dropzone>
+								</div>
+							</div>
+						</div>
+						<div class="row form-group create-item"><a href="#" data-target=".api-edit-advanced" data-class="edit-item" class="text-link nav-link d-block brd-b js-toggleclass">Advanced</a></div>
+						<div class="api-edit-advanced edit-item">
+							<div class="form-group dz-single">
+								<label for="group">Add Picture:</label>
+								<vue-dropzone ref="dropImage" id="dropImage" :options="dropImageOptions" v-on:vdropzone-success="dropImageSuccess"></vue-dropzone>
+							</div>
+							<div class="form-group v-select-color-green v-select-inline">
+								<label for="categories">Add to Categories:</label>
+								<v-select label="name" multiple :filterable="true" :options="categoryOptions" @search="getCategoryOptions" v-model="api['x-abyss-platform'].categories" :on-change="categoriesToList"></v-select>
+							</div>
+							<div class="form-group v-select-color-purple v-select-inline">
+								<label for="tags">Add Tags:</label>
+								<v-select label="name" multiple taggable :filterable="false" :options="tagOptions" @search="getTagOptions" v-model="api['x-abyss-platform'].tags" :on-change="tagsToList"></v-select>
+							</div>
+							<div class="form-group v-select-color-pink v-select-inline">
+								<label for="group">Add Group:</label>
+								<v-select label="name" multiple :filterable="false" :options="rootData.myApiGroupList"  v-model="api['x-abyss-platform'].groups" ref="refApiGroups" :on-change="groupsToList"></v-select>
+							</div>
+						</div>
+						<div class="form-group clearfix text-center create-item">
+							<button type="button" class="btn btn-hover btn-rounded float-sm-right" v-on:click="createApi()">CREATE API</button>
+							<button type="button" class="btn btn-secondary btn-rounded float-sm-left" v-on:click="cancelApi()">CANCEL</button>
+						</div>
+					</div>
+				</div>
+			</aside>
+			<aside class="column column-aside edit-column authentication-column">
+				<div class="nicescroll-bar">
+					<div class="clearfix column-header column-min-button">
+						<h5 class="column-header-title">Authentication</h5>
+					</div>
+					<!-- <ul class="nav flex-column nav-controls mb-3">
+						<li class="collapse-check" v-for="(securityVal, securityKey) in api.components.securitySchemes">
+							<h6>{{securityKey}}</h6>
+							<p class="xxx" v-for="(authenVal, authenKey) in securityVal">{{authenKey}}: {{authenVal}}</p>
+					</ul> -->
+					<ul class="nav flex-column nav-controls mb-3">
+						<li class="collapse-check" v-for="(authen, index) in api.authentication" v-bind:class="{'disabled': authen.disabled}">
+							<div class="switch switch-primary ml-auto">
+								<input type="checkbox" name="authentication" v-bind:id="'authentication'+authen.type" v-model="authen.enabled" v-on:change="checkAuthentication(authen, index)" class="js-collapse-check" v-bind:disabled="authen.disabled"> <label v-bind:for="'authentication'+authen.type"></label>
+							</div>
+							<a href="#" class="nav-link fol" v-bind:data-toggle="(authen.disabled !== true) ? 'collapse' : ''" v-bind:data-target="'#authentication'+authen.type+'Box'" v-bind:aria-controls="'authentication'+authen.type+'Box'">
+								<span v-if="authen.type == 'noAuth'"><i class="fas fa-unlock"></i></span>
+								<span v-if="authen.type == 'basic'"><i class="fas fa-lock"></i></span>
+								<span v-if="authen.type == 'apiKey'"><i class="fas fa-key"></i></span>
+								<span v-if="authen.type == 'oAuth'">A</span> 
+								<span v-if="authen.type == 'ldap'">L</span> 
+								<span v-if="authen.type == 'saml'">S</span> 
+								{{authen.name}}</a>
+							<ul v-bind:id="'authentication'+authen.type+'Box'" class="collapse">
+								<li class="clearfix" v-if="authen.type == 'noAuth'"></li>
+								<li class="clearfix px-3 pt-3" v-if="authen.type == 'basic'">
+									<div class="form-group">
+										<label for="authenticationBasicUsername">Username:</label>
+										<input type="text" name="authenticationBasicUsername" id="authenticationBasicUsername" v-model="authen.fields.username" class="form-control" placeholder="">
+									</div>
+									<div class="form-group">
+										<label for="authenticationBasicPassword">Password:</label>
+										<input type="password" name="authenticationBasicPassword" id="authenticationBasicPassword" v-model="authen.fields.password" class="form-control" placeholder="">
+									</div>
+								</li>
+								<li class="clearfix px-3 pt-3" v-if="authen.type == 'apiKey'">
+									<div class="form-group">
+										<span class="radio radio-primary d-inline-block mr-3">
+											<input type="radio" name="authenticationApiKeyChoice" id="authenticationApiKeyVerapi" v-model="authen.fields.provider" value="Verapi Key" checked>
+											<label for="authenticationApiKeyVerapi">Verapi Key</label>
+										</span>
+										<span class="radio radio-primary d-inline-block">
+											<input type="radio" name="authenticationApiKeyChoice" id="authenticationApiKeyMy"  v-model="authen.fields.provider" value="My API Key">
+											<label for="authenticationApiKeyMy">My API Key</label>
+										</span>
+									</div>
+									<div v-show="authen.fields.provider == 'Verapi Key'">
+										<div class="form-group">
+											<label for="authenticationApiKeyVerapiType">API Key Type:</label>
+											<input type="text" name="authenticationApiKeyVerapiType" id="authenticationApiKeyVerapiType" class="form-control" value="string" v-model="authen.fields.verapiName" disabled>
+										</div>
+										<div class="form-group">
+											<label for="authenticationApiKeyVerapiName">API Key Name:</label>
+											<input type="text" name="authenticationApiKeyVerapiName" id="authenticationApiKeyVerapiName" class="form-control" value=" verapiKey" v-model="authen.fields.verapiType" disabled>
+										</div>
+									</div>
+									<div v-show="authen.fields.provider == 'My API Key'">
+										<div class="form-group">
+											<label for="authenticationApiKeyMyType">API Key Type:</label>
+											<select name="authenticationApiKeyMyType" id="authenticationApiKeyMyType" v-model="authen.fields.type" class="form-control">
+												<option value="Parameter">Parameter</option>
+												<option value="Header">Header</option>
+											</select>
+										</div>
+										<div class="form-group">
+											<label for="authenticationApiKeyMyName">API Key Name:</label>
+											<input type="text" name="authenticationApiKeyMyName" id="authenticationApiKeyMyName" v-model="authen.fields.name" class="form-control">
+										</div>
+										<div class="form-group">
+											<label for="authenticationApiKeyMyDemo">Demo API Key:</label>
+											<input type="text" name="authenticationApiKeyMyDemo" id="authenticationApiKeyMyDemo" v-model="authen.fields.demo" class="form-control">
+										</div>
+									</div>
+								</li>
+								<li class="clearfix px-3 pt-3" v-if="authen.type == 'oAuth'">
+									<div class="form-group">
+										<span class="radio radio-primary mb-3">
+									<input type="radio" name="authenticationOautChoice" id="authenticationOautPass" class="js-switchclass" data-all=".auth-oauth-choices" data-target="#authenticationOautPassBox" data-class="show" v-model="authen.fields.type" value="Access Token Pass Through" checked>
+											<label for="authenticationOautPass">Access Token Pass Through</label>
+										</span>
+										<span class="radio radio-primary mb-3">
+									<input type="radio" name="authenticationOautChoice" id="authenticationOautOwner" class="js-switchclass" data-all=".auth-oauth-choices" data-target="#authenticationOautOwnerBox" data-class="show" v-model="authen.fields.type" value="Access Token Provided by Resource Owner">
+											<label for="authenticationOautOwner">Access Token Provided by Resource Owner</label>
+										</span>
+										<span class="radio radio-primary mb-3">
+									<input type="radio" name="authenticationOautChoice" id="authenticationOautClient" class="js-switchclass" data-all=".auth-oauth-choices" data-target="#authenticationOautClientBox" data-class="show" v-model="authen.fields.type" value="Client Credentials">
+											<label for="authenticationOautClient">Client Credentials</label>
+										</span>
+									</div>
+									<div id="authenticationOautPassBox" class="auth-oauth-choices hide show">
+										<div class="form-group">
+											<label for="authenticationOautPassTokenName">Token Name:</label>
+											<input type="text" name="authenticationOautPassTokenName" id="authenticationOautPassTokenName" v-model="authen.fields.passTokenName" class="form-control">
+										</div>
+									</div>
+									<div id="authenticationOautOwnerBox" class="auth-oauth-choices hide">
+										<div class="form-group">
+											<label for="authenticationOautOwnerTokenName">Token Name:</label>
+											<input type="text" name="authenticationOautOwnerTokenName" id="authenticationOautOwnerTokenName" v-model="authen.fields.ownerTokenName" class="form-control">
+										</div>
+										<div class="form-group">
+											<label for="authenticationOautOwnerAccessToken">Access Token:</label>
+											<input type="text" name="authenticationOautOwnerAccessToken" id="authenticationOautOwnerAccessToken" v-model="authen.fields.ownerAccessToken" class="form-control">
+										</div>
+									</div>
+									<div id="authenticationOautClientBox" class="auth-oauth-choices hide">
+										<div class="form-group">
+											<label for="authenticationOautClientChoice">Client:</label>
+											<select name="authenticationOautClientChoice" id="authenticationOautClientChoice" v-model="authen.fields.clientChoice" class="form-control">
+												<option value="20">VERAPI OAuth</option>
+												<option value="22">FACEBOOK OAuth</option>
+												<option value="25">GOOGLE OAuth</option>
+											</select>
+										</div>
+										<div class="form-group">
+											<label for="authenticationOautClientId">Client Identification:</label>
+											<input type="text" name="authenticationOautClientId" id="authenticationOautClientId" v-model="authen.fields.clientId" class="form-control">
+										</div>
+										<div class="form-group">
+											<label for="authenticationOautClientSecret">Client Secret:</label>
+											<input type="text" name="authenticationOautClientSecret" id="authenticationOautClientSecret" v-model="authen.fields.clientSecret" class="form-control">
+										</div>
+									</div>
+								</li>
+								<li class="clearfix px-3 pt-3" v-if="authen.type == 'ldap'">
+									<div class="form-group">
+										LDAP: TO DO
+									</div>
+								</li>
+								<li class="clearfix px-3 pt-3" v-if="authen.type == 'saml'">
+									<div class="form-group">
+										SAML: TO DO
+									</div>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</aside>
+			<aside class="column column-aside edit-column authorization-column">
+				<div class="nicescroll-bar">
+					<div class="clearfix column-header column-min-button">
+						<h5 class="column-header-title">Authorization</h5>
+					</div>
+					<ul class="nav flex-column nav-controls mb-3">
+						<li class="collapse-check" v-for="(author, index) in api.authorization">
+							<div class="switch switch-primary ml-auto">
+								<input type="checkbox" name="authorization" v-bind:id="'authorization'+author.type" v-model="author.enabled" v-on:change="checkAuthorization(author, index)" class="js-collapse-check"> <label v-bind:for="'authorization'+author.type"></label>
+							</div>
+							<a href="#" class="nav-link fol" data-toggle="collapse" v-bind:data-target="'#authorization'+author.type+'Box'" v-bind:aria-controls="'authorization'+author.type+'Box'">
+								<span>
+									<i class="fas fa-unlock" v-if="author.type == 'noAuthz'"></i>
+									<i class="fas fa-key" v-if="author.type == 'apiKey'"></i>
+								</span> 
+							{{author.name}}</a>
+							<ul v-bind:id="'authorization'+author.type+'Box'" class="collapse">
+								<li class="clearfix" v-if="author.type == 'noAuthz'"></li>
+								<li class="clearfix px-3 pt-3" v-if="author.type == 'apiKey'">
+									<div class="form-group">
+										<label for="authorizationApiKeyMyType">API Key Type:</label>
+										<select name="authorizationApiKeyMyType" id="authorizationApiKeyMyType" v-model="author.fields.type" class="form-control">
+											<option value="Parameter">Parameter</option>
+											<option value="Header">Header</option>
+										</select>
+									</div>
+									<div class="form-group">
+										<label for="authorizationApiKeyMyName">API Key Name:</label>
+										<input type="text" name="authorizationApiKeyMyName" id="authorizationApiKeyMyName" v-model="author.fields.name" class="form-control">
+									</div>
+									<div class="form-group">
+										<label for="authorizationApiKeyMyDemo">Demo API Key:</label>
+										<input type="text" name="authorizationApiKeyMyDemo" id="authorizationApiKeyMyDemo" v-model="author.fields.demo" class="form-control">
+									</div>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</aside>
+			<aside class="column column-aside edit-column methods-column">
+				<div class="nicescroll-bar">
+					<div class="clearfix column-header column-min-button">
+						<a href="#" class="btn btn-lg btn-link txt-link btn-square column-header-button" title="ADD METHOD" v-on:click="clickAddMethod();"><i class="fas fa-lg fa-plus"></i></a>
+						<h5 class="column-header-title">Methods</h5>
+					</div>
+					<ul class="nav flex-column nav-controls">
+						<li v-for="(method, mindex) in sortBy(sortMethod, api.methods)" v-bind:class="methodBadge(method.verb, 'nav')">
+							<div class="nav-actions dropdown">
+								<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
+								<ul class="dropdown-menu dropdown-menu-right" role="menu">
+									<li><a href="#" v-on:click="clickSelectMethod(method);"><i class="fas fa-edit"></i>Edit</a></li>
+									<li><a href="#" v-on:click="clickAddParameter(method);"><i>P</i> Add Parameter</a></li>
+									<li><a href="#" v-on:click="clickAddHeader(method);"><i>H</i> Add Header</a></li>
+									<li><a href="#" v-on:click="deleteMethod(method)"><i class="fas fa-trash-alt"></i>Delete</a></li>
+								</ul>
+							</div>
+							<a href="#" v-bind:data-toggle="(isEditingMethods !== true) ? 'collapse' : ''" v-bind:data-target="'#method'+method.uuid" v-bind:aria-controls="'method'+method.uuid" v-bind:class="{'active': isSelectedMethod(method.uuid)}">
+								<span class="badge badge-method">{{method.verb}}</span>
+								<strong>{{method.resourcePath}}</strong>
+								<small class="d-block my-1" v-bind:title="method.description">{{method.summary}}</small>
+								<div class="fow form-row">
+									<div class="fol-5"><span class="text-muted small d-block">Operation Id</span> {{method.operationId}}</div>
+									<div class="fol text-right"><span class="text-muted small d-block">Parameters</span> {{method.parameters.length}}</div>
+									<div class="fol text-right"><span class="text-muted small d-block">Headers</span> {{method.headers.length}}</div>
+								</div>
+							</a>
+							<ul v-bind:id="'method'+method.uuid" class="collapse">
+								<li>
+									<div class="pb-2 px-3 small">{{method.description}}</div>
+									<ul class="nav flex-column nav-controls txt-dark">
+										<li class="py-2 px-3">
+											<div class="nav-actions d-block">
+												<button type="button" class="pb-0" v-on:click="clickAddParameter(method);"><i class="fas fa-plus"></i></button>
+											</div>
+											<strong class="nav-action-header text-uppercase small">Parameters</strong>
+										</li>
+										<li class="nav-link" v-for="(param, index) in method.parameters" v-bind:class="{'active': isSelectedParameter(method.uuid, param.uuid)}">
+											<div class="nav-actions dropdown">
+												<button type="button" data-toggle="dropdown" aria-expanded="false" class="dropdown-toggle"><i class="fas fa-ellipsis-h"></i></button>
+												<ul role="menu" class="dropdown-menu dropdown-menu-right">
+													<li><a href="#" v-on:click="clickSelectParameter(method, param);"><i class="fas fa-edit"></i>Edit</a></li>
+													<li><a href="#" v-on:click="deleteParameter(method, param)"><i class="fas fa-trash-alt"></i>Delete</a></li>
+												</ul>
+											</div>
+											{{param.name}}
+											<small class="d-block text-muted">{{param.description}}</small>
+											<div class="fow form-row small mt-1">
+												<div class="fol-6 d-flex"><span class="text-muted">Data Type: </span><span class="ml-auto">{{param.dataType}}</span></div>
+												<div class="fol-6 d-flex"><span class="text-muted">Required: </span><span class="ml-auto">{{param.required}}</span></div>
+												<div class="fol-6 d-flex"><span class="text-muted">Min Length: </span><span class="ml-auto">{{param.minLength}}</span></div>
+												<div class="fol-6 d-flex"><span class="text-muted">Max Length: </span><span class="ml-auto">{{param.maxLength}}</span></div>
+												<div class="fol-6 d-flex"><span class="text-muted">Pattern: </span><span class="ml-auto">{{param.pattern}}</span></div>
+												<div class="fol-6 d-flex"><span class="text-muted">Default Value: </span><span class="ml-auto">{{param.defaultValue}}</span></div>
+											</div>
+										</li>
+									</ul>
+									<ul class="nav flex-column nav-controls txt-dark">
+										<li class="py-2 px-3">
+											<div class="nav-actions d-block">
+												<button type="button" class="pb-0" v-on:click="clickAddHeader(method);"><i class="fas fa-plus"></i></button>
+											</div>
+											<strong class="nav-action-header text-uppercase small">Headers</strong>
+										</li>
+										<li class="nav-link" v-for="(header, index) in method.headers" v-bind:class="{'active': isSelectedHeader(method.uuid, header.uuid)}">
+											<div class="nav-actions dropdown">
+												<button type="button" data-toggle="dropdown" aria-expanded="false" class="dropdown-toggle"><i class="fas fa-ellipsis-h"></i></button>
+												<ul role="menu" class="dropdown-menu dropdown-menu-right">
+													<li><a href="#" v-on:click="clickSelectHeader(method, header);"><i class="fas fa-edit"></i>Edit</a></li>
+													<li><a href="#" v-on:click="deleteHeader(method, header)"><i class="fas fa-trash-alt"></i>Delete</a></li>
+												</ul>
+											</div>
+											{{header.name}}
+											<small class="d-block text-muted">{{header.description}}</small>
+											<div class="fow form-row small mt-1">
+												<div class="fol-6 d-flex"><span class="text-muted">Data Type: </span><span class="ml-auto">{{header.dataType}}</span></div>
+												<div class="fol-6 d-flex"><span class="text-muted">Required: </span><span class="ml-auto">{{header.required}}</span></div>
+												<div class="fol-6 d-flex"><span class="text-muted">Min Length: </span><span class="ml-auto">{{header.minLength}}</span></div>
+												<div class="fol-6 d-flex"><span class="text-muted">Max Length: </span><span class="ml-auto">{{header.maxLength}}</span></div>
+												<div class="fol-6 d-flex"><span class="text-muted">Pattern: </span><span class="ml-auto">{{header.pattern}}</span></div>
+												<div class="fol-6 d-flex"><span class="text-muted">Default Value: </span><span class="ml-auto">{{header.defaultValue}}</span></div>
+											</div>
+										</li>
+									</ul>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</aside>
+			<aside class="column column-aside method-edit-column">
+				<div class="nicescroll-bar">
+					<div class="clearfix border-bottom column-header column-min-button">
+						<h5 class="column-header-title">
+							<span v-if="childState == 'add-method'">Add New Method</span>
+							<span v-if="childState == 'edit-method'">Edit Method</span>
+							<span v-if="childState == 'add-parameter'">Add New Parameter</span>
+							<span v-if="childState == 'edit-parameter'">Edit Parameter</span>
+							<span v-if="childState == 'add-header'">Add New Header</span>
+							<span v-if="childState == 'edit-header'">Edit Header</span>
+						</h5>
+					</div>
+					<div class="p-3" v-if="childState == 'add-method' || childState == 'edit-method'">
+						<div class="form-group">
+							<label v-bind:for="'methodVerb'">Verb</label>
+							<select v-bind:name="'methodVerb'" v-bind:id="'methodVerb'" v-model="method.verb" class="form-control">
+								<option value="GET">GET</option>
+								<option value="POST">POST</option>
+								<option value="PUT">PUT</option>
+								<option value="DELETE">DELETE</option>
+							</select>
+						</div>
+						<div class="form-group" v-bind:class="{ 'has-error': errors.has('methodResourcePath') }">
+							<label v-bind:for="'methodResourcePath'">Resource Path:</label>
+							<input type="text" v-bind:name="'methodResourcePath'" v-bind:id="'methodResourcePath'" v-model="method.resourcePath" class="form-control" placeholder="" v-validate="'required'">
+						</div>
+						<div class="form-group" v-bind:class="{ 'has-error': errors.has('methodOperationId') }">
+							<label v-bind:for="'methodOperationId'">OperationId:</label>
+							<input type="text" v-bind:name="'methodOperationId'" v-bind:id="'methodOperationId'" v-model="method.operationId" class="form-control" placeholder="" v-validate="'required'">
+						</div>
+						<div class="form-group">
+							<label v-bind:for="'methodSummary'">Summary:</label>
+							<input type="text" v-bind:name="'methodSummary'" v-bind:id="'methodSummary'" v-model="method.summary" class="form-control" placeholder="">
+						</div>
+						<div class="form-group">
+							<label v-bind:for="'methodDescription'">Description:</label>
+							<input type="text" v-bind:name="'methodDescription'" v-bind:id="'methodDescription'" v-model="method.description" class="form-control" placeholder="">
+						</div>
+						<div class="form-group text-center d-flex justify-content-between ">
+							<button type="button" class="btn btn-secondary btn-rounded" v-on:click="cancelMethod">CANCEL</button>
+							<button type="button" class="btn btn-hover btn-rounded" v-if="childState == 'add-method'" v-on:click="addMethod">ADD METHOD</button>
+							<button type="button" class="btn btn-hover btn-rounded" v-if="childState == 'edit-method'" v-on:click="updateMethod">UPDATE</button>
+						</div>
+					</div>
+					<div class="p-3" v-if="childState == 'add-parameter' || childState == 'edit-parameter'">
+						<div class="form-group" v-bind:class="{ 'has-error': errors.has('parameterName') }">
+							<label v-bind:for="'parameterName'">Name:</label>
+							<input type="text" v-bind:name="'parameterName'" v-bind:id="'parameterName'" v-model="parameter.name" class="form-control" placeholder="" v-validate="'required'">
+						</div>
+						<div class="fow form-row">
+							<div class="fol-9 form-group" v-bind:class="{ 'has-error': errors.has('parameterDataType') }">
+								<label v-bind:for="'parameterDataType'">Data Type:</label>
+								<select type="text" v-bind:name="'parameterDataType'" v-bind:id="'parameterDataType'" v-model="parameter.dataType" class="form-control" v-validate="'required'">
+									<option value="String">String</option>
+									<option value="Integer">Integer</option>
+								</select>
+							</div>
+							<div class="fol-3 form-group text-right">
+								<label class="d-block">Required</label>
+								<span class="switch switch-primary ml-auto">
+									<input type="checkbox" v-bind:name="'parameterRequired'" v-bind:id="'parameterRequired'" v-model="parameter.required">
+									<label v-bind:for="'parameterRequired'"></label>
+								</span>
+							</div>
+						</div>
+						<div class="form-group">
+							<label v-bind:for="'parameterDefaultValue'">Default Value:</label>
+							<input type="text" v-bind:name="'parameterDefaultValue'" v-bind:id="'parameterDefaultValue'" v-model="parameter.defaultValue" class="form-control" placeholder="">
+						</div>
+						<div class="form-group">
+							<label v-bind:for="'parameterPattern'">Pattern:</label>
+							<input type="text" v-bind:name="'parameterPattern'" v-bind:id="'parameterPattern'" v-model="parameter.pattern" class="form-control" placeholder="">
+						</div>
+						<div class="fow form-row">
+							<div class="fol-6 form-group">
+								<label v-bind:for="'parameterMinLength'">Min Length:</label>
+								<input type="text" v-bind:name="'parameterMinLength'" v-bind:id="'parameterMinLength'" v-model="parameter.minLength" class="form-control" placeholder="">
+							</div>
+							<div class="fol-6 form-group">
+								<label v-bind:for="'parameterMaxLength'">Max Length:</label>
+								<input type="text" v-bind:name="'parameterMaxLength'" v-bind:id="'parameterMaxLength'" v-model="parameter.maxLength" class="form-control" placeholder="">
+							</div>
+						</div>
+						<div class="form-group">
+							<label v-bind:for="'parameterDescription'">Description:</label>
+							<input type="text" v-bind:name="'parameterDescription'" v-bind:id="'parameterDescription'" v-model="parameter.description" class="form-control" placeholder="">
+						</div>
+						<div class="form-group text-center d-flex justify-content-between">
+							<button type="button" class="btn btn-secondary btn-rounded" v-on:click="cancelParameter()">CANCEL</button>
+							<button type="button" class="btn btn-hover btn-rounded" v-if="childState == 'add-parameter'" v-on:click="addParameter()">ADD</button>
+							<button type="button" class="btn btn-hover btn-rounded" v-if="childState == 'edit-parameter'" v-on:click="updateParameter">UPDATE</button>
+						</div>
+					</div>
+					<div class="p-3" v-if="childState == 'add-header' || childState == 'edit-header'">
+						<div class="form-group" v-bind:class="{ 'has-error': errors.has('headerName') }">
+							<label v-bind:for="'headerName'">Name:</label>
+							<input type="text" v-bind:name="'headerName'" v-bind:id="'headerName'" v-model="header.name" class="form-control" placeholder="" v-validate="'required'">
+						</div>
+						<div class="fow form-row">
+							<div class="fol-9 form-group" v-bind:class="{ 'has-error': errors.has('headerDataType') }">
+								<label v-bind:for="'headerDataType'">Data Type:</label>
+								<select type="text" v-bind:name="'headerDataType'" v-bind:id="'headerDataType'" v-model="header.dataType" class="form-control" v-validate="'required'">
+									<option value="String">String</option>
+									<option value="Integer">Integer</option>
+								</select>
+							</div>
+							<div class="fol-3 form-group text-right">
+								<label class="d-block">Required</label>
+								<span class="switch switch-primary ml-auto">
+									<input type="checkbox" v-bind:name="'headerRequired'" v-bind:id="'headerRequired'" v-model="header.required">
+									<label v-bind:for="'headerRequired'"></label>
+								</span>
+							</div>
+						</div>
+						<div class="form-group">
+							<label v-bind:for="'headerDefaultValue'">Default Value:</label>
+							<input type="text" v-bind:name="'headerDefaultValue'" v-bind:id="'headerDefaultValue'" v-model="header.defaultValue" class="form-control" placeholder="">
+						</div>
+						<div class="form-group">
+							<label v-bind:for="'headerPattern'">Pattern:</label>
+							<input type="text" v-bind:name="'headerPattern'" v-bind:id="'headerPattern'" v-model="header.pattern" class="form-control" placeholder="">
+						</div>
+						<div class="fow form-row">
+							<div class="fol-6 form-group">
+								<label v-bind:for="'headerMinLength'">Min Length:</label>
+								<input type="text" v-bind:name="'headerMinLength'" v-bind:id="'headerMinLength'" v-model="header.minLength" class="form-control" placeholder="">
+							</div>
+							<div class="fol-6 form-group">
+								<label v-bind:for="'headerMaxLength'">Max Length:</label>
+								<input type="text" v-bind:name="'headerMaxLength'" v-bind:id="'headerMaxLength'" v-model="header.maxLength" class="form-control" placeholder="">
+							</div>
+						</div>
+						<div class="form-group">
+							<label v-bind:for="'headerDescription'">Description:</label>
+							<input type="text" v-bind:name="'headerDescription'" v-bind:id="'headerDescription'" v-model="header.description" class="form-control" placeholder="">
+						</div>
+						<div class="form-group text-center d-flex justify-content-between">
+							<button type="button" class="btn btn-secondary btn-rounded" v-on:click="cancelHeader()">CANCEL</button>
+							<button type="button" class="btn btn-hover btn-rounded" v-if="childState == 'add-header'" v-on:click="addHeader()">ADD</button>
+							<button type="button" class="btn btn-hover btn-rounded" v-if="childState == 'edit-header'" v-on:click="updateHeader">UPDATE</button>
+						</div>
+					</div>
+				</div>
+			</aside>
+			<section class="column column-main">
+				<div class="choose-spec text-center init-item">
+					<h4>Register New API</h4>
+					<div class="fow bg-white mb-3">
+						<div class="fol-6 choose">
+							<input type="radio" name="specs" id="scratch" v-on:click="chooseSpec" v-model="api['x-abyss-platform'].specs" value="scratch">
+							<label for="scratch"><span><i class="fas fa-code"></i></span>From Scratch</label>
+						</div>
+						<div class="fol-6 choose">
+							<input type="radio" name="specs" id="swagger" v-on:click="chooseSpec" v-model="api['x-abyss-platform'].specs" value="swagger">
+							<label for="swagger"><span>{...}</span>Swagger</label>
+						</div>
+						<div class="fol-6 choose">
+							<input type="radio" name="specs" id="wsdl" v-on:click="chooseSpec" v-model="api['x-abyss-platform'].specs" value="wsdl">
+							<label for="wsdl"><span><i class="fas fa-code"></i></span>WSDL</label>
+						</div>
+						<div class="fol-6 choose">
+							<input type="radio" name="specs" id="wadl" v-on:click="chooseSpec" v-model="api['x-abyss-platform'].specs" value="wadl">
+							<label for="wadl"><span><i class="fas fa-code"></i></span>WADL</label>
+						</div>
+					</div>
+					<h5>or</h5>
+					<button type="button" class="btn btn-lg btn-rounded btn-success">CREATE NEW PROXY</button>
+				</div>
+				<div class="code-editor">
+					<div class="clearfix column-header column-min-button">
+						<h5 class="column-header-title">Editor</h5>
+					</div>
+					<!-- <pre class="acedit acedit-single" data-validate="true" data-filetype="@pret" data-theme="@Page.AceTheme">{{api}}</pre> -->
+					<pre class="acedit acedit-single" data-validate="true" data-filetype="@pret" data-theme="@Page.AceTheme">{{specData}}</pre>
+				</div>
+				<div class="preview-item p-3 p-lg-6" v-if="rootState == 'preview'">
+					<div th:replace="webroot/frags/api/api-preview.htm :: apiPreview"></div>
+				</div>
+			</section>
+			<div class="edit-item btn-float-br">
+				<button type="button" class="btn btn-secondary btn-xl btn-circle" v-on:click="beforeCancelApi()"><i class="fas fa-times"></i></button>
+				<button type="button" class="btn btn-primary btn-xl btn-circle" v-bind:class="{'btn-info': isChanged}" v-on:click="saveApi()"><i class="fas fa-save"></i></button>
+			</div>
+		</div>
+	</my-apis>
+	</main>
+</div>
+<script id="reqVue" data-module="my-apis" data-main="/dist/js/main" src="/dist/js/lib/require.min.js"></script>
+</body>
+</html>

@@ -34,7 +34,7 @@
 									<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
 									<ul class="dropdown-menu" role="menu" data-dropdown-in="slideInLeft" data-dropdown-out="slideOutLeft">
 										<li><a href="#" data-toggle="modal" data-target="#taxModal" v-on:click="setTax('edit', 'Tag', 'myApiTagList', tag)"><i class="fas fa-edit"></i>Edit</a></li>
-										<li><a href="#"v-on:click="deleteTax('myApiTagList', 'tags', tag)"><i class="fas fa-trash-alt"></i>Delete</a></li>
+										<li><a href="#" v-on:click="deleteTax('myApiTagList', 'tags', tag)"><i class="fas fa-trash-alt"></i>Delete</a></li>
 									</ul>
 								</div>
 								<a href="#"><i class="fas fa-fw fa-stop txt-purple"></i>{{tag.name}}<span class="badge badge-pill badge-outline">{{tag.count}}</span></a></li>

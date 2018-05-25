@@ -62,10 +62,43 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 			log(name) {
 				console.log(name , this);
 			},
+			mixSpecLink(fragment) {
+				return 'https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md'+(fragment ? fragment : '');
+			},
+			saveApi : function(ooo) {
+				if (window.localStorage) {
+					window.localStorage.setItem('openapi3', JSON.stringify(ooo));
+				}
+				if (window.intelligentBackend) {
+					var data = new FormData();
+					data.append('source',JSON.stringify(ooo));
+					$.ajax({
+						url:'/store',
+						type:"POST",
+						contentType: false,
+						processData: false,
+						data:data,
+						success: function(result) {
+						}
+					});
+				}
+			},
 			uuidv4() {
 				return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
 					(c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
-				)
+				);
+			},
+			getObjCount(obj) {
+				var count = 0;
+				if (obj) {
+					var el = Object.keys(obj);
+					count = el.length;
+					if (el) {
+						return el.length;
+					}
+				} else {
+					return 0;
+				}
 			},
 			preload() {
 				$('.preloader-it > .la-anim-1').addClass('la-animate');
@@ -105,8 +138,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 			},
 			addItem(url, item, head, arr) {
 				return axios.post(url, item, head).then(response => {
-				// return axios.post(url, item, head).then(response => {
+					console.log("response.data: ", response.data);
 					arr.push(item);
+					// arr.push(response.data);
 					return response;
 				}, error => {
 					console.error(error);
@@ -166,6 +200,13 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 				} else {
 					return _.orderBy(arr, srt.key, srt.order);
 				}
+			},
+			sortByKeys(obj) {
+				var ordered = {};
+				Object.keys(obj).sort().forEach(function(key) {
+					ordered[key] = obj[key];
+				});
+				return ordered;
 			},
 			sortList(srt, key, typ, ord) {
 				if (key === srt.key) {

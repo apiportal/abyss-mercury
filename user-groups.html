@@ -13,31 +13,31 @@
 				<div class="nicescroll--bar">
 					<div class="fow no-gutters">
 						<div class="fol form-group mb-0 bg-white">
-							<v-select label="group_name" :filterable="false" :options="groupOptions" @search="getGroupOptions" :on-change="filterGroup" placeholder="Search Groups">
+							<v-select label="groupname" :filterable="false" :options="groupOptions" @search="getGroupOptions" :on-change="filterGroup" placeholder="Search Groups">
 								<span slot="no-options"></span>
 							</v-select>
 						</div>
 					</div>
 					<table class="table table-hover table-bordered table-edge">
 						<tr>
-							<th class="td-bool" v-bind:class="sort.order" v-on:click="sortList(sort, 'is_enabled', Boolean)">Status</th>
-							<th class="td-name" v-bind:class="sort.order" v-on:click="sortList(sort, 'group_name', String)">Group Name</th>
+							<th class="td-bool" v-bind:class="sort.order" v-on:click="sortList(sort, 'isenabled', Boolean)">Status</th>
+							<th class="td-name" v-bind:class="sort.order" v-on:click="sortList(sort, 'groupname', String)">Group Name</th>
 							<th class="td-number" v-bind:class="sort.order" v-on:click="sortList(sort, 'userCount', Number)">Users</th>
 							<th class="td-datetime-x" v-bind:class="sort.order" v-on:click="sortList(sort, 'created', Date)">Created / Updated / Deleted</th>
-							<th class="td-datetime" v-bind:class="sort.order" v-on:click="sortList(sort, 'effective_start_date', Date)">Effective From</th>
-							<th class="td-datetime" v-bind:class="sort.order" v-on:click="sortList(sort, 'effective_end_date', Date)">Effective To</th>
+							<th class="td-datetime" v-bind:class="sort.order" v-on:click="sortList(sort, 'effectivestartdate', Date)">Effective From</th>
+							<th class="td-datetime" v-bind:class="sort.order" v-on:click="sortList(sort, 'effectiveenddate', Date)">Effective To</th>
 							<th class="td-long" v-bind:class="sort.order" v-on:click="sortList(sort, 'permissions', Array)">Permissions</th>
 							<th class="td-action-1"></th>
 							<th class="td-action-1"></th>
 						</tr>
-						<tr v-for="(group, index) in sortBy(sort, groupList)" v-bind:key="group.uuid" v-bind:class="{'active': isSelected(index), 'text-muted': !group.is_enabled}">
+						<tr v-for="(group, index) in sortBy(sort, groupList)" v-bind:key="group.uuid" v-bind:class="{'active': isSelected(index), 'text-muted': !group.isenabled}">
 							<td class="text-center">
-								<i class="fas fa-circle" title="Not Enabled" v-if="!group.is_enabled"></i>
-								<i class="fas fa-check-circle txt-green" title="Enabled" v-if="group.is_enabled"></i>
-								<i class="fas fa-times-circle txt-red" title="Deleted" v-if="group.is_deleted"></i>
+								<i class="fas fa-circle" title="Not Enabled" v-if="!group.isenabled"></i>
+								<i class="fas fa-check-circle txt-green" title="Enabled" v-if="group.isenabled"></i>
+								<i class="fas fa-times-circle txt-red" title="Deleted" v-if="group.isdeleted"></i>
 							</td>
 							<td>
-								<div class="d-block">{{group.group_name}}</div>
+								<div class="d-block">{{group.groupname}}</div>
 								<small class="d-block">{{group.description}}</small>
 							</td>
 							<td>{{group.userCount}}</td>
@@ -50,13 +50,13 @@
 									<strong class="small">UPDATED:</strong>
 									<small>{{group.updated | formatDateTime}}</small>
 								</div>
-								<div v-if="group.is_deleted">
+								<div v-if="group.isdeleted">
 									<strong class="small">DELETED:</strong>
 									<small>{{group.deleted | formatDateTime}}</small>
 								</div>
 							</td>
-							<td>{{group.effective_start_date | formatDateTime}}</td>
-							<td>{{group.effective_end_date | formatDateTime}}</td>
+							<td>{{group.effectivestartdate | formatDateTime}}</td>
+							<td>{{group.effectiveenddate | formatDateTime}}</td>
 							<td>
 								<span v-for="(g, index) in group.permissions">
 									{{g.name}}
@@ -84,36 +84,36 @@
 						</h5>
 					</div>
 					<div class="p-3">
-						<div class="form-group" v-bind:class="{ 'has-error': errors.has('group_name') }">
-							<label for="group_name">Group Name:</label>
-							<input type="text" name="group_name" id="group_name" v-model="group.group_name" v-validate="'required|min:2|alpha_spaces'" class="form-control" placeholder="group_name">
-							<em v-bind:class="{ 'show': errors.has('group_name') }">{{ errors.first('group_name') }}</em>
+						<div class="form-group" v-bind:class="{ 'has-error': errors.has('groupname') }">
+							<label for="groupname">Group Name:</label>
+							<input type="text" name="groupname" id="groupname" v-model="group.groupname" v-validate="'required|min:2|alpha_spaces'" class="form-control" placeholder="groupname">
+							<em v-bind:class="{ 'show': errors.has('groupname') }">{{ errors.first('groupname') }}</em>
 						</div>
 						<div class="form-group" v-bind:class="{ 'has-error': errors.has('description') }">
 							<label for="description">Decription:</label>
 							<textarea type="text" name="description" id="description" v-model="group.description" v-validate="'required'" class="form-control" placeholder="Decription"></textarea>
 							<em v-bind:class="{ 'show': errors.has('description') }">{{ errors.first('description') }}</em>
 						</div>
-						<div class="form-group form-group-date" v-bind:class="{ 'has-error': errors.has('effective_start_date') }">
+						<div class="form-group form-group-date" v-bind:class="{ 'has-error': errors.has('effectivestartdate') }">
 							<label class="">Effective From</label>
 							<div class="input-group w-100">
-								<date-picker name="effective_start_date" v-model="group.effective_start_date" :config="config" v-validate="'required'"></date-picker>
+								<date-picker name="effectivestartdate" v-model="group.effectivestartdate" :config="config" v-validate="'required'"></date-picker>
 								<span class="input-group-addon"><i class="fa fa-calendar-alt"></i></span>
 							</div>
-							<em v-bind:class="{ 'show': errors.has('effective_start_date') }">{{ errors.first('effective_start_date') }}</em>
+							<em v-bind:class="{ 'show': errors.has('effectivestartdate') }">{{ errors.first('effectivestartdate') }}</em>
 						</div>
-						<div class="form-group" v-bind:class="{ 'has-error': errors.has('effective_end_date') }">
+						<div class="form-group" v-bind:class="{ 'has-error': errors.has('effectiveenddate') }">
 							<label class="">Effective To</label>
 							<div class="input-group w-100">
-								<date-picker name="effective_end_date" v-model="group.effective_end_date" :config="config" v-validate="'required'"></date-picker>
+								<date-picker name="effectiveenddate" v-model="group.effectiveenddate" :config="config" v-validate="'required'"></date-picker>
 								<span class="input-group-addon"><i class="fa fa-calendar-alt"></i></span>
 							</div>
-							<em v-bind:class="{ 'show': errors.has('effective_end_date') }">{{ errors.first('effective_end_date') }}</em>
+							<em v-bind:class="{ 'show': errors.has('effectiveenddate') }">{{ errors.first('effectiveenddate') }}</em>
 						</div>
 						<div class="form-group ">
 							<span class="checkbox">
-								<input type="checkbox" name="is_enabled" id="is_enabled" v-model="group.is_enabled">
-								<label for="is_enabled">Enabled</label>
+								<input type="checkbox" name="isenabled" id="isenabled" v-model="group.isenabled">
+								<label for="isenabled">Enabled</label>
 							</span>
 						</div>
 						<div class="form-group d-flex justify-content-between">
@@ -131,16 +131,16 @@
 					</div>
 					<div class="p-3">
 						<div class="form-group v-select-color-purple">
-							<v-select label="subject_name" multiple :filterable="false" :options="userOptions" @search="getUserOptions" v-model="group.users">
+							<v-select label="subjectname" multiple :filterable="false" :options="userOptions" @search="getUserOptions" v-model="group.users">
 								<span slot="no-options"></span>
 								<template slot="option" slot-scope="option">
-									<strong>{{ option.first_name }} {{ option.last_name }}</strong>
-									<div>{{ option.subject_name }}</div>
+									<strong>{{ option.firstname }} {{ option.lastname }}</strong>
+									<div>{{ option.subjectname }}</div>
 									<small>{{ option.email }}</small>
 								</template>
 								<template slot="selected-option" slot-scope="option">
-									<strong>{{ option.first_name }} {{ option.last_name }}</strong>
-									<div>{{ option.subject_name }}</div>
+									<strong>{{ option.firstname }} {{ option.lastname }}</strong>
+									<div>{{ option.subjectname }}</div>
 									<small>{{ option.email }}</small>
 								</template>
 							</v-select>

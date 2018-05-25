@@ -13,16 +13,10 @@
 				<h4 class="mb-0"><strong>{{api.info.title}}</strong></h4>
 				<p class="small">{{api.info.version}}</p>
 				<p>{{api.info.description}}</p>
-				<div>
-					<label class="d-block font-weight-bold text-uppercase">Methods</label>
-					<span class="d-block mb-1" v-for="(method, index) in api.methods">
-						<span class="badge badge-method mr-1" v-bind:class="methodBadge(method.verb, 'badge')">{{method.verb}}</span> {{method.resourcePath}}
-					</span>
-				</div>
 			</div>
 		</div>
 		<div class="fol-8 pb-3">
-			<button type="button" class="close" v-on:click="$emit('set-state', 'init')">×</button>
+			<button type="button" class="close" v-on:click="$root.setState('init')">×</button>
 			<ul role="tablist" class="row nav nav-tabs nav--justified" id="method1Tabs">
 				<li class="active" role="presentation"><a aria-expanded="true" data-toggle="tab" role="tab" href="#overview">Overview</a></li>
 				<li role="presentation"><a aria-expanded="true" data-toggle="tab" role="tab" href="#test">Test</a></li>
@@ -31,54 +25,27 @@
 				<div id="overview" class="tab-pane fade active in" role="tabpanel">
 					<div class="fow form-row">
 						<p class="fol-6">
-							<label class="d-block font-weight-bold text-uppercase">Base URL</label>
+							<strong class="d-block text-uppercase">Servers</strong> 
+							<span class="d-block text-truncate" v-for="(sv, index) in api.servers" v-bind:title="sv.url">{{sv.url}}</span>
 							{{api.servers[0].url}}
 						</p>
 						<p class="fol-6">
 							<label class="d-block font-weight-bold text-uppercase">Created</label>
 							{{api['x-abyss-platform'].created | formatDate}}
 						</p>
-					</div>
-					<div class="fow form-row">
 						<p class="fol-6">
-							<label class="d-block font-weight-bold text-uppercase">Visibility</label>
-							<span class="text-capitalize">{{apiGetVisibilityName(api['x-abyss-platform'].apivisibilityid)}}</span>
-						</p>
-						<p class="fol-6">
-							<label class="d-block font-weight-bold text-uppercase">State</label>
-							<span class="text-capitalize">{{apiGetStateName(api['x-abyss-platform'].apistateid)}}</span>
+							<label class="d-block font-weight-bold text-uppercase">Created</label>
+							{{api['x-abyss-platform'].updated | formatDate}}
 						</p>
 					</div>
 					<div class="fow form-row">
-						<p class="fol-6">
-							<label class="d-block font-weight-bold text-uppercase">Authentication</label>
-							{{apiGetAuthentications(api)}}
-						</p>
-						<p class="fol-6">
-							<label class="d-block font-weight-bold text-uppercase">Authorization</label>
-							<span v-for="(author, index) in api.authorization" v-if="author.enabled">
-								{{author.name}}<span class="comma" v-if="index != (api.authorization.length - 1)">, </span>
-							</span>
-						</p>
+						<p class="fol-6"><strong class="d-block text-uppercase">Visibility</strong><span class="text-capitalize">{{apiGetVisibilityName(api['x-abyss-platform'].apivisibilityid)}}</span></p>
+						<p class="fol-6"><strong class="d-block text-uppercase">State</strong><span class="text-capitalize">{{apiGetStateName(api['x-abyss-platform'].apistateid)}}</span></p>
 					</div>
-					<p>
-						<label class="d-block font-weight-bold text-uppercase">Categories</label>
-						<span v-for="(cat, index) in api.categories">
-							{{cat.name}}<span class="comma" v-if="index != (api.categories.length - 1)">, </span>
-						</span>
-					</p>
-					<p>
-						<label class="d-block font-weight-bold text-uppercase">Tags</label>
-						<span class="badge badge-primary badge-pill px-2 mr-1" v-for="(tag, index) in api.tags">
-							{{tag.name}}
-						</span>
-					</p>
-					<p>
-						<label class="d-block font-weight-bold text-uppercase">Groups</label>
-						<span v-for="(group, index) in api.groups">
-							{{group.name}}<span class="comma" v-if="index != (api.groups.length - 1)">, </span>
-						</span>
-					</p>
+					<p><strong class="d-block text-uppercase">Categories</strong>{{compCategoriesToList}}</p>
+					<p><strong class="d-block text-uppercase">Tags</strong>{{compTagsToList}}</p>
+					<p><strong class="d-block text-uppercase">Groups</strong>{{compGroupsToList}}</p>
+					<p><small class="d-block">{{api.info.description}}</small></p>
 				</div>
 			</div>
 		</div>
