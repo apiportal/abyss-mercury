@@ -168,7 +168,7 @@
 								<div v-for="(server,sindex) in openapi.servers" class="field-controls field-color-grey field-level-1">
 									<span class="ficon-act ficon-act-abs">
 										<a class="" data-toggle="" title="Remove server" v-on:click="removeServer(sindex)" v-if="sindex > 0"><i class="fa fa-trash-alt"></i></a>
-										<a href="#" data-toggle="" title="Show Variables" data-toggle="collapse" v-bind:data-target="'#server'+sindex" v-bind:aria-controls="'server'+sindex" v-if="server.variables" v-bind:class="{'txt-green': server.variables}"><i class="">V</i></a>
+										<a href="#" title="Show Variables" data-toggle="collapse" v-bind:data-target="'#server'+sindex" v-bind:aria-controls="'server'+sindex" v-if="server.variables" v-bind:class="{'txt-green': server.variables}"><i class="">V</i></a>
 										<a href="#" data-toggle="" title="Add Variable" v-on:click="addVariable(sindex)" v-if="!server.variables"><i class="">V</i></a>
 										<a data-toggle="" title="Add a server" v-on:click="addServer()"><i class="fa fa-plus"></i></a>
 									</span>
