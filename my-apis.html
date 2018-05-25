@@ -614,7 +614,7 @@
 									<div v-if="Object.keys(httpMethods).length==0" class="ficon-act justify-content-end">
 										<a v-on:click="addOperation()">Add Operation <i class="fa fa-fw fa-plus"></i></a>
 									</div>
-									<api-method :openapi="openapi" :method="method" :index="key" :maintags="maintags" :maintags="maintags" v-for="(method,key,oindex) in httpMethods" :path="index" :key="oindex"></api-method>
+									<api-method :openapi="openapi" :method="method" :index="key" :maintags="maintags" v-for="(method,key,oindex) in httpMethods" :path="index" :key="oindex"></api-method>
 							</article>
 						</api-resource>
 					</form>
