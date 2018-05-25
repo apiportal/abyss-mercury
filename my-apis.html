@@ -1,12 +1,13 @@
 ﻿<!DOCTYPE html>
 <html class="vs-my-apis" lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:include="webroot/frags/layout/head.htm :: header">
-<script src="/dist/js/lib/jquery.min.js"></script>
-<script src="/dist/js/lib/thymus.min.js" id="thymus"
-	data-thx-base-path="." data-thx-frag-extension=".htm"
-	data-thx-head-frag="th:include=webroot/frags/layout/head.htm :: header"
-	data-thx-preload-js="/dist/js/loader.js"
-	data-thx-onfrags="fragsListener();" data-thx-onfrag="fragListener()"></script>
+	<!--<script src="/dist/js/lib/jquery.min.js"></script>
+    <script src="/dist/js/lib/thymus.min.js" id="thymus"
+        data-thx-base-path="." data-thx-frag-extension=".htm"
+        data-thx-head-frag="th:include=webroot/frags/layout/head.htm :: header"
+        data-thx-preload-js="/dist/js/loader.js"
+        data-thx-onfrags="fragsListener();" data-thx-onfrag="fragListener()"></script>
+    -->
 <link href="/dist/css/obsidian.css" rel="stylesheet">
 <link href="/dist/css/jsoneditor.min.css" rel="stylesheet" type="text/css">
 <link href="/dist/js/swagger/swagger-editor.css" rel="stylesheet">
@@ -982,7 +983,7 @@
 					</ul>
 				</div>
 			</div>
-			<div class="collapse field-acc" :id="_uid" class="field-controls">
+			<div class="collapse field-acc" v-bind:id="_uid">
 				<div class="form-group">
 					<label>Parameter Name</label>
 					<input class="form-control" placeholder="Required" v-model="parameter.name" required>
