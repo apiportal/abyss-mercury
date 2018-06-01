@@ -1028,7 +1028,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				get : function() {
 					if (this.child.type == 'integer') return ['int32','int64'];
 					if (this.child.type == 'number') return ['float','double'];
-					if (this.child.type == 'string') return ['date','date-time','byte','binary','password'];
+					if (this.child.type == 'string') return ['date','date-time','byte','binary','password','uri','uuid','email','hostname','ipv4','ipv6','pattern'];
 					return [];
 				},
 				set : function(newVal) {}
@@ -2135,7 +2135,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					$('.create-column').addClass('column-minimize');
 					$('.edit-column').addClass('column-minimize');
 				} else {
-					$('.create-column, .edit-column').addClass('column-minimize');
+					// $('.create-column, .edit-column').addClass('column-minimize');
 				}
 			},
 			getApiById(item, state) {

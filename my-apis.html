@@ -1167,16 +1167,25 @@
 				</div>
 				<!-- parent > child -->
 				<div class="fow form-row" v-if="child.type == 'integer' || child.type == 'number' || child.type == 'string'">
-					<div class="fol-4 form-group">
+					<div class="fol-6 form-group">
 						<label>Min. Items</label>
 						<input class="form-control" type="number" min="0" step="1" v-model.number="child.minItems">
 					</div>
-					<div class="fol-4 form-group">
+					<div class="fol-6 form-group">
 						<label>Max. Items</label>
 						<input class="form-control" type="number" min="0" step="1" v-model.number="child.maxItems">
 					</div>
-					<div class="fol-4 text-right form-group">
-						<label>Unique Items</label>
+				</div>
+				<div class="fow form-row">
+					<div class="fol-6 form-group">
+						<label class="d-block">Read Only</label>
+						<span class="switch switch-primary ml-auto">
+							<input type="checkbox" :id="'readOnly_'+_uid+level" v-model="child.readOnly">
+							<label :for="'readOnly_'+_uid+level"></label>
+						</span>
+					</div>
+					<div class="fol-6 text-right form-group" v-if="child.type == 'integer' || child.type == 'number' || child.type == 'string'">
+						<label class="d-block">Unique Items</label>
 						<span class="switch switch-primary ml-auto">
 							<input type="checkbox" :id="'uniqueItems_'+_uid+level" v-model="child.uniqueItems">
 							<label :for="'uniqueItems_'+_uid+level"></label>
@@ -1232,8 +1241,8 @@
 					</div>
 				</div>
 				<api-items v-if="child.type == 'array'" :openapi="openapi" :child="child.items" :name="name+'array'" :level="levelPlusOne"></api-items>
-				<div class="mt-3 brd-l brd-r brd-b">
-					<div v-if="child.type == 'object'" v-for="(prp,key,prpindex) in child.properties" :key="prpindex" class="field-controls field-color-grey field-level-2">
+				<div class="mt-3 brd-l brd-r brd-b" v-if="child.properties">
+					<div v-for="(prp,key,prpindex) in child.properties" :key="prpindex" class="field-controls field-color-grey field-level-2">
 						<div class="field-sum">
 							<a href="#" class="field-link" data-toggle="collapse" v-bind:data-target="'#'+name+'_item'+level+prpindex" v-bind:aria-controls="name+'_item'+level+prpindex">
 								<span>{{key}}</span>
@@ -1279,7 +1288,7 @@
 				<label>Media-Type</label>
 				<input class="form-control" placeholder="Required" v-model.lazy="mediaTypeName">
 			</div>
-			<api-items v-if="mediatype" :openapi="openapi" :child="content.schema" :name="content+'responses'" :level="0"></api-items>
+			<api-items v-if="mediatype" :openapi="openapi" :child="content.schema" :name="_uid+'responses'" :level="0"></api-items>
 		</div>
 	</div>
 </div>
