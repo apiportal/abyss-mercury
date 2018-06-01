@@ -70,7 +70,7 @@
 							</a>
 							<ul v-bind:id="'api'+api['x-abyss-platform'].uuid" class="collapse">
 								<li>
-									<div class="px-3 txt-dark border-top">
+									<div class="px-3 txt-dark brd-t">
 										<div class="small pt-2">
 											<p><strong class="d-block text-uppercase">Base URL</strong> <span class="d-block text-truncate" v-bind:title="api.servers[0].url">{{api.servers[0].url}}</span></p>
 											<div class="fow form-row">
@@ -111,7 +111,7 @@
 			</aside>
 			<aside class="column column-aside create-column">
 				<div class="nicescroll-bar">
-					<div class="clearfix border-bottom column-header column-min-button">
+					<div class="clearfix brd-b column-header column-min-button">
 						<h5 class="column-header-title">Basic Information</h5>
 					</div>
 					<div class="p-3">
@@ -452,7 +452,7 @@
 			</aside>
 			<aside class="column column-aside method-edit-column">
 				<div class="nicescroll-bar">
-					<div class="clearfix border-bottom column-header column-min-button">
+					<div class="clearfix brd-b column-header column-min-button">
 						<h5 class="column-header-title">
 							<span v-if="childState == 'add-method'">Add New Method</span>
 							<span v-if="childState == 'edit-method'">Edit Method</span>

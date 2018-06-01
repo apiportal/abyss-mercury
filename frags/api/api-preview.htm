@@ -3,8 +3,8 @@
 <body>
 <div class="card" th:fragment="apiPreview">
 	<div class="fow m-0">
-		<div class="fol-4 border-right">
-			<div class="row border-bottom">
+		<div class="fol-4 brd-r">
+			<div class="row brd-b">
 				<div class="thumb" v-if="api['x-abyss-platform'].image" :style="{ 'background-image': 'url(' + api['x-abyss-platform'].image + ')' }"></div>
 				<div class="thumb" v-if="!api['x-abyss-platform'].image" :style="{ 'background-color': api['x-abyss-platform'].color }">{{api.info.title}}</div>
 			</div>

@@ -9,15 +9,15 @@
 					<span class="brand-text"><span>API</span> Portal</span>
 				</a>
 			</div>	
-			<a id="toggle_nav_btn" class="toggle-left-nav-btn" href="javascript:void(0);"><i class="fas fa-bars"></i></a>
+			<a id="toggle_nav_btn" class="toggle-left-nav-btn" href="javascript:void(0);"><i class="fas fa-ellipsis-v"></i></a>
 			<a id="toggle_mobile_nav" class="mobile-only-view" href="javascript:void(0);"><i class="fas fa-ellipsis-v"></i></a>
 			<div class="breadcrumbs flex-grow">
 				<ol class="breadcrumb" v-if="pageCurrent == 'my-apis'">
 					<li><a href="my-apis.html">My APIs</a></li>
-					<li v-if="rootState == 'edit'"><a href="#">Basic Information</a></li>
-					<li v-if="rootState == 'edit'"><a href="#">Authentication</a></li>
-					<li v-if="rootState == 'edit'" class="active"><a href="#">Authorization</a></li>
-					<li v-if="rootState == 'edit'" class="active"><a href="#">Methods</a></li>
+					<li v-if="rootState == 'edit'"><a href="#">Information</a></li>
+					<li v-if="rootState == 'edit'"><a href="#">Tags & Components</a></li>
+					<li v-if="rootState == 'edit'"><a href="#">Paths</a></li>
+					<li v-if="rootState == 'edit'" class="active"><a href="#">Editoe</a></li>
 				</ol>
 				<ol class="breadcrumb" v-if="pageCurrent == 'users'">
 					<li><a href="#">User Management</a></li>
@@ -53,29 +53,29 @@
 				<li class="dropdown alert-drp">
 					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fas fa-bell top-nav-icon"></i><span class="top-nav-icon-badge">5</span></a>
 					<ul class="dropdown-menu alert-dropdown" data-dropdown-in="bounceIn" data-dropdown-out="bounceOut">
-						<li class="nav-item border-bottom">
+						<li class="nav-item brd-b">
 							<div class="clearfix">
 							<a class="txt-item float-right" href="#"> clear all</a>
 							<h6 class="m-0">Notifications</h6>
 							</div>
 						</li>
-						<li class="nav-item border-bottom">
+						<li class="nav-item brd-b">
 							<div class="clearfix"><small class="float-right">2pm</small><div class="text-truncate">New subscription created</div></div>
 							<small class="d-block text-truncate">Your customer subscribed for the basic plan. The customer will pay $25 per md-block onth.</small>
 						</li>
-						<li class="nav-item border-bottom">
+						<li class="nav-item brd-b">
 							<div class="clearfix"><small class="float-right">1pm</small><div class="text-truncate txt-warning">Server #2 not responding</div></div>
 							<small class="d-block text-truncate">Some technical error occurred needs to be resolved.</small>
 						</li>
-						<li class="nav-item border-bottom">
+						<li class="nav-item brd-b">
 							<div class="clearfix"><small class="float-right">4pm</small><div class="text-truncate">2 new messages</div></div>
 							<small class="d-block text-truncate"> The last payment for your G Suite Basic subscription failed.</small>
 						</li>
-						<li class="nav-item border-bottom">
+						<li class="nav-item brd-b">
 							<div class="clearfix"><small class="float-right">1pm</small><div class="text-truncate">Sandy Doe</div></div>
 							<small class="d-block text-truncate">Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, ad-block dipisci velit</small>
 						</li>
-						<li class="nav-item border-bottom">
+						<li class="nav-item brd-b">
 							<div class="clearfix"><small class="float-right">1pm</small><div class="text-truncate txt-danger">99% server space occupied.</div></div>
 							<small class="d-block text-truncate">consectetur, adipisci velit.</small>
 						</li>

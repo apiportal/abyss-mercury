@@ -264,8 +264,11 @@ define(['config', 'jquery', 'bootstrap', 'domready'], function(config, $){
 				$(targets).removeClass('column-minimize');
 			});*/
 			$(document).on('show.bs.collapse', '.field-controls > .collapse', function (e) {
-				$(this).parent().addClass('active');
-				$(this).parent().siblings().children('.collapse').not(this).collapse('hide');
+				$(e.target).parent().addClass('active');
+				if ($(this).is('.field-tabs')) {
+					$(e.target).parent().siblings().children('.collapse').not(this).collapse('hide');
+					$(this).parents('.field-controls-hover').addClass('active');
+				}
 				if ($(this).is('.column-maximize-toggle')) {
 					var targets = $(this).data('targets') || '';
 					$(this).parents('.column').addClass('column-maximize');
@@ -273,7 +276,10 @@ define(['config', 'jquery', 'bootstrap', 'domready'], function(config, $){
 				}
 			});
 			$(document).on('hide.bs.collapse', '.field-controls > .collapse', function (e) {
-				$(this).parent().removeClass('active');
+				$(e.target).parent().removeClass('active');
+				if ($(this).is('.field-tabs')) {
+					$(this).parents('.field-controls-hover').removeClass('active');
+				}
 				if ($(this).is('.column-maximize-toggle')) {
 					var targets = $(this).data('targets') || '';
 					$(this).parents('.column').removeClass('column-maximize');
