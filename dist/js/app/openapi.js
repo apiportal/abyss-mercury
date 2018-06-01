@@ -2033,16 +2033,16 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 			this.preload();
 		},
 		created() {
-			axios.get('https://generator.swagger.io/api/gen/clients').then(response => {
-				this.cgData.clients = response.data;
-			}, error => {
-				console.error(error);
-			});
-			axios.get('https://generator.swagger.io/api/gen/servers').then(response => {
-				this.cgData.servers = response.data;
-			}, error => {
-				console.error(error);
-			});
+			// axios.get('https://generator.swagger.io/api/gen/clients').then(response => {
+			// 	this.cgData.clients = response.data;
+			// }, error => {
+			// 	console.error(error);
+			// });
+			// axios.get('https://generator.swagger.io/api/gen/servers').then(response => {
+			// 	this.cgData.servers = response.data;
+			// }, error => {
+			// 	console.error(error);
+			// });
 			this.initSchema();
 			this.$root.setPage('my-apis', 'init');
 			this.getPage(1);
