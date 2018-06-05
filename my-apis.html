@@ -39,27 +39,27 @@
 								<div class="nav-actions dropdown dropdown-hover">
 									<button type="button"><i class="fas fa-ellipsis-h"></i></button>
 									<ul class="dropdown-menu dropdown-menu-right" role="menu" data-dropdown-in="slideInRight" data-dropdown-out="slideOutRight">
-										<li><a href="#" v-on:click="selectApi(api, 'edit')"><i class="fas fa-edit"></i>Edit</a></li>
+										<li><a href="#" v-on:click="$parent.selectApi(api, 'edit')"><i class="fas fa-edit"></i>Edit</a></li>
 										<li><a href="#"><i class="fas fa-code-branch"></i>Create Proxy</a></li>
-										<li><a href="#" v-on:click="selectApi(api, 'preview')"><i class="fas fa-file-alt"></i>Preview</a></li>
+										<li><a href="#" v-on:click="$parent.selectApi(api, 'preview')"><i class="fas fa-file-alt"></i>Preview</a></li>
 										<li class="dropdown-header">VISIBILITY</li>
 										<li role="separator" class="divider"></li>
-										<li v-bind:class="{'active': api['x-abyss-platform'].apivisibilityid == 1}" ><a href="#" v-on:click="$parent.apiChangeVisibility(api, 1)"><i class="fas fa-eye"></i>Public</a></li>
-										<li v-bind:class="{'active': api['x-abyss-platform'].apivisibilityid == 2}" ><a href="#" v-on:click="$parent.apiChangeVisibility(api, 2)"><i class="fas fa-user-secret"></i>Private</a></li>
-										<li v-bind:class="{'active': api['x-abyss-platform'].apivisibilityid == 3}" ><a href="#" v-on:click="$parent.apiChangeVisibility(api, 3)"><i class="fas fa-user"></i>Only registered users</a></li>
+										<li v-bind:class="{'active': api['x-abyss-platform'].apivisibilityid == 1}" ><a href="#" v-on:click="apiChangeVisibility(api, 1)"><i class="fas fa-eye"></i>Public</a></li>
+										<li v-bind:class="{'active': api['x-abyss-platform'].apivisibilityid == 2}" ><a href="#" v-on:click="apiChangeVisibility(api, 2)"><i class="fas fa-user-secret"></i>Private</a></li>
+										<li v-bind:class="{'active': api['x-abyss-platform'].apivisibilityid == 3}" ><a href="#" v-on:click="apiChangeVisibility(api, 3)"><i class="fas fa-user"></i>Only registered users</a></li>
 										<li class="dropdown-header">CHANGE STATE</li>
 										<li role="separator" class="divider"></li>
-										<li v-bind:class="{'active': api['x-abyss-platform'].apistateid == 2}"><a href="#" v-on:click="$parent.apiChangeState(api, 2)"><i class="fas fa-circle stat-2"></i>Draft</a></li>
-										<li v-bind:class="{'active': api['x-abyss-platform'].apistateid == 3}"><a href="#" v-on:click="$parent.apiChangeState(api, 3)"><i class="fas fa-circle stat-3"></i>Stage</a></li>
-										<li v-bind:class="{'active': api['x-abyss-platform'].apistateid == 4}"><a href="#" v-on:click="$parent.apiChangeState(api, 4)"><i class="fas fa-circle stat-4"></i>Publish</a></li>
-										<li v-bind:class="{'active': api['x-abyss-platform'].apistateid == 5}"><a href="#" v-on:click="$parent.apiChangeState(api, 5)"><i class="fas fa-circle stat-5"></i>Promote</a></li>
-										<li v-bind:class="{'active': api['x-abyss-platform'].apistateid == 6}"><a href="#" v-on:click="$parent.apiChangeState(api, 6)"><i class="fas fa-circle stat-6"></i>Demote</a></li>
-										<li v-bind:class="{'active': api['x-abyss-platform'].apistateid == 8}"><a href="#" v-on:click="$parent.apiChangeState(api, 8)"><i class="fas fa-circle stat-8"></i>Retire</a></li>
-										<li v-bind:class="{'active': api['x-abyss-platform'].apistateid == 10}"><a href="#" v-on:click="$parent.apiChangeState(api, 10)"><i class="fas fa-trash-alt"></i>Delete</a></li> </ul>
+										<li v-bind:class="{'active': api['x-abyss-platform'].apistateid == 2}"><a href="#" v-on:click="apiChangeState(api, 2)"><i class="fas fa-circle stat-2"></i>Draft</a></li>
+										<li v-bind:class="{'active': api['x-abyss-platform'].apistateid == 3}"><a href="#" v-on:click="apiChangeState(api, 3)"><i class="fas fa-circle stat-3"></i>Stage</a></li>
+										<li v-bind:class="{'active': api['x-abyss-platform'].apistateid == 4}"><a href="#" v-on:click="apiChangeState(api, 4)"><i class="fas fa-circle stat-4"></i>Publish</a></li>
+										<li v-bind:class="{'active': api['x-abyss-platform'].apistateid == 5}"><a href="#" v-on:click="apiChangeState(api, 5)"><i class="fas fa-circle stat-5"></i>Promote</a></li>
+										<li v-bind:class="{'active': api['x-abyss-platform'].apistateid == 6}"><a href="#" v-on:click="apiChangeState(api, 6)"><i class="fas fa-circle stat-6"></i>Demote</a></li>
+										<li v-bind:class="{'active': api['x-abyss-platform'].apistateid == 8}"><a href="#" v-on:click="apiChangeState(api, 8)"><i class="fas fa-circle stat-8"></i>Retire</a></li>
+										<li v-bind:class="{'active': api['x-abyss-platform'].apistateid == 10}"><a href="#" v-on:click="apiChangeState(api, 10)"><i class="fas fa-trash-alt"></i>Delete</a></li> </ul>
 								</div>
 								<a href="#" data-toggle="collapse" v-bind:data-target="'#api'+api['x-abyss-platform'].uuid" v-bind:aria-controls="'api'+api['x-abyss-platform'].uuid" v-bind:class="{'active': $parent.isSelectedApi(api['x-abyss-platform'].uuid)}">
 									<div class="">
-										<i v-bind:title="$parent.apiGetStateName(api['x-abyss-platform'].apistateid)" class="fas fa-circle" v-bind:class="'stat-' + api['x-abyss-platform'].apistateid"></i>
+										<i v-bind:title="apiGetStateName(api['x-abyss-platform'].apistateid)" class="fas fa-circle" v-bind:class="'stat-' + api['x-abyss-platform'].apistateid"></i>
 										<strong>{{api.info.title}}</strong> <small class="text-muted">{{api.info.version}}</small>
 									</div>
 									<small>Proxies: <strong>{{api['x-abyss-platform'].proxies_summary.length}}</strong></small>
@@ -74,8 +74,8 @@
 													<span class="d-block text-truncate" v-for="(sv, index) in api.servers" v-bind:title="sv.url">{{sv.url}}</span>
 												</p>
 												<div class="fow form-row">
-													<p class="fol-6"><strong class="d-block text-uppercase">Visibility</strong><span class="text-capitalize">{{$parent.apiGetVisibilityName(api['x-abyss-platform'].apivisibilityid)}}</span></p>
-													<p class="fol-6"><strong class="d-block text-uppercase">State</strong><span class="text-capitalize">{{$parent.apiGetStateName(api['x-abyss-platform'].apistateid)}}</span></p>
+													<p class="fol-6"><strong class="d-block text-uppercase">Visibility</strong><span class="text-capitalize">{{apiGetVisibilityName(api['x-abyss-platform'].apivisibilityid)}}</span></p>
+													<p class="fol-6"><strong class="d-block text-uppercase">State</strong><span class="text-capitalize">{{apiGetStateName(api['x-abyss-platform'].apistateid)}}</span></p>
 												</div>
 												<div class="fow form-row">
 													<p class="fol-6"><strong class="d-block text-uppercase">Security</strong> {{getObjCount(openapi.components.securitySchemes)}}</p>
@@ -113,7 +113,6 @@
 					</div>
 				</div>
 			</aside>
-
 			<aside class="column column-aside create-column">
 				<div class="clearfix brd-b column-header column-min-button">
 					<h5 class="column-header-title">Information</h5>
@@ -170,8 +169,8 @@
 										<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
 										<ul class="dropdown-menu dropdown-menu-right" role="menu">
 											<li><a class="" title="Remove server" v-on:click="removeServer(sindex)" v-if="sindex > 0"><i class="fa fa-trash-alt"></i> Remove server</a></li>
-											<li><a href="#" title="Show Variables" data-toggle="collapse" v-bind:data-target="'#server'+sindex" v-bind:aria-controls="'server'+sindex" v-if="server.variables" v-bind:class="{'txt-green': server.variables}"><i class="">V</i> Show Variables</a></li>
-											<li><a href="#" title="Add Variable" v-on:click="addVariable(sindex)" v-if="!server.variables"><i class="">V</i> Add Variable</a></li>
+											<!-- <li><a href="#" title="Show Variables" data-toggle="collapse" v-bind:data-target="'#server'+sindex" v-bind:aria-controls="'server'+sindex"><i class="">V</i> Show Variables</a></li> -->
+											<li><a href="#" title="Add Variable" v-on:click="addVariable(sindex)"><i class="">V</i> Add Variable</a></li>
 											<li><a title="Add a server" v-on:click="addServer()"><i class="fa fa-plus"></i> Add a server</a></li>
 										</ul>
 									</div>
@@ -185,13 +184,17 @@
 											<input class="form-control" v-model="server.description">
 										</div>
 										<api-srvvar v-for="(variable,index) in server.variables" :name="index" :key="index" :variable="variable" :server="server" :sindex="sindex" inline-template>
-											<div class="position-relative row pt-3">
-												<div class="ficon-act ficon-act-link">
-													<a class="w-100" title="Remove variable" v-on:click="removeVariable(sindex)">Remove Variable <i class="fa fa-trash-alt"></i></a>
+											<div class="position-relative row mt-3">
+												<div class="ficon-actions dropdown dropdown-hover">
+													<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
+													<ul class="dropdown-menu dropdown-menu-right" role="menu">
+														<li><a title="Remove variable" v-on:click="removeVariable(sindex)"><i class="fa fa-trash-alt"></i> Remove Variable</a></li>
+														<li><a v-on:click="addVEnum()" v-if="server.variables"><i class="fa fa-fw fa-plus"></i> Add Enum Value</a></li>
+													</ul>
 												</div>
 												<div class="field-acc">
 													<div class="form-group">
-														<label>Name</label>
+														<label>Variable Name</label>
 														<input class="form-control" v-model.lazy="variableName">
 													</div>
 													<div class="form-group">
@@ -203,17 +206,17 @@
 														<input class="form-control" placeholder="Required" v-model="variable.default">
 													</div>
 												</div>
-												<div class="ficon-act ficon-act-link">
-													<a class="w-100" v-on:click="addVEnum()">Add Enum Value <i class="fa fa-fw fa-plus"></i></a>
-												</div>
 												<api-venum v-for="(evalue,eindex) in variable.enum" :variable="variable" :eindex="eindex" :key="eindex" inline-template>
 													<div class="field-acc">
-														<span class="ficon-act ficon-act-abs">
-															<a title="Add Enum value" v-on:click="addVEnum(variable)"><i class="fa fa-plus"></i></a>
-															<a title="Remove Enum value" v-on:click="removeVEnum(eindex)"><i class="fa fa-trash-alt"></i></a>
-														</span>
+														<div class="ficon-actions dropdown dropdown-hover">
+															<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
+															<ul class="dropdown-menu dropdown-menu-right" role="menu">
+																<li><a title="Add Enum value" v-on:click="addVEnum(variable)"><i class="fa fa-plus"></i> Add Enum value</a></li>
+																<li><a title="Remove Enum value" v-on:click="removeVEnum(eindex)"><i class="fa fa-trash-alt"></i> Remove Enum value</a></li>
+															</ul>
+														</div>
 														<div class="form-group">
-															<label>Value</label>
+															<label>Enum Value</label>
 															<input class="form-control" v-model="vename">
 														</div>
 													</div>
@@ -276,9 +279,16 @@
 								</div>
 								<div class="form-group">
 									<label>License Name </label>
-									<v-select label="name" taggable :filterable="false" :options="licenseOptions" v-model="openapi.info.license.name" :on-change="licenseToList">
+									<div class="ficon-actions dropdown dropdown--hover">
+										<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
+										<ul class="dropdown-menu dropdown-menu-right" role="menu" data-dropdown-in="slideInRight" data-dropdown-out="slideOutRight">
+											<li v-for="(lic, index) in licenseOptions"><a href="#" v-on:click="licenseFromList(lic)"><strong>{{lic.name}}</strong><small class="d-block txt-break">{{lic.url}}</small></a></li>
+										</ul>
+									</div>
+									<!-- <v-select label="name" taggable :filterable="false" :options="licenseOptions" v-model="openapi.info.license.name" :on-change="licenseToList">
 										<span slot="no-options"></span>
-									</v-select>
+									</v-select> -->
+									<input type="url" id="nameLicense" class="form-control" v-model="openapi.info.license.name">
 								</div>
 								<div class="form-group">
 									<label>License URL</label>
@@ -328,14 +338,12 @@
 					</form>
 				</div>
 			</aside>
-
 			<aside class="column column-aside edit-column components-column column-minimize">
 				<div class="clearfix column-header column-min-button">
 					<h5 class="column-header-title">Tags & Components</h5>
 				</div>
 				<div class="column-content">
 					<form class="nicescroll-bar" id="frmSchemas">
-
 						<article class="field-controls field-level-0" data-id="Tags">
 							<div class="field-sum">
 								<a href="#" class="field-link nav-caret" data-toggle="collapse" data-target="#tags" aria-controls="tags">
@@ -549,7 +557,7 @@
 										<div class="ficon-actions dropdown dropdown-hover">
 											<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
 											<ul class="dropdown-menu dropdown-menu-right" role="menu">
-												<li><a v-on:click="editSchema(key)"><i class="fa fa-fw fa-edit"></i> Edit shared schema</a></li>
+												<li><a v-on:click="mixEditSchema(openapi.components.schemas, key, openapi)"><i class="fa fa-fw fa-edit"></i> Edit shared schema</a></li>
 												<li><a v-on:click="addSchema()"><i class="fa fa-fw fa-plus"></i> Create schema</a></li>
 												<li><a v-on:click="duplicateSchema(key)"><i class="fa fa-fw fa-copy"></i> Duplicate schema</a></li>
 												<li><a v-on:click="removeSchema(key)"><i class="fa fa-fw fa-trash-alt"></i> Remove schema</a></li>
@@ -572,31 +580,30 @@
 									<h6 class="d-block"><i class="fa fa-fw fa-download"></i> Responses <span class="badge badge-pill badge-outline float-right" v-if="getObjCount(openapi.components.responses) > 0">{{getObjCount(openapi.components.responses)}}</span></h6>
 								</a>
 								<span class="ficon-act ficon-act-abs" v-if="getObjCount(openapi.components.responses) < 1">
-									<a href="#" title="Add Response" v-on:click="addResponse()"><i class="fas fa-lg fa-plus"></i></a>
+									<a href="#" title="Add Response" v-on:click="addResponse(openapi.components)"><i class="fas fa-lg fa-plus"></i></a>
 								</span>
 							</div>
-							<div id="responses" class="collapse">
-								<api-response v-for="(response, status) in openapi.components.responses" :openapi="openapi" :response="response" :key="status" :status="status" :method="openapi.components.responses"></api-response>
+							<div id="responses" class="collapse field-color-grey field-level-1 field-tabs">
+								<api-response v-for="(response, status) in openapi.components.responses" :openapi="openapi" :response="response" :key="status" :status="status" :method="openapi.components"></api-response>
 							</div>
 						</article>
 						<article class="field-controls field-level-0" data-id="requestBodies">
 							<div class="field-sum">
 								<a href="#" class="field-link nav-caret" data-toggle="collapse" data-target="#requestBodies" aria-controls="requestBodies">
-									<h6 class="d-block"><i class="fa fa-fw fa-upload"></i> requestBodies <span class="badge badge-pill badge-outline float-right" v-if="getObjCount(openapi.components.requestBodies) > 0">{{getObjCount(openapi.components.requestBodies)}}</span></h6>
+									<h6 class="d-block"><i class="fa fa-fw fa-upload"></i> Request Bodies <span class="badge badge-pill badge-outline float-right" v-if="getObjCount(openapi.components.requestBodies) > 0">{{getObjCount(openapi.components.requestBodies)}}</span></h6>
 								</a>
 								<span class="ficon-act ficon-act-abs" v-if="getObjCount(openapi.components.requestBodies) < 1">
-									<a href="#" title="Add request body" v-on:click="addRequestBody()"><i class="fas fa-lg fa-plus"></i></a>
+									<a href="#" title="Add request body" v-on:click="addRequestBody(openapi.components.requestBodies)"><i class="fas fa-lg fa-plus"></i></a>
 								</span>
 							</div>
-							<div id="requestBodies" class="collapse">
-								<api-requestbody v-for="(request, status, index) in openapi.components.requestBodies" :openapi="openapi" :response="request" :key="status" :status="status" :method="openapi.components.requestBodies">
+							<div id="requestBodies" class="collapse field-color-grey field-level-1 field-tabs">
+								<api-requestbody v-for="(request, status, index) in openapi.components.requestBodies" :openapi="openapi" :response="request" :key="status" :status="status" :bindex="index" :method="openapi.components.requestBodies">
 								</api-requestbody>
 							</div>
 						</article>
 					</form>
 				</div>
 			</aside>
-
 			<aside class="column column-aside edit-column paths-column column-minimize">
 				<div class="clearfix column-header column-min-button">
 					<a href="#" class="btn btn-lg btn-link txt-link btn-square column-header-button" title="Create Path" v-on:click="addResource();"><i class="fas fa-lg fa-plus"></i></a>
@@ -648,7 +655,6 @@
 					</form>
 				</div>
 			</aside>
-
 			<section class="column column-main">
 				<div class="choose-spec text-center init-item">
 					<h4>Register New API</h4>
@@ -706,20 +712,16 @@
 					<div th:replace="webroot/frags/api/api-preview.htm :: apiPreview"></div>
 				</div>
 			</section>
-
 			<div class="btn-float-br" v-if="rootState == 'edit' || rootState == 'create'">
 				<button type="button" class="btn btn-secondary btn-xl btn-circle" v-on:click="beforeCancelApi()"><i class="fas fa-times"></i></button>
 				<button type="button" class="btn btn-secondary btn-xl btn-circle" v-on:click="undoApi()"><i class="fas fa-undo"></i></button>
 				<button type="button" class="btn btn-green btn-xl btn-circle" v-if="rootState == 'create'" v-on:click="createApi()"><i class="fas fa-plus"></i></button>
 				<button type="button" class="btn btn-primary btn-xl btn-circle" v-if="rootState == 'edit'" v-bind:class="{'btn-info': isChanged}" v-on:click="saveMyApi()"><i class="fas fa-save"></i></button>
 			</div>
-
 		</div>
 	</my-apis>
 	</main>
-
 </div>
-
 <!-- TTTTTTTTTTTTTTTTTTTTT -->
 <div class="hide">
 	<div id="template-method">
@@ -753,17 +755,18 @@
 					</a>
 				</div>
 				<div class="fow form--row m-0 brd-t text-center field-tabs-btn">
-					<a href="#" class="fol-4" data-toggle="collapse" v-bind:data-target="'#method_requestbodies_'+_uid" v-bind:aria-controls="'method_requestbodies_'+_uid">
+					<a href="#" class="fol-4" data-toggle="collapse" v-bind:data-target="'#method_requestbodies_'+_uid" v-bind:aria-controls="'method_requestbodies_'+_uid" v-if="httpMethod != 'GET'">
 						<span class="text-muted small d-block">RequestBody</span>
-						<strong class="font-weight-bolder">{{getObjCount(method.requestBody)}}</strong>
+						<strong class="font-weight-bolder" v-if="method.requestBody">1</strong>
+						<strong class="font-weight-bolder" v-if="!method.requestBody">0</strong>
 					</a>
 					<a href="#" class="fol-4 brd-l brd-r" data-toggle="collapse" v-bind:data-target="'#method_callbacks_'+_uid" v-bind:aria-controls="'method_callbacks_'+_uid">
 						<span class="text-muted small d-block">Callbacks</span>
-						<strong class="font-weight-bolder">{{getObjCount(this.method.callbacks)}}</strong>
+						<strong class="font-weight-bolder">{{getObjCount(method.callbacks)}}</strong>
 					</a>
 					<a href="#" class="fol-4" data-toggle="collapse" v-bind:data-target="'#method_links_'+_uid" v-bind:aria-controls="'method_links_'+_uid">
 						<span class="text-muted small d-block">Links</span>
-						<strong class="font-weight-bolder">{{getObjCount(this.method.links)}}</strong>
+						<strong class="font-weight-bolder">{{getObjCount(method.links)}}</strong>
 					</a>
 				</div>
 			</div>
@@ -833,8 +836,17 @@
 			<ul class="field-controls" data-id="Responses">
 				<li v-bind:id="'method_responses_'+_uid" class="collapse field-tabs pt-0">
 					<h6 class="field-header">Responses</h6>
-					<api-response v-for="(response, status) in method.responses" :openapi="openapi"
-						:response="response" :key="status" :status="status" :method="method"></api-response>
+					<api-response v-for="(response, status, index) in method.responses" :openapi="openapi"
+						:response="response" :key="status" :status="status" :method="method" :rindex="index"></api-response>
+				</li>
+			</ul>
+			<ul class="field-controls" data-id="RequestBody">
+				<li v-bind:id="'method_requestbodies_'+_uid" class="collapse field-tabs pt-0">
+					<h6 class="field-header">Request Body</h6>
+					<div class="ficon-act ficon-act-link" v-if="!method.requestBody">
+						<a class="w-100" v-on:click="addRequestBody(method, true)">Create Request Body <i class="fa fa-fw fa-plus"></i></a>
+					</div>
+					<api-requestbody v-if="method.requestBody" :openapi="openapi" :response="method.requestBody" status="requestBody" :bindex="index" :method="method"></api-requestbody>
 				</li>
 			</ul>
 			<ul class="field-controls" data-id="Security">
@@ -866,34 +878,6 @@
 								<span>{{Object.values(scheme)[0]}}</span>
 							</div>
 						</div>
-					</div>
-				</li>
-			</ul>
-			<ul class="field-controls" data-id="RequestBody">
-				<li v-bind:id="'method_requestbodies_'+_uid" class="collapse field-tabs pt-0">
-					<h6 class="field-header">Request Body</h6>
-					<div class="ficon-act ficon-act-link" v-if="!method.requestBody">
-						<a class="w-100" v-on:click="addRequestBody()">Create Request Body <i class="fa fa-fw fa-plus"></i></a>
-					</div>
-					<div class="field-acc" v-if="method.requestBody">
-						<span class="ficon-act ficon-act-abs">
-							<a title="Remove RequestBody" v-on:click="removeRequestBody()"><i class="fa fa-fw fa-trash-alt"></i></a>
-						</span>
-						<div class="form-group">
-							<label>Description</label>
-							<textarea class="form-control" v-model="effectiveRequestBody.description"></textarea>
-						</div>
-						<div class="form-inline">
-							<div class="form-group">
-								<label class="">Required</label>
-								<span class="switch switch-primary ml-auto">
-									<input type="checkbox" :id="'effectiveRequestBody'+_uid" v-model="effectiveRequestBody.required">
-									<label :for="'effectiveRequestBody'+_uid"></label>
-								</span>
-							</div>
-						</div>
-						<api-mediatype :openapi="openapi" v-for="(content, mediatype) in effectiveRequestBody.content"
-							:content="content" :key="mediatype" :mediatype="mediatype" :container="effectiveRequestBody"></api-mediatype>
 					</div>
 				</li>
 			</ul>
@@ -963,7 +947,7 @@
 					<ul class="dropdown-menu dropdown-menu-right" role="menu">
 						<li><a v-on:click="addParameter()"><i class="fa fa-fw fa-plus"></i> Add parameter</a></li>
 						<li><a v-on:click="duplicateParameter(parameter)"><i class="fa fa-fw fa-copy"></i> Duplicate parameter</a></li>
-						<li><a :title="schemaTooltip" v-on:click="editSchema()"><i class="fa fa-fw fa-edit"></i> {{schemaTooltip}}</a></li>
+						<li><a :title="schemaTooltip" v-on:click="mixEditSchema(parameter, 'schema', openapi)"><i class="fa fa-fw fa-edit"></i> {{schemaTooltip}}</a></li>
 						<li><a v-on:click="removeParameter()"><i class="fa fa-fw fa-trash-alt"></i> Remove parameter</a></li>
 					</ul>
 				</div>
@@ -1022,68 +1006,94 @@
 	</div>
 
 	<div id="template-requestbody">
-		<div class="field-controls field-color-grey field-level-1 field-acc">
-			<span class="ficon-act ficon-act-abs">
-				<a title="Remove RequestBody" v-on:click="removeRequestBody(status)"><i class="fa fa-fw fa-trash-alt"></i></a>
-				<a href="#" title="Add request body" v-on:click="addRequestBody()"><i class="fas fa-lg fa-plus"></i></a>
-			</span>
-			<div class="form-group">
-				<label>Name</label>
-				<input class="form-control" v-model.lazy="requestName">
+		<div class="field-controls">
+			<div class="field-sum">
+				<a href="#" class="field-link" data-toggle="collapse" v-bind:data-target="'#requestbody'+bindex" v-bind:aria-controls="'requestbody'+bindex">
+					<strong class="font-weight-bold">{{requestName}}</strong>
+				</a>
+				<div class="ficon-actions dropdown dropdown-hover">
+					<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
+					<ul class="dropdown-menu dropdown-menu-right" role="menu">
+						<li><a title="Remove RequestBody" v-on:click="removeRequestBody(status)"><i class="fa fa-fw fa-trash-alt"></i> Remove RequestBody</a></li>
+						<li><a href="#" title="Add request body" v-on:click="addRequestBody(method)"><i class="fas fa-lg fa-plus"></i> Add request body</a></li>
+					</ul>
+				</div>
 			</div>
-			<div class="form-group">
-				<label>Description</label>
-				<textarea class="form-control" v-model="response.description"></textarea>
-			</div>
-			<div class="form-inline">
+			<div v-bind:id="'requestbody'+bindex" class="collapse field-acc">
+				<div class="form-group" v-if="!response.$ref">
+					<label>Name</label>
+					<input class="form-control" v-model.lazy="requestName">
+				</div>
 				<div class="form-group">
+					<label>$ref: {{response.$ref}}</label>
+					<select class="form-control" v-model="response.$ref" v-on:change="selectRefResponse($event.target.value, response)">
+						<option value="None">None</option>
+						<optgroup label="$Ref: requestBodies">
+							<option v-for="(schema,key,index) in openapi.components.requestBodies" :value="'#/components/requestBodies/'+key">#/components/requestBodies/{{key}}</option>
+						</optgroup>
+					</select>
+				</div>
+				<div class="form-group" v-if="!response.$ref">
+					<label>Description</label>
+					<textarea class="form-control" v-model="response.description"></textarea>
+				</div>
+				<div class="form-group" v-if="!response.$ref">
 					<label class="">Required</label>
 					<span class="switch switch-primary ml-auto">
 						<input type="checkbox" :id="'response'+_uid" v-model="response.required">
 						<label :for="'response'+_uid"></label>
 					</span>
 				</div>
+				<api-mediatype :openapi="openapi" v-for="(content, mediatype) in response.content" :content="content" :key="mediatype" :mediatype="mediatype" :container="response"></api-mediatype>
 			</div>
-			<api-mediatype :openapi="openapi" v-for="(content, mediatype) in response.content" :content="content" :key="mediatype" :mediatype="mediatype" :container="response"></api-mediatype>
 		</div>
 	</div>
 	<div id="template-responses">
-		<div class="field-controls field-color-grey field-level-1 field-acc">
-			<div class="ficon-actions dropdown dropdown-hover">
-				<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
-				<ul class="dropdown-menu dropdown-menu-right" role="menu">
-					<li><a title="Add Response" v-on:click="addResponse()"><i class="fa fa-fw fa-plus"></i> Add Response</a></li>
-					<li v-if="!response.$ref"><a title="Add Media-Type" v-on:click="addMediaType()"><i class="fa fa-fw fa-plus"></i> Add Media-Type</a></li>
-					<li><a title="Remove Response" v-on:click="removeResponse()"><i class="fa fa-fw fa-trash-alt"></i> Remove Response</a></li>
-				</ul>
+		<div class="field-controls">
+			<div class="field-sum">
+				<a href="#" class="field-link" data-toggle="collapse" v-bind:data-target="'#responses'+_uid" v-bind:aria-controls="'responses'+_uid">
+					<strong class="font-weight-bold d-block">{{statusCode}}</strong>
+					<small v-if="response.$ref">{{response.$ref}}</small>
+				</a>
+				<div class="ficon-actions dropdown dropdown-hover">
+					<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
+					<ul class="dropdown-menu dropdown-menu-right" role="menu">
+						<li><a title="Add Response" v-on:click="addResponse(method)"><i class="fa fa-fw fa-plus"></i> Add Response</a></li>
+						<li v-if="!response.$ref"><a title="Add Media-Type" v-on:click="addMediaType(response)"><i class="fa fa-fw fa-plus"></i> Add Media-Type</a></li>
+						<li><a title="Remove Response" v-on:click="removeResponse()"><i class="fa fa-fw fa-trash-alt"></i> Remove Response</a></li>
+					</ul>
+				</div>
 			</div>
-			<div class="form-group">
-				<label>Status Code</label>
-				<input class="form-control" size="3" v-model.lazy="statusCode">
+			<div v-bind:id="'responses'+_uid" class="collapse field-acc">
+				<div class="form-group">
+					<label>Status Code</label>
+					<input class="form-control" size="3" v-model.lazy="statusCode">
+				</div>
+				<div class="form-group">
+					<label>$ref</label>
+					<select class="form-control" v-model="response.$ref" v-on:change="selectRefResponse($event.target.value, response)">
+						<option value="None">None</option>
+						<optgroup label="$Ref: schemas">
+							<option v-for="(schema,key,index) in openapi.components.schemas" :value="'#/components/schemas/'+key">#/components/schemas/{{key}}</option>
+						</optgroup>
+						<optgroup label="$Ref: responses">
+							<option v-for="(schema,key,index) in openapi.components.responses" :value="'#/components/responses/'+key">#/components/responses/{{key}}</option>
+						</optgroup>
+						<optgroup label="$Ref: requestBodies">
+							<option v-for="(schema,key,index) in openapi.components.requestBodies" :value="'#/components/requestBodies/'+key">#/components/requestBodies/{{key}}</option>
+						</optgroup>
+						<optgroup label="$Ref: securitySchemes">
+							<option v-for="(schema,key,index) in openapi.components.securitySchemes" :value="'#/components/securitySchemes/'+key">#/components/securitySchemes/{{key}}</option>
+						</optgroup>
+					</select>
+				</div>
+				<div class="form-group" v-if="!response.$ref">
+					<label>Description</label>
+					<input class="form-control" placeholder="Required" v-model="response.description">
+				</div>
+				<api-mediatype :openapi="openapi" v-for="(content, mediatype) in response.content"
+					:content="content" :key="mediatype" :mediatype="mediatype" :container="response"></api-mediatype>
 			</div>
-			<div class="form-group" v-if="openapi.components.responses">
-				<label>$ref</label>
-				<select class="form-control" v-model="response.$ref" v-on:change="selectRefResponse($event.target.value, response)">
-					<optgroup label="$Ref: schemas">
-						<option v-for="(schema,key,index) in openapi.components.schemas" :value="'#/components/schemas/'+key">#/components/schemas/{{key}}</option>
-					</optgroup>
-					<optgroup label="$Ref: responses">
-						<option v-for="(schema,key,index) in openapi.components.responses" :value="'#/components/responses/'+key">#/components/responses/{{key}}</option>
-					</optgroup>
-					<optgroup label="$Ref: requestBodies">
-						<option v-for="(schema,key,index) in openapi.components.requestBodies" :value="'#/components/requestBodies/'+key">#/components/requestBodies/{{key}}</option>
-					</optgroup>
-					<optgroup label="$Ref: securitySchemes">
-						<option v-for="(schema,key,index) in openapi.components.securitySchemes" :value="'#/components/securitySchemes/'+key">#/components/securitySchemes/{{key}}</option>
-					</optgroup>
-				</select>
-			</div>
-			<div class="form-group" v-if="!response.$ref">
-				<label>Description</label>
-				<input class="form-control" placeholder="Required" v-model="response.description">
-			</div>
-			<api-mediatype :openapi="openapi" v-for="(content, mediatype) in response.content"
-				:content="content" :key="mediatype" :mediatype="mediatype" :container="response"></api-mediatype>
 		</div>
 	</div>
 	<div id="template-items">
@@ -1250,7 +1260,7 @@
 							<div class="ficon-actions dropdown dropdown-hover">
 								<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
 								<ul class="dropdown-menu dropdown-menu-right" role="menu">
-									<li><a v-on:click="editSchema(key)"><i class="fa fa-fw fa-edit"></i> Edit shared item</a></li>
+									<li><a v-on:click="mixEditSchema(child.properties, key, openapi)"><i class="fa fa-fw fa-edit"></i> Edit shared item</a></li>
 									<li><a v-on:click="addSchema('item_'+level)"><i class="fa fa-fw fa-plus"></i> Create item</a></li>
 									<li><a v-on:click="duplicateSchema(key)"><i class="fa fa-fw fa-copy"></i> Duplicate item</a></li>
 									<li><a v-on:click="removeSchema(key)"><i class="fa fa-fw fa-trash-alt"></i> Remove item</a></li>
@@ -1278,9 +1288,9 @@
 			<div class="ficon-actions dropdown dropdown-hover">
 				<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
 				<ul class="dropdown-menu dropdown-menu-right" role="menu">
-					<li><a title="Add media-type" v-on:click="addMediaType()"><i class="fa fa-fw fa-plus"></i> Add media-type</a></li>
+					<li><a title="Add media-type" v-on:click="addMediaType(container)"><i class="fa fa-fw fa-plus"></i> Add media-type</a></li>
 					<li><a title="Duplicate media-type" v-on:click="duplicateMediaType()"><i class="fa fa-fw fa-copy"></i> Duplicate media-type</a></li>
-					<li><a :title="schemaTooltip" v-on:click="editMediaType(mediatype)"><i class="fa fa-fw fa-edit"></i> {{schemaTooltip}}</a></li>
+					<li><a :title="schemaTooltip" v-on:click="mixEditSchema(container.content[mediatype], 'schema', openapi)"><i class="fa fa-fw fa-edit"></i> {{schemaTooltip}}</a></li>
 					<li><a title="Remove media-type" v-on:click="removeMediaType()"><i class="fa fa-fw fa-trash-alt"></i> Remove media-type</a></li>
 				</ul>
 			</div>
@@ -1310,7 +1320,6 @@
 		</div>
 	</div>
 </div>
-
 <div id="mdPreview" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mdPreview" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
@@ -1324,7 +1333,6 @@
 		</div>
 	</div>
 </div>
-
 <div id="alert" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="alert" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
@@ -1335,7 +1343,6 @@
 		</div>
 	</div>
 </div>
-
 <div id="confirm" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="confirm" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">

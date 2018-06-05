@@ -62,27 +62,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 			log(name) {
 				console.log(name , this);
 			},
-			mixSpecLink(fragment) {
-				return 'https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md'+(fragment ? fragment : '');
-			},
-			saveApi : function(ooo) {
-				if (window.localStorage) {
-					window.localStorage.setItem('openapi3', JSON.stringify(ooo));
-				}
-				if (window.intelligentBackend) {
-					var data = new FormData();
-					data.append('source',JSON.stringify(ooo));
-					$.ajax({
-						url:'/store',
-						type:"POST",
-						contentType: false,
-						processData: false,
-						data:data,
-						success: function(result) {
-						}
-					});
-				}
-			},
 			uuidv4() {
 				return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
 					(c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)

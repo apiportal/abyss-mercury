@@ -45,6 +45,9 @@
 .txt-line {
   line-height: 1; }
 
+.txt-break {
+  word-wrap: break-word; }
+
 .w-auto {
   width: auto !important; }
 
@@ -11062,6 +11065,9 @@ button.close {
     width: 250px; }
 
 .dropdown-hover:hover > .dropdown-menu {
+  width: 250px; }
+
+.ficon-actions > .dropdown-menu > * {
   width: 250px; }
 
 button[data-balloon] {
