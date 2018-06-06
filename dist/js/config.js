@@ -6,7 +6,7 @@ define(['global'], function(abyss){
 	console.log("abyssHost: ", abyssHost);
 	var abyssPort = hostPort;
 	var abyssJsonPort = hostJsonPort;
-	var abyssPath = 'abyss';
+	var abyssPath = 'abyss/oapi';
 	var abyssJsonPath = 'data';
 	var abyssCredentials = true;
 	var abyssLocation = abyssProtocol + '://' + abyssHost + ':' + abyssPort + '/' + abyssPath;
