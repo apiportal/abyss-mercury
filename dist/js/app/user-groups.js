@@ -185,24 +185,35 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 				this.$validator.validateAll().then((result) => {
 					console.log("result: ", result);
 					if (result) {
+						var item = _.cloneDeep(this.group);
 						if (act == 'add') {
-							this.group.created = moment().toISOString();
-							var postItem = _.cloneDeep(this.group);
-							postItem.effectivestartdate = moment(this.group.effectivestartdate).toISOString();
-							postItem.effectiveenddate = moment(this.group.effectiveenddate).toISOString();
-							this.addItem(this.ajaxUrl, postItem, this.ajaxHeaders, this.groupList).then(response => {
+							// this.group.created = moment().toISOString();
+							var itemArr = [];
+							Vue.delete(item, 'uuid');
+							Vue.delete(item, 'created');
+							Vue.delete(item, 'updated');
+							Vue.delete(item, 'deleted');
+							Vue.delete(item, 'isdeleted');
+							item.effectivestartdate = moment(this.group.effectivestartdate).toISOString();
+							item.effectiveenddate = moment(this.group.effectiveenddate).toISOString();
+							itemArr.push(item);
+							this.addItem(this.ajaxUrl, itemArr, this.ajaxHeaders, this.groupList).then(response => {
 								console.log("addGroup response: ", response);
-								// console.log("this.group: ", JSON.stringify(postItem, null, '\t') );
+								// console.log("this.group: ", JSON.stringify(item, null, '\t') );
 								this.$emit('set-state', 'init');
 								this.group = _.cloneDeep(this.newGroup);
 							});
 						}
 						if (act == 'edit') {
-							this.group.updated = moment().toISOString();
-							var postItem = _.cloneDeep(this.group);
-							postItem.effectivestartdate = moment(this.group.effectivestartdate).toISOString();
-							postItem.effectiveenddate = moment(this.group.effectiveenddate).toISOString();
-							this.updateItem(this.ajaxUrl + '/' + postItem.uuid, postItem, this.ajaxHeaders, this.groupList).then(response => {
+							// this.group.updated = moment().toISOString();
+							Vue.delete(item, 'uuid');
+							Vue.delete(item, 'created');
+							Vue.delete(item, 'updated');
+							Vue.delete(item, 'deleted');
+							Vue.delete(item, 'isdeleted');
+							item.effectivestartdate = moment(this.group.effectivestartdate).toISOString();
+							item.effectiveenddate = moment(this.group.effectiveenddate).toISOString();
+							this.updateItem(this.ajaxUrl + '/' + this.group.uuid, item, this.ajaxHeaders, this.groupList).then(response => {
 								console.log("editGroup response: ", response);
 								// console.log("this.group: ", JSON.stringify(this.group, null, '\t') );
 								this.$emit('set-state', 'init');

@@ -234,7 +234,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 			},
 			deleteTax(list, editing, item) {
 				console.log("this.rootData[list]: ", this.rootData[list]);
-				this.removeItem(abyss.ajax.index, item, this.ajaxHeaders, this.rootData[list]).then(response => {
+				this.removeItem(this.getEndpoint() + '/' + item.uuid, item, this.ajaxHeaders, this.rootData[list]).then(response => {
 					console.log("response: ", response );
 					// ■■ update user's api groups, tags, categories and reload my api list
 					this.$refs.refMyApis.getPage(1);
@@ -258,7 +258,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 						var item = _.cloneDeep(this.tax);
 						item.uuid = this.uuidv4();
 						item.count = 0;
-						this.addItem(abyss.ajax.index, item, this.ajaxHeaders, this.rootData[this.taxList]).then(response => {
+						this.addItem(this.getEndpoint(), item, this.ajaxHeaders, this.rootData[this.taxList]).then(response => {
 							console.log("response: ", response);
 							this.cancelTax();
 							$('#taxModal').modal("hide");
@@ -270,7 +270,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 				this.$validator.validateAll().then((result) => {
 					if (result) {
 						var item = _.cloneDeep(this.tax);
-						this.updateItem(abyss.ajax.index, item, this.ajaxHeaders, this.rootData[this.taxList]).then(response => {
+						this.updateItem(this.getEndpoint() + '/' + item.uuid, item, this.ajaxHeaders, this.rootData[this.taxList]).then(response => {
 							console.log("response: ", response);
 							this.cancelTax();
 							$('#taxModal').modal("hide");
@@ -337,6 +337,23 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 				}, error => {
 					console.error(error);
 				});
+			},
+			getEndpoint() {
+				if ( this.taxList == 'myApiVisibilityList') {
+					return abyss.ajax.api_visibility_list;
+				}
+				if ( this.taxList == 'myApiStateList') {
+					return abyss.ajax.api_states_list;
+				}
+				if ( this.taxList == 'myApiGroupList') {
+					return abyss.ajax.api_group_list;
+				}
+				if ( this.taxList == 'myApiCategoryList') {
+					return abyss.ajax.api_category_list;
+				}
+				if ( this.taxList == 'myApiTagList') {
+					return abyss.ajax.api_tag_list;
+				}
 			},
 			getRootData(id) {
 				axios.all([

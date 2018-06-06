@@ -78,10 +78,10 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 					"invalidpasswordattemptcount": null,
 					"ispasswordchangerequired": true,
 					"passwordexpiresat": null,
-					"lastloginat": null,
-					"lastpasswordchangeat": null,
-					"lastauthenticatedat": null,
-					"lastfailedloginat": null,
+					"lastloginat": "",
+					"lastpasswordchangeat": "",
+					"lastauthenticatedat": "",
+					"lastfailedloginat": "",
 					"groups": null,
 					"permissions": null
 				},
@@ -94,7 +94,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 				permissionOptions: [],
 
 				end: []
-			}
+			};
 		},
 		methods: {
 			filterPermission(filter) {
@@ -243,9 +243,27 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 				this.$validator.validateAll().then((result) => {
 					console.log("result: ", result);
 					if (result) {
+						var item = _.cloneDeep(this.user);
 						if (act == 'add') {
-							this.user.created = moment().toISOString();
-							this.addItem(this.ajaxUrl, this.user, this.ajaxHeaders, this.userList).then(response => {
+							// this.user.created = moment().toISOString();
+							var itemArr = [];
+							Vue.delete(item, 'uuid');
+							Vue.delete(item, 'created');
+							Vue.delete(item, 'updated');
+							Vue.delete(item, 'deleted');
+							Vue.delete(item, 'isdeleted');
+							Vue.delete(item, 'isactivated');
+							Vue.delete(item, 'totallogincount');
+							Vue.delete(item, 'failedlogincount');
+							Vue.delete(item, 'invalidpasswordattemptcount');
+							Vue.delete(item, 'ispasswordchangerequired');
+							Vue.delete(item, 'passwordexpiresat');
+							Vue.delete(item, 'lastloginat');
+							Vue.delete(item, 'lastpasswordchangeat');
+							Vue.delete(item, 'lastauthenticatedat');
+							Vue.delete(item, 'lastfailedloginat');
+							itemArr.push(item);
+							this.addItem(this.ajaxUrl, itemArr, this.ajaxHeaders, this.userList).then(response => {
 								console.log("addUser response: ", response);
 								// console.log("this.user: ", JSON.stringify(this.user, null, '\t') );
 								this.$emit('set-state', 'init');
@@ -253,8 +271,23 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 							});
 						}
 						if (act == 'edit') {
-							this.user.updated = moment().toISOString();
-							this.updateItem(this.ajaxUrl + '/' + this.user.uuid, this.user, this.ajaxHeaders, this.userList).then(response => {
+							// this.user.updated = moment().toISOString();
+							Vue.delete(item, 'uuid');
+							Vue.delete(item, 'created');
+							Vue.delete(item, 'updated');
+							Vue.delete(item, 'deleted');
+							Vue.delete(item, 'isdeleted');
+							Vue.delete(item, 'isactivated');
+							Vue.delete(item, 'totallogincount');
+							Vue.delete(item, 'failedlogincount');
+							Vue.delete(item, 'invalidpasswordattemptcount');
+							Vue.delete(item, 'ispasswordchangerequired');
+							Vue.delete(item, 'passwordexpiresat');
+							Vue.delete(item, 'lastloginat');
+							Vue.delete(item, 'lastpasswordchangeat');
+							Vue.delete(item, 'lastauthenticatedat');
+							Vue.delete(item, 'lastfailedloginat');
+							this.updateItem(this.ajaxUrl + '/' + this.user.uuid, item, this.ajaxHeaders, this.userList).then(response => {
 								console.log("editUser response: ", response);
 								// console.log("this.user: ", JSON.stringify(this.user, null, '\t') );
 								this.$emit('set-state', 'init');

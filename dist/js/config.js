@@ -23,15 +23,24 @@ define(['global'], function(abyss){
 			my_api: '/api/my-apis/getAll',
 	};*/
 	var abyssDataList = {
-		api_states_list: '/api-states', //ApiState.yaml
-		api_visibility_list: '/api-visibility-types', //ApiVisibilityType.yaml
-		api_group_list: '/api-groups', //ApiGroup.yaml
-		user_list: '/subjects', //Subject.yaml
-		api_category_list: '/api-categories', //ApiCategory.yaml
-		api_tag_list: '/api-tags', //ApiTag.yaml
-		user_group_list: '/subject-groups', //SubjectGroup.yaml
-		permission_list: '/subject-permissions', //SubjectPermission.yaml
-		my_api_list: '/apis', //Api.yaml
+		// http://dev2.apiportal.com/abyss/openapi/ApiState.yaml
+		api_states_list: '/api-states',
+		// http://dev2.apiportal.com/abyss/openapi/ApiVisibilityType.yaml
+		api_visibility_list: '/api-visibility-types',
+		// http://dev2.apiportal.com/abyss/openapi/ApiGroup.yaml
+		api_group_list: '/api-groups',
+		// http://dev2.apiportal.com/abyss/openapi/Subject.yaml
+		user_list: '/subjects',
+		// http://dev2.apiportal.com/abyss/openapi/ApiCategory.yaml
+		api_category_list: '/api-categories',
+		// http://dev2.apiportal.com/abyss/openapi/ApiTag.yaml
+		api_tag_list: '/api-tags',
+		// http://dev2.apiportal.com/abyss/openapi/SubjectGroup.yaml
+		user_group_list: '/subject-groups',
+		// http://dev2.apiportal.com/abyss/openapi/SubjectPermission.yaml
+		permission_list: '/subject-permissions',
+		// http://dev2.apiportal.com/abyss/openapi/Api.yaml
+		my_api_list: '/apis',
 	};
 	var abyssJsonList = {
 		index: '/index.json',
@@ -41,18 +50,27 @@ define(['global'], function(abyss){
 			// abyssLocation = 'http://local.abyss.com/000?file=http://local.abyss.com/data';
 			abyssLocation = 'http://local.abyss.com/000?file=http://dev2.apiportal.com/abyss/oapi';
 			abyssDataList = {
-				api_states_list: '/api-states', //ApiState.yaml
-				api_visibility_list: '/api-visibility-types', //ApiVisibilityType.yaml
-				api_group_list: '/api-groups', //ApiGroup.yaml
-				user_list: '/subjects', //Subject.yaml
-				api_category_list: '/api-categories', //ApiCategory.yaml
-				api_tag_list: '/api-tags', //ApiTag.yaml
-				user_group_list: '/subject-groups', //SubjectGroup.yaml
-				permission_list: '/subject-permissions', //SubjectPermission.yaml
-				my_api_list: '/apis', //Api.yaml
+				// http://dev2.apiportal.com/abyss/openapi/ApiState.yaml
+				api_states_list: '/api-states',
+				// http://dev2.apiportal.com/abyss/openapi/ApiVisibilityType.yaml
+				api_visibility_list: '/api-visibility-types',
+				// http://dev2.apiportal.com/abyss/openapi/ApiGroup.yaml
+				api_group_list: '/api-groups',
+				// http://dev2.apiportal.com/abyss/openapi/Subject.yaml
+				user_list: '/subjects',
+				// http://dev2.apiportal.com/abyss/openapi/ApiCategory.yaml
+				api_category_list: '/api-categories',
+				// http://dev2.apiportal.com/abyss/openapi/ApiTag.yaml
+				api_tag_list: '/api-tags',
+				// http://dev2.apiportal.com/abyss/openapi/SubjectGroup.yaml
+				user_group_list: '/subject-groups',
+				// http://dev2.apiportal.com/abyss/openapi/SubjectPermission.yaml
+				permission_list: '/subject-permissions',
+				// http://dev2.apiportal.com/abyss/openapi/Api.yaml
+				my_api_list: '/apis',
 			};
-		} else if (location.host == '192.168.21.180:18881' || location.host == 'http://192.168.1.80:8000') {
-			abyssLocation = location.host + '/000?file=' + location.host + '/data';
+		} else if (location.host == '192.168.21.180:18881' || location.host == '192.168.1.80:8000') {
+			abyssLocation = 'http://' + location.host + '/000?file=' + 'http://' + location.host + '/data';
 			abyssDataList = {
 				api_group_list: '/api-group-list.json',
 				user_list: '/subjects.json',
