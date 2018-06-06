@@ -57,14 +57,26 @@
 					</li>
 					<li>
 						<a href="#" class="nav-caret" data-toggle="collapse" data-target="#apiStates" aria-controls="apiStates">States</a>
-						<ul id="apiStates" class="collapse">
-							<li v-for="(state, index) in rootData.myApiStateList"><a href="#" v-bind:title="state.description"><i v-bind:class="'fas fa-circle stat-' + state.name"></i>{{state.name}}<span class="badge badge-pill badge-outline">{{state.count}}</span></a></li>
+						<ul id="apiStates" class="collapse"> 
+							<li></li>
+							<li v-for="(state, index) in rootData.myApiStateList"> 
+								<a href="#" v-bind:title="state.description"> 
+									<i v-bind:class="'fas fa-circle stat-' + state.name"></i>{{state.name}}
+									<span class="badge badge-pill badge-outline">{{state.count}}</span> 
+								</a>
+							</li>
 						</ul>
 					</li>
 					<li>
 						<a href="#" class="nav-caret" data-toggle="collapse" data-target="#apiVisibility" aria-controls="apiVisibility">Visibility</a>
-						<ul id="apiVisibility" class="collapse">
-							<li v-for="(visible, index) in rootData.myApiVisibilityList"><a href="#"><i v-bind:class="'fas ico-visibility-' + visible.id"></i>{{visible.name}}<span class="badge badge-pill badge-outline">{{visible.count}}</span></a></li>
+						<ul id="apiVisibility" class="collapse"> 
+							<li></li>
+							<li v-for="(visible, index) in rootData.myApiVisibilityList"> 
+								<a href="#"> 
+									<i v-bind:class="'fas ico-visibility-' + visible.id"></i>{{visible.name}}
+									<span class="badge badge-pill badge-outline">{{visible.count}}</span> 
+								</a>
+							</li>
 						</ul>
 					</li>
 				</ul>

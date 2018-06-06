@@ -119,43 +119,58 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 				}
 			},
 			getUserOptions(search, loading) {
-				loading(true)
-				axios.get(this.ajaxUrl, {
-					params: {
-						q: search
-					}
-				})
+				loading(true);
+				axios.get(this.ajaxUrl + '?likename=' + search, this.ajaxHeaders)
+				// axios.get(this.ajaxUrl, {
+				// 	params: {
+				// 		likename: search
+				// 	}
+				// })
 				.then(response => {
 					console.log(response);
-					this.userOptions = response.data.respDataList;
+					if (response.data != null) {
+						this.userOptions = response.data;
+					} else {
+						this.userOptions = [];
+					}
 					loading(false);
-				})
+				});
 			},
 			getGroupOptions(search, loading) {
-				loading(true)
-				axios.get(abyss.ajax.user_group_list, {
-					params: {
-						q: search
-					}
-				})
+				loading(true);
+				axios.get(abyss.ajax.user_group_list + '?likename=' + search, this.ajaxHeaders)
+				// axios.get(abyss.ajax.user_group_list, {
+				// 	params: {
+				// 		byname: search
+				// 	}
+				// })
 				.then(response => {
 					console.log(response);
-					this.groupOptions = response.data.respDataList;
+					if (response.data != null) {
+						this.groupOptions = response.data;
+					} else {
+						this.groupOptions = [];
+					}
 					loading(false);
-				})
+				});
 			},
 			getPermissionOptions(search, loading) {
-				loading(true)
-				axios.get(abyss.ajax.permission_list, {
-					params: {
-						q: search
-					}
-				})
+				loading(true);
+				axios.get(abyss.ajax.permission_list + '?likename=' + search, this.ajaxHeaders)
+				// axios.get(abyss.ajax.permission_list, {
+				// 	params: {
+				// 		likename: search
+				// 	}
+				// })
 				.then(response => {
 					console.log(response);
-					this.permissionOptions = response.data.respDataList;
+					if (response.data != null) {
+						this.permissionOptions = response.data;
+					} else {
+						this.permissionOptions = [];
+					}
 					loading(false);
-				})
+				});
 			},
 			fakeData() { // delete
 				this.userList.forEach((value, key) => {
@@ -191,12 +206,13 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 			},
 			getPage(p, d) {
 				var param = d || '';
+				console.log("this.ajaxUrl: ", this.ajaxUrl);
 				axios.get(this.ajaxUrl + '?page=' + p + param, this.ajaxHeaders)
 				.then(response => {
-					this.userList = response.data.respDataList;
+					this.userList = response.data;
+					// console.log("this.userList: ", JSON.stringify(this.userList, null, '\t') );
 					this.paginate = this.makePaginate(response.data);
 					// this.fakeData(); // delete
-					console.log("this.userList: ", JSON.stringify(this.userList, null, '\t') );
 				}, error => {
 					console.error(error);
 				});
@@ -219,7 +235,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 				return i === this.selected;
 			},
 			deleteUser(item) {
-				this.removeItem(abyss.ajax.user_delete, item, this.ajaxHeaders, this.userList);
+				this.removeItem(this.ajaxUrl + '/' + item.uuid, item, this.ajaxHeaders, this.userList).then(response => {
+					console.log("deleteUser response: ", response);
+				});
 			},
 			userAction(act) {
 				this.$validator.validateAll().then((result) => {
@@ -227,16 +245,18 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 					if (result) {
 						if (act == 'add') {
 							this.user.created = moment().toISOString();
-							this.addItem(abyss.ajax.user_add, this.user, this.ajaxHeaders, this.userList).then(response => {
-								console.log("this.user: ", JSON.stringify(this.user, null, '\t') );
+							this.addItem(this.ajaxUrl, this.user, this.ajaxHeaders, this.userList).then(response => {
+								console.log("addUser response: ", response);
+								// console.log("this.user: ", JSON.stringify(this.user, null, '\t') );
 								this.$emit('set-state', 'init');
 								this.user = _.cloneDeep(this.newUser);
 							});
 						}
 						if (act == 'edit') {
 							this.user.updated = moment().toISOString();
-							this.updateItem(abyss.ajax.user_update, this.user, this.ajaxHeaders, this.userList).then(response => {
-								console.log("this.user: ", JSON.stringify(this.user, null, '\t') );
+							this.updateItem(this.ajaxUrl + '/' + this.user.uuid, this.user, this.ajaxHeaders, this.userList).then(response => {
+								console.log("editUser response: ", response);
+								// console.log("this.user: ", JSON.stringify(this.user, null, '\t') );
 								this.$emit('set-state', 'init');
 								this.user = _.cloneDeep(this.newUser);
 								this.selected = null;

@@ -75,43 +75,58 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 				}
 			},
 			getUserOptions(search, loading) {
-				loading(true)
-				axios.get(abyss.ajax.user_list, {
-					params: {
-						q: search
-					}
-				})
+				loading(true);
+				axios.get(abyss.ajax.user_list + '?likename=' + search, this.ajaxHeaders)
+				// axios.get(abyss.ajax.user_list, {
+				// 	params: {
+				// 		likename: search
+				// 	}
+				// })
 				.then(response => {
 					console.log(response);
-					this.userOptions = response.data.respDataList;
+					if (response.data != null) {
+						this.userOptions = response.data;
+					} else {
+						this.userOptions = [];
+					}
 					loading(false);
-				})
+				});
 			},
 			getGroupOptions(search, loading) {
-				loading(true)
-				axios.get(this.ajaxUrl, {
-					params: {
-						q: search
-					}
-				})
+				loading(true);
+				axios.get(this.ajaxUrl + '?likename=' + search, this.ajaxHeaders)
+				// axios.get(this.ajaxUrl, {
+				// 	params: {
+				// 		byname: search
+				// 	}
+				// })
 				.then(response => {
 					console.log(response);
-					this.groupOptions = response.data.respDataList;
+					if (response.data != null) {
+						this.groupOptions = response.data;
+					} else {
+						this.groupOptions = [];
+					}
 					loading(false);
-				})
+				});
 			},
 			getPermissionOptions(search, loading) {
-				loading(true)
-				axios.get(abyss.ajax.permission_list, {
-					params: {
-						q: search
-					}
-				})
+				loading(true);
+				axios.get(abyss.ajax.permission_list + '?likename=' + search, this.ajaxHeaders)
+				// axios.get(abyss.ajax.permission_list, {
+				// 	params: {
+				// 		likename: search
+				// 	}
+				// })
 				.then(response => {
 					console.log(response);
-					this.permissionOptions = response.data.respDataList;
+					if (response.data != null) {
+						this.permissionOptions = response.data;
+					} else {
+						this.permissionOptions = [];
+					}
 					loading(false);
-				})
+				});
 			},
 			fakeData() { // delete
 				this.groupList.forEach((value, key) => {
@@ -134,19 +149,14 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 				});
 			},
 			getPage(p, d) {
-				// axios.get(this.ajaxUrl).then(response => {
-				// 	console.log("p: ", p);
-				// 	this.groupList = response.data.respDataList;
-				// }, error => {
-				// 	console.error(error);
-				// });
 				var param = d || '';
+				console.log("this.ajaxUrl: ", this.ajaxUrl);
 				axios.get(this.ajaxUrl + '?page=' + p + param, this.ajaxHeaders)
 				.then(response => {
-					this.groupList = response.data.respDataList;
+					this.groupList = response.data;
+					// console.log("this.groupList: ", JSON.stringify(this.userList, null, '\t') );
 					this.paginate = this.makePaginate(response.data);
 					// this.fakeData(); // delete
-					console.log("this.groupList: ", JSON.stringify(this.groupList, null, '\t') );
 				}, error => {
 					console.error(error);
 				});
@@ -167,7 +177,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 				return i === this.selected;
 			},
 			deleteGroup(item) {
-				this.removeItem(this.ajaxUrl, item, this.ajaxHeaders, this.groupList);
+				this.removeItem(this.ajaxUrl + '/' + item.uuid, item, this.ajaxHeaders, this.groupList).then(response => {
+					console.log("deleteGroup response: ", response);
+				});
 			},
 			groupAction(act) {
 				this.$validator.validateAll().then((result) => {
@@ -179,6 +191,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 							postItem.effectivestartdate = moment(this.group.effectivestartdate).toISOString();
 							postItem.effectiveenddate = moment(this.group.effectiveenddate).toISOString();
 							this.addItem(this.ajaxUrl, postItem, this.ajaxHeaders, this.groupList).then(response => {
+								console.log("addGroup response: ", response);
 								// console.log("this.group: ", JSON.stringify(postItem, null, '\t') );
 								this.$emit('set-state', 'init');
 								this.group = _.cloneDeep(this.newGroup);
@@ -189,10 +202,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 							var postItem = _.cloneDeep(this.group);
 							postItem.effectivestartdate = moment(this.group.effectivestartdate).toISOString();
 							postItem.effectiveenddate = moment(this.group.effectiveenddate).toISOString();
-							console.log("postItem: ", postItem);
-							this.updateItem(this.ajaxUrl, postItem, this.ajaxHeaders, this.groupList).then(response => {
-								console.log("response: ", response);
-								console.log("postItem: ", postItem);
+							this.updateItem(this.ajaxUrl + '/' + postItem.uuid, postItem, this.ajaxHeaders, this.groupList).then(response => {
+								console.log("editGroup response: ", response);
+								// console.log("this.group: ", JSON.stringify(this.group, null, '\t') );
 								this.$emit('set-state', 'init');
 								this.group = _.cloneDeep(this.newGroup);
 								this.selected = null;

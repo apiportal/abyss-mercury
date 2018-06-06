@@ -94,7 +94,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 					totalPages: data.totalPages,
 					totalItems: data.totalItems,
 					currentPage: data.currentPage
-				}
+				};
 				for (var i = 1; i < paginate.totalPages; i++) {
 					paginate.pages.push(i);
 				}
@@ -109,17 +109,18 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 			updateItem(url, item, head, arr) {
 				return axios.put(url, item, head).then(response => {
 				// return axios.post(url, item, head).then(response => {
+					console.log("PUT response: ", response);
 					return response;
 				}, error => {
 					console.error(error);
 					alert(error.code + ': ' + error.message);
-				})
+				});
 			},
 			addItem(url, item, head, arr) {
 				return axios.post(url, item, head).then(response => {
-					console.log("response.data: ", response.data);
-					arr.push(item);
-					// arr.push(response.data);
+					console.log("POST response: ", response);
+					// arr.push(item);
+					arr.push(response.data);
 					return response;
 				}, error => {
 					console.error(error);
@@ -129,7 +130,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 				var r = confirm('Are you sure to delete?');
 				if (r == true) {
 					return axios.delete(url, item, head).then(response => {
-					// return axios.post(url, item, head).then(response => {
+						console.log("DELETE response: ", response);
 						var index = arr.indexOf(item);
 						arr.splice(index, 1);
 						return response;
@@ -328,12 +329,37 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 					// alert('Correct them errors!');
 				});
 			},
-			getRootData(id) {
+			getRootData333(id) {
 				axios.get(abyss.ajax.index + '?q=' + id, this.ajaxHeaders).then(response => {
 					this.rootData = response.data;
+					// console.log("this.rootData: ", JSON.stringify(this.rootData, null, '\t'));
 					console.log("this.rootData: ", this.rootData);
 				}, error => {
 					console.error(error);
+				});
+			},
+			getRootData(id) {
+				axios.all([
+					axios.get(abyss.ajax.user_list + '/' + id),
+					axios.get(abyss.ajax.api_visibility_list),
+					axios.get(abyss.ajax.api_states_list),
+					axios.get(abyss.ajax.api_group_list),
+					axios.get(abyss.ajax.api_category_list),
+					axios.get(abyss.ajax.api_tag_list),
+					// axios.get('/data/create-api.json')
+				]).then(
+					axios.spread((user_list, api_visibility_list, api_states_list, api_group_list, api_category_list, api_tag_list) => {
+						Vue.set(this.rootData, 'user', user_list.data );
+						Vue.set(this.rootData, 'myApiVisibilityList', api_visibility_list.data );
+						Vue.set(this.rootData, 'myApiStateList', api_states_list.data );
+						Vue.set(this.rootData, 'myApiGroupList', api_group_list.data );
+						Vue.set(this.rootData, 'myApiCategoryList', api_category_list.data );
+						Vue.set(this.rootData, 'myApiTagList', api_tag_list.data );
+						console.log("this.rootData: ", this.rootData);
+						// console.log("this.rootData: ", JSON.stringify(this.rootData, null, '\t') );
+					})
+				).catch(error => {
+					console.log(error.response)
 				});
 			},
 			getRootData222(id) {
