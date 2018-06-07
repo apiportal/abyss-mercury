@@ -1425,7 +1425,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					"languagename": "OpenAPI",
 					"languageversion": "3.0.0",
 					"dataformat": 1,
-					"originaldocument": "",
+					"originaldocument": null,
 					"openapidocument": {},
 					"extendeddocument": {},
 					"businessapiid": "2741ce5d-0fcb-4de3-a517-405c0ceffbbe",
@@ -1433,7 +1433,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					"color": "#006699",
 					"deployed": moment().toISOString(),
 					"changelog": "",
-					"apioriginuuid": "",
+					"apioriginuuid": null,
 					"version": "1.0.0",
 					"issandbox": false,
 					"islive": false,
@@ -2131,6 +2131,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 						// this.api.created = moment().toISOString();
 						// this.api.uuid = this.uuidv4();
 						this.fixProps(this.api);
+						if (this.api.originaldocument == null) {
+							Vue.set(this.api, 'originaldocument', this.swaggerText.text );
+						}
 						var item = _.cloneDeep(this.api);
 						var itemArr = [];
 						Vue.delete(item, 'uuid');
