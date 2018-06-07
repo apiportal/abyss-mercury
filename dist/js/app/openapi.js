@@ -1433,6 +1433,12 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					"color": "#006699",
 					"deployed": moment().toISOString(),
 					"changelog": "",
+					"apioriginuuid": "",
+					"version": "1.0.0",
+					"issandbox": false,
+					"islive": false,
+					"isdefaultversion": true,
+					"islatestversion": true,
 					////////////
 					"tags": [],
 					"groups": [],
@@ -1977,8 +1983,26 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				if (item.changelog == null) {
 					Vue.set(item, 'changelog', '' );
 				}
+				if (item.issandbox == null) {
+					Vue.set(item, 'issandbox', false );
+				}
+				if (item.islive == null) {
+					Vue.set(item, 'islive', false );
+				}
+				if (item.isdefaultversion == null) {
+					Vue.set(item, 'isdefaultversion', true );
+				}
+				if (item.islatestversion == null) {
+					Vue.set(item, 'islatestversion', true );
+				}
+				if (item.version == null) {
+					Vue.set(item, 'version', '1.0.0' );
+				}
 				if (item.businessapiid == null) {
 					Vue.set(item, 'businessapiid', '2741ce5d-0fcb-4de3-a517-405c0ceffbbe' );
+				}
+				if (item.apioriginuuid == null) {
+					Vue.set(item, 'apioriginuuid', '2741ce5d-0fcb-4de3-a517-405c0ceffbbe' );
 				}
 				if (item.subjectid == null) {
 					Vue.set(item,'subjectid',this.$root.rootData.user.uuid);
@@ -2073,6 +2097,15 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				Vue.delete(item, 'deleted');
 				Vue.delete(item, 'isdeleted');
 				Vue.delete(item, 'extendeddocument');
+				Vue.delete(item, 'tags');
+				Vue.delete(item, 'groups');
+				Vue.delete(item, 'categories');
+				Vue.delete(item, 'proxies');
+				Vue.delete(item, 'tagList');
+				Vue.delete(item, 'groupList');
+				Vue.delete(item, 'categoryList');
+				Vue.delete(item, 'qosPolicy');
+				Vue.delete(item, 'specs');
 				this.updateItem(this.ajaxApiUrl + '/' + this.api.uuid, item, this.ajaxHeaders, this.myApiList).then(response => {
 					this.selectedApi = response.data;
 					this.$toast('success', {message: '<strong>' + this.api.openapidocument.info.title + '</strong> saved', title: 'API SAVED'});
@@ -2106,6 +2139,15 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 						Vue.delete(item, 'deleted');
 						Vue.delete(item, 'isdeleted');
 						Vue.delete(item, 'extendeddocument');
+						Vue.delete(item, 'tags');
+						Vue.delete(item, 'groups');
+						Vue.delete(item, 'categories');
+						Vue.delete(item, 'proxies');
+						Vue.delete(item, 'tagList');
+						Vue.delete(item, 'groupList');
+						Vue.delete(item, 'categoryList');
+						Vue.delete(item, 'qosPolicy');
+						Vue.delete(item, 'specs');
 						itemArr.push(item);
 						// axios.post(this.ajaxApiUrl, this.api, this.ajaxHeaders).then(response => {
 						this.addItem(this.ajaxApiUrl, itemArr, this.ajaxHeaders, this.myApiList).then(response => {
