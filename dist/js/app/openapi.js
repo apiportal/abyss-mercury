@@ -1335,7 +1335,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				},
 				pageState: 'init',
 				paginate: {},
-				// ajaxUrl: abyss.ajax.my_api_list,
+				ajaxApiUrl: abyss.ajax.api_list,
 				ajaxUrl: abyss.ajax.my_api_list + '/' + this.$cookie.get('abyss.principal.uuid'),
 				ajaxHeaders: {},
 				
@@ -1428,7 +1428,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					"originaldocument": null,
 					"openapidocument": {},
 					"extendeddocument": {},
-					"businessapiid": null,
+					"businessapiid": "",
 					"image": null,
 					"color": "#006699",
 					"deployed": moment().toISOString(),
@@ -2002,7 +2002,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				}
 			},
 			getApiById(item, state) {
-				axios.get(this.ajaxUrl + '?uuid=' + item.uuid).then(response => {
+				axios.get(this.ajaxApiUrl + '/' + item.uuid).then(response => {
 					this.api = Object.assign(item, response.data);
 					this.$root.setState(state);
 					this.selectedApi = _.cloneDeep(this.api);
@@ -2058,7 +2058,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				Vue.delete(item, 'deleted');
 				Vue.delete(item, 'isdeleted');
 				Vue.delete(item, 'extendeddocument');
-				this.updateItem(this.ajaxUrl + '/' + this.api.uuid, item, this.ajaxHeaders, this.myApiList).then(response => {
+				this.updateItem(this.ajaxApiUrl + '/' + this.api.uuid, item, this.ajaxHeaders, this.myApiList).then(response => {
 					this.selectedApi = response.data;
 					this.$toast('success', {message: '<strong>' + this.api.openapidocument.info.title + '</strong> saved', title: 'API SAVED'});
 					this.isChanged = false;
@@ -2091,8 +2091,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 						Vue.delete(item, 'isdeleted');
 						Vue.delete(item, 'extendeddocument');
 						itemArr.push(item);
-						// axios.post(this.ajaxUrl, this.api, this.ajaxHeaders).then(response => {
-						this.addItem(this.ajaxUrl, itemArr, this.ajaxHeaders, this.myApiList).then(response => {
+						// axios.post(this.ajaxApiUrl, this.api, this.ajaxHeaders).then(response => {
+						this.addItem(this.ajaxApiUrl, itemArr, this.ajaxHeaders, this.myApiList).then(response => {
 							this.$root.setState('edit');
 							var item = this.myApiList.find((el) => el.uuid == this.api.uuid );
 							// Vue.set(this.api, this.myApiList[index]);
