@@ -16697,34 +16697,34 @@ th.desc:before {
 .ico-visibility-3:before {
   content: "\f007"; }
 
-.stat-Initial, .stat-274a8e10-9c14-44fb-8e84-ea74a90531b9 {
+.stat-Initial {
   color: #8b8e91; }
 
-.stat-Draft, .stat-dccb1796-9338-4ae8-a0d9-02654d1e2c6d {
+.stat-Draft {
   color: #212121; }
 
-.stat-Staged, .stat-52240c72-a34e-46e2-a949-f8983e2a5a6e {
+.stat-Staged {
   color: #6f42c1; }
 
-.stat-Published, .stat-915fe07d-4e0b-4ae7-b0ca-f9649946402d {
+.stat-Published {
   color: #4cac00; }
 
-.stat-Promoted, .stat-1425993f-f6be-4ca0-84fe-8a83e983ffd9 {
+.stat-Promoted {
   color: #db408d; }
 
-.stat-Demoted, .stat-f6efa915-70ff-40ca-91ac-6ba939c86844 {
+.stat-Demoted {
   color: #ec7700; }
 
-.stat-Deprecated, .stat-352db612-7fd8-4465-9e49-b2ee063fdbf9 {
+.stat-Deprecated {
   color: #ecb100; }
 
-.stat-Retired, .stat-f1e8c6b4-bcbd-4bb3-9ba9-19bbf94ce954 {
+.stat-Retired {
   color: #00bbbb; }
 
-.stat-Archived, .stat-ad0dff11-1149-4981-b08a-1b2ab3d694dd {
+.stat-Archived {
   color: #177ec1; }
 
-.stat-Removed, .stat-5a4eb4cc-995d-4bc9-96e0-462084882332 {
+.stat-Removed {
   color: #161c9a; }
 
 .comma-sep span:before {

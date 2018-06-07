@@ -70,8 +70,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 					"displayname": null,
 					"email": null,
 					"secondaryemail": null,
-					"effectivestartdate": null,
-					"effectiveenddate": null,
+					"effectivestartdate": moment().format('YYYY-MM-DD HH:mm:ss'),
+					"effectiveenddate": moment().add(6, 'months').format('YYYY-MM-DD HH:mm:ss'),
 					"password": null,
 					"picture": null,
 					"totallogincount": null,
@@ -230,7 +230,16 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 				// this.permissionOptions = [],
 				this.selected = null;
 			},
+			fixProps(item) {
+				if (item.effectiveenddate == null) {
+					Vue.set(item, 'effectiveenddate', moment().add(6, 'months').format('YYYY-MM-DD HH:mm:ss'));
+				}
+				if (item.effectivestartdate == null) {
+					Vue.set(item, 'effectivestartdate', moment().format('YYYY-MM-DD HH:mm:ss'));
+				}
+			},
 			selectUser(item, i) {
+				this.fixProps(item);
 				this.selectedUser = _.cloneDeep(item);
 				this.user = item;
 				this.selected = i;
@@ -266,6 +275,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 							Vue.delete(item, 'lastpasswordchangeat');
 							Vue.delete(item, 'lastauthenticatedat');
 							Vue.delete(item, 'lastfailedloginat');
+							item.effectivestartdate = moment(this.user.effectivestartdate).toISOString();
+							item.effectiveenddate = moment(this.user.effectiveenddate).toISOString();
 							itemArr.push(item);
 							this.addItem(this.ajaxUrl, itemArr, this.ajaxHeaders, this.userList).then(response => {
 								console.log("addUser response: ", response);
@@ -291,6 +302,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 							Vue.delete(item, 'lastpasswordchangeat');
 							Vue.delete(item, 'lastauthenticatedat');
 							Vue.delete(item, 'lastfailedloginat');
+							item.effectivestartdate = moment(this.user.effectivestartdate).toISOString();
+							item.effectiveenddate = moment(this.user.effectiveenddate).toISOString();
 							this.updateItem(this.ajaxUrl + '/' + this.user.uuid, item, this.ajaxHeaders, this.userList).then(response => {
 								console.log("editUser response: ", response);
 								// console.log("this.user: ", JSON.stringify(this.user, null, '\t') );

@@ -105,10 +105,26 @@
 						<div class="form-group" v-bind:class="{ 'has-error': errors.has('effectiveenddate') }">
 							<label class="">Effective To</label>
 							<div class="input-group w-100">
-								<date-picker name="effectiveenddate" v-model="group.effectiveenddate" :config="config"></date-picker>
+								<date-picker name="effectiveenddate" v-model="group.effectiveenddate" :config="config" v-validate="'required'"></date-picker>
 								<span class="input-group-addon"><i class="fa fa-calendar-alt"></i></span>
 							</div>
 							<em v-bind:class="{ 'show': errors.has('effectiveenddate') }">{{ errors.first('effectiveenddate') }}</em>
+						</div>
+						<div class="form-group v-select-color-blue">
+							<!-- <v-select label="organizationid" :filterable="false" :options="orgOptions" @search="getOrgOptions" :on-change="filterOrg" v-validate="'required'">
+								<span slot="no-options"></span>
+								<template slot="no-option" slot-scope="option">
+									<strong>{{ option.name }}</strong>
+								</template>
+								<template slot="selected-option" slot-scope="option">
+									<strong>{{ option.name }}</strong>
+								</template>
+								{{orgOptions}}
+							</v-select> -->
+							<label class="">Organization Id</label>
+							<select class="form-control" v-model="group.organizationid">
+								<option v-for="(org,index) in orgOptions" :value="org.organizationid">{{org.name}}</option>
+							</select>
 						</div>
 						<div class="form-group ">
 							<span class="checkbox">

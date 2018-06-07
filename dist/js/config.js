@@ -41,6 +41,8 @@ define(['global'], function(abyss){
 		permission_list: '/subject-permissions',
 		// http://dev2.apiportal.com/abyss/openapi/Api.yaml
 		my_api_list: '/apis',
+		// http://dev2.apiportal.com/abyss/openapi/Organization.yaml
+		organizations_list: '/organizations',
 	};
 	var abyssJsonList = {
 		index: '/index.json',
@@ -68,6 +70,8 @@ define(['global'], function(abyss){
 				permission_list: '/subject-permissions',
 				// http://dev2.apiportal.com/abyss/openapi/Api.yaml
 				my_api_list: '/apis',
+				// http://dev2.apiportal.com/abyss/openapi/Organization.yaml
+				organizations_list: '/organizations',
 			};
 		} else if (location.host == '192.168.21.180:18881' || location.host == '192.168.1.80:8000') {
 			abyssLocation = 'http://' + location.host + '/000?file=' + 'http://' + location.host + '/data';

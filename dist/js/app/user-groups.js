@@ -39,8 +39,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 					"isenabled": true,
 					"groupname": null,
 					"description": null,
-					"effectivestartdate": null,
-					"effectiveenddate": null,
+					"effectivestartdate": moment().format('YYYY-MM-DD HH:mm:ss'),
+					"effectiveenddate": moment().add(6, 'months').format('YYYY-MM-DD HH:mm:ss'),
 
 					"userCount": 0,
 					"permissions": [],
@@ -53,6 +53,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 				userOptions: [],
 				groupOptions: [],
 				permissionOptions: [],
+				orgOptions: [],
 
 				date: null,
 					config: {
@@ -74,6 +75,15 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 					this.getPage(1, '&group='+filter.uuid);
 				}
 			},
+			filterOrg(filter) {
+				if (filter == null) {
+					console.log("null filter: ", filter);
+					this.group.organizationid = '';
+				} else {
+					console.log("filter: ", filter);
+					this.group.organizationid = filter.organizationid;
+				}
+			},
 			getUserOptions(search, loading) {
 				loading(true);
 				axios.get(abyss.ajax.user_list + '?likename=' + search, this.ajaxHeaders)
@@ -90,6 +100,20 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 						this.userOptions = [];
 					}
 					loading(false);
+				});
+			},
+			getOrgOptions() {
+				// loading(true);
+				// axios.get(abyss.ajax.organizations_list + '?likename=' + search, this.ajaxHeaders)
+				axios.get(abyss.ajax.organizations_list, this.ajaxHeaders)
+				.then(response => {
+					console.log(response);
+					if (response.data != null) {
+						this.orgOptions = response.data;
+					} else {
+						this.orgOptions = [];
+					}
+					// loading(false);
 				});
 			},
 			getGroupOptions(search, loading) {
@@ -168,7 +192,16 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 				this.selectedGroup = _.cloneDeep(this.newGroup);
 				this.selected = null;
 			},
+			fixProps(item) {
+				if (item.effectiveenddate == null) {
+					Vue.set(item, 'effectiveenddate', moment().add(6, 'months').format('YYYY-MM-DD HH:mm:ss'));
+				}
+				if (item.effectivestartdate == null) {
+					Vue.set(item, 'effectivestartdate', moment().format('YYYY-MM-DD HH:mm:ss'));
+				}
+			},
 			selectGroup(item, i) {
+				this.fixProps(item);
 				this.selectedGroup = _.cloneDeep(item);
 				this.group = item;
 				this.selected = i;
@@ -246,6 +279,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 			this.$emit('set-page', 'user-groups', 'init');
 			this.newGroup = _.cloneDeep(this.group);
 			this.getPage(1);
+			this.getOrgOptions();
 		}
 	});
 });

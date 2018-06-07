@@ -1429,7 +1429,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					"extendeddocument": {},
 					"businessapiid": null,
 					"image": null,
-					"color": null,
+					"color": "#006699",
 					"deployed": null,
 					"changelog": null,
 					/////////////
@@ -1772,12 +1772,14 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				// swEditor.specActions.updateSpec(jsyaml.dump(schema));
 			},
 			updateSchema: function (schema) {
+				console.log("updateSchema: ", schema);
 				schema = preProcessDefinition(schema);
 				if (window.localStorage) window.localStorage.setItem('openapi3', JSON.stringify(schema));
 				Vue.set(this, 'openapi', schema);
 				// self.openapi.paths = {};
 			},
 			loadSchema: function () {
+				console.log("loadSchema: ", this);
 				var schema;
 				try {
 					schema = JSON.parse(this.importschema);
@@ -1961,9 +1963,15 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				// image.src = response.files;
 				this.api.image = response.files;
 			},
+			fixProps(item) {
+				if (item.color == null) {
+					Vue.set(item, 'color', '#006699');
+				}
+			},
 			selectApi(item, state) {
 				// console.log("pp selectApi: ", item);
 				this.beforeCancelApi();
+				this.fixProps(item);
 				this.updateSchema(item.openapidocument);
 				this.api = item;
 				// this.openapi = item;
