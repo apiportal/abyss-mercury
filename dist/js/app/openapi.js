@@ -1428,8 +1428,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					"originaldocument": null,
 					"openapidocument": {},
 					"extendeddocument": {},
-					"businessapiid": "",
-					"image": null,
+					"businessapiid": "2741ce5d-0fcb-4de3-a517-405c0ceffbbe",
+					"image": "",
 					"color": "#006699",
 					"deployed": moment().toISOString(),
 					"changelog": null,
@@ -1973,6 +1973,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				}
 				if (item.image == null) {
 					Vue.set(item, 'image', '' );
+				}
+				if (item.businessapiid == null) {
+					Vue.set(item, 'businessapiid', '2741ce5d-0fcb-4de3-a517-405c0ceffbbe' );
 				}
 
 			},
