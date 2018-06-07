@@ -40,7 +40,7 @@ define(['global'], function(abyss){
 		// http://dev2.apiportal.com/abyss/openapi/SubjectPermission.yaml
 		permission_list: '/subject-permissions',
 		// http://dev2.apiportal.com/abyss/openapi/Api.yaml
-		mmy_api_list: '/apis/subject',
+		my_api_list: '/apis/subject',
 		// my_api_list: '/apis',
 		// http://dev2.apiportal.com/abyss/openapi/Organization.yaml
 		organizations_list: '/organizations',
