@@ -1431,14 +1431,14 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					"businessapiid": null,
 					"image": null,
 					"color": "#006699",
-					"deployed": null,
+					"deployed": moment().toISOString(),
 					"changelog": null,
-					/////////////
+					////////////
 					"tags": [],
 					"groups": [],
 					"categories": [],
 					"proxies": [],
-					/////////////
+					////////////
 					"tagList": "",
 					"groupList": "",
 					"categoryList": "",
@@ -1446,12 +1446,12 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					"specs": null
 				},
 				apiAdd: {
-					/////////////
+					////////////
 					"tags": [],
 					"groups": [],
 					"categories": [],
 					"proxies": [],
-					/////////////
+					////////////
 					"tagList": "",
 					"groupList": "",
 					"categoryList": "",
@@ -1515,7 +1515,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 						"dataformat": null,
 						"deleted": null,
 						"deployed": null,
-						"image": null,
+						"image": "",
 						"isdeleted": null,
 						"isproxyapi": false,
 						"languagename": null,
@@ -1968,6 +1968,13 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				if (item.color == null) {
 					Vue.set(item, 'color', '#006699');
 				}
+				if (item.deployed == null) {
+					Vue.set(item, 'deployed', moment().toISOString() );
+				}
+				if (item.image == null) {
+					Vue.set(item, 'image', '' );
+				}
+
 			},
 			selectApi(item, state) {
 				// console.log("pp selectApi: ", item);
