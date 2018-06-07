@@ -1432,7 +1432,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					"image": "",
 					"color": "#006699",
 					"deployed": moment().toISOString(),
-					"changelog": null,
+					"changelog": "",
 					////////////
 					"tags": [],
 					"groups": [],
@@ -2097,7 +2097,10 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 						// axios.post(this.ajaxApiUrl, this.api, this.ajaxHeaders).then(response => {
 						this.addItem(this.ajaxApiUrl, itemArr, this.ajaxHeaders, this.myApiList).then(response => {
 							this.$root.setState('edit');
-							var item = this.myApiList.find((el) => el.uuid == this.api.uuid );
+							// var item = this.myApiList.find((el) => el.uuid == this.api.uuid );
+							var item = this.myApiList.find((el) => el.uuid == response.data[0].uuid );
+							console.log("item: ", item);
+							Object.assign(item, this.apiAdd);
 							// Vue.set(this.api, this.myApiList[index]);
 							// this.selectedApi = response.data;
 							this.api = item;

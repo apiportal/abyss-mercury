@@ -120,7 +120,12 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 				return axios.post(url, item, head).then(response => {
 					console.log("POST response: ", response);
 					// arr.push(item);
-					arr.push(response.data);
+					if (_.isArray(arr)) {
+						arr.push(response.data[0]);
+					} else {
+						arr.push(response.data);
+					}
+					console.log("arr: ", arr);
 					return response;
 				}, error => {
 					console.error(error);
