@@ -1412,20 +1412,20 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				},
 				api: {
 					"uuid": null,
-					"organizationid": null,
+					"organizationid": "",
 					"created": null,
 					"updated": null,
 					"deleted": null,
 					"isdeleted": false,
-					"crudsubjectid": null,
-					"subjectid": null,
+					"crudsubjectid": "",
+					"subjectid": "",
 					"isproxyapi": false,
 					"apistateid": "274a8e10-9c14-44fb-8e84-ea74a90531b9",
 					"apivisibilityid": "043d4827-cff4-43f9-9d5b-782d1f83b3f0",
 					"languagename": "OpenAPI",
 					"languageversion": "3.0.0",
 					"dataformat": 1,
-					"originaldocument": null,
+					"originaldocument": "",
 					"openapidocument": {},
 					"extendeddocument": {},
 					"businessapiid": "2741ce5d-0fcb-4de3-a517-405c0ceffbbe",
@@ -2083,8 +2083,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 			createApi() {
 				this.$validator.validateAll().then((result) => {
 					if (result) {
-						this.api.created = moment().toISOString();
-						this.api.uuid = this.uuidv4();
+						// this.api.created = moment().toISOString();
+						// this.api.uuid = this.uuidv4();
+						Vue.set(this.api,'subjectid',this.$root.rootData.user.uuid);
 						var item = _.cloneDeep(this.api);
 						var itemArr = [];
 						Vue.delete(item, 'uuid');
