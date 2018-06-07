@@ -1412,13 +1412,13 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				},
 				api: {
 					"uuid": null,
-					"organizationid": "",
+					"organizationid": null,
 					"created": null,
 					"updated": null,
 					"deleted": null,
 					"isdeleted": false,
-					"crudsubjectid": "",
-					"subjectid": "",
+					"crudsubjectid": null,
+					"subjectid": null,
 					"isproxyapi": false,
 					"apistateid": "274a8e10-9c14-44fb-8e84-ea74a90531b9",
 					"apivisibilityid": "043d4827-cff4-43f9-9d5b-782d1f83b3f0",
@@ -1977,6 +1977,15 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				if (item.businessapiid == null) {
 					Vue.set(item, 'businessapiid', '2741ce5d-0fcb-4de3-a517-405c0ceffbbe' );
 				}
+				if (item.subjectid == null) {
+					Vue.set(item,'subjectid',this.$root.rootData.user.uuid);
+				}
+				if (item.crudsubjectid == null) {
+					Vue.set(item,'crudsubjectid',this.$root.rootData.user.uuid);
+				}
+				if (item.organizationid == null) {
+					Vue.set(item,'organizationid',this.$root.rootData.user.organizationid);
+				}
 
 			},
 			selectApi(item, state) {
@@ -2085,7 +2094,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					if (result) {
 						// this.api.created = moment().toISOString();
 						// this.api.uuid = this.uuidv4();
-						Vue.set(this.api,'subjectid',this.$root.rootData.user.uuid);
+						this.fixProps(this.api);
 						var item = _.cloneDeep(this.api);
 						var itemArr = [];
 						Vue.delete(item, 'uuid');
@@ -2142,7 +2151,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 							this.myApiList.forEach((value, key) => {
 								Object.assign(value, this.apiAdd);
 							});
-							Vue.set(this.api,'subjectid',this.$root.rootData.user.uuid);
+							this.fixProps(this.api);
 							this.paginate = this.makePaginate(response.data);
 							console.log("this.myApiList: ", this.myApiList);
 						}
@@ -2170,7 +2179,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 						console.log("this.myApiList: ", this.myApiList);
 						console.log("this.api.proxies.length > 0: ", this.api.proxies.length > 0);
 						// console.log("this.$root.rootData", this.$root.rootData);
-						Vue.set(this.api,'subjectid',this.$root.rootData.user.uuid);
+						this.fixProps(this.api);
 						console.log("this.api.subjectid: ", this.api.subjectid);
 						this.paginate = this.makePaginate(response.data);
 					}
