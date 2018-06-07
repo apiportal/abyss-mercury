@@ -105,7 +105,7 @@
 						<div class="form-group" v-bind:class="{ 'has-error': errors.has('effectiveenddate') }">
 							<label class="">Effective To</label>
 							<div class="input-group w-100">
-								<date-picker name="effectiveenddate" v-model="group.effectiveenddate" :config="config" v-validate="'required'"></date-picker>
+								<date-picker name="effectiveenddate" v-model="group.effectiveenddate" :config="config"></date-picker>
 								<span class="input-group-addon"><i class="fa fa-calendar-alt"></i></span>
 							</div>
 							<em v-bind:class="{ 'show': errors.has('effectiveenddate') }">{{ errors.first('effectiveenddate') }}</em>

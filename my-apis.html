@@ -10,31 +10,31 @@
 	<main class="page-wrapper">
 	<my-apis inline-template ref="refMyApis" v-on:set-page="setPage" v-bind:root-state="rootState">
 		<div class="columns tab-content">
-			<aside class="column column-aside list-column">
+			<aside class="column column-aside list-column xxx">
 				<div class="clearfix column-header column-min-button">
 					<div class="dropdown column-header-button">
 						<button type="button" class="dropdown-toggle btn btn-lg btn-link txt-link btn-square" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
 						<ul class="dropdown-menu dropdown-menu-right" role="menu">
-							<li><a href="#" v-on:click="sortList(sortApi, 'info.title', String)"><i class="fas fa-sort"></i>Sort by Name</a></li>
-							<li><a href="#" v-on:click="sortList(sortApi, 'x-abyss-platform.created', Date);"><i class="fas fa-calendar-alt"></i>Sort by Date</a></li>
-							<li><a href="#" v-on:click="sortList(sortApi, 'x-abyss-platform.proxies_summary', Array)"><i class="fas fa-code-branch"></i>Sort by Proxies</a></li>
+							<li><a href="#" v-on:click="sortList(sortApi, 'openapidocument.info.title', String)"><i class="fas fa-sort"></i>Sort by Name</a></li>
+							<li><a href="#" v-on:click="sortList(sortApi, 'created', Date);"><i class="fas fa-calendar-alt"></i>Sort by Date</a></li>
+							<li><a href="#" v-on:click="sortList(sortApi, 'proxies', Array)"><i class="fas fa-code-branch"></i>Sort by Proxies</a></li>
 						</ul>
 					</div>
 					<h5 class="column-header-title">My APIs <small>All</small></h5>
 				</div>
 				<div class="column-content">
 					<div class="nicescroll-bar">
-						<v-select label="info.title" :filterable="false" :options="apiOptions" @search="getApiOptions" :on-change="filterApi" placeholder="Search API">
+						<v-select label="openapidocument.info.title" :filterable="false" :options="apiOptions" @search="getApiOptions" :on-change="filterApi" placeholder="Search API">
 							<span slot="no-options"></span>
 							<template slot="option" slot-scope="option">
-								<div>{{ option.info.title }}</div>
+								<div>{{ option.openapidocument.info.title }}</div>
 							</template>
 							<template slot="selected-option" slot-scope="option">
-								<div>{{ option.info.title }}</div>
+								<div>{{ option.openapidocument.info.title }}</div>
 							</template>
 						</v-select>
 						<ul class="nav flex-column nav-controls nav-controls-first">
-							<api-list v-for="(a, index) in sortByNested(sortApi, myApiList)" :api="a" :openapi="openapi" :lindex="index" :key="a['x-abyss-platform'].uuid" inline-template>
+							<api-list v-for="(a, index) in sortByNested(sortApi, myApiList)" :api="a" :openapi="openapi" :lindex="index" :key="a.uuid" inline-template>
 								<li>
 								<div class="nav-actions dropdown dropdown-hover">
 									<button type="button"><i class="fas fa-ellipsis-h"></i></button>
@@ -44,28 +44,28 @@
 										<li><a href="#" v-on:click="$parent.selectApi(api, 'preview')"><i class="fas fa-file-alt"></i>Preview</a></li>
 										<li class="dropdown-header">VISIBILITY</li>
 										<li role="separator" class="divider"></li>
-										<li v-bind:class="{'active': api['x-abyss-platform'].apivisibilityid == 1}" ><a href="#" v-on:click="apiChangeVisibility(api, 1)"><i class="fas fa-eye"></i>Public</a></li>
-										<li v-bind:class="{'active': api['x-abyss-platform'].apivisibilityid == 2}" ><a href="#" v-on:click="apiChangeVisibility(api, 2)"><i class="fas fa-user-secret"></i>Private</a></li>
-										<li v-bind:class="{'active': api['x-abyss-platform'].apivisibilityid == 3}" ><a href="#" v-on:click="apiChangeVisibility(api, 3)"><i class="fas fa-user"></i>Only registered users</a></li>
+										<li v-bind:class="{'active': apiIsActiveVisibility(api,'Public')}" ><a href="#" v-on:click="apiChangeVisibility(api, 'Public')"><i class="fas fa-eye"></i>Public</a></li>
+										<li v-bind:class="{'active': apiIsActiveVisibility(api,'Private')}" ><a href="#" v-on:click="apiChangeVisibility(api, 'Private')"><i class="fas fa-user-secret"></i>Private</a></li>
+										<li v-bind:class="{'active': apiIsActiveVisibility(api,'Closed-Group')}" ><a href="#" v-on:click="apiChangeVisibility(api, 'Closed-Group')"><i class="fas fa-user"></i>Closed-Group</a></li>
 										<li class="dropdown-header">CHANGE STATE</li>
 										<li role="separator" class="divider"></li>
-										<li v-bind:class="{'active': api['x-abyss-platform'].apistateid == 2}"><a href="#" v-on:click="apiChangeState(api, 2)"><i class="fas fa-circle stat-2"></i>Draft</a></li>
-										<li v-bind:class="{'active': api['x-abyss-platform'].apistateid == 3}"><a href="#" v-on:click="apiChangeState(api, 3)"><i class="fas fa-circle stat-3"></i>Stage</a></li>
-										<li v-bind:class="{'active': api['x-abyss-platform'].apistateid == 4}"><a href="#" v-on:click="apiChangeState(api, 4)"><i class="fas fa-circle stat-4"></i>Publish</a></li>
-										<li v-bind:class="{'active': api['x-abyss-platform'].apistateid == 5}"><a href="#" v-on:click="apiChangeState(api, 5)"><i class="fas fa-circle stat-5"></i>Promote</a></li>
-										<li v-bind:class="{'active': api['x-abyss-platform'].apistateid == 6}"><a href="#" v-on:click="apiChangeState(api, 6)"><i class="fas fa-circle stat-6"></i>Demote</a></li>
-										<li v-bind:class="{'active': api['x-abyss-platform'].apistateid == 8}"><a href="#" v-on:click="apiChangeState(api, 8)"><i class="fas fa-circle stat-8"></i>Retire</a></li>
-										<li v-bind:class="{'active': api['x-abyss-platform'].apistateid == 10}"><a href="#" v-on:click="apiChangeState(api, 10)"><i class="fas fa-trash-alt"></i>Delete</a></li> </ul>
+										<li v-bind:class="{'active': apiIsActiveState(api,'Draft')}"><a href="#" v-on:click="apiChangeState(api, 'Draft')"><i class="fas fa-circle stat-Draft"></i>Draft</a></li>
+										<li v-bind:class="{'active': apiIsActiveState(api,'Staged')}"><a href="#" v-on:click="apiChangeState(api, 'Staged')"><i class="fas fa-circle stat-Staged"></i>Stage</a></li>
+										<li v-bind:class="{'active': apiIsActiveState(api,'Published')}"><a href="#" v-on:click="apiChangeState(api, 'Published')"><i class="fas fa-circle stat-Published"></i>Publish</a></li>
+										<li v-bind:class="{'active': apiIsActiveState(api,'Promoted')}"><a href="#" v-on:click="apiChangeState(api, 'Promoted')"><i class="fas fa-circle stat-Promoted"></i>Promote</a></li>
+										<li v-bind:class="{'active': apiIsActiveState(api,'Demoted')}"><a href="#" v-on:click="apiChangeState(api, 'Demoted')"><i class="fas fa-circle stat-Demoted"></i>Demote</a></li>
+										<li v-bind:class="{'active': apiIsActiveState(api,'Retired')}"><a href="#" v-on:click="apiChangeState(api, 'Retired')"><i class="fas fa-circle stat-Retired"></i>Retire</a></li>
+										<li v-bind:class="{'active': apiIsActiveState(api,'Removed')}"><a href="#" v-on:click="apiChangeState(api, 'Removed')"><i class="fas fa-trash-alt"></i>Delete</a></li> </ul>
 								</div>
-								<a href="#" data-toggle="collapse" v-bind:data-target="'#api'+api['x-abyss-platform'].uuid" v-bind:aria-controls="'api'+api['x-abyss-platform'].uuid" v-bind:class="{'active': $parent.isSelectedApi(api['x-abyss-platform'].uuid)}">
+								<a href="#" data-toggle="collapse" v-bind:data-target="'#api'+api.uuid" v-bind:aria-controls="'api'+api.uuid" v-bind:class="{'active': $parent.isSelectedApi(api.uuid)}">
 									<div class="">
-										<i v-bind:title="apiGetStateName(api['x-abyss-platform'].apistateid)" class="fas fa-circle" v-bind:class="'stat-' + api['x-abyss-platform'].apistateid"></i>
-										<strong>{{api.info.title}}</strong> <small class="text-muted">{{api.info.version}}</small>
+										<i v-bind:title="apiGetStateName(api.apistateid)" class="fas fa-circle" v-bind:class="'stat-' + apiGetStateName(api.apistateid)"></i>
+										<strong>{{api.openapidocument.info.title}}</strong> <small class="text-muted">{{api.openapidocument.info.version}}</small>
 									</div>
-									<small>Proxies: <strong>{{api['x-abyss-platform'].proxies_summary.length}}</strong></small>
-									<small class="text-muted float-right">{{api['x-abyss-platform'].created | formatDate}}</small>
+									<small>Proxies: <strong>{{api.proxies.length}}</strong></small>
+									<small class="text-muted float-right">{{api.created | formatDate}}</small>
 								</a>
-								<ul v-bind:id="'api'+api['x-abyss-platform'].uuid" class="collapse clearfix">
+								<ul v-bind:id="'api'+api.uuid" class="collapse clearfix">
 									<li>
 										<div class="px-3 txt-dark brd-t">
 											<div class="small pt-2">
@@ -74,25 +74,25 @@
 													<span class="d-block text-truncate" v-for="(sv, index) in api.servers" v-bind:title="sv.url">{{sv.url}}</span>
 												</p>
 												<div class="fow form-row">
-													<p class="fol-6"><strong class="d-block text-uppercase">Visibility</strong><span class="text-capitalize">{{apiGetVisibilityName(api['x-abyss-platform'].apivisibilityid)}}</span></p>
-													<p class="fol-6"><strong class="d-block text-uppercase">State</strong><span class="text-capitalize">{{apiGetStateName(api['x-abyss-platform'].apistateid)}}</span></p>
+													<p class="fol-6"><strong class="d-block text-uppercase">Visibility</strong><span class="text-capitalize">{{apiGetVisibilityName(api.apivisibilityid)}}</span></p>
+													<p class="fol-6"><strong class="d-block text-uppercase">State</strong><span class="text-capitalize">{{apiGetStateName(api.apistateid)}}</span></p>
 												</div>
 												<div class="fow form-row">
 													<p class="fol-6"><strong class="d-block text-uppercase">Security</strong> {{getObjCount(openapi.components.securitySchemes)}}</p>
-													<p class="fol-6"><strong class="d-block text-uppercase">Licence</strong> {{api.info.licence}}</p>
+													<p class="fol-6"><strong class="d-block text-uppercase">Licence</strong> {{api.openapidocument.info.licence}}</p>
 												</div>
 												<div class="fow form-row">
 													<p class="fol-12"><strong class="d-block text-uppercase">Categories</strong>{{compCategoriesToList}}</p>
 													<p class="fol-12"><strong class="d-block text-uppercase">Groups</strong>{{compGroupsToList}}</p>
 													<p class="fol-12"><strong class="d-block text-uppercase">Tags</strong>{{compTagsToList}}</p>
-													<p class="fol-12"><small class="d-block">{{api.info.description}}</small></p>
+													<p class="fol-12"><small class="d-block">{{api.openapidocument.info.description}}</small></p>
 												</div>
 											</div>
-											<ul class="row nav flex-column nav-controls mt-2" v-if="api['x-abyss-platform'].proxies_summary.length">
+											<ul class="row nav flex-column nav-controls mt-2" v-if="api.proxies.length > 0">
 												<li class="field-link small">
 													<strong class="d-block text-uppercase">PROXIES</strong>
 												</li>
-												<li class="field-link" v-for="(proxy, index) in api['x-abyss-platform'].proxies_summary">
+												<li class="field-link" v-for="(proxy, index) in api.proxies" v-if="api.proxies.length > 0">
 													<div class="nav-actions dropdown dropdown-hover">
 														<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
 														<ul class="dropdown-menu dropdown-menu-right" role="menu" data-dropdown-in="slideInRight" data-dropdown-out="slideOutRight">
@@ -119,12 +119,12 @@
 				</div>
 				<div class="column-content">
 					<form class="nicescroll-bar" id="frmHeader">
-						<article class="field-controls field-level-0" data-id="Info" v-show="api['x-abyss-platform'].specs != 'scratch' && rootState == 'create'">
+						<article class="field-controls field-level-0" data-id="Info" v-show="api.specs != 'scratch' && rootState == 'create'">
 							<a href="#" class="field-link nav-caret" data-toggle="collapse" data-target="#upload" aria-controls="upload" aria-expanded="false">
-								<h6><i class="fa fa-fw fa-upload"></i> Upload API <small>{{api['x-abyss-platform'].specs}}</small></h6>
+								<h6><i class="fa fa-fw fa-upload"></i> Upload API <small>{{api.specs}}</small></h6>
 							</a>
 							<div id="upload" class="collapse field-color-grey field-level-1">
-								<div id="specsFrom" class="field-acc" v-show="rootState == 'create' && api['x-abyss-platform'].specs != 'scratch'">
+								<div id="specsFrom" class="field-acc" v-show="rootState == 'create' && api.specs != 'scratch'">
 									<div class="form-group">
 										<span class="radio radio-primary d-inline-block mr-3">
 											<input type="radio" name="specsUpload" id="specsUrl" class="js-switchclass" data-all=".specs-uploads" data-target="#specsFromUrl" data-class="show" checked>
@@ -323,15 +323,15 @@
 								</div>
 								<div class="form-group v-select-color-green v-select-inline">
 									<label for="categories">Add to Categories:</label>
-									<v-select label="name" multiple :filterable="true" :options="categoryOptions" @search="getCategoryOptions" v-model="api['x-abyss-platform'].categories"></v-select>
+									<v-select label="name" multiple :filterable="true" :options="categoryOptions" @search="getCategoryOptions" v-model="api.categories"></v-select>
 								</div>
 								<div class="form-group v-select-color-purple v-select-inline">
 									<label for="tags">Add Tags:</label>
-									<v-select label="name" multiple taggable :filterable="false" :options="tagOptions" @search="getTagOptions" v-model="api['x-abyss-platform'].tags"></v-select>
+									<v-select label="name" multiple taggable :filterable="false" :options="tagOptions" @search="getTagOptions" v-model="api.tags"></v-select>
 								</div>
 								<div class="form-group v-select-color-pink v-select-inline">
 									<label for="group">Add Group:</label>
-									<v-select label="name" multiple :filterable="false" :options="$root.rootData.myApiGroupList"  v-model="api['x-abyss-platform'].groups" ref="refApiGroups"></v-select>
+									<v-select label="name" multiple :filterable="false" :options="$root.rootData.myApiGroupList"  v-model="api.groups" ref="refApiGroups"></v-select>
 								</div>
 							</div>
 						</article>
@@ -660,19 +660,19 @@
 					<h4>Register New API</h4>
 					<div class="fow bg-white mb-3">
 						<div class="fol-6 choose">
-							<input type="radio" name="specs" id="scratch" v-on:click="chooseSpec" v-model="api['x-abyss-platform'].specs" value="scratch">
+							<input type="radio" name="specs" id="scratch" v-on:click="chooseSpec" v-model="api.specs" value="scratch">
 							<label for="scratch"><span><i class="fas fa-code"></i></span>From Scratch</label>
 						</div>
 						<div class="fol-6 choose">
-							<input type="radio" name="specs" id="swagger" v-on:click="chooseSpec" v-model="api['x-abyss-platform'].specs" value="swagger">
+							<input type="radio" name="specs" id="swagger" v-on:click="chooseSpec" v-model="api.specs" value="swagger">
 							<label for="swagger"><span>{...}</span>Swagger</label>
 						</div>
 						<div class="fol-6 choose">
-							<input type="radio" name="specs" id="wsdl" v-on:click="chooseSpec" v-model="api['x-abyss-platform'].specs" value="wsdl">
+							<input type="radio" name="specs" id="wsdl" v-on:click="chooseSpec" v-model="api.specs" value="wsdl">
 							<label for="wsdl"><span><i class="fas fa-code"></i></span>WSDL</label>
 						</div>
 						<div class="fol-6 choose">
-							<input type="radio" name="specs" id="wadl" v-on:click="chooseSpec" v-model="api['x-abyss-platform'].specs" value="wadl">
+							<input type="radio" name="specs" id="wadl" v-on:click="chooseSpec" v-model="api.specs" value="wadl">
 							<label for="wadl"><span><i class="fas fa-code"></i></span>WADL</label>
 						</div>
 					</div>

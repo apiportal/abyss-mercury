@@ -216,6 +216,12 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 			pageClassPrefix: 'vs',
 			pageClass: '',
 			ajaxHeaders: {},
+			// ajax_user_list: abyss.ajax.user_list,
+			// ajax_api_visibility_list: abyss.ajax.api_visibility_list,
+			// ajax_api_states_list: abyss.ajax.api_states_list,
+			// ajax_api_group_list: abyss.ajax.api_group_list,
+			// ajax_api_category_list: abyss.ajax.api_category_list,
+			// ajax_api_tag_list: abyss.ajax.api_tag_list,
 			rootData: {},
 			taxAction: '',
 			taxTitle: '',
@@ -366,7 +372,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 					// axios.get('/data/create-api.json')
 				]).then(
 					axios.spread((user_list, api_visibility_list, api_states_list, api_group_list, api_category_list, api_tag_list) => {
-						Vue.set(this.rootData, 'user', user_list.data );
+						Vue.set(this.rootData, 'user', user_list.data[0] );
 						Vue.set(this.rootData, 'myApiVisibilityList', api_visibility_list.data );
 						Vue.set(this.rootData, 'myApiStateList', api_states_list.data );
 						Vue.set(this.rootData, 'myApiGroupList', api_group_list.data );

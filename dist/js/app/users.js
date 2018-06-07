@@ -72,6 +72,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 					"secondaryemail": null,
 					"effectivestartdate": null,
 					"effectiveenddate": null,
+					"password": null,
 					"picture": null,
 					"totallogincount": null,
 					"failedlogincount": null,
@@ -82,6 +83,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 					"lastpasswordchangeat": "",
 					"lastauthenticatedat": "",
 					"lastfailedloginat": "",
+					"subjectdirectoryid": "",
+					"islocked": null,
+					"issandbox": null,
 					"groups": null,
 					"permissions": null
 				},
