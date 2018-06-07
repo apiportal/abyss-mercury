@@ -403,6 +403,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 		},
 		created() {
 			// this.$cookie.set('abyss.principal.uuid', '9820d2aa-eb02-4a58-8cc5-8b9a89504df9', 1); //one day
+			// this.$cookie.set('abyss.principal.uuid', '32c9c734-11cb-44c9-b06f-0b52e076672d', 1); //one day
 			var principal = this.$cookie.get('abyss.principal.uuid');
 			console.log("principal: ", principal);
 			// this.$cookie.delete('abyss.principal.uuid');

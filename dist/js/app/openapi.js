@@ -1335,7 +1335,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				},
 				pageState: 'init',
 				paginate: {},
-				ajaxUrl: abyss.ajax.my_api_list,
+				// ajaxUrl: abyss.ajax.my_api_list,
+				ajaxUrl: abyss.ajax.my_api_list + '/' + this.$cookie.get('abyss.principal.uuid'),
 				ajaxHeaders: {},
 				
 				changes: {},
@@ -2112,19 +2113,25 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				if (filter == null) {
 					this.getPage(1);
 				} else {
-					axios.get(this.ajaxUrl + '/' + filter.uuid, this.ajaxHeaders)
+					// axios.get(this.ajaxUrl + '/' + filter.uuid, this.ajaxHeaders)
+					axios.get(this.ajaxUrl, this.ajaxHeaders)
 					.then(response => {
-						this.myApiList = response.data;
-						// !!!!!!!!!!! originaldocument string geliyor
-						if (typeof this.myApiList[0].openapidocument === 'string') {
-							this.myApiList[0].openapidocument = JSON.parse(this.myApiList[0].openapidocument);
+						console.log("response: ", response);
+						if (response.data != null) {
+							// this.myApiList = response.data;
+							this.myApiList = [];
+							this.myApiList.push(filter);
+							// !!!!!!!!!!! openapidocument string geliyor
+							if (typeof this.myApiList[0].openapidocument === 'string') {
+								this.myApiList[0].openapidocument = JSON.parse(this.myApiList[0].openapidocument);
+							}
+							this.myApiList.forEach((value, key) => {
+								Object.assign(value, this.apiAdd);
+							});
+							Vue.set(this.api,'subjectid',this.$root.rootData.user.uuid);
+							this.paginate = this.makePaginate(response.data);
+							console.log("this.myApiList: ", this.myApiList);
 						}
-						this.myApiList.forEach((value, key) => {
-							Object.assign(value, this.apiAdd);
-						});
-						Vue.set(this.api,'subjectid',this.$root.rootData.user.uuid);
-						this.paginate = this.makePaginate(response.data);
-						console.log("this.myApiList: ", this.myApiList);
 					}, error => {
 						console.error(error);
 					});
@@ -2134,28 +2141,32 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				var param = d || '';
 				axios.get(this.ajaxUrl + '?page=' + p + param, this.ajaxHeaders)
 				.then(response => {
-					this.myApiList = response.data;
-					this.myApiList.forEach((value, key) => {
-						// console.log("value, key: ", value, key);
-						// apiAdd
-						Object.assign(value, this.apiAdd);
-						// var slcState = this.$root.rootData.myApiStateList.find((el) => el.uuid == value.apistateid );
-						// console.log("slcState: ", slcState.name);
-						// value.uuid = this.uuidv4();
-						// value.count = 1;
-					});
-					console.log("this.myApiList: ", this.myApiList);
-					console.log("this.api.proxies.length > 0: ", this.api.proxies.length > 0);
-					// console.log("this.$root.rootData", this.$root.rootData);
-					Vue.set(this.api,'subjectid',this.$root.rootData.user.uuid);
-					console.log("this.api.subjectid: ", this.api.subjectid);
-					this.paginate = this.makePaginate(response.data);
+					// console.log("response: ", response);
+					if (response.data != null) {
+						this.myApiList = response.data;
+						this.myApiList.forEach((value, key) => {
+							// console.log("value, key: ", value, key);
+							// apiAdd
+							Object.assign(value, this.apiAdd);
+							// var slcState = this.$root.rootData.myApiStateList.find((el) => el.uuid == value.apistateid );
+							// console.log("slcState: ", slcState.name);
+							// value.uuid = this.uuidv4();
+							// value.count = 1;
+						});
+						console.log("this.myApiList: ", this.myApiList);
+						console.log("this.api.proxies.length > 0: ", this.api.proxies.length > 0);
+						// console.log("this.$root.rootData", this.$root.rootData);
+						Vue.set(this.api,'subjectid',this.$root.rootData.user.uuid);
+						console.log("this.api.subjectid: ", this.api.subjectid);
+						this.paginate = this.makePaginate(response.data);
+					}
 				}, error => {
 					console.error(error);
 				});
 			},
 			getApiOptions(search, loading) {
 				loading(true);
+				// !!! not working
 				// axios.get(this.ajaxUrl + '?likename=' + search, this.ajaxHeaders)
 				axios.get(this.ajaxUrl, this.ajaxHeaders)
 				.then((response) => {
@@ -2276,6 +2287,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 		mounted() {
 			this.preload();
 			console.log("this.api.proxies.length: ", this.api.proxies.length);
+			// console.log("this.$root.rootData: ", this.$root.rootData);
+			// this.ajaxUrl = abyss.ajax.my_api_list + '/' + this.$root.rootData.user.uuid;
 		},
 		created() {
 			// axios.get('https://generator.swagger.io/api/gen/clients').then(response => {
