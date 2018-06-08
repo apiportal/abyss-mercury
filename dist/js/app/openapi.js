@@ -2013,31 +2013,59 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				if (item.organizationid == null) {
 					Vue.set(item,'organizationid',this.$root.rootData.user.organizationid);
 				}
+				if (item.tags == null) {
+					Vue.set(item, 'tags', []);
+				}
+				if (item.groups == null) {
+					Vue.set(item, 'groups', []);
+				}
+				if (item.categories == null) {
+					Vue.set(item, 'categories', []);
+				}
+				if (item.proxies == null) {
+					Vue.set(item, 'proxies', []);
+				}
+				if (item.tagList == null) {
+					Vue.set(item, 'tagList', '');
+				}
+				if (item.groupList == null) {
+					Vue.set(item, 'groupList', '');
+				}
+				if (item.categoryList == null) {
+					Vue.set(item, 'categoryList', '');
+				}
+				if (item.qosPolicy == null) {
+					Vue.set(item, 'qosPolicy', '');
+				}
+				if (item.specs == null) {
+					Vue.set(item, 'specs', null);
+				}
 
 			},
 			selectApi(item, state) {
 				// console.log("pp selectApi: ", item);
-				this.beforeCancelApi();
-				this.fixProps(item);
-				this.updateSchema(item.openapidocument);
-				this.api = item;
-				// this.openapi = item;
-				this.$root.setState(state);
-				this.selectedApi = _.cloneDeep(this.api);
-				this.initSwagger();
-				this.updateSw();
-				// $('#api'+this.api.uuid).collapse('show');
-				// console.log("this.api: ", this.api);
-				if ( state != 'preview') {
-					this.$refs.dropImage.removeAllFiles(true);
-					if (this.api.image != '') {
-						this.$refs.dropImage.manuallyAddFile({ size: 123, name: this.api.image }, this.api.image);
+				if (this.beforeCancelApi()) {
+					this.fixProps(item);
+					this.updateSchema(item.openapidocument);
+					this.api = item;
+					// this.openapi = item;
+					this.$root.setState(state);
+					this.selectedApi = _.cloneDeep(this.api);
+					this.initSwagger();
+					this.updateSw();
+					// $('#api'+this.api.uuid).collapse('show');
+					// console.log("this.api: ", this.api);
+					if ( state != 'preview') {
+						this.$refs.dropImage.removeAllFiles(true);
+						if (this.api.image != '') {
+							this.$refs.dropImage.manuallyAddFile({ size: 123, name: this.api.image }, this.api.image);
+						}
+						$('.list-column').addClass('column-minimize');
+						$('.create-column').addClass('column-minimize');
+						$('.edit-column').addClass('column-minimize');
+					} else {
+						// $('.create-column, .edit-column').addClass('column-minimize');
 					}
-					$('.list-column').addClass('column-minimize');
-					$('.create-column').addClass('column-minimize');
-					$('.edit-column').addClass('column-minimize');
-				} else {
-					// $('.create-column, .edit-column').addClass('column-minimize');
 				}
 			},
 			getApiById(item, state) {
@@ -2070,10 +2098,12 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					if (r == true) {
 						this.cancelApi();
 					}
+					return r;
 				}
-				// else {
-				// 	this.cancelApi();
-				// }
+				else {
+					this.cancelApi();
+					return true;
+				}
 			},
 			cancelApi() {
 				var index = this.myApiList.indexOf(this.api);
@@ -2154,23 +2184,28 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 						itemArr.push(item);
 						// axios.post(this.ajaxApiUrl, this.api, this.ajaxHeaders).then(response => {
 						this.addItem(this.ajaxApiUrl, itemArr, this.ajaxHeaders, this.myApiList).then(response => {
-							this.$root.setState('edit');
-							// var item = this.myApiList.find((el) => el.uuid == this.api.uuid );
-							var item = this.myApiList.find((el) => el.uuid == response.data[0].uuid );
-							console.log("item: ", item);
-							Object.assign(item, this.apiAdd);
-							// Vue.set(this.api, this.myApiList[index]);
-							// this.selectedApi = response.data;
-							this.api = item;
-							this.updateSchema(item.openapidocument);
-							this.selectedApi = _.cloneDeep(this.api);
-							// this.api = _.merge(this.openapi, response.data);
-							$('#api'+this.api.uuid).collapse('show');
-							$('#servers').collapse('show');
-							$('.list-column').addClass('column-minimize');
-							this.$toast('success', {message: '<strong>' + this.api.openapidocument.info.title + '</strong> successfully registered', title: 'API CREATED'});
-							// $('.list-column').addClass('column-minimize');
-							this.taxonomies();
+							if (response.data[0].status != 500 ) {
+								this.$root.setState('edit');
+								// var item = this.myApiList.find((el) => el.uuid == this.api.uuid );
+								console.log("itemArr: ", itemArr);
+								// Object.assign(response.data[0], this.apiAdd);
+								this.fixProps(response.data[0]);
+								var item = this.myApiList.find((el) => el.uuid == response.data[0].uuid );
+								console.log("item: ", item);
+								Vue.set(this.api, item);
+								// this.selectedApi = response.data;
+								// this.api = item;
+								// Object.assign(this.api, this.apiAdd);
+								this.updateSchema(item.openapidocument);
+								this.selectedApi = _.cloneDeep(this.api);
+								// this.api = _.merge(this.openapi, response.data);
+								$('#api'+this.api.uuid).collapse('show');
+								$('#servers').collapse('show');
+								$('.list-column').addClass('column-minimize');
+								this.$toast('success', {message: '<strong>' + this.api.openapidocument.info.title + '</strong> successfully registered', title: 'API CREATED'});
+								// $('.list-column').addClass('column-minimize');
+								this.taxonomies();
+							}
 						}, error => {
 							alert(error.code + ': ' + error.message);
 						});
@@ -2197,9 +2232,10 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 								this.myApiList[0].openapidocument = JSON.parse(this.myApiList[0].openapidocument);
 							}
 							this.myApiList.forEach((value, key) => {
-								Object.assign(value, this.apiAdd);
+								// Object.assign(value, this.apiAdd);
+								this.fixProps(value);
 							});
-							this.fixProps(this.api);
+							// this.fixProps(this.api);
 							this.paginate = this.makePaginate(response.data);
 							console.log("this.myApiList: ", this.myApiList);
 						}
@@ -2218,16 +2254,18 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 						this.myApiList.forEach((value, key) => {
 							// console.log("value, key: ", value, key);
 							// apiAdd
-							Object.assign(value, this.apiAdd);
+							this.fixProps(value);
+							// Object.assign(value, this.apiAdd);
+
 							// var slcState = this.$root.rootData.myApiStateList.find((el) => el.uuid == value.apistateid );
 							// console.log("slcState: ", slcState.name);
 							// value.uuid = this.uuidv4();
 							// value.count = 1;
 						});
-						console.log("this.myApiList: ", this.myApiList);
-						console.log("this.api.proxies.length > 0: ", this.api.proxies.length > 0);
+						// console.log("this.myApiList: ", this.myApiList);
+						// console.log("this.api.proxies.length > 0: ", this.api.proxies.length > 0);
 						// console.log("this.$root.rootData", this.$root.rootData);
-						this.fixProps(this.api);
+						// this.fixProps(this.api);
 						console.log("this.api.subjectid: ", this.api.subjectid);
 						this.paginate = this.makePaginate(response.data);
 					}
