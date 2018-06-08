@@ -109,6 +109,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 			updateItem(url, item, head, arr) {
 				return axios.put(url, item, head).then(response => {
 				// return axios.post(url, item, head).then(response => {
+					console.log("PUT item: ", item);
 					console.log("PUT response: ", response);
 					return response;
 				}, error => {
@@ -118,6 +119,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 			},
 			addItem(url, item, head, arr) {
 				return axios.post(url, item, head).then(response => {
+					console.log("POST item: ", item);
 					console.log("POST response: ", response);
 					// arr.push(item);
 					if (_.isArray(arr)) {
