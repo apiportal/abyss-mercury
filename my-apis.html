@@ -57,7 +57,7 @@
 										<li v-bind:class="{'active': apiIsActiveState(api,'Retired')}"><a href="#" v-on:click="apiChangeState(api, 'Retired')"><i class="fas fa-circle stat-Retired"></i>Retire</a></li>
 										<li v-bind:class="{'active': apiIsActiveState(api,'Removed')}"><a href="#" v-on:click="apiChangeState(api, 'Removed')"><i class="fas fa-trash-alt"></i>Delete</a></li> </ul>
 								</div>
-								<a href="#" data-toggle="collapse" v-bind:data-target="'#api'+api.uuid" v-bind:aria-controls="'api'+api.uuid" v-bind:class="{'active': $parent.isSelectedApi(api.uuid)}">
+								<a href="#" data-toggle="collapse" v-bind:data-target="'#api'+_uid" v-bind:aria-controls="'api'+_uid" v-bind:class="{'active': $parent.isSelectedApi(_uid)}">
 									<div class="">
 										<i v-bind:title="apiGetStateName(api.apistateid)" class="fas fa-circle" v-bind:class="'stat-' + apiGetStateName(api.apistateid)"></i>
 										<strong>{{api.openapidocument.info.title}}</strong> <small class="text-muted">{{api.openapidocument.info.version}}</small>
@@ -65,7 +65,7 @@
 									<small>Proxies: <strong>{{api.proxies.length}}</strong></small>
 									<small class="text-muted float-right">{{api.created | formatDate}}</small>
 								</a>
-								<ul v-bind:id="'api'+api.uuid" class="collapse clearfix">
+								<ul v-bind:id="'api'+_uid" class="collapse clearfix">
 									<li>
 										<div class="px-3 txt-dark brd-t">
 											<div class="small pt-2">

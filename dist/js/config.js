@@ -1,9 +1,9 @@
 define(['global'], function(abyss){
 	var isAbyssSandbox = abyssSandbox;
 	var abyssProtocol = hostProtocol;
-	console.log("abyssProtocol: ", abyssProtocol);
+	// console.log("abyssProtocol: ", abyssProtocol);
 	var abyssHost = host;
-	console.log("abyssHost: ", abyssHost);
+	// console.log("abyssHost: ", abyssHost);
 	var abyssPort = hostPort;
 	var abyssJsonPort = hostJsonPort;
 	var abyssPath = 'abyss/oapi';
@@ -107,7 +107,7 @@ define(['global'], function(abyss){
 		}
 	}
 	var abyssAllDataList = Object.assign(abyssJsonList, abyssDataList);
-	console.log("abyssAllDataList: ", abyssAllDataList);
+	// console.log("abyssAllDataList: ", abyssAllDataList);
 	return {
 		name: 'Abyss Api Portal',
 		version: 'V.0.0',

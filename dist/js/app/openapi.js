@@ -1779,7 +1779,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				// swEditor.specActions.updateSpec(jsyaml.dump(schema));
 			},
 			updateSchema: function (schema) {
-				console.log("updateSchema: ", schema);
+				// console.log("updateSchema: ", schema);
 				schema = preProcessDefinition(schema);
 				if (window.localStorage) window.localStorage.setItem('openapi3', JSON.stringify(schema));
 				Vue.set(this, 'openapi', schema);
@@ -2365,7 +2365,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					Vue.set(this.api,'openapidocument',val);
 					// this.changes = this.checkDiff(val, this.selectedApi);
 					this.changes = this.checkDiff(this.api, this.selectedApi);
-					console.log("this.isChanged: ", Object.keys(this.changes).length, this.isChanged, this.changes);
+					// console.log("this.isChanged: ", Object.keys(this.changes).length, this.isChanged, this.changes);
 					if ( Object.keys(this.changes).length == 0 || (Object.keys(this.changes).length == 1 && Object.keys(this.changes).some(v => v == 'updated')) ) {
 						this.isChanged = false; 
 					} else {
@@ -2395,7 +2395,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 		},
 		mounted() {
 			this.preload();
-			console.log("this.api.proxies.length: ", this.api.proxies.length);
 			// console.log("this.$root.rootData: ", this.$root.rootData);
 			// this.ajaxUrl = abyss.ajax.my_api_list + '/' + this.$root.rootData.user.uuid;
 		},
