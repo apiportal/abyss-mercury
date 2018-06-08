@@ -2096,7 +2096,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				Vue.delete(item, 'updated');
 				Vue.delete(item, 'deleted');
 				Vue.delete(item, 'isdeleted');
-				Vue.delete(item, 'extendeddocument');
+				// Vue.delete(item, 'extendeddocument');
 				Vue.delete(item, 'tags');
 				Vue.delete(item, 'groups');
 				Vue.delete(item, 'categories');
@@ -2141,7 +2141,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 						Vue.delete(item, 'updated');
 						Vue.delete(item, 'deleted');
 						Vue.delete(item, 'isdeleted');
-						Vue.delete(item, 'extendeddocument');
+						// Vue.delete(item, 'extendeddocument');
 						Vue.delete(item, 'tags');
 						Vue.delete(item, 'groups');
 						Vue.delete(item, 'categories');
