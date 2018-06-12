@@ -4,6 +4,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 
 	axios.defaults.headers.common['Accept'] = 'application/json';
 	axios.defaults.headers.common['Content-Type'] = 'application/json';
+	if (abyss.isAbyssSandbox) {
+		axios.defaults.headers.common['Cookie'] = 'abyss.session='+abyss.session;
+	}
 	axios.defaults.withCredentials = abyss.abyssCredentials;
 	axios.defaults.timeout = 10000;
 	axios.defaults.responseType = 'json';
@@ -123,7 +126,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 					console.log("POST response: ", response);
 					// arr.push(item);
 					if (_.isArray(arr)) {
-						arr.push(response.data[0]);
+						if (response.data[0].status != 500 ) {
+							arr.push(response.data[0]);
+						}
 					} else {
 						arr.push(response.data);
 					}
@@ -233,7 +238,17 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 			taxAction: '',
 			taxTitle: '',
 			taxList: '',
-			tax: {},
+			tax: {
+				created: null,
+				crudsubjectid: null,
+				deleted: null,
+				description: null,
+				isdeleted: null,
+				name: null,
+				organizationid: null,
+				updated: null,
+				uuid: null
+			},
 			selectedTax: {},
 			end: []
 		},
@@ -265,13 +280,42 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 				this.rootData[this.taxList][index] = this.selectedTax;
 				this.cancelTax();
 			},
+			cleanTax() {
+				var item = _.cloneDeep(this.tax);
+				Vue.delete(item, 'uuid');
+				Vue.delete(item, 'created');
+				Vue.delete(item, 'updated');
+				Vue.delete(item, 'deleted');
+				Vue.delete(item, 'isdeleted');
+				Vue.set(item, 'subjectid', this.rootData.user.uuid);
+				Vue.set(item, 'crudsubjectid', this.rootData.user.uuid);
+				Vue.set(item, 'description', '');
+				Vue.set(item, 'organizationid', this.rootData.user.organizationid);
+				Vue.set(item, 'externaldescription', '');
+				Vue.set(item, 'externalurl', '');
+				// Vue.set(item, 'count', 0);
+				return item;
+			},
+			fixTax(item) {
+				if (item.description == null) {
+					Vue.set(item, 'description', '' );
+				}
+				if (item.subjectid == null) {
+					Vue.set(item,'subjectid',this.rootData.user.uuid);
+				}
+				if (item.crudsubjectid == null) {
+					Vue.set(item,'crudsubjectid',this.rootData.user.uuid);
+				}
+				if (item.organizationid == null) {
+					Vue.set(item,'organizationid',this.rootData.user.organizationid);
+				}
+			},
 			addTax() {
 				this.$validator.validateAll().then((result) => {
 					if (result) {
-						var item = _.cloneDeep(this.tax);
-						item.uuid = this.uuidv4();
-						item.count = 0;
-						this.addItem(this.getEndpoint(), item, this.ajaxHeaders, this.rootData[this.taxList]).then(response => {
+						var itemArr = [];
+						itemArr.push(this.cleanTax());
+						this.addItem(this.getEndpoint(), itemArr, this.ajaxHeaders, this.rootData[this.taxList]).then(response => {
 							console.log("response: ", response);
 							this.cancelTax();
 							$('#taxModal').modal("hide");
@@ -283,7 +327,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 				this.$validator.validateAll().then((result) => {
 					if (result) {
 						var item = _.cloneDeep(this.tax);
-						this.updateItem(this.getEndpoint() + '/' + item.uuid, item, this.ajaxHeaders, this.rootData[this.taxList]).then(response => {
+						console.log("this.tax.uuid: ", this.tax.uuid);
+						this.updateItem(this.getEndpoint() + '/' + this.tax.uuid, this.cleanTax(), this.ajaxHeaders, this.rootData[this.taxList]).then(response => {
 							console.log("response: ", response);
 							this.cancelTax();
 							$('#taxModal').modal("hide");
@@ -297,7 +342,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 				this.taxList = list;
 				if (action == 'edit') {
 					this.selectedTax = _.cloneDeep(item);
-					this.tax = item;
+					// this.tax = this.fixTax(item);
 				}
 			},
 			setPage(page, state) {
@@ -385,20 +430,12 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 						Vue.set(this.rootData, 'myApiGroupList', api_group_list.data );
 						Vue.set(this.rootData, 'myApiCategoryList', api_category_list.data );
 						Vue.set(this.rootData, 'myApiTagList', api_tag_list.data );
-						console.log("this.rootData: ", this.rootData);
+						console.log("ROOT this.rootData: ", this.rootData);
+						this.isLoading = false;
 						// console.log("this.rootData: ", JSON.stringify(this.rootData, null, '\t') );
 					})
 				).catch(error => {
-					console.log(error.response)
-				});
-			},
-			getRootData222(id) {
-				return axios.get(abyss.ajax.index + '?q=' + id, this.ajaxHeaders).then(response => {
-					this.rootData = response.data;
-					console.log("this.rootData: ", this.rootData);
-					return response;
-				}, error => {
-					console.error(error);
+					console.log(error.response);
 				});
 			},
 		},
@@ -406,11 +443,13 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 		},
 		mounted() {
 			this.setState('init');
-			// this.setChildState('child');
+		},
+		beforeMount() {
+			
 		},
 		created() {
-			// this.$cookie.set('abyss.principal.uuid', '9820d2aa-eb02-4a58-8cc5-8b9a89504df9', 1); //one day
-			// this.$cookie.set('abyss.principal.uuid', '32c9c734-11cb-44c9-b06f-0b52e076672d', 1); //one day
+			// this.$cookie.set('abyss.principal.uuid', '9820d2aa-eb02-4a58-8cc5-8b9a89504df9', 10); //one day
+			// this.$cookie.set('abyss.principal.uuid', '32c9c734-11cb-44c9-b06f-0b52e076672d', 10); //one day
 			var principal = this.$cookie.get('abyss.principal.uuid');
 			// console.log("principal: ", principal);
 			// this.$cookie.delete('abyss.principal.uuid');

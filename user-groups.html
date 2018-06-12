@@ -110,22 +110,6 @@
 							</div>
 							<em v-bind:class="{ 'show': errors.has('effectiveenddate') }">{{ errors.first('effectiveenddate') }}</em>
 						</div>
-						<div class="form-group v-select-color-blue">
-							<!-- <v-select label="organizationid" :filterable="false" :options="orgOptions" @search="getOrgOptions" :on-change="filterOrg" v-validate="'required'">
-								<span slot="no-options"></span>
-								<template slot="no-option" slot-scope="option">
-									<strong>{{ option.name }}</strong>
-								</template>
-								<template slot="selected-option" slot-scope="option">
-									<strong>{{ option.name }}</strong>
-								</template>
-								{{orgOptions}}
-							</v-select> -->
-							<label class="">Organization Id</label>
-							<select class="form-control" v-model="group.organizationid">
-								<option v-for="(org,index) in orgOptions" :value="org.organizationid">{{org.name}}</option>
-							</select>
-						</div>
 						<div class="form-group ">
 							<span class="checkbox">
 								<input type="checkbox" name="isenabled" id="isenabled" v-model="group.isenabled">
@@ -136,6 +120,35 @@
 							<button type="button" class="btn btn-secondary btn-rounded" v-on:click="$emit('set-state', 'init'); cancelGroup()">CANCEL</button>
 							<button type="button" class="btn btn-primary btn-rounded" v-if="rootState == 'add'" v-on:click="groupAction('add')">ADD GROUP</button>
 							<button type="button" class="btn btn-primary btn-rounded" v-if="rootState == 'edit'" v-on:click="groupAction('edit')">SAVE</button>
+						</div>
+					</div>
+				</div>
+			</aside>
+			<aside class="column column-aside permissions-column">
+				<div class="nicescroll-bar">
+					<div class="clearfix brd-b column-header column-min-button">
+						<h5 class="column-header-title">Group Management</h5>
+					</div>
+					<div class="p-3">
+						<div class="form-group " v-bind:class="{ 'has-error': errors.has('orgid') }">
+							<label>Organization Id</label>
+							<select class="form-control" name="orgid" id="orgid" v-model="group.organizationid" v-validate="'required'">
+								<option v-for="(org,index) in orgOptions" :value="org.organizationid">{{org.name}}</option>
+							</select>
+							<em v-bind:class="{ 'show': errors.has('orgid') }">{{ errors.first('orgid') }}</em>
+						</div>
+						<div class="form-group " v-bind:class="{ 'has-error': errors.has('dirid') }">
+							<label>Directory</label>
+							<select class="form-control" name="dirid" id="dirid" v-model="group.subjectdirectoryid" v-validate="'required'">
+								<option v-for="(dir,index) in directoryOptions" :value="dir.uuid">{{dir.directoryname}}</option>
+							</select>
+							<em v-bind:class="{ 'show': errors.has('dirid') }">{{ errors.first('dirid') }}</em>
+						</div>
+						<div class="form-group v-select-color-green">
+							<label>Permissions</label>
+							<v-select label="permission" multiple :filterable="false" :options="permissionOptions" @search="getPermissionOptions" v-model="group.permissions">
+								<span slot="no-options"></span>
+							</v-select>
 						</div>
 					</div>
 				</div>
@@ -159,20 +172,6 @@
 									<div>{{ option.subjectname }}</div>
 									<small>{{ option.email }}</small>
 								</template>
-							</v-select>
-						</div>
-					</div>
-				</div>
-			</aside>
-			<aside class="column column-aside permissions-column">
-				<div class="nicescroll-bar">
-					<div class="clearfix brd-b column-header column-min-button">
-						<h5 class="column-header-title">Group Permissions</h5>
-					</div>
-					<div class="p-3">
-						<div class="form-group v-select-color-green">
-							<v-select label="permission" multiple :filterable="false" :options="permissionOptions" @search="getPermissionOptions" v-model="group.permissions">
-								<span slot="no-options"></span>
 							</v-select>
 						</div>
 					</div>

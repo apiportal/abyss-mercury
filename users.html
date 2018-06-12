@@ -103,16 +103,15 @@
 									<small v-for="(u, index) in user.groups">
 										{{u.groupname}}<span v-if="index != (user.groups.length - 1)">, </span>
 									</small>
+									<small class="ml--auto">{{getGroupName(user.uuid)}}</small>
 								</div>
 								<div class="">
 									<strong class="small">PERMISSIONS:</strong>
-									<small v-for="(u, index) in user.permissions">
-										{{u.permission}}<span v-if="index != (user.permissions.length - 1)">, </span>
-									</small>
+									<small class="ml--auto">{{getPermissionName(user.uuid)}}</small>
 								</div>
 								<div class="">
 									<strong class="small">DIRECTORY:</strong>
-									<small class="ml--auto">{{user.directory}}</small>
+									<small class="ml--auto">{{getDirName(user.subjectdirectoryid)}}</small>
 								</div>
 							</td>
 							<td class="td-action-1">
@@ -187,24 +186,41 @@
 			<aside class="column column-aside permissions-column">
 				<div class="nicescroll-bar">
 					<div class="clearfix brd-b column-header column-min-button">
-						<h5 class="column-header-title">Groups & Permissions</h5>
+						<h5 class="column-header-title">User Management</h5>
 					</div>
 					<div class="p-3">
-						<div class="form-group v-select-color-pink">
-							<h6>Directory</h6>
-							<select name="directory" id="directory" v-model="user.directory" class="form-control">
-								<option value="Internal Directory">Internal Directory</option>
+						<div class="form-group " v-bind:class="{ 'has-error': errors.has('orgid') }">
+							<label>Organization Id</label>
+							<select class="form-control" name="orgid" id="orgid" v-model="user.organizationid" v-validate="'required'">
+								<option v-for="(org,index) in orgOptions" :value="org.organizationid">{{org.name}}</option>
 							</select>
+							<em v-bind:class="{ 'show': errors.has('orgid') }">{{ errors.first('orgid') }}</em>
+						</div>
+						<div class="form-group " v-bind:class="{ 'has-error': errors.has('typeid') }">
+							<label>User Type</label>
+							<select class="form-control" name="typeid" id="typeid" v-model="user.subjecttypeid" v-validate="'required'">
+								<option v-for="(typ,index) in typeOptions" :value="typ.uuid">{{typ.typename}}</option>
+							</select>
+							<em v-bind:class="{ 'show': errors.has('typeid') }">{{ errors.first('typeid') }}</em>
+						</div>
+						<div class="form-group " v-bind:class="{ 'has-error': errors.has('dirid') }">
+							<label>Directory</label>
+							<select class="form-control" name="dirid" id="dirid" v-model="user.subjectdirectoryid" v-validate="'required'">
+								<option v-for="(dir,index) in directoryOptions" :value="dir.uuid">{{dir.directoryname}}</option>
+							</select>
+							<em v-bind:class="{ 'show': errors.has('dirid') }">{{ errors.first('dirid') }}</em>
 						</div>
 						<div class="form-group v-select-color-pink">
-							<h6>Add User to Group:</h6>
-							<v-select label="groupname" multiple :filterable="false" :options="groupOptions" @search="getGroupOptions" v-model="user.groups">
+							<label>Add User to Group:</label>
+							<!-- <v-select label="groupname" multiple :filterable="false" :options="groupOptions" @search="getGroupOptions" v-model="user.groups"> -->
+							<v-select label="groupname" multiple :filterable="false" :options="groupOptions" v-model="user.groups">
 								<span slot="no-options"></span>
 							</v-select>
 						</div>
 						<div class="form-group v-select-color-green">
-							<h6>Assign Permission to User:</h6>
-							<v-select label="permission" multiple :filterable="false" :options="permissionOptions" @search="getPermissionOptions" v-model="user.permissions">
+							<label>Assign Permission to User:</label>
+							<!-- <v-select label="permission" multiple :filterable="false" :options="permissionOptions" @search="getPermissionOptions" v-model="user.permissions"> -->
+							<v-select label="permission" multiple :filterable="false" :options="permissionOptions"  v-model="user.permissions">
 								<span slot="no-options"></span>
 							</v-select>
 						</div>

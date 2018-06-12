@@ -5,14 +5,14 @@
 	<div class="fow m-0">
 		<div class="fol-4 brd-r">
 			<div class="row brd-b">
-				<div class="thumb" v-if="api['x-abyss-platform'].image" :style="{ 'background-image': 'url(' + api['x-abyss-platform'].image + ')' }"></div>
-				<div class="thumb" v-if="!api['x-abyss-platform'].image" :style="{ 'background-color': api['x-abyss-platform'].color }">{{api.info.title}}</div>
+				<div class="thumb" v-if="api.image" :style="{ 'background-image': 'url(' + api.image + ')' }"></div>
+				<div class="thumb" v-if="!api.image" :style="{ 'background-color': api.color }">{{api.openapidocument.info.title}}</div>
 			</div>
 			<div class="py-3">
-				<span class="float-right text-uppercase py-1"><span class="small">{{apiGetStateName(api['x-abyss-platform'].apistateid)}}</span><i class="fas fa-circle ml-1" v-bind:class="'stat-' + api['x-abyss-platform'].apistateid"></i></span>
-				<h4 class="mb-0"><strong>{{api.info.title}}</strong></h4>
-				<p class="small">{{api.info.version}}</p>
-				<p>{{api.info.description}}</p>
+				<span class="float-right text-uppercase py-1"><span class="small">{{apiGetStateName(api.apistateid)}}</span><i class="fas fa-circle ml-1" v-bind:class="'stat-' + apiGetStateName(api.apistateid)"></i></span>
+				<h4 class="mb-0"><strong>{{api.openapidocument.info.title}}</strong></h4>
+				<p class="small">{{api.openapidocument.info.version}}</p>
+				<p>{{api.openapidocument.info.description}}</p>
 			</div>
 		</div>
 		<div class="fol-8 pb-3">
@@ -24,28 +24,27 @@
 			<div class="tab-content py-3">
 				<div id="overview" class="tab-pane fade active in" role="tabpanel">
 					<div class="fow form-row">
-						<p class="fol-6">
-							<strong class="d-block text-uppercase">Servers</strong> 
-							<span class="d-block text-truncate" v-for="(sv, index) in api.servers" v-bind:title="sv.url">{{sv.url}}</span>
-							{{api.servers[0].url}}
+						<p class="fol-6 pb-2">
+							<label class="d-block font-weight-bold text-uppercase">Servers</label> 
+							<span class="d-block text-truncate" v-for="(sv, index) in api.openapidocument.servers" v-bind:title="sv.url">{{sv.url}}</span>
 						</p>
-						<p class="fol-6">
+						<p class="fol-6 pb-2">
 							<label class="d-block font-weight-bold text-uppercase">Created</label>
-							{{api['x-abyss-platform'].created | formatDate}}
+							{{api.created | formatDate}}
 						</p>
-						<p class="fol-6">
-							<label class="d-block font-weight-bold text-uppercase">Created</label>
-							{{api['x-abyss-platform'].updated | formatDate}}
+						<p class="fol-6 pb-2">
+							<label class="d-block font-weight-bold text-uppercase">Updated</label>
+							{{api.updated | formatDate}}
 						</p>
 					</div>
 					<div class="fow form-row">
-						<p class="fol-6"><strong class="d-block text-uppercase">Visibility</strong><span class="text-capitalize">{{apiGetVisibilityName(api['x-abyss-platform'].apivisibilityid)}}</span></p>
-						<p class="fol-6"><strong class="d-block text-uppercase">State</strong><span class="text-capitalize">{{apiGetStateName(api['x-abyss-platform'].apistateid)}}</span></p>
+						<p class="fol-6 pb-2"><label class="d-block font-weight-bold text-uppercase">Visibility</label><span class="text-capitalize">{{apiGetVisibilityName(api.apivisibilityid)}}</span></p>
+						<p class="fol-6 pb-2"><label class="d-block font-weight-bold text-uppercase">State</label><span class="text-capitalize">{{apiGetStateName(api.apistateid)}}</span></p>
 					</div>
-					<p><strong class="d-block text-uppercase">Categories</strong>{{compCategoriesToList}}</p>
-					<p><strong class="d-block text-uppercase">Tags</strong>{{compTagsToList}}</p>
-					<p><strong class="d-block text-uppercase">Groups</strong>{{compGroupsToList}}</p>
-					<p><small class="d-block">{{api.info.description}}</small></p>
+					<p><label class="d-block font-weight-bold text-uppercase">Categories</label>{{compCategoriesToList}}</p>
+					<p><label class="d-block font-weight-bold text-uppercase">Tags</label>{{compTagsToList}}</p>
+					<p><label class="d-block font-weight-bold text-uppercase">Groups</label>{{compGroupsToList}}</p>
+					<p><small class="d-block">{{api.openapidocument.info.description}}</small></p>
 				</div>
 			</div>
 		</div>

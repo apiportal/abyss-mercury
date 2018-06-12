@@ -11,17 +11,6 @@ define(['global'], function(abyss){
 	var abyssCredentials = true;
 	var abyssLocation = abyssProtocol + '://' + abyssHost + ':' + abyssPort + '/' + abyssPath;
 	var abyssJsonLocation = abyssProtocol + '://' + abyssHost + ':' + abyssJsonPort + '/' + abyssJsonPath;
-	/*var abyssDataList = {
-		user_list: '/api/subject/getAll',
-		user_add: '/api/subject/addSubject',
-		user_update: '/api/subject/getAll',
-		user_delete: '/api/subject/getAll',
-		user_group_list: '/api/subjectgroup/getAll',
-		permission_list: '/api/subjectpermission/getAll',
-			index: '/api/subject/getIndex',
-			my_api_list: '/api/my-apis/getAll',
-			my_api: '/api/my-apis/getAll',
-	};*/
 	var abyssDataList = {
 		// http://dev2.apiportal.com/abyss/openapi/ApiState.yaml
 		api_states_list: '/api-states',
@@ -44,6 +33,14 @@ define(['global'], function(abyss){
 		my_api_list: '/apis/subject',
 		// http://dev2.apiportal.com/abyss/openapi/Organization.yaml
 		organizations_list: '/organizations',
+		// http://dev2.apiportal.com/abyss/openapi/SubjectDirectoryType.yaml
+		subject_directory_types: '/subject-directory-types',
+		// http://dev2.apiportal.com/abyss/openapi/SubjectDirectory.yaml
+		subject_directories_list: '/subject-directories',
+		// http://dev2.apiportal.com/abyss/openapi/SubjectType.yaml
+		subject_types: '/subject-types',
+		// http://dev2.apiportal.com/abyss/openapi/SubjectMembership.yaml
+		subject_memberships: '/subject-memberships',
 	};
 	var abyssJsonList = {
 		index: '/index.json',
@@ -51,7 +48,8 @@ define(['global'], function(abyss){
 	if (isAbyssSandbox === true) {
 		if (location.host == 'local.abyss.com' || location.host == 'localhost:7882' || location.host == 'localhost:7880') {
 			// abyssLocation = 'http://local.abyss.com/000?file=http://local.abyss.com/data';
-			abyssLocation = 'http://local.abyss.com/000?file=http://dev2.apiportal.com/abyss/oapi';
+			// abyssLocation = 'http://local.abyss.com/000?file=http://dev2.apiportal.com/abyss/oapi';
+			abyssLocation = 'http://dev2.apiportal.com/abyss/oapi';
 			abyssDataList = {
 				// http://dev2.apiportal.com/abyss/openapi/ApiState.yaml
 				api_states_list: '/api-states',
@@ -74,6 +72,14 @@ define(['global'], function(abyss){
 				my_api_list: '/apis/subject',
 				// http://dev2.apiportal.com/abyss/openapi/Organization.yaml
 				organizations_list: '/organizations',
+				// http://dev2.apiportal.com/abyss/openapi/SubjectDirectoryType.yaml
+				subject_directory_types: '/subject-directory-types',
+				// http://dev2.apiportal.com/abyss/openapi/SubjectDirectory.yaml
+				subject_directories_list: '/subject-directories',
+				// http://dev2.apiportal.com/abyss/openapi/SubjectType.yaml
+				subject_types: '/subject-types',
+				// http://dev2.apiportal.com/abyss/openapi/SubjectMembership.yaml
+				subject_memberships: '/subject-memberships',
 			};
 		} else if (location.host == '192.168.21.180:18881' || location.host == '192.168.1.80:8000') {
 			abyssLocation = 'http://' + location.host + '/000?file=' + 'http://' + location.host + '/data';
@@ -93,7 +99,7 @@ define(['global'], function(abyss){
 			};
 		}
 		abyssJsonLocation = abyssLocation;
-		abyssCredentials = false;
+		// abyssCredentials = false;
 		abyssJsonList = {};
 	}
 	for (var key in abyssDataList) {
@@ -112,10 +118,12 @@ define(['global'], function(abyss){
 		name: 'Abyss Api Portal',
 		version: 'V.0.0',
 		thy: true,
+		isAbyssSandbox: isAbyssSandbox,
 		abyssLocation: abyssLocation,
 		abyssCredentials: abyssCredentials,
 		ajax: abyssAllDataList,
-		test: 'ffffffffffffffffff',
+		echo: 'http://local.abyss.com/000',
+		session: '4b1ed92fb3ebe54c6c5bd33543eef1d2',
 	};
 });
 

@@ -18,42 +18,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 				ajaxHeaders: {},
 				selected: null,
 				resetPassword: false,
-				userOld: {
-					// "id": null,
-					// "uuid": null,
-					// "organization_id": null,
-					"created": null,
-					// "updated": null,
-					// "deleted": null,
-					// "is_deleted": null,
-					// "crud_subject_id": null,
-					"is_activated": null,
-					// "subject_type_id": null,
-					"subject_name": null,
-					"first_name": null,
-					"last_name": null,
-					"display_name": null,
-					"email": null,
-					// "secondary_email": null,
-					// "effective_start_date": null,
-					// "effective_end_date": null,
-					"password": null,
-					// "password_salt": null,
-					// "picture": null,
-					// "total_login_count": null,
-					// "failed_login_count": null,
-					// "invalid_password_attempt_count": null,
-					// "is_password_change_required": null,
-					// "password_expires_at": null,
-					// "last_login_at": null,
-					// "last_password_change_at": null,
-					// "last_authenticated_at": null,
-					// "last_failed_login_at": null,
-					"groups": [],
-					"permissions": [],
-					"directory": "Internal Directory",
-					"notify": true
-				},
 				user: {
 					"uuid": null,
 					"organizationid": null,
@@ -83,9 +47,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 					"lastpasswordchangeat": "",
 					"lastauthenticatedat": "",
 					"lastfailedloginat": "",
-					"subjectdirectoryid": "",
-					"islocked": null,
-					"issandbox": null,
+					"subjectdirectoryid": null,
+					"islocked": false,
+					"issandbox": false,
 					"groups": null,
 					"permissions": null
 				},
@@ -96,11 +60,40 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 				userOptions: [],
 				groupOptions: [],
 				permissionOptions: [],
+				orgOptions: [],
+				directoryOptions: [],
+				typeOptions: [],
+				memberOptions: [],
 
 				end: []
 			};
 		},
 		methods: {
+			getDirName(dir) {
+				var subDir = this.directoryOptions.find((el) => el.uuid == dir );
+				if (subDir) {
+					return subDir.directoryname;
+				}
+			},
+			getGroupName(dir) {
+				var subGrp = this.memberOptions.filter((el) => el.subjectid == dir );
+				// console.log("subGrp: ", subGrp);
+				var grpName = [];
+				if (subGrp) {
+					subGrp.forEach((value, key) => {
+						grpName.push(this.groupOptions.find((el) => el.uuid == value.subjectgroupid ));
+						// console.log("grpName: ", grpName);
+					});
+					return grpName.map(e => e.groupname).join(', ');
+				}
+			},
+			getPermissionName(dir) {
+				var subPrm = this.permissionOptions.filter((el) => el.subjectid == dir );
+				// console.log("subPrm: ", subPrm);
+				if (subPrm) {
+					return subPrm.map(e => e.permission).join(', ');
+				}
+			},
 			filterPermission(filter) {
 				if (filter == null) {
 					this.getPage(1);
@@ -140,7 +133,73 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 					loading(false);
 				});
 			},
-			getGroupOptions(search, loading) {
+			getOrgOptions() {
+				axios.get(abyss.ajax.organizations_list, this.ajaxHeaders)
+				.then(response => {
+					console.log(response);
+					if (response.data != null) {
+						this.orgOptions = response.data;
+					} else {
+						this.orgOptions = [];
+					}
+				});
+			},
+			getDirectoryOptions() {
+				axios.get(abyss.ajax.subject_directories_list, this.ajaxHeaders)
+				.then(response => {
+					console.log(response);
+					if (response.data != null) {
+						this.directoryOptions = response.data;
+					} else {
+						this.directoryOptions = [];
+					}
+				});
+			},
+			getTypeOptions() {
+				axios.get(abyss.ajax.subject_types, this.ajaxHeaders)
+				.then(response => {
+					console.log(response);
+					if (response.data != null) {
+						this.typeOptions = response.data;
+					} else {
+						this.typeOptions = [];
+					}
+				});
+			},
+			getMemberOptions() {
+				axios.get(abyss.ajax.subject_memberships, this.ajaxHeaders)
+				.then(response => {
+					console.log(response);
+					if (response.data != null) {
+						this.memberOptions = response.data;
+					} else {
+						this.memberOptions = [];
+					}
+				});
+			},
+			getGroupOptions() {
+				axios.get(abyss.ajax.user_group_list, this.ajaxHeaders)
+				.then(response => {
+					console.log(response);
+					if (response.data != null) {
+						this.groupOptions = response.data;
+					} else {
+						this.groupOptions = [];
+					}
+				});
+			},
+			getPermissionOptions() {
+				axios.get(abyss.ajax.permission_list, this.ajaxHeaders)
+				.then(response => {
+					console.log(response);
+					if (response.data != null) {
+						this.permissionOptions = response.data;
+					} else {
+						this.permissionOptions = [];
+					}
+				});
+			},
+			getGroupOptions222(search, loading) {
 				loading(true);
 				axios.get(abyss.ajax.user_group_list + '?likename=' + search, this.ajaxHeaders)
 				// axios.get(abyss.ajax.user_group_list, {
@@ -158,7 +217,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 					loading(false);
 				});
 			},
-			getPermissionOptions(search, loading) {
+			getPermissionOptions222(search, loading) {
 				loading(true);
 				axios.get(abyss.ajax.permission_list + '?likename=' + search, this.ajaxHeaders)
 				// axios.get(abyss.ajax.permission_list, {
@@ -176,38 +235,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 					loading(false);
 				});
 			},
-			fakeData() { // delete
-				this.userList.forEach((value, key) => {
-					value.permissions = [
-						{
-							"uuid": "dc221d15-9dc6-4ebe-84ab-5a8f5edf4c12",
-							"permission": "Add, edit, delete API"
-						},
-						{
-							"uuid": "313c2a4e-6eb0-4a6c-b3da-f2b1be08945d",
-							"permission": "Add, edit, delete APP"
-						},
-						{
-							"uuid": "416d94e1-9129-4e69-9fea-986d999ec32b",
-							"permission": "Add, edit, delete Proxy"
-						}
-					]
-					value.groups =  [
-						{
-							"uuid": "dbcadc32-c16c-4c95-b6f3-bcc6d26b7744",
-							"groupname": "admin"
-						}, {
-							"uuid": "0f6f8ebd-8e4e-4cd6-a03d-16b07a1d93db",
-							"groupname": "developer"
-						}
-					],
-					value.totallogincount = 5;
-					value.lastloginat = "2018-04-12T14:48:00.000Z";
-					value.failedlogincount = 1;
-					value.lastfailedloginat = "2018-04-10T11:15:00.000Z";
-					value.directory = "Internal Directory";
-				});
-			},
 			getPage(p, d) {
 				var param = d || '';
 				console.log("this.ajaxUrl: ", this.ajaxUrl);
@@ -216,7 +243,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 					this.userList = response.data;
 					// console.log("this.userList: ", JSON.stringify(this.userList, null, '\t') );
 					this.paginate = this.makePaginate(response.data);
-					// this.fakeData(); // delete
 				}, error => {
 					console.error(error);
 				});
@@ -226,8 +252,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 				this.userList[index] = this.selectedUser;
 				this.user = _.cloneDeep(this.newUser);
 				this.selectedUser = _.cloneDeep(this.newUser);
-				// this.groupOptions = [],
-				// this.permissionOptions = [],
 				this.selected = null;
 			},
 			fixProps(item) {
@@ -236,6 +260,18 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 				}
 				if (item.effectivestartdate == null) {
 					Vue.set(item, 'effectivestartdate', moment().format('YYYY-MM-DD HH:mm:ss'));
+				}
+				if (item.secondaryemail == null) {
+					Vue.set(item, 'secondaryemail', item.email);
+				}
+				if (item.picture == null) {
+					Vue.set(item, 'picture', '');
+				}
+				if (item.islocked == null) {
+					Vue.set(item, 'islocked', false);
+				}
+				if (item.crudsubjectid == null) {
+					Vue.set(item,'crudsubjectid','e20ca770-3c44-4a2d-b55d-2ebcaa0536bc');
 				}
 			},
 			selectUser(item, i) {
@@ -252,64 +288,55 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 					console.log("deleteUser response: ", response);
 				});
 			},
+			deleteProps() {
+				var item = _.cloneDeep(this.user);
+				Vue.delete(item, 'uuid');
+				Vue.delete(item, 'created');
+				Vue.delete(item, 'updated');
+				Vue.delete(item, 'deleted');
+				Vue.delete(item, 'isdeleted');
+				Vue.delete(item, 'isactivated');
+				Vue.delete(item, 'totallogincount');
+				Vue.delete(item, 'failedlogincount');
+				Vue.delete(item, 'invalidpasswordattemptcount');
+				Vue.delete(item, 'ispasswordchangerequired');
+				Vue.delete(item, 'passwordexpiresat');
+				Vue.delete(item, 'lastloginat');
+				Vue.delete(item, 'lastpasswordchangeat');
+				Vue.delete(item, 'lastauthenticatedat');
+				Vue.delete(item, 'lastfailedloginat');
+				item.effectivestartdate = moment(this.user.effectivestartdate).toISOString();
+				item.effectiveenddate = moment(this.user.effectiveenddate).toISOString();
+				return item;
+			},
 			userAction(act) {
 				this.$validator.validateAll().then((result) => {
 					console.log("result: ", result);
 					if (result) {
-						var item = _.cloneDeep(this.user);
 						if (act == 'add') {
-							// this.user.created = moment().toISOString();
+							this.fixProps(this.user);
 							var itemArr = [];
-							Vue.delete(item, 'uuid');
-							Vue.delete(item, 'created');
-							Vue.delete(item, 'updated');
-							Vue.delete(item, 'deleted');
-							Vue.delete(item, 'isdeleted');
-							Vue.delete(item, 'isactivated');
-							Vue.delete(item, 'totallogincount');
-							Vue.delete(item, 'failedlogincount');
-							Vue.delete(item, 'invalidpasswordattemptcount');
-							Vue.delete(item, 'ispasswordchangerequired');
-							Vue.delete(item, 'passwordexpiresat');
-							Vue.delete(item, 'lastloginat');
-							Vue.delete(item, 'lastpasswordchangeat');
-							Vue.delete(item, 'lastauthenticatedat');
-							Vue.delete(item, 'lastfailedloginat');
-							item.effectivestartdate = moment(this.user.effectivestartdate).toISOString();
-							item.effectiveenddate = moment(this.user.effectiveenddate).toISOString();
-							itemArr.push(item);
-							this.addItem(this.ajaxUrl, itemArr, this.ajaxHeaders, this.userList).then(response => {
+							itemArr.push(this.deleteProps());
+							// this.addItem(this.ajaxUrl, itemArr, this.ajaxHeaders, this.userList).then(response => {
+							axios.post(this.ajaxUrl, itemArr, this.ajaxHeaders).then(response => {
 								console.log("addUser response: ", response);
-								// console.log("this.user: ", JSON.stringify(this.user, null, '\t') );
-								this.$emit('set-state', 'init');
-								this.user = _.cloneDeep(this.newUser);
+								if (response.data[0].status != 500 ) {
+									this.userList.push(response.data[0].response);
+									this.$emit('set-state', 'init');
+									this.user = _.cloneDeep(this.newUser);
+								}
+							}, error => {
+								console.error(error);
 							});
 						}
 						if (act == 'edit') {
-							// this.user.updated = moment().toISOString();
-							Vue.delete(item, 'uuid');
-							Vue.delete(item, 'created');
-							Vue.delete(item, 'updated');
-							Vue.delete(item, 'deleted');
-							Vue.delete(item, 'isdeleted');
-							Vue.delete(item, 'isactivated');
-							Vue.delete(item, 'totallogincount');
-							Vue.delete(item, 'failedlogincount');
-							Vue.delete(item, 'invalidpasswordattemptcount');
-							Vue.delete(item, 'ispasswordchangerequired');
-							Vue.delete(item, 'passwordexpiresat');
-							Vue.delete(item, 'lastloginat');
-							Vue.delete(item, 'lastpasswordchangeat');
-							Vue.delete(item, 'lastauthenticatedat');
-							Vue.delete(item, 'lastfailedloginat');
-							item.effectivestartdate = moment(this.user.effectivestartdate).toISOString();
-							item.effectiveenddate = moment(this.user.effectiveenddate).toISOString();
-							this.updateItem(this.ajaxUrl + '/' + this.user.uuid, item, this.ajaxHeaders, this.userList).then(response => {
+							this.updateItem(this.ajaxUrl + '/' + this.user.uuid, this.deleteProps(), this.ajaxHeaders, this.userList).then(response => {
 								console.log("editUser response: ", response);
-								// console.log("this.user: ", JSON.stringify(this.user, null, '\t') );
 								this.$emit('set-state', 'init');
 								this.user = _.cloneDeep(this.newUser);
 								this.selected = null;
+							}, error => {
+								console.error(error);
 							});
 						}
 						return;
@@ -334,6 +361,12 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 			this.$emit('set-page', 'users', 'init');
 			this.newUser = _.cloneDeep(this.user);
 			this.getPage(1);
+			this.getGroupOptions();
+			this.getPermissionOptions();
+			this.getOrgOptions();
+			this.getDirectoryOptions();
+			this.getTypeOptions();
+			this.getMemberOptions();
 		}
 	});
 });

@@ -1,6 +1,6 @@
 ﻿<!DOCTYPE html>
 <html class="vs-my-apis" lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="webroot/frags/layout/head.htm :: header">
+<head th:include="webroot/frags/layout/head.htm :: header">
 <link href="/dist/css/obsidian.css" rel="stylesheet">
 <link href="/dist/css/jsoneditor.min.css" rel="stylesheet" type="text/css">
 </head>
@@ -8,7 +8,7 @@
 <div id="portal" class="wrapper" v-bind:class="pageClass">
 	<div th:replace="webroot/frags/layout/navs.htm :: navs"></div>
 	<main class="page-wrapper">
-	<my-apis inline-template ref="refMyApis" v-on:set-page="setPage" v-bind:root-state="rootState">
+	<my-apis inline-template ref="refMyApis" v-on:set-page="setPage" v-bind:root-state="rootState" v-if="!isLoading">
 		<div class="columns tab-content">
 			<aside class="column column-aside list-column xxx">
 				<div class="clearfix column-header column-min-button">
@@ -44,25 +44,25 @@
 										<li><a href="#" v-on:click="$parent.selectApi(api, 'preview')"><i class="fas fa-file-alt"></i>Preview</a></li>
 										<li class="dropdown-header">VISIBILITY</li>
 										<li role="separator" class="divider"></li>
-										<li v-bind:class="{'active': apiIsActiveVisibility(api,'Public')}" ><a href="#" v-on:click="apiChangeVisibility(api, 'Public')"><i class="fas fa-eye"></i>Public</a></li>
-										<li v-bind:class="{'active': apiIsActiveVisibility(api,'Private')}" ><a href="#" v-on:click="apiChangeVisibility(api, 'Private')"><i class="fas fa-user-secret"></i>Private</a></li>
-										<li v-bind:class="{'active': apiIsActiveVisibility(api,'Closed-Group')}" ><a href="#" v-on:click="apiChangeVisibility(api, 'Closed-Group')"><i class="fas fa-user"></i>Closed-Group</a></li>
+										<li v-bind:class="{'active': activeVisibility == 'Public'}" ><a href="#" v-on:click="apiChangeVisibility(api, 'Public')"><i class="fas fa-eye"></i>Public</a></li>
+										<li v-bind:class="{'active': activeVisibility == 'Private'}" ><a href="#" v-on:click="apiChangeVisibility(api, 'Private')"><i class="fas fa-user-secret"></i>Private</a></li>
+										<li v-bind:class="{'active': activeVisibility == 'Closed-Group'}" ><a href="#" v-on:click="apiChangeVisibility(api, 'Closed-Group')"><i class="fas fa-user"></i>Closed-Group</a></li>
 										<li class="dropdown-header">CHANGE STATE</li>
 										<li role="separator" class="divider"></li>
-										<li v-bind:class="{'active': apiIsActiveState(api,'Draft')}"><a href="#" v-on:click="apiChangeState(api, 'Draft')"><i class="fas fa-circle stat-Draft"></i>Draft</a></li>
-										<li v-bind:class="{'active': apiIsActiveState(api,'Staged')}"><a href="#" v-on:click="apiChangeState(api, 'Staged')"><i class="fas fa-circle stat-Staged"></i>Stage</a></li>
-										<li v-bind:class="{'active': apiIsActiveState(api,'Published')}"><a href="#" v-on:click="apiChangeState(api, 'Published')"><i class="fas fa-circle stat-Published"></i>Publish</a></li>
-										<li v-bind:class="{'active': apiIsActiveState(api,'Promoted')}"><a href="#" v-on:click="apiChangeState(api, 'Promoted')"><i class="fas fa-circle stat-Promoted"></i>Promote</a></li>
-										<li v-bind:class="{'active': apiIsActiveState(api,'Demoted')}"><a href="#" v-on:click="apiChangeState(api, 'Demoted')"><i class="fas fa-circle stat-Demoted"></i>Demote</a></li>
-										<li v-bind:class="{'active': apiIsActiveState(api,'Retired')}"><a href="#" v-on:click="apiChangeState(api, 'Retired')"><i class="fas fa-circle stat-Retired"></i>Retire</a></li>
-										<li v-bind:class="{'active': apiIsActiveState(api,'Removed')}"><a href="#" v-on:click="apiChangeState(api, 'Removed')"><i class="fas fa-trash-alt"></i>Delete</a></li> </ul>
+										<li v-bind:class="{'active': activeState == 'Draft'}"><a href="#" v-on:click="apiChangeState(api, 'Draft')"><i class="fas fa-circle stat-Draft"></i>Draft</a></li>
+										<li v-bind:class="{'active': activeState == 'Staged'}"><a href="#" v-on:click="apiChangeState(api, 'Staged')"><i class="fas fa-circle stat-Staged"></i>Stage</a></li>
+										<li v-bind:class="{'active': activeState == 'Published'}"><a href="#" v-on:click="apiChangeState(api, 'Published')"><i class="fas fa-circle stat-Published"></i>Publish</a></li>
+										<li v-bind:class="{'active': activeState == 'Promoted'}"><a href="#" v-on:click="apiChangeState(api, 'Promoted')"><i class="fas fa-circle stat-Promoted"></i>Promote</a></li>
+										<li v-bind:class="{'active': activeState == 'Demoted'}"><a href="#" v-on:click="apiChangeState(api, 'Demoted')"><i class="fas fa-circle stat-Demoted"></i>Demote</a></li>
+										<li v-bind:class="{'active': activeState == 'Retired'}"><a href="#" v-on:click="apiChangeState(api, 'Retired')"><i class="fas fa-circle stat-Retired"></i>Retire</a></li>
+										<li v-bind:class="{'active': activeState == 'Removed'}"><a href="#" v-on:click="apiChangeState(api, 'Removed')"><i class="fas fa-trash-alt"></i>Delete</a></li> </ul>
 								</div>
 								<a href="#" data-toggle="collapse" v-bind:data-target="'#api'+_uid" v-bind:aria-controls="'api'+_uid" v-bind:class="{'active': $parent.isSelectedApi(_uid)}">
 									<div class="">
 										<i v-bind:title="apiGetStateName(api.apistateid)" class="fas fa-circle" v-bind:class="'stat-' + apiGetStateName(api.apistateid)"></i>
 										<strong>{{api.openapidocument.info.title}}</strong> <small class="text-muted">{{api.openapidocument.info.version}}</small>
 									</div>
-									<small>Proxies: <strong>{{api.proxies.length}}</strong></small>
+									<small>Proxies: <strong v-if="api.proxies">{{api.proxies.length}}</strong></small>
 									<small class="text-muted float-right">{{api.created | formatDate}}</small>
 								</a>
 								<ul v-bind:id="'api'+_uid" class="collapse clearfix">
@@ -71,7 +71,7 @@
 											<div class="small pt-2">
 												<p>
 													<strong class="d-block text-uppercase">Servers</strong> 
-													<span class="d-block text-truncate" v-for="(sv, index) in api.servers" v-bind:title="sv.url">{{sv.url}}</span>
+													<span class="d-block text-truncate" v-for="(sv, index) in api.openapidocument.servers" v-bind:title="sv.url">{{sv.url}}</span>
 												</p>
 												<div class="fow form-row">
 													<p class="fol-6"><strong class="d-block text-uppercase">Visibility</strong><span class="text-capitalize">{{apiGetVisibilityName(api.apivisibilityid)}}</span></p>
@@ -755,7 +755,7 @@
 					</a>
 				</div>
 				<div class="fow form--row m-0 brd-t text-center field-tabs-btn">
-					<a href="#" class="fol-4" data-toggle="collapse" v-bind:data-target="'#method_requestbodies_'+_uid" v-bind:aria-controls="'method_requestbodies_'+_uid" v-if="httpMethod != 'GET'">
+					<a href="#" class="fol-4" data-toggle="collapse" v-bind:data-target="'#method_requestbodies_'+_uid" v-bind:aria-controls="'method_requestbodies_'+_uid" v-if="httpMethod != 'GET' && httpMethod != 'DELETE'">
 						<span class="text-muted small d-block">RequestBody</span>
 						<strong class="font-weight-bolder" v-if="method.requestBody">1</strong>
 						<strong class="font-weight-bolder" v-if="!method.requestBody">0</strong>
