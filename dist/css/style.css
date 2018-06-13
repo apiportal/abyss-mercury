@@ -16558,6 +16558,13 @@ a#toggle_mobile_nav {
   flex: 0 0 290px;
   max-width: 290px; }
 
+.vs-user-directories .vs-init .columns .add-column,
+.vs-user-directories .vs-init .columns .manage-column {
+  -webkit-box-flex: 0 !important;
+  -ms-flex: 0 0 0px !important;
+  flex: 0 0 0 !important;
+  max-width: 0 !important; }
+
 .vs-users .vs-init .columns .add-column,
 .vs-users .vs-init .columns .permissions-column {
   -webkit-box-flex: 0 !important;

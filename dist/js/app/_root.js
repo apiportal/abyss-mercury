@@ -239,17 +239,20 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 			taxTitle: '',
 			taxList: '',
 			tax: {
-				created: null,
-				crudsubjectid: null,
-				deleted: null,
-				description: null,
-				isdeleted: null,
-				name: null,
+				uuid: null,
 				organizationid: null,
+				created: null,
 				updated: null,
-				uuid: null
+				deleted: null,
+				isdeleted: null,
+				crudsubjectid: null,
+				name: null,
+				description: null,
+				externaldescription: null,
+				externalurl: null,
 			},
 			selectedTax: {},
+			filterTax: '',
 			end: []
 		},
 		methods: {
@@ -287,22 +290,29 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 				Vue.delete(item, 'updated');
 				Vue.delete(item, 'deleted');
 				Vue.delete(item, 'isdeleted');
-				Vue.set(item, 'subjectid', this.rootData.user.uuid);
-				Vue.set(item, 'crudsubjectid', this.rootData.user.uuid);
-				Vue.set(item, 'description', '');
-				Vue.set(item, 'organizationid', this.rootData.user.organizationid);
-				Vue.set(item, 'externaldescription', '');
-				Vue.set(item, 'externalurl', '');
+				// Vue.set(item, 'subjectid', this.rootData.user.uuid);
+				// Vue.set(item, 'crudsubjectid', this.rootData.user.uuid);
+				// Vue.set(item, 'description', '');
+				// Vue.set(item, 'organizationid', this.rootData.user.organizationid);
+				// Vue.set(item, 'externaldescription', '');
+				// Vue.set(item, 'externalurl', '');
 				// Vue.set(item, 'count', 0);
 				return item;
 			},
 			fixTax(item) {
+				console.log("item: ", item);
+				if (item.externalurl == null) {
+					Vue.set(item, 'externalurl', '' );
+				}
+				if (item.externaldescription == null) {
+					Vue.set(item, 'externaldescription', '' );
+				}
 				if (item.description == null) {
 					Vue.set(item, 'description', '' );
 				}
-				if (item.subjectid == null) {
-					Vue.set(item,'subjectid',this.rootData.user.uuid);
-				}
+				// if (item.subjectid == null) {
+				// 	Vue.set(item,'subjectid',this.rootData.user.uuid);
+				// }
 				if (item.crudsubjectid == null) {
 					Vue.set(item,'crudsubjectid',this.rootData.user.uuid);
 				}
@@ -315,6 +325,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 					if (result) {
 						var itemArr = [];
 						itemArr.push(this.cleanTax());
+						console.log("itemArr: ", itemArr);
 						this.addItem(this.getEndpoint(), itemArr, this.ajaxHeaders, this.rootData[this.taxList]).then(response => {
 							console.log("response: ", response);
 							this.cancelTax();
@@ -341,9 +352,13 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 				this.taxTitle = title;
 				this.taxList = list;
 				if (action == 'edit') {
-					this.selectedTax = _.cloneDeep(item);
-					// this.tax = this.fixTax(item);
+					this.fixTax(item);
+					this.tax = item;
 				}
+				if (action == 'add') {
+					this.fixTax(this.tax);
+				}
+				this.selectedTax = _.cloneDeep(this.tax);
 			},
 			setPage(page, state) {
 				this.pageCurrent = page;

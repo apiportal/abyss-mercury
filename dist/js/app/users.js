@@ -284,6 +284,14 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 				return i === this.selected;
 			},
 			deleteUser(item) {
+				axios.delete(this.ajaxUrl + '/' + item.uuid, item, this.ajaxHeaders).then(response => {
+					item.isdeleted = true;
+					console.log("deleteUser response: ", response);
+				}, error => {
+					console.error(error);
+				});
+			},
+			deleteUser222(item) {
 				this.removeItem(this.ajaxUrl + '/' + item.uuid, item, this.ajaxHeaders, this.userList).then(response => {
 					console.log("deleteUser response: ", response);
 				});

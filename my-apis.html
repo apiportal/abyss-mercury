@@ -34,81 +34,36 @@
 							</template>
 						</v-select>
 						<ul class="nav flex-column nav-controls nav-controls-first">
-							<api-list v-for="(a, index) in sortByNested(sortApi, myApiList)" :api="a" :openapi="openapi" :lindex="index" :key="a.uuid" inline-template>
-								<li>
-								<div class="nav-actions dropdown dropdown-hover">
-									<button type="button"><i class="fas fa-ellipsis-h"></i></button>
-									<ul class="dropdown-menu dropdown-menu-right" role="menu" data-dropdown-in="slideInRight" data-dropdown-out="slideOutRight">
-										<li><a href="#" v-on:click="$parent.selectApi(api, 'edit')"><i class="fas fa-edit"></i>Edit</a></li>
-										<li><a href="#"><i class="fas fa-code-branch"></i>Create Proxy</a></li>
-										<li><a href="#" v-on:click="$parent.selectApi(api, 'preview')"><i class="fas fa-file-alt"></i>Preview</a></li>
-										<li class="dropdown-header">VISIBILITY</li>
-										<li role="separator" class="divider"></li>
-										<li v-bind:class="{'active': activeVisibility == 'Public'}" ><a href="#" v-on:click="apiChangeVisibility(api, 'Public')"><i class="fas fa-eye"></i>Public</a></li>
-										<li v-bind:class="{'active': activeVisibility == 'Private'}" ><a href="#" v-on:click="apiChangeVisibility(api, 'Private')"><i class="fas fa-user-secret"></i>Private</a></li>
-										<li v-bind:class="{'active': activeVisibility == 'Closed-Group'}" ><a href="#" v-on:click="apiChangeVisibility(api, 'Closed-Group')"><i class="fas fa-user"></i>Closed-Group</a></li>
-										<li class="dropdown-header">CHANGE STATE</li>
-										<li role="separator" class="divider"></li>
-										<li v-bind:class="{'active': activeState == 'Draft'}"><a href="#" v-on:click="apiChangeState(api, 'Draft')"><i class="fas fa-circle stat-Draft"></i>Draft</a></li>
-										<li v-bind:class="{'active': activeState == 'Staged'}"><a href="#" v-on:click="apiChangeState(api, 'Staged')"><i class="fas fa-circle stat-Staged"></i>Stage</a></li>
-										<li v-bind:class="{'active': activeState == 'Published'}"><a href="#" v-on:click="apiChangeState(api, 'Published')"><i class="fas fa-circle stat-Published"></i>Publish</a></li>
-										<li v-bind:class="{'active': activeState == 'Promoted'}"><a href="#" v-on:click="apiChangeState(api, 'Promoted')"><i class="fas fa-circle stat-Promoted"></i>Promote</a></li>
-										<li v-bind:class="{'active': activeState == 'Demoted'}"><a href="#" v-on:click="apiChangeState(api, 'Demoted')"><i class="fas fa-circle stat-Demoted"></i>Demote</a></li>
-										<li v-bind:class="{'active': activeState == 'Retired'}"><a href="#" v-on:click="apiChangeState(api, 'Retired')"><i class="fas fa-circle stat-Retired"></i>Retire</a></li>
-										<li v-bind:class="{'active': activeState == 'Removed'}"><a href="#" v-on:click="apiChangeState(api, 'Removed')"><i class="fas fa-trash-alt"></i>Delete</a></li> </ul>
-								</div>
-								<a href="#" data-toggle="collapse" v-bind:data-target="'#api'+_uid" v-bind:aria-controls="'api'+_uid" v-bind:class="{'active': $parent.isSelectedApi(_uid)}">
-									<div class="">
-										<i v-bind:title="apiGetStateName(api.apistateid)" class="fas fa-circle" v-bind:class="'stat-' + apiGetStateName(api.apistateid)"></i>
-										<strong>{{api.openapidocument.info.title}}</strong> <small class="text-muted">{{api.openapidocument.info.version}}</small>
-									</div>
-									<small>Proxies: <strong v-if="api.proxies">{{api.proxies.length}}</strong></small>
-									<small class="text-muted float-right">{{api.created | formatDate}}</small>
-								</a>
-								<ul v-bind:id="'api'+_uid" class="collapse clearfix">
-									<li>
-										<div class="px-3 txt-dark brd-t">
-											<div class="small pt-2">
-												<p>
-													<strong class="d-block text-uppercase">Servers</strong> 
-													<span class="d-block text-truncate" v-for="(sv, index) in api.openapidocument.servers" v-bind:title="sv.url">{{sv.url}}</span>
-												</p>
-												<div class="fow form-row">
-													<p class="fol-6"><strong class="d-block text-uppercase">Visibility</strong><span class="text-capitalize">{{apiGetVisibilityName(api.apivisibilityid)}}</span></p>
-													<p class="fol-6"><strong class="d-block text-uppercase">State</strong><span class="text-capitalize">{{apiGetStateName(api.apistateid)}}</span></p>
-												</div>
-												<div class="fow form-row">
-													<p class="fol-6"><strong class="d-block text-uppercase">Security</strong> {{getObjCount(openapi.components.securitySchemes)}}</p>
-													<p class="fol-6"><strong class="d-block text-uppercase">Licence</strong> {{api.openapidocument.info.licence}}</p>
-												</div>
-												<div class="fow form-row">
-													<p class="fol-12"><strong class="d-block text-uppercase">Categories</strong>{{compCategoriesToList}}</p>
-													<p class="fol-12"><strong class="d-block text-uppercase">Groups</strong>{{compGroupsToList}}</p>
-													<p class="fol-12"><strong class="d-block text-uppercase">Tags</strong>{{compTagsToList}}</p>
-													<p class="fol-12"><small class="d-block">{{api.openapidocument.info.description}}</small></p>
-												</div>
-											</div>
-											<ul class="row nav flex-column nav-controls mt-2" v-if="api.proxies.length > 0">
-												<li class="field-link small">
-													<strong class="d-block text-uppercase">PROXIES</strong>
-												</li>
-												<li class="field-link" v-for="(proxy, index) in api.proxies" v-if="api.proxies.length > 0">
-													<div class="nav-actions dropdown dropdown-hover">
-														<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
-														<ul class="dropdown-menu dropdown-menu-right" role="menu" data-dropdown-in="slideInRight" data-dropdown-out="slideOutRight">
-															<li><a href="#" v-on:click="$root.setState('edit')"><i class="fas fa-edit"></i>Edit</a></li>
-															<li><a href="#"><i class="fas fa-trash-alt"></i>Delete</a></li>
-															<li><a href="#"><i class="fas fa-file-alt"></i>Preview</a></li>
-														</ul>
-													</div>
-													{{proxy.name}}
-												</li>
-											</ul>
-										</div>
-									</li>
-								</ul>
-								</li>
-							</api-list>
+							<api-list v-for="(a, index) in sortByNested(sortApi, myApiList)" :api="a" :openapi="openapi" :lindex="index" :key="a.uuid" v-if="!a.isproxyapi && a.apistateid != '5a4eb4cc-995d-4bc9-96e0-462084882332'"></api-list>
+						</ul>
+					</div>
+				</div>
+			</aside>
+			<aside class="column column-aside list-column xxx">
+				<div class="clearfix column-header column-min-button">
+					<div class="dropdown column-header-button">
+						<button type="button" class="dropdown-toggle btn btn-lg btn-link txt-link btn-square" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
+						<ul class="dropdown-menu dropdown-menu-right" role="menu">
+							<li><a href="#" v-on:click="sortList(sortApi, 'openapidocument.info.title', String)"><i class="fas fa-sort"></i>Sort by Name</a></li>
+							<li><a href="#" v-on:click="sortList(sortApi, 'created', Date);"><i class="fas fa-calendar-alt"></i>Sort by Date</a></li>
+						</ul>
+					</div>
+					<h5 class="column-header-title">My Proxies <small>All</small></h5>
+				</div>
+				<div class="column-content">
+					<div class="nicescroll-bar">
+						<!-- 2DO -->
+						<v-select label="openapidocument.info.title" :filterable="false" :options="apiOptions" @search="getApiOptions" :on-change="filterApi" placeholder="Search Proxies">
+							<span slot="no-options"></span>
+							<template slot="option" slot-scope="option">
+								<div>{{ option.openapidocument.info.title }}</div>
+							</template>
+							<template slot="selected-option" slot-scope="option">
+								<div>{{ option.openapidocument.info.title }}</div>
+							</template>
+						</v-select>
+						<ul class="nav flex-column nav-controls nav-controls-first">
+							<api-list v-for="(a, index) in sortByNested(sortApi, myApiList)" :api="a" :openapi="openapi" :lindex="index" :key="a.uuid" v-if="a.isproxyapi && a.apistateid != '5a4eb4cc-995d-4bc9-96e0-462084882332'"></api-list>
 						</ul>
 					</div>
 				</div>
@@ -354,7 +309,7 @@
 								</span>
 							</div>
 							<div id="tags" class="collapse field-tabs">
-								<div v-for="(t,index) in openapi.tags" class="field-controls field-controls field-color-grey field-level-1">
+								<div v-for="(t,index) in openapi.tags" class="field-controls field-color-grey field-level-1">
 									<div class="field-sum">
 										<a href="#" class="field-link nav-caret" data-toggle="collapse" v-bind:data-target="'#t'+index" v-bind:aria-controls="'t'+index">
 											<strong class="font-weight-bold">{{t.name}}</strong>
@@ -1300,6 +1255,88 @@
 			</div>
 			<api-items v-if="mediatype" :openapi="openapi" :child="content.schema" :name="_uid+'responses'" :level="0"></api-items>
 		</div>
+	</div>
+
+
+	<div id="template-list">
+		<li>
+		<div class="nav-actions dropdown dropdown-hover">
+			<button type="button"><i class="fas fa-ellipsis-h"></i></button>
+			<ul class="dropdown-menu dropdown-menu-right" role="menu" data-dropdown-in="slideInRight" data-dropdown-out="slideOutRight">
+				<li><a href="#" v-on:click="$parent.selectApi(api, 'edit')"><i class="fas fa-edit"></i>Edit</a></li>
+				<li v-if="!api.proxies"><a href="#" v-on:click="$parent.createProxy(api, 'preview')"><i class="fas fa-code-branch"></i>Create Proxy</a></li>
+				<li><a href="#" v-on:click="$parent.selectApi(api, 'preview')"><i class="fas fa-file-alt"></i>Preview</a></li>
+				<li class="dropdown-header">VISIBILITY</li>
+				<li role="separator" class="divider"></li>
+				<li v-bind:class="{'active': activeVisibility == 'Public'}" ><a href="#" v-on:click="$parent.apiChangeVisibility(api, 'Public')"><i class="fas fa-eye"></i>Public</a></li>
+				<li v-bind:class="{'active': activeVisibility == 'Private'}" ><a href="#" v-on:click="$parent.apiChangeVisibility(api, 'Private')"><i class="fas fa-user-secret"></i>Private</a></li>
+				<li v-bind:class="{'active': activeVisibility == 'Closed-Group'}" ><a href="#" v-on:click="$parent.apiChangeVisibility(api, 'Closed-Group')"><i class="fas fa-user"></i>Closed-Group</a></li>
+				<li class="dropdown-header">CHANGE STATE</li>
+				<li role="separator" class="divider"></li>
+				<li v-bind:class="{'active': activeState == 'Draft'}"><a href="#" v-on:click="$parent.apiChangeState(api, 'Draft')"><i class="fas fa-circle stat-Draft"></i>Draft</a></li>
+				<li v-bind:class="{'active': activeState == 'Staged'}"><a href="#" v-on:click="$parent.apiChangeState(api, 'Staged')"><i class="fas fa-circle stat-Staged"></i>Stage</a></li>
+				<li v-bind:class="{'active': activeState == 'Published'}"><a href="#" v-on:click="$parent.apiChangeState(api, 'Published')"><i class="fas fa-circle stat-Published"></i>Publish</a></li>
+				<li v-bind:class="{'active': activeState == 'Promoted'}"><a href="#" v-on:click="$parent.apiChangeState(api, 'Promoted')"><i class="fas fa-circle stat-Promoted"></i>Promote</a></li>
+				<li v-bind:class="{'active': activeState == 'Demoted'}"><a href="#" v-on:click="$parent.apiChangeState(api, 'Demoted')"><i class="fas fa-circle stat-Demoted"></i>Demote</a></li>
+				<li v-bind:class="{'active': activeState == 'Retired'}"><a href="#" v-on:click="$parent.apiChangeState(api, 'Retired')"><i class="fas fa-circle stat-Retired"></i>Retire</a></li>
+				<li v-bind:class="{'active': activeState == 'Removed'}"><a href="#" v-on:click="$parent.apiChangeState(api, 'Removed')"><i class="fas fa-trash-alt"></i>Delete</a></li> </ul>
+		</div>
+		<a href="#" data-toggle="collapse" v-bind:data-target="'#api'+api.uuid" v-bind:aria-controls="'api'+api.uuid" v-bind:class="{'active': $parent.isSelectedApi(api.uuid)}">
+			<div class="">
+				<i v-bind:title="apiGetStateName(api.apistateid)" class="fas fa-circle" v-bind:class="'stat-' + apiGetStateName(api.apistateid)"></i>
+				<strong>{{api.openapidocument.info.title}}</strong> <small class="text-muted">{{api.openapidocument.info.version}}</small>
+			</div>
+			<span v-if="!api.isproxyapi">
+				<small>Proxies: <strong v-if="api.proxies">{{api.proxies.length}}</strong></small>
+			</span>
+			<span v-if="api.isproxyapi">
+				<small>Business API: <strong>{{businessapi}}</strong></small>
+			</span>
+			<small class="text-muted float-right">{{api.created | formatDate}}</small>
+		</a>
+		<ul v-bind:id="'api'+api.uuid" class="collapse clearfix">
+			<li>
+				<div class="px-3 txt-dark brd-t">
+					<div class="small pt-2">
+						<p>
+							<strong class="d-block text-uppercase">Servers</strong> 
+							<span class="d-block text-truncate" v-for="(sv, index) in api.openapidocument.servers" v-bind:title="sv.url">{{sv.url}}</span>
+						</p>
+						<div class="fow form-row">
+							<p class="fol-6"><strong class="d-block text-uppercase">Visibility</strong><span class="text-capitalize">{{apiGetVisibilityName(api.apivisibilityid)}}</span></p>
+							<p class="fol-6"><strong class="d-block text-uppercase">State</strong><span class="text-capitalize">{{apiGetStateName(api.apistateid)}}</span></p>
+						</div>
+						<div class="fow form-row">
+							<p class="fol-6"><strong class="d-block text-uppercase">Security</strong> {{getObjCount(openapi.components.securitySchemes)}}</p>
+							<p class="fol-6"><strong class="d-block text-uppercase">License</strong> {{api.openapidocument.info.license.name}}</p>
+						</div>
+						<div class="fow form-row">
+							<p class="fol-12"><strong class="d-block text-uppercase">Categories</strong>{{compCategoriesToList}}</p>
+							<p class="fol-12"><strong class="d-block text-uppercase">Groups</strong>{{compGroupsToList}}</p>
+							<p class="fol-12"><strong class="d-block text-uppercase">Tags</strong>{{compTagsToList}}</p>
+							<p class="fol-12"><small class="d-block">{{api.openapidocument.info.description}}</small></p>
+						</div>
+					</div>
+					<ul class="row nav flex-column nav-controls mt-2" v-if="api.proxies.length > 0">
+						<li class="field-link small">
+							<strong class="d-block text-uppercase">PROXIES</strong>
+						</li>
+						<li class="field-link" v-for="(proxy, index) in api.proxies" v-if="api.proxies.length > 0">
+							<div class="nav-actions dropdown dropdown-hover">
+								<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
+								<ul class="dropdown-menu dropdown-menu-right" role="menu" data-dropdown-in="slideInRight" data-dropdown-out="slideOutRight">
+									<li><a href="#" v-on:click="$parent.selectApi(proxy, 'edit')"><i class="fas fa-edit"></i>Edit</a></li>
+									<li><a href="#"><i class="fas fa-trash-alt"></i>Delete</a></li>
+									<li><a href="$parent.selectApi(proxy, 'preview')"><i class="fas fa-file-alt"></i>Preview</a></li>
+								</ul>
+							</div>
+							{{proxy.openapidocument.info.title}}
+						</li>
+					</ul>
+				</div>
+			</li>
+		</ul>
+		</li>
 	</div>
 </div>
 

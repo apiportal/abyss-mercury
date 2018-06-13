@@ -23,7 +23,6 @@ const MyToaster = {
 			data() {
 				return {
 					answer: null,
-					qqq: 'asdsadsadas',
 					toastOptions: {
 						defs: {
 							// id: null, 

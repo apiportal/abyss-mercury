@@ -191,6 +191,14 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 				return i === this.selected;
 			},
 			deleteGroup(item) {
+				axios.delete(this.ajaxUrl + '/' + item.uuid, item, this.ajaxHeaders).then(response => {
+					item.isdeleted = true;
+					console.log("deleteUser response: ", response);
+				}, error => {
+					console.error(error);
+				});
+			},
+			deleteGroup222(item) {
 				this.removeItem(this.ajaxUrl + '/' + item.uuid, item, this.ajaxHeaders, this.groupList).then(response => {
 					console.log("deleteGroup response: ", response);
 				});
