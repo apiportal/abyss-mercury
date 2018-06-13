@@ -1416,7 +1416,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					"apivisibilityid": "043d4827-cff4-43f9-9d5b-782d1f83b3f0",
 					"languagename": "OpenAPI",
 					"languageversion": "3.0.0",
-					"dataformat": 1,
+					"languageformat": 1,
 					"originaldocument": null,
 					"openapidocument": {},
 					"extendeddocument": {},
