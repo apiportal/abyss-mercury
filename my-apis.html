@@ -34,7 +34,7 @@
 							</template>
 						</v-select>
 						<ul class="nav flex-column nav-controls nav-controls-first">
-							<api-list v-for="(a, index) in sortByNested(sortApi, myApiList)" :api="a" :openapi="openapi" :lindex="index" :key="a.uuid" v-if="!a.isproxyapi && a.apistateid != '5a4eb4cc-995d-4bc9-96e0-462084882332'"></api-list>
+							<api-list v-for="(a, index) in sortByNested(sortApi, myApiList)" :api="a" :openapi="openapi" :lindex="index" :key="a.uuid" v-if="!a.isproxyapi"></api-list>
 						</ul>
 					</div>
 				</div>
@@ -63,7 +63,7 @@
 							</template>
 						</v-select>
 						<ul class="nav flex-column nav-controls nav-controls-first">
-							<api-list v-for="(a, index) in sortByNested(sortApi, myApiList)" :api="a" :openapi="openapi" :lindex="index" :key="a.uuid" v-if="a.isproxyapi && a.apistateid != '5a4eb4cc-995d-4bc9-96e0-462084882332'"></api-list>
+							<api-list v-for="(a, index) in sortByNested(sortApi, myApiList)" :api="a" :openapi="openapi" :lindex="index" :key="a.uuid" v-if="a.isproxyapi"></api-list>
 						</ul>
 					</div>
 				</div>
