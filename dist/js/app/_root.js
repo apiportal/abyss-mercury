@@ -86,6 +86,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 				$('.preloader-it > .la-anim-1').addClass('la-animate');
 				$(document).ready(function() {
 					$(".preloader-it").fadeOut("slow");
+					$('.nicescroll-bar').slimscroll({height:'100%',color: '#878787', disableFadeOut : true,borderRadius:0,size:'4px',alwaysVisible:false});
 				});
 			},
 			makePaginate(data) {
@@ -125,13 +126,16 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 					console.log("POST item: ", item);
 					console.log("POST response: ", response);
 					// arr.push(item);
-					if (_.isArray(arr)) {
-						if (response.data[0].status != 500 ) {
-							arr.push(response.data[0]);
-						}
-					} else {
-						arr.push(response.data);
+					if (response.data[0].status != 500 ) {
+						arr.push(response.data[0].response);
 					}
+					// if (_.isArray(arr)) {
+					// 	if (response.data[0].status != 500 ) {
+					// 		arr.push(response.data[0]);
+					// 	}
+					// } else {
+					// 	arr.push(response.data);
+					// }
 					console.log("arr: ", arr);
 					return response;
 				}, error => {
@@ -149,6 +153,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 					}, error => {
 						console.error(error);
 					});
+				} else {
+					console.log("CANCEL: ");
+					return false;
 				}
 			},
 			checkDiff(object, base) {
@@ -217,11 +224,45 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 			},
 		}
 	});
+// ■■■■■■■■ api-nav ■■■■■■■■ //
+	Vue.component('api-nav', {
+		// mixins: [mixIndex],
+		// template: '#template-list',
+		props: ['name','groupname', 'categoryname', 'tagname', 'visibilityname', 'statename'],
+		computed: {
+			
+		},
+		data() {
+			return {
+				isLoading: true,
+				sort: {
+					key: 'name',
+					type: String,
+					order: 'asc'
+				},
+			};
+		},
+		methods : {
+			deleteTax(list, editing, item) {
+				console.log("list, editing, item: ", list, editing, item);
+				this.$root.deleteTax(list, editing, item);
+			},
+			setTax(action, title, list, item) {
+				console.log("action, title, list, item: ", action, title, list, item);
+				this.$root.setTax(action, title, list, item);
+			},
+		}
+	});
 	new Vue({
 		el: '#portal',
 		name: 'portal',
 		data: {
 			isLoading: true,
+			sort: {
+				key: 'name',
+				type: String,
+				order: 'asc'
+			},
 			pageCurrent: '',
 			rootState: 'init',
 			childState: '',
@@ -250,6 +291,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 				description: null,
 				externaldescription: null,
 				externalurl: null,
+				subjectid: null,
 			},
 			selectedTax: {},
 			filterTax: '',
@@ -257,24 +299,30 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 		},
 		methods: {
 			cancelTax() {
-				this.tax = {};
-				this.selectedTax = {},
+				this.tax = _.cloneDeep(this.newTax);
+				this.selectedTax = _.cloneDeep(this.newTax);
 				this.taxAction = '';
 				this.taxTitle = '';
 				this.taxList = '';
 			},
 			deleteTax(list, editing, item) {
-				console.log("this.rootData[list]: ", this.rootData[list]);
-				this.removeItem(this.getEndpoint() + '/' + item.uuid, item, this.ajaxHeaders, this.rootData[list]).then(response => {
+				// var itemArr = [];
+				// itemArr.push(item);
+				// this.removeItem(this.getEndpoint(list) + '/' + item.uuid, item, this.ajaxHeaders, this.rootData[list]).then(response => {
+				axios.delete(this.getEndpoint(list) + '/' + item.uuid, item, this.ajaxHeaders).then(response => {
+				// axios.delete(this.getEndpoint(list) + '/' + item.uuid, item, this.ajaxHeaders).then(response => {
 					console.log("response: ", response );
-					// ■■ update user's api groups, tags, categories and reload my api list
-					this.$refs.refMyApis.getPage(1);
-					if (this.rootState == 'edit' || this.rootState == 'create') {
-						// ?????
-						// var index = this.$refs.refMyApis.api[editing].indexOf(item);
-						var index = this.$refs.refMyApis.api[editing].findIndex(el => el.uuid == item.uuid);
-						this.$refs.refMyApis.api[editing].splice(index, 1);
-						// this.$refs.refMyApis.selectApi(this.$refs.refMyApis.api, 'edit');
+					if (response) {
+						// ■■ update user's api groups, tags, categories and reload my api list
+						// this.rootData[list].push(response.data[0].response);
+						this.$refs.refMyApis.getPage(1);
+						if (this.rootState == 'edit' || this.rootState == 'create') {
+							// ?????
+							// var index = this.$refs.refMyApis.api[editing].indexOf(item);
+							var index = this.$refs.refMyApis.api.openapidocument[editing].findIndex(el => el.uuid == item.uuid);
+							this.$refs.refMyApis.api.openapidocument[editing].splice(index, 1);
+							// this.$refs.refMyApis.selectApi(this.$refs.refMyApis.api, 'edit');
+						}
 					}
 				});
 			},
@@ -301,18 +349,27 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 			},
 			fixTax(item) {
 				console.log("item: ", item);
-				if (item.externalurl == null) {
-					Vue.set(item, 'externalurl', '' );
-				}
-				if (item.externaldescription == null) {
-					Vue.set(item, 'externaldescription', '' );
+				if (this.taxTitle == 'Tag') {
+					if (item.externalurl == null) {
+						Vue.set(item, 'externalurl', '' );
+					}
+					if (item.externaldescription == null) {
+						Vue.set(item, 'externaldescription', '' );
+					}
+				} else {
+					Vue.delete(item, 'externalurl');
+					Vue.delete(item, 'externaldescription');
 				}
 				if (item.description == null) {
 					Vue.set(item, 'description', '' );
 				}
-				// if (item.subjectid == null) {
-				// 	Vue.set(item,'subjectid',this.rootData.user.uuid);
-				// }
+				if (this.taxTitle == 'Group') {
+					if (item.subjectid == null) {
+						Vue.set(item,'subjectid',this.rootData.user.uuid);
+					}
+				} else {
+					Vue.delete(item, 'subjectid');
+				}
 				if (item.crudsubjectid == null) {
 					Vue.set(item,'crudsubjectid',this.rootData.user.uuid);
 				}
@@ -411,20 +468,24 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 					console.error(error);
 				});
 			},
-			getEndpoint() {
-				if ( this.taxList == 'myApiVisibilityList') {
+			getEndpoint(lst) {
+				var list = this.taxList;
+				if (lst) {
+					list = lst;
+				}
+				if ( list == 'myApiVisibilityList') {
 					return abyss.ajax.api_visibility_list;
 				}
-				if ( this.taxList == 'myApiStateList') {
+				if ( list == 'myApiStateList') {
 					return abyss.ajax.api_states_list;
 				}
-				if ( this.taxList == 'myApiGroupList') {
+				if ( list == 'myApiGroupList') {
 					return abyss.ajax.api_group_list;
 				}
-				if ( this.taxList == 'myApiCategoryList') {
+				if ( list == 'myApiCategoryList') {
 					return abyss.ajax.api_category_list;
 				}
-				if ( this.taxList == 'myApiTagList') {
+				if ( list == 'myApiTagList') {
 					return abyss.ajax.api_tag_list;
 				}
 			},
@@ -445,6 +506,11 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 						Vue.set(this.rootData, 'myApiGroupList', api_group_list.data );
 						Vue.set(this.rootData, 'myApiCategoryList', api_category_list.data );
 						Vue.set(this.rootData, 'myApiTagList', api_tag_list.data );
+						Vue.set(this.rootData, 'apiVisibilityList', api_visibility_list.data );
+						Vue.set(this.rootData, 'apiStateList', api_states_list.data );
+						Vue.set(this.rootData, 'apiGroupList', api_group_list.data );
+						Vue.set(this.rootData, 'apiCategoryList', api_category_list.data );
+						Vue.set(this.rootData, 'apiTagList', api_tag_list.data );
 						console.log("ROOT this.rootData: ", this.rootData);
 						this.isLoading = false;
 						// console.log("this.rootData: ", JSON.stringify(this.rootData, null, '\t') );
@@ -463,9 +529,10 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 			
 		},
 		created() {
-			// this.$cookie.set('abyss.principal.uuid', '9820d2aa-eb02-4a58-8cc5-8b9a89504df9', 10); //one day
+			// this.$cookie.set('abyss.principal.uuid', '9820d2aa-eb02-4a58-8cc5-8b9a89504df9', 10); //ten day
 			// this.$cookie.set('abyss.principal.uuid', '32c9c734-11cb-44c9-b06f-0b52e076672d', 10); //one day
 			var principal = this.$cookie.get('abyss.principal.uuid');
+			this.newTax = _.cloneDeep(this.tax);
 			// console.log("principal: ", principal);
 			// this.$cookie.delete('abyss.principal.uuid');
 			// this.log(this.$options.name);

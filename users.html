@@ -13,7 +13,7 @@
 				<div class="nicescroll--bar">
 					<div class="fow no-gutters">
 						<div class="fol fol-6 form-group mb-0 bg-white">
-							<v-select label="subjectname" :filterable="false" :options="userOptions" @search="getUserOptions" :on-change="filterUser" placeholder="Search Users">
+							<v-select label="subjectname" :filterable="true" :options="userOptions" @search="getUserOptions" :on-change="filterUser" placeholder="Search Users">
 								<span slot="no-options"></span>
 								<template slot="option" slot-scope="option">
 									<strong>{{ option.firstname }} {{ option.lastname }}</strong>
@@ -26,12 +26,12 @@
 							</v-select>
 						</div>
 						<div class="fol form-group mb-0 bg-white">
-							<v-select label="groupname" :filterable="false" :options="groupOptions" @search="getGroupOptions" :on-change="filterGroup" placeholder="Search Groups">
+							<v-select label="groupname" :filterable="true" :options="groupOptions" :on-change="filterGroup" placeholder="Search Groups">
 								<span slot="no-options"></span>
 							</v-select>
 						</div>
 						<div class="fol form-group mb-0 bg-white">
-							<v-select label="permission" :filterable="false" :options="permissionOptions" @search="getPermissionOptions" :on-change="filterPermission" placeholder="Search Permissions">
+							<v-select label="permission" :filterable="true" :options="permissionOptions" :on-change="filterPermission" placeholder="Search Permissions">
 								<span slot="no-options"></span>
 							</v-select>
 						</div>
@@ -50,7 +50,7 @@
 							<th class="td-action-1"></th>
 							<th class="td-action-1"></th>
 						</tr>
-						<tr v-for="(user, index) in sortBy(sort, userList)" v-bind:key="user.uuid" v-bind:class="{'active': isSelected(index)}">
+						<tr v-for="(user, index) in sortBy(sort, userList)" v-bind:key="user.uuid" v-bind:class="{'active': isSelected(index)}" v-if="user.groupfilter && user.permissionfilter">
 							<td class="text-center">
 								<i class="fas fa-circle" title="Not Activated" v-if="!user.isactivated"></i>
 								<i class="fas fa-check-circle txt-green" title="Activated" v-if="user.isactivated"></i>
@@ -61,6 +61,7 @@
 							<td>
 								<div class="d-block">{{user.subjectname}}</div>
 								<small class="d-block">{{user.email}}</small>
+								<code class="d-block small txt-purple"><small>{{user.uuid}}</small></code>
 							</td>
 							<td>
 								{{user.displayname}}

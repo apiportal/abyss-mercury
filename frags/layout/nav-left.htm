@@ -7,118 +7,18 @@
 				<a href="/abyss/index"><i class="fas fa-fw fa-home"></i><span class="right-nav-text">Dashboard</span></a>
 			</li>
 			<li>
-				<a href="/abyss/my-apis" class="js-collapse-open"><i class="fas fa-fw fa-cube"></i><span class="right-nav-text">My Business APIs</span></a>
-				<button type="button" data-toggle="collapse" data-target="#apiCat" aria-controls="apiCat" class="nav-caret"></button>
-				<ul id="apiCat" class="collapse">
-					<li>
-						<a href="#" class="nav-caret" data-toggle="collapse" data-target="#apiGroups" aria-controls="apiGroups">Groups</a>
-						<ul id="apiGroups" class="collapse">
-							<li><a href="#" data-toggle="modal" data-target="#taxModal" v-on:click="setTax('add', 'Group', 'myApiGroupList')"><i class="fas fa-fw fa-plus-square"></i>ADD GROUP</a></li>
-							<li class="action" v-for="(group, index) in rootData.myApiGroupList">
-								<div class="nav-actions dropdown dropdown-hover">
-									<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
-									<ul class="dropdown-menu" role="menu" data-dropdown-in="slideInLeft" data-dropdown-out="slideOutLeft">
-										<li><a href="#" data-toggle="modal" data-target="#taxModal" v-on:click="setTax('edit', 'Group', 'myApiGroupList', group)"><i class="fas fa-edit"></i>Edit</a></li>
-										<li><a href="#"v-on:click="deleteTax('myApiGroupList', 'groups', group)"><i class="fas fa-trash-alt"></i>Delete</a></li>
-									</ul>
-								</div>
-								<a href="#"><i class="fas fa-fw fa-object-group txt-pink"></i>{{group.name}}<span class="badge badge-pill badge-outline">{{group.count}}</span></a></li>
-						</ul>
-					</li>
-					<li>
-						<a href="#" class="nav-caret" data-toggle="collapse" data-target="#apiTags" aria-controls="apiTags">Tags</a>
-						<ul id="apiTags" class="collapse">
-							<li><a href="#" data-toggle="modal" data-target="#taxModal" v-on:click="setTax('add', 'Tag', 'myApiTagList')"><i class="fas fa-fw fa-plus-square"></i>ADD TAG</a></li>
-							<li class="action" v-for="(tag, index) in rootData.myApiTagList">
-								<div class="nav-actions dropdown dropdown-hover">
-									<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
-									<ul class="dropdown-menu" role="menu" data-dropdown-in="slideInLeft" data-dropdown-out="slideOutLeft">
-										<li><a href="#" data-toggle="modal" data-target="#taxModal" v-on:click="setTax('edit', 'Tag', 'myApiTagList', tag)"><i class="fas fa-edit"></i>Edit</a></li>
-										<li><a href="#" v-on:click="deleteTax('myApiTagList', 'tags', tag)"><i class="fas fa-trash-alt"></i>Delete</a></li>
-									</ul>
-								</div>
-								<a href="#"><i class="fas fa-fw fa-stop txt-purple"></i>{{tag.name}}<span class="badge badge-pill badge-outline">{{tag.count}}</span></a></li>
-						</ul>
-					</li>
-					<li>
-						<a href="#" class="nav-caret" data-toggle="collapse" data-target="#apiCategories" aria-controls="apiCategories">Categories</a>
-						<ul id="apiCategories" class="collapse">
-							<li><a href="#" data-toggle="modal" data-target="#taxModal" v-on:click="setTax('add', 'Category', 'myApiCategoryList')"><i class="fas fa-fw fa-plus-square"></i>ADD CATEGORY</a></li>
-							<li class="action" v-for="(category, index) in rootData.myApiCategoryList">
-								<div class="nav-actions dropdown dropdown-hover">
-									<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
-									<ul class="dropdown-menu" role="menu" data-dropdown-in="slideInLeft" data-dropdown-out="slideOutLeft">
-										<li><a href="#" data-toggle="modal" data-target="#taxModal" v-on:click="setTax('edit', 'Category', 'myApiCategoryList', category)"><i class="fas fa-edit"></i>Edit</a></li>
-										<li><a href="#"v-on:click="deleteTax('myApiCategoryList', 'categories', category)"><i class="fas fa-trash-alt"></i>Delete</a></li>
-									</ul>
-								</div>
-								<a href="#"><i class="fas fa-fw fa-stop txt-green"></i>{{category.name}}<span class="badge badge-pill badge-outline">{{category.count}}</span></a></li>
-						</ul>
-					</li>
-					<li>
-						<a href="#" class="nav-caret" data-toggle="collapse" data-target="#apiStates" aria-controls="apiStates">States</a>
-						<ul id="apiStates" class="collapse"> 
-							<li></li>
-							<li v-for="(state, index) in rootData.myApiStateList"> 
-								<a href="#" v-bind:title="state.description"> 
-									<i v-bind:class="'fas fa-circle stat-' + state.name"></i>{{state.name}}
-									<span class="badge badge-pill badge-outline">{{state.count}}</span> 
-								</a>
-							</li>
-						</ul>
-					</li>
-					<li>
-						<a href="#" class="nav-caret" data-toggle="collapse" data-target="#apiVisibility" aria-controls="apiVisibility">Visibility</a>
-						<ul id="apiVisibility" class="collapse"> 
-							<li></li>
-							<li v-for="(visible, index) in rootData.myApiVisibilityList"> 
-								<a href="#"> 
-									<i v-bind:class="'fas ico-visibility-' + visible.id"></i>{{visible.name}}
-									<span class="badge badge-pill badge-outline">{{visible.count}}</span> 
-								</a>
-							</li>
-						</ul>
-					</li>
-				</ul>
+				<a href="my-apis" class="js-collapse-open"><i class="fas fa-fw fa-cube"></i><span class="right-nav-text">My Business APIs</span></a>
+				<button type="button" data-toggle="collapse" data-target="#myApiTax" aria-controls="myApiTax" class="nav-caret"></button>
+				<api-nav name="myApiTax" visibilityname="myApiVisibilityList" statename="myApiStateList" groupname="myApiGroupList" categoryname="myApiCategoryList" tagname="myApiTagList" inline-template>
+					<div th:replace="webroot/frags/api/api-nav.htm :: navTax"></div>
+				</api-nav>
 			</li>
 			<li>
 				<a href="#" class="js-collapse-open"><i class="fas fa-fw fa-code-branch"></i><span class="right-nav-text">My Proxies</span></a>
-				<button type="button" data-toggle="collapse" data-target="#proxyCat" aria-controls="proxyCat" class="nav-caret"></button>
-				<ul id="proxyCat" class="collapse">
-					<li>
-						<a href="#" class="nav-caret" data-toggle="collapse" data-target="#proxyGroups" aria-controls="proxyGroups">Groups</a>
-						<ul id="proxyGroups" class="collapse">
-							<li><a href="#" data-toggle="modal" data-target="#taxModal"><i class="fas fa-fw fa-plus-square"></i>ADD GROUP</a></li>
-							<li><a href="#"><i class="fas fa-fw fa-object-group txt-danger"></i>Favorites</a></li>
-							<li><a href="#"><i class="fas fa-fw fa-object-group txt-success"></i>Finance</a></li>
-							<li><a href="#"><i class="fas fa-fw fa-object-group txt-info"></i>Junk</a></li>
-							<li><a href="#"><i class="fas fa-fw fa-object-group txt-warning"></i>Mobile</a></li>
-							<li><a href="#"><i class="fas fa-fw fa-object-group txt-primary"></i>Recent</a></li>
-						</ul>
-					</li>
-					<li>
-						<a href="#" class="nav-caret" data-toggle="collapse" data-target="#proxyTags" aria-controls="proxyTags">Tags</a>
-						<ul id="proxyTags" class="collapse">
-							<li><a href="#"><i class="fas fa-fw fa-plus-square"></i>ADD TAG</a></li>
-							<li><a href="#"><i class="fas fa-fw fa-stop txt-danger"></i>Social</a></li>
-							<li><a href="#"><i class="fas fa-fw fa-stop txt-success"></i>Weather</a></li>
-							<li><a href="#"><i class="fas fa-fw fa-stop txt-info"></i>Travel</a></li>
-							<li><a href="#"><i class="fas fa-fw fa-stop txt-warning"></i>Food</a></li>
-							<li><a href="#"><i class="fas fa-fw fa-stop txt-primary"></i>Sports</a></li>
-						</ul>
-					</li>
-					<li>
-						<a href="#" class="nav-caret" data-toggle="collapse" data-target="#proxyStatus" aria-controls="proxyStatus">Sort by Status</a>
-						<ul id="proxyStatus" class="collapse">
-							<li><a href="#"><i class="fas fa-circle txt-grey"></i>Draft</a></li>
-							<li><a href="#"><i class="fas fa-circle txt-purple"></i>Staged</a></li>
-							<li><a href="#"><i class="fas fa-circle txt-green"></i>Published</a></li>
-							<li><a href="#"><i class="fas fa-circle txt-cyan"></i>Promoted</a></li>
-							<li><a href="#"><i class="fas fa-circle txt-orange"></i>Demoted</a></li>
-							<li><a href="#"><i class="fas fa-circle txt-red"></i>Retired</a></li>
-						</ul>
-					</li>
-				</ul>
+				<button type="button" data-toggle="collapse" data-target="#myProxyTax" aria-controls="myProxyTax" class="nav-caret"></button>
+				<api-nav name="myProxyTax" visibilityname="myApiVisibilityList" statename="myApiStateList" groupname="myApiGroupList" categoryname="myApiCategoryList" tagname="myApiTagList" inline-template>
+					<div th:replace="webroot/frags/api/api-nav.htm :: navTax"></div>
+				</api-nav>
 			</li>
 			<li>
 				<a href="#"><i class="fas fa-fw fa-cubes"></i><span class="right-nav-text">My Apps</span></a>
@@ -131,6 +31,13 @@
 			</li>
 			<li>
 				<a href="#"><i class="fas fa-fw fa-globe"></i><span class="right-nav-text">Explore</span><span class="badge badge-pill badge-warning">8</span></a>
+			</li>
+			<li>
+				<a href="#" class="js-collapse-open"><i class="fas fa-fw fa-code-branch"></i><span class="right-nav-text">Explore</span></a>
+				<button type="button" data-toggle="collapse" data-target="#apiTax" aria-controls="apiTax" class="nav-caret"></button>
+				<api-nav name="apiTax" visibilityname="apiVisibilityList" statename="apiStateList" groupname="apiGroupList" categoryname="apiCategoryList" tagname="apiTagList" inline-template>
+					<div th:replace="webroot/frags/api/api-nav.htm :: navTax"></div>
+				</api-nav>
 			</li>
 			<li class="navigation-header brd-t">
 				<span>ADMIN</span><i class="fas fa-fw fa-ellipsis-h"></i>

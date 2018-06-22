@@ -509,19 +509,6 @@ define(['config', 'jquery', 'bootstrap', 'domready'], function(config, $){
 		// ■■ Popover
 		if( $('[data-toggle="popover"]').length > 0 )
 			$('[data-toggle="popover"]').popover()
-		// ■■ Panel Remove
-		$(document).on('click', '.close-panel', function (e) {
-			var effect = $(this).data('effect');
-				$(this).closest('.panel')[effect]();
-			return false;	
-		});
-		// ■■ Accordion js
-		$(document).on('show.bs.collapse', '.panel-collapse', function (e) {
-			$(this).siblings('.panel-heading').addClass('activestate');
-		});
-		$(document).on('hide.bs.collapse', '.panel-collapse', function (e) {
-			$(this).siblings('.panel-heading').removeClass('activestate');
-		});
 		// ■■ Sidebar Navigation
 		$(document).on('click', '#toggle_nav_btn,#open_right_sidebar,#setting_panel_btn', function (e) {
 			$(".dropdown.open > .dropdown-toggle").dropdown("toggle"); //3
@@ -590,7 +577,8 @@ define(['config', 'jquery', 'bootstrap', 'domready'], function(config, $){
 		});
 		// ■■ Slimscroll
 		require(['slimscroll'],function(){
-			$('.nicescroll-bar').slimscroll({height:'100%',color: '#878787', disableFadeOut : true,borderRadius:0,size:'4px',alwaysVisible:false});
+			// setTimeout(function(){
+			// $('.nicescroll-bar').slimscroll({height:'100%',color: '#878787', disableFadeOut : true,borderRadius:0,size:'4px',alwaysVisible:false});
 			$('.message-nicescroll-bar').slimscroll({height:'229px',size: '4px',color: '#878787',disableFadeOut : true,borderRadius:0});
 			$('.message-box-nicescroll-bar').slimscroll({height:'350px',size: '4px',color: '#878787',disableFadeOut : true,borderRadius:0});
 			$('.product-nicescroll-bar').slimscroll({height:'346px',size: '4px',color: '#878787',disableFadeOut : true,borderRadius:0});
@@ -600,6 +588,7 @@ define(['config', 'jquery', 'bootstrap', 'domready'], function(config, $){
 			$('.users-chat-nicescroll-bar').slimscroll({height:'257px',size: '4px',color: '#878787',disableFadeOut : true,borderRadius:0});
 			$('.chatapp-nicescroll-bar').slimscroll({height:'543px',size: '4px',color: '#878787',disableFadeOut : true,borderRadius:0});
 			$('.chatapp-chat-nicescroll-bar').slimscroll({height:'483px',size: '4px',color: '#878787',disableFadeOut : true,borderRadius:0});
+			// },800);
 		});
 		// ■■ Refresh Init Js
 		var refreshMe = '.refresh';
@@ -626,6 +615,12 @@ define(['config', 'jquery', 'bootstrap', 'domready'], function(config, $){
 			$(this).parents('.panel').toggleClass('fullscreen');
 			$(window).trigger('resize');
 			return false;
+		});
+		// ■■ Panel Remove
+		$(document).on('click', '.close-panel', function (e) {
+			var effect = $(this).data('effect');
+				$(this).closest('.panel')[effect]();
+			return false;	
 		});
 		// ■■ Nav Tab Responsive Js
 		$(document).on('show.bs.tab', '.nav-tabs-responsive [data-toggle="tab"]', function(e) {
@@ -859,7 +854,7 @@ define(['config', 'jquery', 'bootstrap', 'domready'], function(config, $){
 			// var bodyStyle = $(zbg)[0].style;
 			$thiz.colorpicker({
 				format: zformat, 
-				component: '.add-on', 
+				// component: '.add-on', 
 				sliders: {
 					saturation: {
 						maxLeft: 200,
@@ -878,7 +873,6 @@ define(['config', 'jquery', 'bootstrap', 'domready'], function(config, $){
 				$(ztxt).attr('style', 'color: ' + ev.color + ' !important');
 			}).on('hidePicker', function(ev) {
 			});
-			
 		});
 	};
 	UI.datez = {

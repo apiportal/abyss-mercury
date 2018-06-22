@@ -13,7 +13,7 @@
 				<div class="nicescroll--bar">
 					<div class="fow no-gutters">
 						<div class="fol form-group mb-0 bg-white">
-							<v-select label="groupname" :filterable="false" :options="groupOptions" @search="getGroupOptions" :on-change="filterGroup" placeholder="Search Groups">
+							<v-select label="groupname" :filterable="true" :options="groupOptions" @search="getGroupOptions" :on-change="filterGroup" placeholder="Search Groups">
 								<span slot="no-options"></span>
 							</v-select>
 						</div>

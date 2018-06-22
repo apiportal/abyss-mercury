@@ -86,7 +86,7 @@ define(['global'], function(abyss){
 		abyssCredentials: abyssCredentials,
 		ajax: abyssAllDataList,
 		echo: 'http://local.abyss.com/000',
-		session: '00b4da02184926f168022bad13b869c8',
+		session: 'e94fb84f12c2c31fd81985ad51096aff',
 	};
 });
 

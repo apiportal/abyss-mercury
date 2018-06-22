@@ -6,10 +6,28 @@
 <div id="portal" class="wrapper" v-bind:class="pageClass">
 	<div th:replace="webroot/frags/layout/navs.htm :: navs"></div>
 	<main class="page-wrapper">
-	<index inline-template v-on:set-state="setState" v-on:set-page="setPage" v-bind:root-state="rootState">
-				<div class="d-flex align-items-center w-100 h-100 text-center justify-content-center">
+	<index inline-template ref="refPage" v-on:set-state="setState" v-on:set-page="setPage" v-bind:root-state="rootState">
+		<!-- <div class="columns"> -->
+			<!-- <section class="column column-main column-main-fixed"> -->
+				<!-- <div class="d-flex align-items-center w-100 h-100 text-center justify-content-center">
 					<h1 th:text="'Welcome ' + ${context.get('user.name')}">Welcome</h1>
-				</div>
+				</div> -->
+			<!-- </section> -->
+		<!-- </div> -->
+		<!--  v-if="!api.isproxyapi" -->
+		<section class="xxx">
+			<transition name="fade">
+			<div th:replace="webroot/frags/api/api-preview.htm :: apiPreview"></div>
+			</transition>
+			<!-- <api-list v-for="(api, index) in sortByNested(sortApi, apiList)" :api="api" :lindex="index" :key="api.uuid" inline-template class="fol-sm-6 fol-md-4 fol-lg-4 fol-xl-3 fol-xlm-3 fol-xlg-3 card-item">
+				<div v-on:click="$parent.selectApi(api, 'preview')" th:include="webroot/frags/api/api-preview.htm :: apiList"></div>
+			</api-list> -->
+			<div class="fow cards justify-content-center">
+				<api-list v-for="(api, index) in sortByNested(sortApi, apiList)" :api="api" :lindex="index" :key="api.uuid" inline-template>
+					<div th:replace="webroot/frags/api/api-preview.htm :: apiList"></div>
+				</api-list>
+			</div>
+		</section>
 	</index>
 	</main>
 </div>

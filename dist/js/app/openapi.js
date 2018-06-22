@@ -190,9 +190,19 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 			}
 			return pi;
 		}
+		function removeAbyssProps(object) {
+			function removeAbyss(object) {
+				return _.transform(object, (result, value, key) => {
+					if (!_.startsWith(key, 'x-abyss')) {
+						result[key] = ( _.isObject(value) ) ? removeAbyss(value) : value;
+					}
+				});
+			}
+			return removeAbyss(object);
+		}
 		function postProcessDefinition(openapi) {
-			var def = clone(openapi);
-			Vue.delete(def, 'x-abyss-platform');
+			var ooo = clone(openapi);
+			var def = removeAbyssProps(ooo);
 			for (var p in def.paths) {
 				postProcessPathItem(def.paths[p]);
 			}
@@ -218,7 +228,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 	const mixOas = {
 		computed: {
 			compCategoriesToList : {
-				get : function() {
+				get() {
 					if (this.api.categories == null) {
 						this.api.categories = [];
 					}
@@ -227,7 +237,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				},
 			},
 			compTagsToList : {
-				get : function() {
+				get() {
 					if (this.api.tags == null) {
 						this.api.tags = [];
 					}
@@ -235,7 +245,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				},
 			},
 			compGroupsToList : {
-				get : function() {
+				get() {
 					if (this.api.groups == null) {
 						this.api.groups = [];
 					}
@@ -244,14 +254,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 			},
 		},
 		methods: {
-			foo: function() {
-				console.log('foo');
-			},
-			conflicting: function() {
-				console.log('from mixin');
-			},
 			// ■■ root
-			saveApi : function(ooo) {
+			saveApi(ooo) {
 				if (window.localStorage) {
 					window.localStorage.setItem('openapi3', JSON.stringify(ooo));
 				}
@@ -264,13 +268,12 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 						contentType: false,
 						processData: false,
 						data:data,
-						success: function(result) {
+						success(result) {
 						}
 					});
 				}
 			},
-			// ■■ api-list, api-preview
-
+			// ■■ my-api-list, api-preview
 			apiGetStateName(val) {
 				var slcState = this.$root.rootData.myApiStateList.find((el) => el.uuid == val );
 				return slcState.name;
@@ -281,7 +284,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 			},
 			
 			// ■■ api-mediatype, api-parameter, api-items, my-apis
-			mixEditSchema : function(obj, key, openapi) {
+			mixEditSchema(obj, key, openapi) {
 				if (!obj[key]) {
 					Vue.set(obj, key, {});
 				}
@@ -304,7 +307,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				}
 				$('#schemaModal').modal({backdrop: 'static', keyboard: false});
 			},
-			addResponse : function(obj) {
+			addResponse(obj) {
 				var status = 200;
 				while (obj.responses[status]) {
 					status++;
@@ -314,7 +317,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				Vue.set(obj.responses, status, response);
 				$('#responses').collapse('show');
 			},
-			addRequestBody : function(obj, rb) {
+			addRequestBody(obj, rb) {
 				console.log("rb, obj.newRequestBody: ", rb, obj.newRequestBody);
 				if (rb && !obj.requestBody) {
 					Vue.set(obj, 'requestBody', {
@@ -340,7 +343,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					$('#requestBodies').collapse('show');
 				}
 			},
-			addMediaType: function(obj) {
+			addMediaType(obj) {
 				console.log("obj: ", obj);
 				if (!obj.content) {
 					Vue.set(obj,'content',{});
@@ -350,7 +353,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					Vue.set(obj.content,'change/me',{schema:{}});
 				}
 			},
-			selectRefResponse: function(e, s) {
+			selectRefResponse(e, s) {
 				console.log("e, s: ", e, s);
 				if (e == 'None') {
 					Vue.delete(s, '$ref');
@@ -371,22 +374,22 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				}
 			},
 		}
-	}
+	};
 // ■■■■■■■■ api-resource ■■■■■■■■ //
 	Vue.component('api-resource', {
 		mixins: [mixOas],
 		props: ['openapi', 'path', 'index', 'maintags', 'iii'],
 		computed: {
 			pathEntry : {
-				get : function() {
+				get() {
 					return this.index;
 				},
-				set : function(newVal) {
+				set(newVal) {
 					Vue.set(this.openapi.paths, newVal, this.openapi.paths[this.index]);
 					Vue.delete(this.openapi.paths, this.index);
 				}
 			},
-			httpMethods : function() {
+			httpMethods() {
 				var result = {};
 				for (var m in this.methods) {
 					if (this.path[this.methods[m]]) {
@@ -396,34 +399,34 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				return result;
 			}
 		},
-		data: function() {
+		data() {
 			return {
 				methods : ['get','post','put','delete','patch','head','options','trace']
 			};
 		},
 		methods : {
-			sanitisePath : function() {
+			sanitisePath() {
 				return 'resource_'+this.index.split('/').join('').split('{').join('').split('}').join('');
 			},
-			addResource : function () {
+			addResource () {
 				this.$parent.addResource();
 			},
-			duplicateResource : function (index) {
+			duplicateResource (index) {
 				if (!this.openapi.paths['newPath']) {
 					Vue.set(this.openapi.paths,'/newPath',this.openapi.paths[index]);
 				}
 			},
-			removePath: function (target) {
+			removePath(target) {
 				this.saveApi(this.openapi);
 				Vue.delete(this.openapi.paths, target);
 			},
-			// editPathDesc: function() {
+			// editPathDesc() {
 			// 	$('#pathDesc'+this.sanitisePath()).toggleClass('hide');
 			// },
-			// hidePathDesc: function() {
+			// hidePathDesc() {
 				// $('#pathDesc'+this.sanitisePath()).addClass('hide');
 			// },
-			addOperation : function(template) {
+			addOperation(template) {
 				var index = 0;
 				while (this.path[this.methods[index]] && index<this.methods.length) {
 					index++;
@@ -443,11 +446,11 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					Vue.set(this.path, this.methods[index], op);
 				}
 			},
-			removeOperation : function(target) {
+			removeOperation(target) {
 				this.saveApi(this.openapi);
 				Vue.delete(this.path, target);
 			},
-			renameOperation : function(oldMethod, newMethod) {
+			renameOperation(oldMethod, newMethod) {
 				if (this.path[newMethod]) {
 					Vue.set(this.path, 'x-temp', this.path[newMethod]);
 					Vue.delete(this.path, newMethod);
@@ -465,7 +468,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 		Vue.component('api-method', {
 			mixins: [mixOas],
 			props: ['openapi', 'method', 'index', 'maintags', 'path'],
-			data: function() {
+			data() {
 				return {
 					// visible: false,
 					schemaEditor: undefined,
@@ -474,19 +477,19 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				};
 			},
 			methods: {
-				markdownPreview: function() {
+				markdownPreview() {
 					this.$parent.$parent.markdownPreview('#'+this.descId);
 				},
-				addOperation : function() {
+				addOperation() {
 					this.$parent.addOperation();
 				},
-				duplicateOperation : function(method) {
+				duplicateOperation(method) {
 					this.$parent.addOperation(method);
 				},
-				removeOperation : function(target) {
+				removeOperation(target) {
 					this.$parent.removeOperation(target);
 				},
-				addParameter : function() {
+				addParameter() {
 					var newParam = {};
 					newParam.name = 'newParam';
 					newParam.in = 'query';
@@ -495,14 +498,14 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					newParam.schema.type = 'string';
 					this.method.parameters.push(newParam);
 				},
-				removeParameter : function(index) {
+				removeParameter(index) {
 					this.saveApi(this.openapi);
 					this.method.parameters.splice(index,1);
 				},
-				duplicateParameter : function(param) {
+				duplicateParameter(param) {
 					this.method.parameters.push(param);
 				},
-				addCallback : function() {
+				addCallback() {
 					if (!this.method.callbacks) {
 						Vue.set(this.method,'callbacks',{});
 					}
@@ -510,103 +513,103 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 						Vue.set(this.method.callbacks,'newCallback',{newExpression:{}});
 					}
 				},
-				duplicateCallback : function(cbname) {
+				duplicateCallback(cbname) {
 					if (!this.method.callbacks.newCallback) {
 						Vue.set(this.method.callbacks,'newCallback',clone(this.method.callbacks[cbname]));
 					}
 				},
-				removeCallback : function(cbname) {
+				removeCallback(cbname) {
 					Vue.delete(this.method.callbacks,cbname);
 				},
-				storeCallbackName : function(oldName) {
+				storeCallbackName(oldName) {
 					this.cbName = oldName;
 				},
-				renameCallback : function(newName) {
+				renameCallback(newName) {
 					Vue.set(this.method.callbacks,newName,this.method.callbacks[this.cbName]);
 					Vue.delete(this.method.callbacks,this.cbName);
 				},
-				addCallbackURL : function(cbname) {
+				addCallbackURL(cbname) {
 					if (!this.method.callbacks[cbname].newExpression) {
 						Vue.set(this.method.callbacks[cbname],'newExpression',{});
 					}
 				},
-				duplicateExpression : function(cbname, expname) {
+				duplicateExpression(cbname, expname) {
 					if (!this.method.callbacks[cbname].newExpression) {
 						Vue.set(this.method.callbacks[cbname],'newExpression',clone(this.method.callbacks[cbname][expname]));
 					}
 				},
-				removeExpression : function(cbname, expname) {
+				removeExpression(cbname, expname) {
 					Vue.delete(this.method.callbacks[cbname],expname);
 				},
-				storeExpressionName : function(oldName) {
+				storeExpressionName(oldName) {
 					this.expName = oldName;
 				},
-				renameExpression : function(cbName, newName) {
+				renameExpression(cbName, newName) {
 					Vue.set(this.method.callbacks[cbName],newName,this.method.callbacks[cbName][this.expName]);
 					Vue.delete(this.method.callbacks[cbName],this.expName);
 				},
-				addExpressionOperation : function(exp) {
+				addExpressionOperation(exp) {
 					if (!exp.get) {
 						Vue.set(exp,'get',{parameters:[],responses:{default:{description:'Default response'}}});
 					}
 				},
-				removeSecScheme : function(index) {
+				removeSecScheme(index) {
 					this.method.security.splice(index,1);
 					Vue.set(this.method,'security',this.method.security);
 				}
 			},
 			computed: {
 				numResponses : {
-					get : function() {
+					get() {
 						return this.getObjCount(this.method.responses);
 					}
 				},
 				numRequestBodies : {
-					get : function() {
+					get() {
 						return this.getObjCount(this.method.requestBody);
 					}
 				},
 				numCallbacks : {
-					get : function() {
+					get() {
 						return this.getObjCount(this.method.callbacks);
 					}
 				},
 				numLinks : {
-					get : function() {
+					get() {
 						return this.getObjCount(this.method.links);
 					}
 				},
 				httpMethod : {
-					get : function() {
+					get() {
 						return this.index.toUpperCase();
 					},
-					set : function(newVal) {
+					set(newVal) {
 						this.$parent.renameOperation(this.index, newVal.toLowerCase());
 					}
 				},
-				hashUid : function() {
+				hashUid() {
 					return '#'+this._uid;
 				},
-				descId : function() {
+				descId() {
 					return 'txtOpDesc'+this._uid;
 				},
-				tagId : function() {
+				tagId() {
 					return 'tags-input'+this._uid;
 				},
-				hashTagId : function() {
+				hashTagId() {
 					return '#'+this.tagId;
 				},
 				vtags : {
-					get : function() {
+					get() {
 						if (!this.method.tags) Vue.set(this.method, 'tags', []);
 						return this.method.tags;
 					},
-					set : function(newVal) {
+					set(newVal) {
 						this.method.tags = newVal;
 					}
 				},
 				mtags : {
-					get: function() {
+					get() {
 						var result = [];
 						if (this.maintags) {
 							// console.log("this.maintags: ", this.maintags);
@@ -618,12 +621,12 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					}
 				},
 				secType : {
-					get : function() {
+					get() {
 						if (!this.method.security) return 'default';
 						if (this.method.security && this.method.security.length === 0) return 'none';
 						return 'custom';
 					},
-					set : function(newVal) {
+					set(newVal) {
 						if (newVal == 'default') {
 							Vue.delete(this.method, 'security');
 						}
@@ -657,7 +660,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					}
 				}
 			},
-			beforeUpdate : function() {
+			beforeUpdate() {
 				if (!this.method.externalDocs) {
 					Vue.set(this.method, 'externalDocs', {});
 				}
@@ -675,16 +678,16 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 			props: ["openapi", "response", "status", "method", "rindex"],
 			computed: {
 				statusCode: {
-					get: function () {
+					get() {
 						return this.status;
 					},
-					set: function (newVal) {
+					set(newVal) {
 						this.renameResponse(this.status, newVal);
 					}
 				}
 			},
 			methods: {
-				removeResponse: function () {
+				removeResponse() {
 					console.log("this.response: ", this.response);
 					console.log("this.method: ", this.method);
 					this.saveApi(this.$parent.openapi);
@@ -693,14 +696,14 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 						Vue.set(this.method.responses,'default',{description:'Default response'});
 					}
 				},
-				renameResponse : function(oldName, newName) {
+				renameResponse(oldName, newName) {
 					console.log("this.response: ", this.response);
 					console.log("this.method: ", this.method);
 					Vue.set(this.method.responses, newName, this.method.responses[oldName]);
 					Vue.delete(this.method.responses, oldName);
 				},
 			},
-			data: function () {
+			data() {
 				return {};
 			},
 			template: '#template-responses'
@@ -711,7 +714,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 			props: ["openapi", "response", "status", "method", "bindex"],
 			computed: {
 				effectiveRequestBody : {
-					get : function() {
+					get() {
 						if (!this.method.requestBody) return null;
 						if (!this.method.requestBody.$ref) return this.method.requestBody;
 						return this.method.requestBody;
@@ -719,27 +722,27 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					}
 				},
 				requestName: {
-					get: function () {
+					get() {
 						console.log("this.status: ", this.status);
 						return this.status;
 					},
-					set: function (newVal) {
+					set(newVal) {
 						this.renameRequestBodies(this.status, newVal);
 					}
 				}
 			},
 			methods: {
-				renameRequestBodies : function(oldName, newName) {
+				renameRequestBodies(oldName, newName) {
 					console.log("oldName, newName: ", oldName, newName);
 					Vue.set(this.method, newName, this.method[oldName]);
 					Vue.delete(this.method, oldName);
 				},
-				removeRequestBody : function(key) {
+				removeRequestBody(key) {
 					// Vue.delete(this.openapi.components.requestBodies,key);
 					Vue.delete(this.method,key);
 				},
 			},
-			data: function () {
+			data() {
 				return {};
 			},
 			template: '#template-requestbody'
@@ -750,15 +753,15 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 			props: ["openapi","content", "mediatype", "container"],
 			computed: {
 				mediaTypeName: {
-					get: function () {
+					get() {
 						return this.mediatype;
 					},
-					set: function (newVal) {
+					set(newVal) {
 						this.renameMediaType(this.mediatype, newVal);
 					}
 				},
 				schemaTooltip : {
-					get : function() {
+					get() {
 						if (!this.content.schema) {
 							Vue.set(this.content,'schema',{});
 						}
@@ -772,17 +775,17 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				}
 			},
 			methods: {
-				renameMediaType: function(oldName, newName) {
+				renameMediaType(oldName, newName) {
 					Vue.set(this.container.content, newName, this.container.content[oldName]);
 					Vue.delete(this.container.content, oldName);
 				},
-				duplicateMediaType: function() {
+				duplicateMediaType() {
 					if (!this.container.content['change/me']) {
 						var newContent = clone(this.content);
 						Vue.set(this.container.content,'change/me',newContent);
 					}
 				},
-				removeMediaType: function () {
+				removeMediaType() {
 					this.saveApi(this.openapi);
 					Vue.delete(this.container.content, this.mediatype);
 					if (Object.keys(this.container.content).length==0) {
@@ -790,7 +793,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					}
 				}
 			},
-			data: function () {
+			data() {
 				return {};
 			},
 			template: '#template-mediatype'
@@ -800,36 +803,36 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 		mixins: [mixOas],
 		props: ['parameter', 'index', 'openapi'],
 		computed: {
-			hashUid : function() {
+			hashUid() {
 				return '#'+this._uid;
 			},
-			formatListId : function() {
+			formatListId() {
 				return 'listFormats'+this._uid;
 			},
-			descId: function() {
+			descId() {
 				return 'txtParmDesc'+this._uid;
 			},
 			effectiveIn : {
-				get : function() {
+				get() {
 					if (!this.parameter.in) return 'body';
 					return this.parameter.in;
 				},
-				set : function(newVal) {
+				set(newVal) {
 					this.parameter.in = newVal;
 					if (newVal == 'path') Vue.set(this.parameter, 'required', true);
 				}
 			},
 			effectiveRequired : {
-				get : function() {
+				get() {
 					if (typeof this.parameter.required === 'undefined') return false;
 					return this.parameter.required;
 				},
-				set : function(newVal) {
+				set(newVal) {
 					this.parameter.required = newVal;
 				}
 			},
 			schemaTooltip : {
-				get : function() {
+				get() {
 					if (!this.parameter.schema || !this.parameter.schema.$ref) {
 						return 'Edit inline schema';
 					}
@@ -840,16 +843,16 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				}
 			}
 		},
-		data: function() {
+		data() {
 			return {
 				schemaEditor: undefined
 			};
 		},
 		methods : {
-			markdownPreview: function() {
+			markdownPreview() {
 				this.$parent.$parent.$parent.markdownPreview('#'+this.descId);
 			},
-			isComplex : function() {
+			isComplex() {
 				if (this.effectiveType === 'object' ||
 					this.effectiveType === 'array' ||
 					this.effectiveType === 'file') {
@@ -857,18 +860,18 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				}
 				return false;
 			},
-			addParameter : function() {
+			addParameter() {
 				this.$parent.addParameter();
 			},
-			removeParameter : function() {
+			removeParameter() {
 				this.$parent.removeParameter(this.index);
 			},
-			duplicateParameter : function(param) {
+			duplicateParameter(param) {
 				this.$parent.duplicateParameter(param);
 			},
 		},
 		template: '#template-parameter',
-		beforeMount : function() {
+		beforeMount() {
 			if (this.parameter["$ref"]) {
 				var ptr = this.parameter["$ref"].substr(1); // remove #
 				try {
@@ -889,11 +892,11 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 		mixins: [mixOas],
 		props: ["openapi", "child", "level", "name"],
 		computed: {
-			formatListId : function() {
+			formatListId() {
 				return 'listFormats'+this._uid;
 			},
 			effectiveType : {
-				get : function() {
+				get() {
 					// return this.child.type;
 					if (this.child.type == 'array' || this.child.type == 'object' || this.child.type == 'string' || this.child.type == 'integer' || this.child.type == 'number' || this.child.type == 'boolean') {
 						return this.child.type;
@@ -901,7 +904,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 						return this.child.$ref;
 					}
 				},
-				set : function(newVal) {
+				set(newVal) {
 					// this.child.type = newVal;
 					Vue.set(this.child, 'type', newVal);
 					var items = {};
@@ -937,32 +940,32 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				}
 			},
 			effectiveFormats : {
-				get : function() {
+				get() {
 					if (this.child.type == 'integer') return ['int32','int64'];
 					if (this.child.type == 'number') return ['float','double'];
 					if (this.child.type == 'string') return ['date','date-time','byte','binary','password','uri','uuid','email','hostname','ipv4','ipv6','pattern'];
 					return [];
 				},
-				set : function(newVal) {}
+				set(newVal) {}
 			},
-			levelPlusOne : function() {
+			levelPlusOne() {
 				return (this.level+1);
 			}
 		},
 		methods: {
-			addEnum : function() {
+			addEnum() {
 				if (!this.child.enum) {
 					Vue.set(this.child, 'enum', []);
 				}
 				this.child.enum.push('newValue');
 			},
-			removeEnum : function(index) {
+			removeEnum(index) {
 				this.child.enum.splice(index, 1);
 				if (this.child.enum.length == 0) {
 					Vue.delete(this.child, 'enum');
 				}
 			},
-			addSchema: function(id) {
+			addSchema(id) {
 				if (!this.child.properties) {
 					Vue.set(this.child, 'properties', {});
 				}
@@ -976,23 +979,23 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					},0);	
 				}
 			},
-			duplicateSchema: function(key) {
+			duplicateSchema(key) {
 				if (!this.child.properties.NewItem) {
 					Vue.set(this.child.properties, 'NewItem', this.child.properties[key]);
 				}
 			},
-			removeSchema: function(key) {
+			removeSchema(key) {
 				Vue.delete(this.child.properties, key);
 			},
-			storeSchemaName: function(key) {
+			storeSchemaName(key) {
 				this.currentSchema = key;
 			},
-			renameSchema: function(key) {
+			renameSchema(key) {
 				Vue.set(this.child.properties, key, this.child.properties[this.currentSchema]);
 				Vue.delete(this.child.properties, this.currentSchema);
 			},
 		},
-		data: function() {
+		data() {
 			return {
 				currentSchema: '',
 			};
@@ -1003,7 +1006,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 	Vue.component('api-output', {
 		mixins: [mixOas],
 		props: ['openapi','editorType'],
-		data: function() {
+		data() {
 			return {};
 		}
 	});
@@ -1011,7 +1014,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 		mixins: [mixOas],
 		// props: ['openapi','editorType'],
 		props: ['value','openapi'],
-		data: function() {
+		data() {
 			return {};
 		}
 	});
@@ -1021,33 +1024,39 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 		props: ['openapi', 'sd', 'sdname', 'index'],
 		computed: {
 			secname: {
-				get : function() {
+				get() {
 					return this.sdname;
 				},
-				set : function(newVal) {
+				set(newVal) {
 					this.$parent.renameSecurityDefinition(this.sdname, newVal);
 				}
 			},
 			type : {
-				get : function() {
+				get() {
 					return this.sd.type;
 				},
-				set : function(newVal) {
+				set(newVal) {
 					this.sd.type = newVal;
 					if (newVal != 'apiKey') {
 						Vue.delete(this.sd, 'in');
 						Vue.delete(this.sd, 'name');
 					}
 					if (newVal != 'oauth2') {
-						Vue.delete(this.sd, 'flow');
+						Vue.delete(this.sd, 'flows');
+					}
+					if (newVal == 'oauth2') {
+						Vue.set(this.sd,'flows',{});
 					}
 					if (newVal != 'http') {
 						Vue.delete(this.sd, 'scheme');
 					}
+					if (newVal != 'openIdConnect') {
+						Vue.delete(this.sd, 'openIdConnectUrl');
+					}
 				}
 			},
 			appliesToAllPaths : {
-				get : function() {
+				get() {
 					var index = -1;
 					for (var s=0;s<this.openapi.security.length;s++) {
 						var sr = this.openapi.security[s];
@@ -1057,7 +1066,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					}
 					return index >= 0 ? true : false;
 				},
-				set : function(newVal) {
+				set(newVal) {
 					if (newVal) {
 						if (!this.openapi.security) {
 							Vue.set(this.openapi, 'security', []);
@@ -1075,91 +1084,119 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				}
 			},
 			hasImplicit: {
-				get : function() {
+				get() {
 					return this.sd.flows && this.sd.flows.implicit;
 				},
-				set : function(newVal) {
-					if (newVal) Vue.set(this.sd.flows,'implicit',{});
-					else Vue.delete(this.sd.flows,'implicit');
+				set(newVal) {
+					if (newVal) {
+						// Vue.set(this.sd.flows,'implicit',{scopes: {newScope: "description"}});
+						Vue.set(this.sd.flows,'implicit',{scopes: {}});
+						setTimeout(() => {
+							$('#flow-implicit').collapse('show');
+						},0);
+					} else {
+						Vue.delete(this.sd.flows,'implicit');
+					}
 				}
 			},
 			hasPassword: {
-				get : function() {
+				get() {
 					return this.sd.flows && this.sd.flows.password;
 				},
-				set : function(newVal) {
-					if (newVal) Vue.set(this.sd.flows,'password',{});
-					else Vue.delete(this.sd.flows,'password');
+				set(newVal) {
+					if (newVal) {
+						// Vue.set(this.sd.flows,'password',{scopes: {newScope: "description"}});
+						Vue.set(this.sd.flows,'password',{scopes: {}});
+						setTimeout(() => {
+							$('#flow-password').collapse('show');
+						},0);
+					} else {
+						Vue.delete(this.sd.flows,'password');
+					}
 				}
 			},
 			hasAuthCode: {
-				get : function() {
+				get() {
 					return this.sd.flows && this.sd.flows.authorizationCode;
 				},
-				set : function(newVal) {
-					if (newVal) Vue.set(this.sd.flows,'authorizationCode',{});
-					else Vue.delete(this.sd.flows,'authorizationCode');
+				set(newVal) {
+					if (newVal) {
+						// Vue.set(this.sd.flows,'authorizationCode',{scopes: {newScope: "description"}});
+						Vue.set(this.sd.flows,'authorizationCode',{scopes: {}});
+						setTimeout(() => {
+							$('#flow-authorizationCode').collapse('show');
+						},0);
+					} else {
+						Vue.delete(this.sd.flows,'authorizationCode');
+					}
 				}
 			},
 			hasClientCred: {
-				get : function() {
+				get() {
 					return this.sd.flows && this.sd.flows.clientCredentials;
 				},
-				set : function(newVal) {
-					if (newVal) Vue.set(this.sd.flows,'clientCredentials',{});
-					else Vue.delete(this.sd.flows,'clientCredentials');
+				set(newVal) {
+					if (newVal) {
+						// Vue.set(this.sd.flows,'clientCredentials',{scopes: {newScope: "description"}});
+						Vue.set(this.sd.flows,'clientCredentials',{scopes: {}});
+						setTimeout(() => {
+							$('#flow-clientCredentials').collapse('show');
+						},0);
+					} else {
+						Vue.delete(this.sd.flows,'clientCredentials');
+					}
 				}
 			}
 		},
 		methods : {
-			addSecurityDefinition : function() {
-				this.$parent.addSecurityDefinition();
+			addSecurityDefinition(name) {
+				this.$parent.addSecurityDefinition(name);
 			},
-			removeSecurityDefinition : function(sdname) {
+			removeSecurityDefinition(sdname) {
 				this.$parent.removeSecurityDefinition(sdname);
 			},
-			addScope: function (flow) {
+			addScope(flow) {
 				if (!flow.scopes) Vue.set(flow, 'scopes', {});
 				if (!flow.scopes.newScope) {
 					Vue.set(flow.scopes, 'newScope', 'description');
 				}
 			},
-			renameScope : function(flow, oldName, newName) {
+			renameScope(flow, oldName, newName) {
 				Vue.set(flow.scopes, newName, flow.scopes[oldName]);
 				Vue.delete(flow.scopes, oldName);
 			},
-			removeScope: function (flow, sName) {
+			removeScope(flow, sName) {
 				this.saveApi(this.openapi);
 				Vue.delete(flow.scopes,sName);
 			}
 		},
-		data: function() {
+		data() {
 			return {};
 		}
 	});
 	// ■■■■ api-scope: IN: api-secdef ■■■■ //
 		Vue.component('api-scope', {
 			mixins: [mixOas],
-			props: ["sd", "sname", "sdname", "flow"],
+			props: ["sd", "sname", "sdname", "flow", "sindex"],
 			computed: {
 				scopename: {
-					get : function() {
+					get() {
 						return this.sname;
 					},
-					set : function(newVal) {
+					set(newVal) {
 						this.$parent.renameScope(this.flow, this.sname, newVal);
 					}
 				}
 			},
 			methods: {
-				addScope: function() {
+				addScope() {
 					this.$parent.addScope(this.flow);
 				},
-				removeScope: function(flow, sName) {
+				removeScope(flow, sName) {
 					this.$parent.removeScope(flow, sName);
 				}
 			},
-			data: function() {
+			data() {
 				return {};
 			}
 		});
@@ -1169,26 +1206,26 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 		props: ["name", "variable", "server", "sindex"],
 		computed: {
 			variableName: {
-				get : function() {
+				get() {
 					return this.name;
 				},
-				set : function(newVal) {
+				set(newVal) {
 					this.$parent.renameVariable(this.server, this.name, newVal);
 				}
 			}
 		},
 		methods: {
-			removeVariable: function(serverIndex) {
+			removeVariable(serverIndex) {
 				this.$parent.removeVariable(this.server, this.name);
 				// $('#server'+serverIndex).collapse('hide');
 				// this.$parent.removeVariable(this.server, this.variable);
 			},
-			addVEnum: function() {
+			addVEnum() {
 				if (!this.variable.enum) Vue.set(this.variable, 'enum', []);
 				this.variable.enum.push('newValue');
 			}
 		},
-		data: function() {
+		data() {
 			return {};
 		}
 	});
@@ -1198,34 +1235,44 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 			props: ["variable", "eindex"],
 			computed: {
 				vename: {
-					get: function() {
+					get() {
 						return this.variable.enum[this.eindex];
 					},
-					set: function(newValue) {
+					set(newValue) {
 						this.variable.enum[this.eindex] = newValue;
 					}
 				}
 			},
 			methods: {
-				removeVEnum: function(eIndex) {
+				removeVEnum(eIndex) {
 					this.variable.enum.splice(eIndex,1);
 				},
-				addVEnum: function() {
+				addVEnum() {
 					this.$parent.addVEnum();
 				}
 			},
-			data: function() {
+			data() {
 				return {};
 			}
 		});
-// ■■■■■■■■ api-list ■■■■■■■■ //
-	Vue.component('api-list', {
+// ■■■■■■■■ my-api-list ■■■■■■■■ //
+	Vue.component('my-api-list', {
 		mixins: [mixOas],
 		template: '#template-list',
-		props: ["api", "openapi", "lindex"],
+		props: ['api', 'openapi', 'lindex'],
 		computed: {
+			apiEnvironment : {
+				get() {
+					if (this.api.islive) {
+						return 'LIVE';
+					}
+					if (this.api.issandbox) {
+						return 'SANDBOX';
+					}
+				}
+			},
 			activeVisibility: {
-				get : function() {
+				get() {
 					var slcVisibility = this.$root.rootData.myApiVisibilityList.find((el) => el.uuid == this.api.apivisibilityid );
 					if (slcVisibility) {
 						return slcVisibility.name;
@@ -1233,20 +1280,30 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				},
 			},
 			activeState: {
-				get : function() {
+				get() {
 					var slcState = this.$root.rootData.myApiStateList.find((el) => el.uuid == this.api.apistateid );
 					if (slcState) {
 						return slcState.name;
 					}
 				},
 			},
+			numSecuritySchemes : {
+				get() {
+					return this.getObjCount(this.api.openapidocument.components.securitySchemes);
+				}
+			},
 			businessapi: {
-				get : function() {
+				get() {
+					// var index = _.findIndex(this.$parent.myApiList, { 'uuid': this.api.businessapiid });
+					// console.log("index: ", index);
+					// if (index != -1) {
+					// 	return this.$parent.myApiList[index].openapidocument.info.title;
+					// }
 					var bapi = this.$parent.myApiList.find((el) => el.uuid == this.api.businessapiid );
 					if (bapi) {
 						return bapi.openapidocument.info.title;
 					}
-				},
+				}
 			}
 		},
 		methods: {
@@ -1261,7 +1318,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				return slcVisibility.name == val;
 			},*/
 		},
-		data: function() {
+		data() {
 			return {};
 		},
 		mounted() {
@@ -1276,7 +1333,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 			vueDropzone: vue2Dropzone,
 			// 'v-select': VueSelect.VueSelect
 		},
-		data: function () {
+		data() {
 			return {
 				cgData : {
 					clients: [],
@@ -1392,6 +1449,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 							"url": "https://www.example.com"
 						}
 					],
+					"x-abyss-platform": {},
 					"tags": [],
 					"security": [],
 					"paths": {},
@@ -1500,7 +1558,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					Vue.set(this.openapi.info.license,'name',item.name);
 					Vue.set(this.openapi.info.license,'url',item.url);
 				},
-				enableLicenseSelect: function() {
+				enableLicenseSelect() {
 					if ($('#drpLicense').hasClass('hide')) {
 						$('#txtLicense').addClass('hide');
 						$('#drpLicense').removeClass('hide');
@@ -1519,19 +1577,19 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 						$('#drpLicense').addClass('hide');
 					}
 				},
-				addResource: function () {
+				addResource() {
 					if (!this.openapi.paths) Vue.set(this.openapi, 'paths', {});
 					if (!this.openapi.paths['/newPath']) {
 						Vue.set(this.openapi.paths, '/newPath', {});
 						$('html,body').animate({ scrollTop: document.body.scrollHeight }, "fast");
 					}
 				},
-				showResource: function (key) {
+				showResource(key) {
 					var target = 'resource_' + key.split('/').join('').split('{').join('').split('}').join('');
 					var e = document.getElementById(target);
 					if (e) e.scrollIntoView();
 				},
-				addTag: function () {
+				addTag() {
 					if (!this.openapi.tags) {
 						Vue.set(this.openapi, 'tags', []);
 					}
@@ -1549,21 +1607,32 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 						$('#t'+i).collapse('show');
 					},0);
 				},
-				removeTag: function (index) {
+				removeTag(index) {
 					this.openapi.tags.splice(index, 1);
 					this.saveApi(this.openapi);
 				},
-				addSecurityDefinition: function () {
+				addSecurityDefinition(name) {
 					if (!this.openapi.components.securitySchemes) {
 						Vue.set(this.openapi.components, 'securitySchemes', {});
 					}
-					if (!this.openapi.components.securitySchemes.newSecurityScheme) {
+					if (!this.openapi.components.securitySchemes[name]) {
+						console.log("name: ", name);
 						var newSecDef = {};
-						newSecDef.type = 'apiKey';
-						newSecDef.name = 'api_key';
-						newSecDef.in = 'query';
-						Vue.set(this.openapi.components.securitySchemes, 'newSecurityScheme', newSecDef);
-						var i = Object.keys(this.openapi.components.securitySchemes).indexOf('newSecurityScheme');
+						if (name == 'basicAuth') {
+							// newSecDef.name = name;
+							newSecDef.type = 'http';
+							newSecDef.scheme = 'basic';
+						} else if (name == 'bearerAuth') {
+							// newSecDef.name = name;
+							newSecDef.type = 'http';
+							newSecDef.scheme = 'bearer';
+						} else {
+							newSecDef.type = 'apiKey';
+							newSecDef.name = 'api_key';
+							newSecDef.in = 'query';
+						}
+						Vue.set(this.openapi.components.securitySchemes, name, newSecDef);
+						var i = Object.keys(this.openapi.components.securitySchemes).indexOf(name);
 						console.log("i: ", i);
 						setTimeout(() => {
 							$('#securitySchemes').collapse('show');
@@ -1572,12 +1641,12 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					}
 				},
 				// !ERROR
-				renameSecurityDefinition: function (oldName, newName) {
+				renameSecurityDefinition(oldName, newName) {
 					console.log("oldName, newName: ", oldName, newName);
 					Vue.set(this.openapi.components.securitySchemes, newName, this.openapi.components.securitySchemes[oldName]);
 					Vue.delete(this.openapi.components.securitySchemes, oldName);
 				},
-				filterSecurityDefinition: function(security, sdname) {
+				filterSecurityDefinition(security, sdname) {
 					var index = -1;
 					for (var s=0;s<security.length;s++) {
 						var sr = security[s];
@@ -1589,7 +1658,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 						security.splice(index, 1);
 					}
 				},
-				removeSecurityDefinition: function (index) {
+				removeSecurityDefinition(index) {
 					this.saveApi(this.openapi);
 					Vue.delete(this.openapi.components.securitySchemes, index);
 					this.filterSecurityDefinition(this.openapi.security, index);
@@ -1603,7 +1672,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 						}
 					}
 				},
-				addServer: function () {
+				addServer() {
 					if (!this.openapi.servers) Vue.set(this.openapi, 'servers', []);
 					this.openapi.servers.push({url:'https://www.example.com',description:''});
 					var i = this.openapi.servers.length - 1;
@@ -1612,24 +1681,24 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 						$('#server'+i).collapse('show');
 					},0);					
 				},
-				removeServer: function(index) {
+				removeServer(index) {
 					this.openapi.servers.splice(index,1);
 				},
-				addVariable: function (serverIndex) {
+				addVariable(serverIndex) {
 					if (!this.openapi.servers[serverIndex].variables) Vue.set(this.openapi.servers[serverIndex],'variables',{});
 					Vue.set(this.openapi.servers[serverIndex].variables,'newVar',{description:'',default:'change-me'});
 					$('#server'+serverIndex).collapse('show');
 				},
-				renameVariable : function(server, oldName, newName) {
+				renameVariable(server, oldName, newName) {
 					Vue.set(server.variables, newName, server.variables[oldName]);
 					Vue.delete(server.variables, oldName);
 				},
-				removeVariable: function (server,index) {
+				removeVariable(server,index) {
 					console.log("server,index: ", server,index);
 					Vue.delete(server,'variables');
 					// Vue.delete(server.variables,index);
 				},
-				addSchema: function() {
+				addSchema() {
 					if (!this.openapi.components.schemas.NewSchema) {
 						Vue.set(this.openapi.components.schemas, 'NewSchema', {type: 'object'});
 						var i = Object.keys(this.openapi.components.schemas).indexOf('NewSchema');
@@ -1640,29 +1709,29 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 						},0);	
 					}
 				},
-				duplicateSchema: function(key) {
+				duplicateSchema(key) {
 					if (!this.openapi.components.schemas.NewSchema) {
 						Vue.set(this.openapi.components.schemas, 'NewSchema', this.openapi.components.schemas[key]);
 					}
 				},
-				removeSchema: function(key) {
+				removeSchema(key) {
 					Vue.delete(this.openapi.components.schemas, key);
 				},
-				storeSchemaName: function(key) {
+				storeSchemaName(key) {
 					this.currentSchema = key;
 				},
-				renameSchema: function(key) {
+				renameSchema(key) {
 					Vue.set(this.openapi.components.schemas, key, this.openapi.components.schemas[this.currentSchema]);
 					Vue.delete(this.openapi.components.schemas, this.currentSchema);
 				},
-				markdownPreview: function(selector) {
+				markdownPreview(selector) {
 					$('#mdPreview').modal();
 					var str = $(selector).val();
 					var md = window.markdownit();
 					var result = md.render(str);
 					$('#mdPreviewText').html(result);
 				},
-				showAlert: function (text, callback) {
+				showAlert(text, callback) {
 					$('#alertText').text(text);
 					$('#alert').modal();
 					$('#alert').on('shown.bs.modal', function() {
@@ -1673,7 +1742,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 						console.log("callback: ", callback);
 					});
 				},
-				showConfirm: function(title, text, callback) {
+				showConfirm(title, text, callback) {
 					$('#confirmTitle').text(title);
 					$('#confirmSubtitle').text(text);
 					$('#confirm').modal();
@@ -1698,13 +1767,13 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 						processData: false,
 						data:data,
 						dataType:"json",
-						success: function(schema) {
+						success(schema) {
 							callback(schema);
 						}
 					});
 				},
 			// ■■■■■■■■■■■■■■■■■■■■■■■■ ABYSS OAS ■■■■■■■■■■■■■■■■■■■■■■■■ //
-				initSchema: function () {
+				initSchema() {
 					var ooo = _.cloneDeep(this.openapi);
 					// console.log("1O: ", JSON.stringify(ooo, null, 2));
 					Vue.set(this,'newApi',preProcessDefinition(_.cloneDeep(this.api)));
@@ -1714,19 +1783,19 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					// this.importschema = JSON.stringify(ooo, null, 2);
 					// this.loadSchema();
 				},
-				setSchema: function (schema) {
+				setSchema(schema) {
 					this.updateSchema(schema);
 					Vue.set(this,'selectedOpenapi',_.cloneDeep(this.openapi));
 					// swEditor.specActions.updateSpec(jsyaml.dump(schema));
 				},
-				updateSchema: function (schema) {
+				updateSchema(schema) {
 					// console.log("updateSchema: ", schema);
 					schema = preProcessDefinition(schema);
 					if (window.localStorage) window.localStorage.setItem('openapi3', JSON.stringify(schema));
 					Vue.set(this, 'openapi', schema);
 					// self.openapi.paths = {};
 				},
-				loadSchema: function () {
+				loadSchema() {
 					console.log("loadSchema: ", this);
 					var schema;
 					try {
@@ -1757,7 +1826,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 						this.showAlert('OpenAPI version must be 2.0 or 3.0.x');
 					}
 				},
-				editingSchema : function(val) {
+				editingSchema(val) {
 					if (val == '') {
 						this.clearSchema();
 					} else {
@@ -1765,7 +1834,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 						this.updateSchema(schema);
 					}
 				},
-				clearSchema : function(val) {
+				clearSchema(val) {
 					Vue.set(this, 'openapi', _.cloneDeep(this.newOpenapi));
 					this.importschema = JSON.stringify(this.openapi, null, 2);
 				},
@@ -1813,7 +1882,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					// console.log("swEditor: ", swEditor);
 					window.swEditor = swEditor;
 				}, 1000),
-				uploadSchema : function(val) {
+				uploadSchema(val) {
 					// console.log("uploadSchema: ", val);
 					try {
 						if (typeof val === 'string') {
@@ -1832,11 +1901,11 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 						alert(ex);
 					}
 				},
-				loadFromUrlSchema : function(val) {
+				loadFromUrlSchema(val) {
 					if (val != '') {
 						var vm = this;
 						$.ajax(val, {
-							success: function(data) {
+							success(data) {
 								try {
 									console.log("data: ", data);
 									if (typeof data === 'string') {
@@ -1849,27 +1918,16 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 									alert(ex);
 								}
 							},
-							complete: function() {
+							complete() {
 								vm.loadSchema();
 							}
 						});
 					}
 				},
-				postProcessDefinition : function() {
+				postProcessDefinition() {
 					return postProcessDefinition(this.openapi);
 				},
-				undoApi: function () {
-					// if (window.localStorage) {
-					// 	Vue.set(this, 'openapi', JSON.parse(window.localStorage.getItem('openapi3')));
-					// }
-					console.log("this.selectedApi: ", this.selectedApi);
-					// Vue.set(this, 'api', this.selectedApi);
-					var initial = _.cloneDeep(this.selectedApi);
-					Vue.set(this, 'api',initial);
-					Vue.set(this, 'openapi',initial.openapidocument);
-					// this.selectedApi = _.cloneDeep(this.api);
-				},
-				renderOutputAll: function (type) {
+				renderOutputAll(type) {
 					$('#all-output').html('<pre class="prettyprint"><code id="pretty-'+type+'"></code></pre>');
 					var def = this.postProcessDefinition();
 					output = JSON.stringify(def, null, 4);
@@ -1888,7 +1946,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					this.swaggerRendered = false;
 					clippy = new Clipboard('#copy-all', {
 						// target: $('#pretty-'+type)
-						target: function(trigger) {
+						target(trigger) {
 							// return $('#pretty-'+type);
 							return document.getElementById('pretty-'+type);
 						}
@@ -2022,6 +2080,24 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				Vue.delete(item, 'specs');
 				return item;
 			},
+			apiChangeEnvironment(item, val) {
+				if (val == 'islive' && !item.islive) {
+					item.islive = true;
+					item.issandbox = false;
+					this.updateItem(this.ajaxApiUrl + '/' + item.uuid, this.deleteProps(item), this.ajaxHeaders, this.myApiList).then(response => {
+						console.log("apiChangeEnvironment response: ", response);
+						this.$toast('info', {message: 'Environment changed successfully', title: 'Environment changed as LIVE', position: 'topLeft'});
+					});
+				}
+				if (val == 'issandbox' && !item.issandbox) {
+					item.islive = false;
+					item.issandbox = true;
+					this.updateItem(this.ajaxApiUrl + '/' + item.uuid, this.deleteProps(item), this.ajaxHeaders, this.myApiList).then(response => {
+						console.log("apiChangeEnvironment response: ", response);
+						this.$toast('info', {message: 'Environment changed successfully', title: 'Environment changed as SANDBOX', position: 'topLeft'});
+					});
+				}
+			},
 			apiChangeVisibility(item, val) {
 				var slcVisibility = this.$root.rootData.myApiVisibilityList.find((el) => el.name == val );
 				var curVisibility = this.$root.rootData.myApiVisibilityList.find((el) => el.uuid == item.apivisibilityid );
@@ -2043,13 +2119,14 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 						console.log("apiChangeState response: ", response);
 						// this.$root.getRootData(this.$cookie.get('abyss.principal.uuid'));
 						this.$toast('info', {message: 'State changed ' + ' to <strong>' + slcState.name + '</strong>', title: 'State: ' + slcState.name, position: 'topLeft'});
-						if (val == 10) {
-							this.removeItem(this.ajaxUrl, item, this.ajaxHeaders, this.myApiList);
-						}
+						// if (val == 10) {
+						// 	this.removeItem(this.ajaxUrl, item, this.ajaxHeaders, this.myApiList);
+						// }
 					});
 				}
 			},
-			createProxy(item) {
+			createProxy(a) {
+				item = _.cloneDeep(a);
 				item.businessapiid = item.uuid;
 				item.isproxyapi = true;
 				// item.businessapiid = '2741ce5d-0fcb-4de3-a517-405c0ceffbbe';
@@ -2074,6 +2151,25 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					alert(error.code + ': ' + error.message);
 				});
 			},
+			chooseSpec() {
+				// this.$emit('set-state', 'create');
+				this.$root.setState('create');
+				this.clearSchema();
+				this.initSwagger();
+				setTimeout(() => {
+					$('#upload').collapse('show');
+					$('#servers').collapse('show');
+					$('#info').collapse('show');
+					// console.log("this.api: ", this.api);
+					this.selectedApi = _.cloneDeep(this.api);
+					// console.log("this.selectedApi: ", this.selectedApi);
+					/*require(['css!colorpicker-css', 'colorpicker'],function(){
+						$('.input-color').initz_inputcolor();
+						// $('.input-color').colorpicker({});
+					});*/
+					this.apiColor();
+				},0);
+			},
 			selectApi(item, state) {
 				// console.log("pp selectApi: ", item);
 				if (this.beforeCancelApi()) {
@@ -2096,10 +2192,53 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 						$('.list-column').addClass('column-minimize');
 						$('.create-column').addClass('column-minimize');
 						$('.edit-column').addClass('column-minimize');
+						// $('.input-color').colorpicker({
+						// });
+						/*require(['css!colorpicker-css', 'colorpicker'],function(){
+							$('.input-color').initz_inputcolor();
+							// $('.input-color').colorpicker({});
+						});*/
+						this.apiColor();
 					} else {
 						// $('.create-column, .edit-column').addClass('column-minimize');
 					}
 				}
+			},
+			apiColor() {
+				var vm = this;
+				require(['css!colorpicker-css', 'colorpicker'],function(){
+					$('.api-color').each(function(i, el) {
+						var $thiz = $(this);
+						var zbg = $thiz.data('targetbg')||'body';
+						// var ztxt = $thiz.data('targettxt')||'h1,h2,h3';
+						var zformat = $thiz.data('format')||'rgba';
+						// var bodyStyle = $(zbg)[0].style;
+						$thiz.colorpicker({
+							// format: zformat, 
+							// component: '.add-on', 
+							sliders: {
+								saturation: {
+									maxLeft: 200,
+									maxTop: 200
+								},
+								hue: {
+									maxTop: 200
+								},
+								alpha: {
+									maxTop: 200
+								}
+							},
+							// color: bodyStyle.backgroundColor
+						}).on('changeColor', function(ev) {
+							$(zbg).attr('style', 'background-color: ' + ev.color + ' !important');
+							// $(ztxt).attr('style', 'color: ' + ev.color + ' !important');
+						}).on('hidePicker', function(ev) {
+							console.log("ev: ", ev.color.toString(), ev.color.toHex());
+							vm.api.color = ev.color.toHex();
+						});
+						
+					});
+				});
 			},
 			getApiById(item, state) {
 				axios.get(this.ajaxApiUrl + '/' + item.uuid).then(response => {
@@ -2156,6 +2295,14 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				this.$refs.dropImage.removeAllFiles(true);
 				// $('.list-column').removeClass('column-minimize');
 			},
+			undoApi() {
+				// if (window.localStorage) {
+				// 	Vue.set(this, 'openapi', JSON.parse(window.localStorage.getItem('openapi3')));
+				// }
+				var initial = _.cloneDeep(this.selectedApi);
+				Vue.set(this, 'api',initial);
+				Vue.set(this, 'openapi',initial.openapidocument);
+			},
 			saveMyApi() {
 				this.updateItem(this.ajaxApiUrl + '/' + this.api.uuid, this.deleteProps(this.api), this.ajaxHeaders, this.myApiList).then(response => {
 					console.log("SAVE response.data: ", response.data[0]);
@@ -2163,6 +2310,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					this.fixProps(currApi);
 					Object.assign(this.selectedApi, currApi);
 					console.log("this.selectedApi: ", this.selectedApi);
+					this.getPage(1);
 					var index = _.findIndex(this.myApiList, { 'uuid': this.selectedApi.uuid });
 					this.myApiList[index] = this.selectedApi;
 					this.$toast('success', {message: '<strong>' + this.api.openapidocument.info.title + '</strong> saved', title: 'API SAVED'});
@@ -2171,19 +2319,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				}, error => {
 					alert(error.code + ': ' + error.message);
 				});
-			},
-			chooseSpec() {
-				// this.$emit('set-state', 'create');
-				this.$root.setState('create');
-				this.clearSchema();
-				this.initSwagger();
-				setTimeout(() => {
-					$('#upload').collapse('show');
-					$('#servers').collapse('show');
-					// console.log("this.api: ", this.api);
-					this.selectedApi = _.cloneDeep(this.api);
-					// console.log("this.selectedApi: ", this.selectedApi);
-				},0);
 			},
 			createApi() {
 				this.$validator.validateAll().then((result) => {
@@ -2207,6 +2342,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 								Vue.set(this, 'api', item);
 								// this.updateSchema(item.openapidocument);
 								this.selectedApi = _.cloneDeep(this.api);
+								this.isChanged = false;
 								// this.api = _.merge(this.openapi, response.data);
 								setTimeout(() => {
 									$('#api'+this.api.uuid).collapse('show');
@@ -2281,10 +2417,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 							// value.uuid = this.uuidv4();
 							// value.count = 1;
 						});
-						// console.log("this.myApiList: ", this.myApiList);
-						// console.log("this.api.proxies.length > 0: ", this.api.proxies.length > 0);
-						// console.log("this.$root.rootData", this.$root.rootData);
-						// this.fixProps(this.api);
 						this.paginate = this.makePaginate(response.data);
 					}
 				}, error => {
@@ -2341,6 +2473,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					loading(false);
 				});
 			},
+			// 2DO
 			getTax() {
 				axios.all([
 					axios.get(abyss.ajax.api_tag),
@@ -2464,7 +2597,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					});
 				}
 			},
-			grouped: function () {
+			grouped() {
 				// const grouped = _.groupBy(this.openapi.paths, 'subregion');
 				var tags = [];
 				for (var p in this.openapi.paths) {
@@ -2488,6 +2621,27 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 		watch: {
 			openapi: {
 				handler(val, oldVal) {
+					Vue.set(this.api,'openapidocument',val);
+				},
+				deep: true
+			},
+			api: {
+				handler(val, oldVal) {
+					this.changes = this.checkDiff(val, this.selectedApi);
+					console.log("this.isChanged: ", this.isChanged, Object.keys(this.changes).length, this.changes);
+					if ( Object.keys(this.changes).length == 0 ) {
+						this.isChanged = false; 
+					} else {
+						this.isChanged = true; 
+						if (this.$root.rootState == 'edit' || this.$root.rootState == 'create') {
+							this.updateSw();
+						}
+					}
+				},
+				deep: true
+			},
+			/*openapi: {
+				handler(val, oldVal) {
 					// console.log('old val', oldVal);
 					// console.log('new val', val);
 					// this.grouped();
@@ -2497,17 +2651,18 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					// this.changes = this.checkDiff(val, this.selectedApi);
 					this.changes = this.checkDiff(this.api, this.selectedApi);
 					console.log("this.isChanged: ", Object.keys(this.changes).length, this.isChanged, this.changes);
-					if ( Object.keys(this.changes).length == 0 || (Object.keys(this.changes).length == 1 && Object.keys(this.changes).some(v => v == 'updated')) ) {
+					// if ( Object.keys(this.changes).length == 0 || (Object.keys(this.changes).length == 1 && Object.keys(this.changes).some(v => v == 'updated')) ) {
+					if ( Object.keys(this.changes).length == 0 ) {
 						this.isChanged = false; 
 					} else {
 						this.isChanged = true; 
-					}
-					if (this.$root.rootState == 'edit' || this.$root.rootState == 'create') {
-						this.updateSw();
+						if (this.$root.rootState == 'edit' || this.$root.rootState == 'create') {
+							this.updateSw();
+						}
 					}
 				},
 				deep: true
-			},
+			},*/
 			swaggerText: {
 				handler(val, oldVal) {
 					// var local = localStorage.getItem('swagger-editor-content');

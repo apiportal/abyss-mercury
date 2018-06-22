@@ -111,15 +111,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 					console.error(error);
 				});
 			},
-			getPage(p, d) {
-				var param = d || '';
-				axios.get(this.ajaxUrl + '?page=' + p + param, this.ajaxHeaders)
-				.then(response => {
-					console.log(response);
-					this.directoryList = response.data;
-					this.paginate = this.makePaginate(response.data);
-				});
-			},
 			cancelDirectory() {
 				var index = this.directoryList.indexOf(this.directory);
 				this.directoryList[index] = this.selectedDirectory;
@@ -191,6 +182,15 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 						}
 						return;
 					}
+				});
+			},
+			getPage(p, d) {
+				var param = d || '';
+				axios.get(this.ajaxUrl + '?page=' + p + param, this.ajaxHeaders)
+				.then(response => {
+					console.log(response);
+					this.directoryList = response.data;
+					this.paginate = this.makePaginate(response.data);
 				});
 			},
 		},

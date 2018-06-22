@@ -1,50 +1,80 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <body>
-<div class="card" th:fragment="apiPreview">
-	<div class="fow m-0">
-		<div class="fol-4 brd-r">
-			<div class="row brd-b">
-				<div class="thumb" v-if="api.image" :style="{ 'background-image': 'url(' + api.image + ')' }"></div>
-				<div class="thumb" v-if="!api.image" :style="{ 'background-color': api.color }">{{api.openapidocument.info.title}}</div>
-			</div>
-			<div class="py-3">
+<div class="fol-sm-6 fol-md-4 fol-lg-4 fol-xl-3 fol-xlm-3 fol-xlg-3 thumb card-item" th:fragment="apiList">
+<!-- <div class="fol-12 card-item" th:fragment="apiList"> -->
+	<div class="card" v-on:click="$parent.selectApi(api, 'preview')">
+		<div class="xxx">
+			<div class="thumb-image" v-if="api.image" :style="{ 'background-image': 'url(' + api.image + ')' }"></div>
+			<div class="thumb-image" v-if="!api.image" :style="{ 'background-color': api.color }">{{api.openapidocument.info.title.substring(0, 3)}}</div>
+			<div class="card-body">
 				<span class="float-right text-uppercase py-1"><span class="small">{{apiGetStateName(api.apistateid)}}</span><i class="fas fa-circle ml-1" v-bind:class="'stat-' + apiGetStateName(api.apistateid)"></i></span>
-				<h4 class="mb-0"><strong>{{api.openapidocument.info.title}}</strong></h4>
+				<h5 class="mb-0"><strong>{{api.openapidocument.info.title}}</strong></h5>
 				<p class="small">{{api.openapidocument.info.version}}</p>
 				<p>{{api.openapidocument.info.description}}</p>
 			</div>
 		</div>
-		<div class="fol-8 pb-3">
-			<button type="button" class="close" v-on:click="$root.setState('init')">×</button>
-			<ul role="tablist" class="row nav nav-tabs nav--justified" id="method1Tabs">
-				<li class="active" role="presentation"><a aria-expanded="true" data-toggle="tab" role="tab" href="#overview">Overview</a></li>
-				<li role="presentation"><a aria-expanded="true" data-toggle="tab" role="tab" href="#test">Test</a></li>
-			</ul>
-			<div class="tab-content py-3">
-				<div id="overview" class="tab-pane fade active in" role="tabpanel">
-					<div class="fow form-row">
-						<p class="fol-6 pb-2">
-							<label class="d-block font-weight-bold text-uppercase">Servers</label> 
-							<span class="d-block text-truncate" v-for="(sv, index) in api.openapidocument.servers" v-bind:title="sv.url">{{sv.url}}</span>
-						</p>
-						<p class="fol-6 pb-2">
-							<label class="d-block font-weight-bold text-uppercase">Created</label>
-							{{api.created | formatDate}}
-						</p>
-						<p class="fol-6 pb-2">
-							<label class="d-block font-weight-bold text-uppercase">Updated</label>
-							{{api.updated | formatDate}}
-						</p>
+	</div>
+</div>
+<div class="preview-container" v-if="rootState == 'preview'" th:fragment="apiPreview">
+	<div class="preview-overlay" v-if="$root.rootState == 'preview'" v-on:click="cancelApi()"></div>
+	<div class="card preview-item">
+		<div class="fow m-0">
+			<div class="fol-12 fol-sm p-0 brd-b brd-sm-b-0 brd-sm-r thumb">
+				<div class="thumb-image" v-if="api.image" :style="{ 'background-image': 'url(' + api.image + ')' }"></div>
+				<div class="thumb-image" v-if="!api.image" :style="{ 'background-color': api.color }">{{api.openapidocument.info.title.substring(0, 3)}}</div>
+				<div class="card-body">
+					<span class="float-right text-uppercase py-1"><span class="small">{{apiGetStateName(api.apistateid)}}</span><i class="fas fa-circle ml-1" v-bind:class="'stat-' + apiGetStateName(api.apistateid)"></i></span>
+					<h5 class="mb-0"><strong>{{api.openapidocument.info.title}}</strong></h5>
+					<p class="small">{{api.openapidocument.info.version}}</p>
+					<p>{{api.openapidocument.info.description}}</p>
+				</div>
+			</div>
+			<div class="fol pb-3 thumb-detail" v-if="$root.rootState == 'preview'">
+				<button type="button" class="close" v-on:click="cancelApi()">×</button>
+				<ul role="tablist" class="row nav nav-tabs nav--justified" id="method1Tabs">
+					<li class="active" role="presentation"><a aria-expanded="true" data-toggle="tab" role="tab" href="#overview">Overview</a></li>
+					<li role="presentation"><a aria-expanded="true" data-toggle="tab" role="tab" href="#pricing">Pricing</a></li>
+					<li role="presentation"><a aria-expanded="true" data-toggle="tab" role="tab" href="#test">Test</a></li>
+				</ul>
+				<div class="tab-content py-3">
+					<div id="overview" class="tab-pane fade active in" role="tabpanel">
+						<div class="fow form-row">
+							<p class="fol-6 pb-2">
+								<label class="d-block font-weight-bold text-uppercase">Servers</label> 
+								<span class="d-block text-truncate" v-for="(sv, index) in api.openapidocument.servers" v-bind:title="sv.url">{{sv.url}}</span>
+							</p>
+							<p class="fol-6 pb-2">
+								<label class="d-block font-weight-bold text-uppercase">Created</label>
+								{{api.created | formatDate}}
+							</p>
+							<p class="fol-6 pb-2">
+								<label class="d-block font-weight-bold text-uppercase">Updated</label>
+								{{api.updated | formatDate}}
+							</p>
+						</div>
+						<div class="fow form-row">
+							<p class="fol-6 pb-2"><label class="d-block font-weight-bold text-uppercase">Visibility</label><span class="text-capitalize">{{apiGetVisibilityName(api.apivisibilityid)}}</span></p>
+							<p class="fol-6 pb-2"><label class="d-block font-weight-bold text-uppercase">State</label><span class="text-capitalize">{{apiGetStateName(api.apistateid)}}</span></p>
+						</div>
+						<p><label class="d-block font-weight-bold text-uppercase">Categories</label>{{compCategoriesToList}}</p>
+						<p><label class="d-block font-weight-bold text-uppercase">Tags</label>{{compTagsToList}}</p>
+						<p><label class="d-block font-weight-bold text-uppercase">Groups</label>{{compGroupsToList}}</p>
+						<p><small class="d-block">{{api.openapidocument.info.description}}</small></p>
 					</div>
-					<div class="fow form-row">
-						<p class="fol-6 pb-2"><label class="d-block font-weight-bold text-uppercase">Visibility</label><span class="text-capitalize">{{apiGetVisibilityName(api.apivisibilityid)}}</span></p>
-						<p class="fol-6 pb-2"><label class="d-block font-weight-bold text-uppercase">State</label><span class="text-capitalize">{{apiGetStateName(api.apistateid)}}</span></p>
+					<div id="pricing" class="tab-pane fade" role="tabpanel">
+						<div class="fow">
+							<div class="fol-sm-4 column-width">
+								<h6>Gold</h6>
+							</div>
+							<div class="fol-sm-4 column-width">
+								<h6>Silver</h6>
+							</div>
+							<div class="fol-sm-4 column-width">
+								<h6>Bronze</h6>
+							</div>
+						</div>
 					</div>
-					<p><label class="d-block font-weight-bold text-uppercase">Categories</label>{{compCategoriesToList}}</p>
-					<p><label class="d-block font-weight-bold text-uppercase">Tags</label>{{compTagsToList}}</p>
-					<p><label class="d-block font-weight-bold text-uppercase">Groups</label>{{compGroupsToList}}</p>
-					<p><small class="d-block">{{api.openapidocument.info.description}}</small></p>
 				</div>
 			</div>
 		</div>

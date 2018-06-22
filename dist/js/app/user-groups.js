@@ -36,6 +36,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 
 					"userCount": 0,
 					"permissions": [],
+					"userList": [],
 					"users": []
 				},
 				selectedGroup: {},
@@ -47,6 +48,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 				permissionOptions: [],
 				orgOptions: [],
 				directoryOptions: [],
+				memberOptions: [],
 				date: null,
 					config: {
 					format: 'YYYY-MM-DD HH:mm:ss',
@@ -55,14 +57,20 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 					showClose: true,
 				},
 				end: []
-			}
+			};
 		},
 		methods: {
 			filterGroup(filter) {
 				if (filter == null) {
 					this.getPage(1);
 				} else {
-					this.getPage(1, '&group='+filter.uuid);
+					// this.getPage(1, '&group='+filter.uuid);
+					axios.get(this.ajaxUrl + '/' +filter.uuid, this.ajaxHeaders)
+					.then(response => {
+						this.groupList = response.data;
+					}, error => {
+						console.error(error);
+					});
 				}
 			},
 			filterOrg(filter) {
@@ -92,28 +100,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 					loading(false);
 				});
 			},
-			getOrgOptions() {
-				axios.get(abyss.ajax.organizations_list, this.ajaxHeaders)
-				.then(response => {
-					console.log(response);
-					if (response.data != null) {
-						this.orgOptions = response.data;
-					} else {
-						this.orgOptions = [];
-					}
-				});
-			},
-			getDirectoryOptions() {
-				axios.get(abyss.ajax.subject_directories_list, this.ajaxHeaders)
-				.then(response => {
-					console.log(response);
-					if (response.data != null) {
-						this.directoryOptions = response.data;
-					} else {
-						this.directoryOptions = [];
-					}
-				});
-			},
 			getGroupOptions(search, loading) {
 				loading(true);
 				axios.get(this.ajaxUrl + '?likename=' + search, this.ajaxHeaders)
@@ -129,6 +115,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 					} else {
 						this.groupOptions = [];
 					}
+					loading(false);
+				}, error => {
+					console.log("error: ", error);
 					loading(false);
 				});
 			},
@@ -148,18 +137,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 						this.permissionOptions = [];
 					}
 					loading(false);
-				});
-			},
-			getPage(p, d) {
-				var param = d || '';
-				console.log("this.ajaxUrl: ", this.ajaxUrl);
-				axios.get(this.ajaxUrl + '?page=' + p + param, this.ajaxHeaders)
-				.then(response => {
-					this.groupList = response.data;
-					// console.log("this.groupList: ", JSON.stringify(this.userList, null, '\t') );
-					this.paginate = this.makePaginate(response.data);
-				}, error => {
-					console.error(error);
 				});
 			},
 			cancelGroup() {
@@ -251,6 +228,26 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 					// alert('Correct them errors!');
 				});
 			},
+			getPage(p, d) {
+				var param = d || '';
+				console.log("this.ajaxUrl: ", this.ajaxUrl);
+				axios.get(this.ajaxUrl + '?page=' + p + param, this.ajaxHeaders)
+				.then(response => {
+					// this.groupList = response.data;
+					this.groupList = _.map(response.data, o => _.extend({users: []}, o));
+					this.groupList.forEach((value, key) => {
+						var flt = this.memberOptions.filter((item) => item.subjectgroupid == value.uuid );
+						console.log("flt: ", flt);
+						var grpusr = _.filter(this.userList, (item) => _.find(flt, { subjectid: item.uuid }));
+						console.log("grpusr: ", grpusr);
+						value.users = grpusr;
+					});
+					// 2DO append memberOptions.uuid
+					this.paginate = this.makePaginate(response.data);
+				}, error => {
+					console.error(error);
+				});
+			},
 		},
 		computed: {
 			commaJoin() {
@@ -267,12 +264,26 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 			this.preload();
 		},
 		created() {
-			this.log(this.$options.name);
+			// this.log(this.$options.name);
 			this.$emit('set-page', 'user-groups', 'init');
 			this.newGroup = _.cloneDeep(this.group);
-			this.getPage(1);
-			this.getDirectoryOptions();
-			this.getOrgOptions();
+			axios.all([
+				axios.get(abyss.ajax.subject_directories_list),
+				axios.get(abyss.ajax.organizations_list),
+				axios.get(abyss.ajax.user_list),
+				axios.get(abyss.ajax.subject_memberships),
+			]).then(
+				axios.spread((subject_directories_list, organizations_list, user_list, subject_memberships) => {
+					this.directoryOptions = subject_directories_list.data;
+					this.orgOptions = organizations_list.data;
+					this.userList = user_list.data;
+					this.memberOptions = subject_memberships.data;
+
+					this.getPage(1);
+				})
+			).catch(error => {
+				console.log(error.response);
+			});
 		}
 	});
 });
