@@ -688,9 +688,9 @@
 								<li v-if="outputRendered"><a href="#" id="download-all"><i class="fa fa-fw fa-download"></i>Download</a></li>
 								<li><a href="#" v-on:click="renderOutputAll('yaml');">YAML</a></li>
 								<li><a href="#" v-on:click="renderOutputAll('json');">JSON</a></li>
-								<li><a href="#" v-on:click="swaggerRendered = false;outputRendered = false;uploadRendered = true"><i class="fa fa-fw fa-upload"></i>Show Upload</a></li>
+								<li><a href="#" v-on:click="swaggerRendered = false;outputRendered = false;uploadRendered = true"><i class="fa fa-fw fa-upload"></i>Show Hidden</a></li>
 								<li><a href="#" v-on:click="swaggerRendered = true;outputRendered = false;uploadRendered = false"><i class="fa fa-fw fa-upload"></i>Show Swagger</a></li>
-								<li><a v-on:click="loadSchema()"><i class="fa fa-fw fa-upload"></i>Load Definition</a></li>
+								<!-- <li><a v-on:click="loadSchema()"><i class="fa fa-fw fa-upload"></i>Load Definition</a></li> -->
 								<li><a v-on:click="loadFromUrlSchema('/data/pet3.json')"><i class="fa fa-fw fa-paw"></i>Demo</a></li>
 								<li><a v-on:click="clearSchema()"><i class="fa fa-fw fa-trash-alt"></i>Remove All</a></li>
 							</ul>
@@ -714,7 +714,8 @@
 				<button type="button" class="btn btn-secondary btn-xl btn-circle" v-on:click="beforeCancelApi()"><i class="fas fa-times"></i></button>
 				<button type="button" class="btn btn-secondary btn-xl btn-circle" v-on:click="undoApi()"><i class="fas fa-undo"></i></button>
 				<button type="button" class="btn btn-green btn-xl btn-circle" v-if="rootState == 'create'" v-on:click="createApi()"><i class="fas fa-plus"></i></button>
-				<button type="button" class="btn btn-primary btn-xl btn-circle" v-if="rootState == 'edit'" v-bind:class="{'btn-info': isChanged}" v-on:click="saveMyApi()"><i class="fas fa-save"></i></button>
+				<button type="button" class="btn btn-red btn-xl btn-circle" v-if="rootState == 'edit' && verChanged" v-on:click="createApi()"><i class="fas fa-plus"></i></button>
+				<button type="button" class="btn btn-primary btn-xl btn-circle" v-if="rootState == 'edit' && !verChanged" v-bind:class="{'btn-info': isChanged}" v-on:click="saveMyApi()"><i class="fas fa-save"></i></button>
 			</div>
 		</div>
 	</my-apis>
@@ -1004,7 +1005,7 @@
 	<div id="template-requestbody">
 		<div class="field-controls">
 			<div class="field-sum">
-				<a href="#" class="field-link" data-toggle="collapse" v-bind:data-target="'#requestbody'+bindex" v-bind:aria-controls="'requestbody'+bindex">
+				<a href="#" class="field-link" data-toggle="collapse" v-bind:data-target="'#components_requestBodies_'+requestName+'_'+bindex+'_'+_uid" v-bind:aria-controls="'components_requestBodies_'+requestName+'_'+bindex+'_'+_uid">
 					<strong class="font-weight-bold">{{requestName}}</strong>
 				</a>
 				<div class="ficon-actions dropdown dropdown-hover">
@@ -1015,13 +1016,13 @@
 					</ul>
 				</div>
 			</div>
-			<div v-bind:id="'requestbody'+bindex" class="collapse field-acc">
+			<div v-bind:id="'components_requestBodies_'+requestName+'_'+bindex+'_'+_uid" class="collapse field-acc">
 				<div class="form-group" v-if="!response.$ref">
 					<label>Name</label>
 					<input class="form-control" v-model.lazy="requestName">
 				</div>
 				<div class="form-group">
-					<label>$ref: {{response.$ref}}</label>
+					<label v-on:click="openRef(response.$ref)">$ref: {{response.$ref}}</label>
 					<select class="form-control" v-model="response.$ref" v-on:change="selectRefResponse($event.target.value, response)">
 						<option value="None">None</option>
 						<optgroup label="$Ref: requestBodies">
@@ -1306,13 +1307,16 @@
 				<li v-if="!api.isproxyapi"><a href="#" v-on:click="$parent.createProxy(api, 'preview')"><i class="fas fa-code-branch"></i>Create Proxy</a></li>
 				<li><a href="#" v-on:click="$parent.selectApi(api, 'preview')"><i class="fas fa-file-alt"></i>Preview</a></li>
 				<li class="dropdown-header">ENVIRONMENT</li>
-				<li v-bind:class="{'active': api.islive}" ><a href="#" v-on:click="$parent.apiChangeEnvironment(api, 'islive')"><i class="fas fa-eye"></i>Live</a></li>
-				<li v-bind:class="{'active': api.issandbox}" ><a href="#" v-on:click="$parent.apiChangeEnvironment(api, 'issandbox')"><i class="fas fa-eye"></i>Sandbox</a></li>
+				<li v-bind:class="{'active': api.islive}"><a href="#" v-on:click="$parent.apiChangeEnvironment(api, 'islive')"><i class="fas fa-eye"></i>Live</a></li>
+				<li v-bind:class="{'active': api.issandbox}"><a href="#" v-on:click="$parent.apiChangeEnvironment(api, 'issandbox')"><i class="fas fa-eye"></i>Sandbox</a></li>
+				<li class="dropdown-header">VERSION</li>
+				<li v-bind:class="{'active': api.isdefaultversion}"><a href="#" v-on:click="$parent.apiChangeVersion(api, 'isdefaultversion')"><i class="fas fa-eye"></i>Default</a></li>
+				<li v-bind:class="{'active': api.islatestversion}"><a href="#" v-on:click="$parent.apiChangeVersion(api, 'islatestversion')"><i class="fas fa-eye"></i>Latest</a></li>
 				<li class="dropdown-header">VISIBILITY</li>
 				<li role="separator" class="divider"></li>
-				<li v-bind:class="{'active': activeVisibility == 'Public'}" ><a href="#" v-on:click="$parent.apiChangeVisibility(api, 'Public')"><i class="fas fa-eye"></i>Public</a></li>
-				<li v-bind:class="{'active': activeVisibility == 'Private'}" ><a href="#" v-on:click="$parent.apiChangeVisibility(api, 'Private')"><i class="fas fa-user-secret"></i>Private</a></li>
-				<li v-bind:class="{'active': activeVisibility == 'Closed-Group'}" ><a href="#" v-on:click="$parent.apiChangeVisibility(api, 'Closed-Group')"><i class="fas fa-user"></i>Closed-Group</a></li>
+				<li v-bind:class="{'active': activeVisibility == 'Public'}"><a href="#" v-on:click="$parent.apiChangeVisibility(api, 'Public')"><i class="fas fa-eye"></i>Public</a></li>
+				<li v-bind:class="{'active': activeVisibility == 'Private'}"><a href="#" v-on:click="$parent.apiChangeVisibility(api, 'Private')"><i class="fas fa-user-secret"></i>Private</a></li>
+				<li v-bind:class="{'active': activeVisibility == 'Closed-Group'}"><a href="#" v-on:click="$parent.apiChangeVisibility(api, 'Closed-Group')"><i class="fas fa-user"></i>Closed-Group</a></li>
 				<li class="dropdown-header">CHANGE STATE</li>
 				<li role="separator" class="divider"></li>
 				<li v-bind:class="{'active': activeState == 'Draft'}"><a href="#" v-on:click="$parent.apiChangeState(api, 'Draft')"><i class="fas fa-circle stat-Draft"></i>Draft</a></li>
@@ -1326,7 +1330,7 @@
 		<a href="#" data-toggle="collapse" v-bind:data-target="'#api'+api.uuid" v-bind:aria-controls="'api'+api.uuid" v-bind:class="{'active': $parent.isSelectedApi(api.uuid)}">
 			<div class="">
 				<i v-bind:title="apiGetStateName(api.apistateid)" class="fas fa-circle" v-bind:class="'stat-' + apiGetStateName(api.apistateid)"></i>
-				<strong>{{api.openapidocument.info.title}}</strong> <small class="text-muted">{{api.openapidocument.info.version}}</small>
+				<strong>{{api.openapidocument.info.title}}</strong> <small class="text-muted">{{api.openapidocument.info.version}} {{apiDefaultVersion}} {{apiLatestVersion}}</small>
 			</div>
 			<span v-if="!api.isproxyapi">
 				<small>Proxies: <strong v-if="api.proxies">{{api.proxies.length}}</strong></small>
@@ -1354,7 +1358,7 @@
 							<p class="fol-6"><strong class="d-block text-uppercase">Environment</strong> {{apiEnvironment}}</p>
 						</div>
 						<div class="fow form-row">
-							<p class="fol-12"><strong class="d-block text-uppercase">License</strong>{{api.openapidocument.info.license.name}}</p>
+							<p class="fol-12" v-if="api.openapidocument.info.license"><strong class="d-block text-uppercase">License</strong>{{api.openapidocument.info.license.name}}</p>
 							<p class="fol-12"><strong class="d-block text-uppercase">Categories</strong>{{compCategoriesToList}}</p>
 							<p class="fol-12"><strong class="d-block text-uppercase">Groups</strong>{{compGroupsToList}}</p>
 							<p class="fol-12"><strong class="d-block text-uppercase">Tags</strong>{{compTagsToList}}</p>
@@ -1441,8 +1445,8 @@
 		</div>
 	</div>
 </div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.5/clipboard.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/highlight.min.js"></script>
+<script src="/dist/js/plugins/clipboard.min.js"></script>
+<script src="/dist/js/plugins/highlight.pack.js"></script>
 <script src="/dist/js/plugins/openapi/js-yaml.min.js"></script>
 <script src="/dist/js/plugins/openapi/jsonpatch.js"></script>
 <script src="/dist/js/plugins/openapi/jsoneditor.min.js"></script>

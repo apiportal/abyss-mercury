@@ -1,0 +1,45 @@
+﻿<!DOCTYPE html>
+<html class="vs-explore" lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:include="webroot/frags/layout/head.htm :: header">
+<script src="/dist/js/lib/jquery.min.js"></script>
+<script src="/dist/js/lib/thymus.min.js" id="thymus"
+	data-thx-base-path="." data-thx-frag-extension=".htm"
+	data-thx-head-frag="th:include=webroot/frags/layout/head.htm :: header"
+	data-thx-preload-js="/dist/js/loader.js"
+	data-thx-onfrags="fragsListener();" data-thx-onfrag="fragListener()"></script>
+</head>
+<body>
+<div id="portal" class="wrapper" v-bind:class="pageClass">
+	<div th:replace="webroot/frags/layout/navs.htm :: navs"></div>
+	<main class="page-wrapper">
+	<index inline-template ref="refPage" v-on:set-state="setState" v-on:set-page="setPage" v-bind:root-state="rootState">
+		<section class="xxx">
+			<transition name="fade">
+			<div th:replace="webroot/frags/api/api-preview.htm :: apiPreview"></div>
+			</transition>
+			<!-- <api-list v-for="(api, index) in sortByNested(sortApi, apiList)" :api="api" :lindex="index" :key="api.uuid" inline-template class="fol-sm-6 fol-md-4 fol-lg-4 fol-xl-3 fol-xlm-3 fol-xlg-3 card-item">
+				<div v-on:click="$parent.selectApi(api, 'preview')" th:include="webroot/frags/api/api-preview.htm :: apiList"></div>
+			</api-list> -->
+			<div class="row bg-white">
+				<v-select label="openapidocument.info.title" :filterable="false" :options="apiOptions" @search="getApiOptions" :on-change="filterApi" placeholder="Search API">
+					<span slot="no-options"></span>
+					<template slot="option" slot-scope="option">
+						<div>{{ option.openapidocument.info.title }}</div>
+					</template>
+					<template slot="selected-option" slot-scope="option">
+						<div>{{ option.openapidocument.info.title }}</div>
+					</template>
+				</v-select>
+			</div>
+			<div class="fow cards justify-content-center">
+				<api-list v-for="(api, index) in sortByNested(sortApi, apiList)" :api="api" :lindex="index" :key="api.uuid" pagecurrent="pageCurrent" inline-template>
+					<div th:replace="webroot/frags/api/api-preview.htm :: apiList"></div>
+				</api-list>
+			</div>
+		</section>
+	</index>
+	</main>
+</div>
+<script id="reqVue" data-module="explore" data-main="/dist/js/main" src="/dist/js/lib/require.min.js"></script>
+</body>
+</html>

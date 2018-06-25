@@ -78,6 +78,7 @@ require.config({
 		"index": "app/index",
 		"my-apis-old": "app/my-apis-old",
 		"my-apis": "app/my-apis",
+		"explore": "app/explore",
 		"users": "app/users",
 		"user-groups": "app/user-groups",
 		"user-directories": "app/user-directories",

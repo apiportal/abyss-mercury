@@ -73,7 +73,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 					item.isdeleted = true;
 					console.log("deleteUser response: ", response);
 				}, error => {
-					console.error(error);
+					this.handleError(error);
 				});
 			},
 			deleteType222: function (item) {
@@ -96,6 +96,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 					} else {
 						this.orgOptions = [];
 					}
+				}, error => {
+					this.handleError(error);
 				});
 			},
 			getDirectoryTypes() {
@@ -108,7 +110,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 						this.directoryTypes = [];
 					}
 				}, error => {
-					console.error(error);
+					this.handleError(error);
 				});
 			},
 			cancelDirectory() {
@@ -169,7 +171,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 									this.directory = _.cloneDeep(this.newDirectory);
 								}
 							}, error => {
-								console.error(error);
+								this.handleError(error);
 							});
 						}
 						if (act == 'edit') {
@@ -191,6 +193,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 					console.log(response);
 					this.directoryList = response.data;
 					this.paginate = this.makePaginate(response.data);
+				}, error => {
+					this.handleError(error);
 				});
 			},
 		},

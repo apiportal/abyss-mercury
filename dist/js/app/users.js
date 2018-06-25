@@ -139,7 +139,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 					.then(response => {
 						this.userList = _.map(response.data, o => _.extend({permissionfilter: true, groupfilter: true, userfilter: true}, o));
 					}, error => {
-						console.error(error);
+						this.handleError(error);
 					});
 				}
 			},
@@ -160,7 +160,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 					}
 					loading(false);
 				}, error => {
-					console.log("error: ", error);
+					this.handleError(error);
 					loading(false);
 				});
 			},
@@ -181,6 +181,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 						this.groupOptions = [];
 					}
 					loading(false);
+				}, error => {
+					loading(false);
+					this.handleError(error);
 				});
 			},
 			getPermissionOptions222(search, loading) {
@@ -199,6 +202,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 						this.permissionOptions = [];
 					}
 					loading(false);
+				}, error => {
+					loading(false);
+					this.handleError(error);
 				});
 			},
 			cancelUser() {
@@ -242,7 +248,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 					item.isdeleted = true;
 					console.log("deleteUser response: ", response);
 				}, error => {
-					console.error(error);
+					this.handleError(error);
 				});
 			},
 			deleteUser222(item) {
@@ -291,7 +297,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 									this.user = _.cloneDeep(this.newUser);
 								}
 							}, error => {
-								console.error(error);
+								this.handleError(error);
 							});
 						}
 						if (act == 'edit') {
@@ -301,7 +307,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 								this.user = _.cloneDeep(this.newUser);
 								this.selected = null;
 							}, error => {
-								console.error(error);
+								this.handleError(error);
 							});
 						}
 						return;
@@ -321,15 +327,15 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 					this.userList = _.map(response.data, o => _.extend({permissionfilter: true, groupfilter: true, userfilter: true}, o));
 					this.userList.forEach((value, key) => {
 						var flt = this.memberOptions.filter((item) => item.subjectid == value.uuid );
-						console.log("flt: ", flt);
+						// console.log("flt: ", flt);
 						var grpusr = _.filter(this.groupOptions, (item) => _.find(flt, { subjectgroupid: item.uuid }));
-						console.log("grpusr: ", grpusr);
+						// console.log("grpusr: ", grpusr);
 						value.groups = grpusr;
 					});
 					// 2DO append memberOptions.uuid
 					this.paginate = this.makePaginate(response.data);
 				}, error => {
-					console.error(error);
+					this.handleError(error);
 				});
 			},
 		},
@@ -368,7 +374,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 					this.getPage(1);
 				})
 			).catch(error => {
-				console.log(error.response);
+				this.handleError(error);
 			});
 		}
 	});

@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <body>
 	<ul v-bind:id="name" th:fragment="navTax" class="collapse">
-		<li>
+		<li v-if="pagecurrent != 'explore'">
 			<a href="#" class="nav-caret" data-toggle="collapse" v-bind:data-target="'#'+name+'apiGroups'" v-bind:aria-controls="name+'apiGroups'">Groups</a>
 			<ul v-bind:id="name+'apiGroups'" class="collapse">
 				<li><a href="#" data-toggle="modal" data-target="#taxModal" v-on:click="setTax('add', 'Group', groupname)"><i class="fas fa-fw fa-plus-square"></i>ADD GROUP</a></li>
@@ -47,7 +47,7 @@
 					<a href="#"><i class="fas fa-fw fa-stop txt-green"></i>{{category.name}}<span class="badge badge-pill badge-outline">{{category.count}}</span></a></li>
 			</ul>
 		</li>
-		<li>
+		<li v-if="pagecurrent != 'explore'">
 			<a href="#" class="nav-caret" data-toggle="collapse" v-bind:data-target="'#'+name+'apiStates'" v-bind:aria-controls="name+'apiStates'">States</a>
 			<ul v-bind:id="name+'apiStates'" class="collapse"> 
 				<li></li>
@@ -59,7 +59,7 @@
 				</li>
 			</ul>
 		</li>
-		<li>
+		<li v-if="pagecurrent != 'explore'">
 			<a href="#" class="nav-caret" data-toggle="collapse" v-bind:data-target="'#'+name+'apiVisibility'" v-bind:aria-controls="name+'apiVisibility'">Visibility</a>
 			<ul v-bind:id="name+'apiVisibility'" class="collapse"> 
 				<li></li>

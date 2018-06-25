@@ -69,7 +69,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 					.then(response => {
 						this.groupList = response.data;
 					}, error => {
-						console.error(error);
+						this.handleError(error);
 					});
 				}
 			},
@@ -98,6 +98,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 						this.userOptions = [];
 					}
 					loading(false);
+				}, error => {
+					loading(false);
+					this.handleError(error);
 				});
 			},
 			getGroupOptions(search, loading) {
@@ -117,7 +120,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 					}
 					loading(false);
 				}, error => {
-					console.log("error: ", error);
+					this.handleError(error);
 					loading(false);
 				});
 			},
@@ -137,6 +140,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 						this.permissionOptions = [];
 					}
 					loading(false);
+				}, error => {
+					loading(false);
+					this.handleError(error);
 				});
 			},
 			cancelGroup() {
@@ -172,7 +178,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 					item.isdeleted = true;
 					console.log("deleteUser response: ", response);
 				}, error => {
-					console.error(error);
+					this.handleError(error);
 				});
 			},
 			deleteGroup222(item) {
@@ -211,7 +217,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 									this.group = _.cloneDeep(this.newGroup);
 								}
 							}, error => {
-								console.error(error);
+								this.handleError(error);
 							});
 						}
 						if (act == 'edit') {
@@ -237,15 +243,15 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 					this.groupList = _.map(response.data, o => _.extend({users: []}, o));
 					this.groupList.forEach((value, key) => {
 						var flt = this.memberOptions.filter((item) => item.subjectgroupid == value.uuid );
-						console.log("flt: ", flt);
+						// console.log("flt: ", flt);
 						var grpusr = _.filter(this.userList, (item) => _.find(flt, { subjectid: item.uuid }));
-						console.log("grpusr: ", grpusr);
+						// console.log("grpusr: ", grpusr);
 						value.users = grpusr;
 					});
 					// 2DO append memberOptions.uuid
 					this.paginate = this.makePaginate(response.data);
 				}, error => {
-					console.error(error);
+					this.handleError(error);
 				});
 			},
 		},
@@ -282,7 +288,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 					this.getPage(1);
 				})
 			).catch(error => {
-				console.log(error.response);
+				this.handleError(error);
 			});
 		}
 	});

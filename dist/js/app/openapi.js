@@ -114,6 +114,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 			if (!openapi.components.requestBodies) {
 				openapi.components.requestBodies = {};
 			}
+			if (!openapi.components.securitySchemes) {
+				openapi.components.securitySchemes = {};
+			}
 			for (var p in openapi.paths) {
 				var path = openapi.paths[p];
 				for (var o in path) {
@@ -201,8 +204,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 			return removeAbyss(object);
 		}
 		function postProcessDefinition(openapi) {
-			var ooo = clone(openapi);
-			var def = removeAbyssProps(ooo);
+			// var ooo = clone(openapi);
+			// var def = removeAbyssProps(ooo);
+			var def = clone(openapi);
 			for (var p in def.paths) {
 				postProcessPathItem(def.paths[p]);
 			}
@@ -363,7 +367,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 						}
 					});
 					Vue.set(s, 'description', 'description');
-					Vue.set(s, 'required', false);
 				} else {
 					for (var p in s) {
 						console.log("p: ", p);
@@ -723,7 +726,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				},
 				requestName: {
 					get() {
-						console.log("this.status: ", this.status);
 						return this.status;
 					},
 					set(newVal) {
@@ -740,6 +742,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				removeRequestBody(key) {
 					// Vue.delete(this.openapi.components.requestBodies,key);
 					Vue.delete(this.method,key);
+				},
+				openRef(ref) {
+					console.log("ref: ", ref);
 				},
 			},
 			data() {
@@ -1264,10 +1269,24 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 			apiEnvironment : {
 				get() {
 					if (this.api.islive) {
-						return 'LIVE';
+						return 'Live';
 					}
 					if (this.api.issandbox) {
-						return 'SANDBOX';
+						return 'Sandbox';
+					}
+				}
+			},
+			apiDefaultVersion : {
+				get() {
+					if (this.api.isdefaultversion) {
+						return 'Default';
+					}
+				}
+			},
+			apiLatestVersion : {
+				get() {
+					if (this.api.islatestversion) {
+						return 'Latest';
 					}
 				}
 			},
@@ -1289,7 +1308,11 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 			},
 			numSecuritySchemes : {
 				get() {
-					return this.getObjCount(this.api.openapidocument.components.securitySchemes);
+					if (this.api.openapidocument.components.securitySchemes) {
+						return this.getObjCount(this.api.openapidocument.components.securitySchemes);
+					} else {
+						return 0;
+					}
 				}
 			},
 			businessapi: {
@@ -1384,11 +1407,13 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				pageState: 'init',
 				paginate: {},
 				ajaxApiUrl: abyss.ajax.api_list,
-				ajaxUrl: abyss.ajax.my_api_list + '/' + this.$cookie.get('abyss.principal.uuid'),
+				ajaxUrl: abyss.ajax.my_api_list + this.$cookie.get('abyss.principal.uuid'),
 				ajaxHeaders: {},
 				
+				swChanges: {},
 				changes: {},
 				isChanged: false,
+				verChanged: false,
 
 				apiOptions: [],
 				categoryOptions: [],
@@ -1449,7 +1474,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 							"url": "https://www.example.com"
 						}
 					],
-					"x-abyss-platform": {},
 					"tags": [],
 					"security": [],
 					"paths": {},
@@ -1796,7 +1820,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					// self.openapi.paths = {};
 				},
 				loadSchema() {
-					console.log("loadSchema: ", this);
+					// console.log("loadSchema: ", this.importschema);
 					var schema;
 					try {
 						schema = JSON.parse(this.importschema);
@@ -1842,7 +1866,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					// swEditor.specActions.updateSpec(jsyaml.dump(this.openapi));
 					this.importschema = JSON.stringify(this.openapi, null, 2);
 					swEditor.specActions.updateSpec(jsyaml.dump(this.postProcessDefinition()));
-				}, 1000),
+				}, 100),
 				listenSw: _.debounce(function(val) {
 					Vue.set(this.swaggerText, 'text', val);
 				}, 100),
@@ -1901,27 +1925,30 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 						alert(ex);
 					}
 				},
-				loadFromUrlSchema(val) {
+				loadFromUrlSchema(val, load) {
+					console.log("val: ", val);
 					if (val != '') {
 						var vm = this;
-						$.ajax(val, {
-							success(data) {
-								try {
-									console.log("data: ", data);
-									if (typeof data === 'string') {
-										vm.importschema = data;
-									} else {
-										vm.importschema = JSON.stringify(data, null, 2);
-									}
+						$.ajax(val)
+							.done(function(data) {
+								console.log("loadFromUrlSchema data: ", data);
+								if (typeof data === 'string') {
+									vm.importschema = data;
+								} else {
+									vm.importschema = JSON.stringify(data, null, 2);
 								}
-								catch (ex) {
-									alert(ex);
+								vm.$root.setState('create');
+								if (load) {
+									vm.chooseLink();
 								}
-							},
-							complete() {
+							})
+							.fail(function(data, error) {
+								console.log("fail data: ", data);
+								console.log("fail error: ", error);
+							})
+							.always(function() {
 								vm.loadSchema();
-							}
-						});
+							});
 					}
 				},
 				postProcessDefinition() {
@@ -1944,11 +1971,13 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					this.outputRendered = true;
 					this.uploadRendered = false;
 					this.swaggerRendered = false;
-					clippy = new Clipboard('#copy-all', {
+					clippy = new ClipboardJS('#copy-all', {
 						// target: $('#pretty-'+type)
 						target(trigger) {
 							// return $('#pretty-'+type);
 							return document.getElementById('pretty-'+type);
+							// return document.getElementsByClassName('select-pretty');
+							// return document.querySelectorAll('[data-pretty]');
 						}
 					});
 					setTimeout(() => {
@@ -1984,6 +2013,26 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				// this.api.image = response.files;
 			},
 			fixProps(item) {
+				if (item.proxies == null) {
+					Vue.set(item, 'proxies', []);
+					// console.log("item.proxies: ", item.proxies.length, item.uuid);
+					var papi = this.myApiList.find((el) => el.businessapiid == item.uuid );
+					if (papi) {
+						item.proxies.push(papi);
+					}
+				}
+				// console.log("item.openapidocument.info.title: ", item.openapidocument.info.title);
+				if (!item.openapidocument.components) {
+					// console.log("no.components: ", item.openapidocument.info.title, item.uuid);
+					Vue.set(item.openapidocument, 'components', {});
+					// Vue.set(item.openapidocument.components, 'securitySchemes', {});
+				}
+				/*if (!item.openapidocument.openapi) {
+					console.log("OAS 2 REMOVED: ", item.openapidocument.info.title, item.uuid);
+					// Vue.set(item.openapidocument.components, 'securitySchemes', {});
+					var index = this.myApiList.indexOf(item);
+					this.myApiList.splice(index, 1);
+				}*/
 				if (typeof item.openapidocument === 'string') {
 					item.openapidocument = JSON.parse(item.openapidocument);
 				}
@@ -2038,13 +2087,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				if (item.categories == null) {
 					Vue.set(item, 'categories', []);
 				}
-				if (item.proxies == null) {
-					Vue.set(item, 'proxies', []);
-					var papi = this.myApiList.find((el) => el.businessapiid == item.uuid );
-					if (papi) {
-						item.proxies.push(papi);
-					}
-				}
 				if (item.tagList == null) {
 					Vue.set(item, 'tagList', '');
 				}
@@ -2098,6 +2140,22 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					});
 				}
 			},
+			apiChangeVersion(item, val) {
+				if (val == 'isdefaultversion') {
+					item.isdefaultversion = !item.isdefaultversion;
+					this.updateItem(this.ajaxApiUrl + '/' + item.uuid, this.deleteProps(item), this.ajaxHeaders, this.myApiList).then(response => {
+						console.log("apiChangeVersion response: ", response);
+						this.$toast('info', {message: 'Version preference changed successfully', title: 'Version preference changed', position: 'topLeft'});
+					});
+				}
+				if (val == 'islatestversion') {
+					item.islatestversion = !item.islatestversion;
+					this.updateItem(this.ajaxApiUrl + '/' + item.uuid, this.deleteProps(item), this.ajaxHeaders, this.myApiList).then(response => {
+						console.log("apiChangeVersion response: ", response);
+						this.$toast('info', {message: 'Version preference changed successfully', title: 'Version preference changed', position: 'topLeft'});
+					});
+				}
+			},
 			apiChangeVisibility(item, val) {
 				var slcVisibility = this.$root.rootData.myApiVisibilityList.find((el) => el.name == val );
 				var curVisibility = this.$root.rootData.myApiVisibilityList.find((el) => el.uuid == item.apivisibilityid );
@@ -2148,27 +2206,40 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 						},0);	
 					}
 				}, error => {
-					alert(error.code + ': ' + error.message);
+					this.handleError(error);
 				});
 			},
 			chooseSpec() {
 				// this.$emit('set-state', 'create');
 				this.$root.setState('create');
 				this.clearSchema();
+				this.selectedApi = _.cloneDeep(this.api);
 				this.initSwagger();
 				setTimeout(() => {
+					this.updateSw();
 					$('#upload').collapse('show');
 					$('#servers').collapse('show');
 					$('#info').collapse('show');
 					// console.log("this.api: ", this.api);
-					this.selectedApi = _.cloneDeep(this.api);
 					// console.log("this.selectedApi: ", this.selectedApi);
 					/*require(['css!colorpicker-css', 'colorpicker'],function(){
 						$('.input-color').initz_inputcolor();
 						// $('.input-color').colorpicker({});
 					});*/
 					this.apiColor();
-				},0);
+				},1000);
+			},
+			chooseLink() {
+				this.$root.setState('create');
+				this.selectedApi = _.cloneDeep(this.api);
+				this.initSwagger();
+				setTimeout(() => {
+					this.updateSw();
+					$('.list-column').addClass('column-minimize');
+					$('.create-column').addClass('column-minimize');
+					$('.edit-column').removeClass('column-minimize');
+					this.apiColor();
+				},1000);
 			},
 			selectApi(item, state) {
 				// console.log("pp selectApi: ", item);
@@ -2181,27 +2252,29 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					this.$root.setState(state);
 					this.selectedApi = _.cloneDeep(this.api);
 					this.initSwagger();
-					this.updateSw();
-					// $('#api'+this.api.uuid).collapse('show');
-					// console.log("this.api: ", this.api);
-					if ( state != 'preview') {
-						this.$refs.dropImage.removeAllFiles(true);
-						if (this.api.image != '') {
-							this.$refs.dropImage.manuallyAddFile({ size: 123, name: this.api.image }, this.api.image);
+					setTimeout(() => {
+						this.updateSw();
+						// $('#api'+this.api.uuid).collapse('show');
+						// console.log("this.api: ", this.api);
+						if ( state != 'preview') {
+							this.$refs.dropImage.removeAllFiles(true);
+							if (this.api.image != '') {
+								this.$refs.dropImage.manuallyAddFile({ size: 123, name: this.api.image }, this.api.image);
+							}
+							$('.list-column').addClass('column-minimize');
+							$('.create-column').addClass('column-minimize');
+							$('.edit-column').removeClass('column-minimize');
+							// $('.input-color').colorpicker({
+							// });
+							/*require(['css!colorpicker-css', 'colorpicker'],function(){
+								$('.input-color').initz_inputcolor();
+								// $('.input-color').colorpicker({});
+							});*/
+							this.apiColor();
+						} else {
+							// $('.create-column, .edit-column').addClass('column-minimize');
 						}
-						$('.list-column').addClass('column-minimize');
-						$('.create-column').addClass('column-minimize');
-						$('.edit-column').addClass('column-minimize');
-						// $('.input-color').colorpicker({
-						// });
-						/*require(['css!colorpicker-css', 'colorpicker'],function(){
-							$('.input-color').initz_inputcolor();
-							// $('.input-color').colorpicker({});
-						});*/
-						this.apiColor();
-					} else {
-						// $('.create-column, .edit-column').addClass('column-minimize');
-					}
+					},1000);
 				}
 			},
 			apiColor() {
@@ -2254,7 +2327,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 						}
 					}
 				}, error => {
-					console.error(error);
+					this.handleError(error);
 				});
 			},
 			isSelectedApi(i) {
@@ -2317,7 +2390,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					this.isChanged = false;
 					this.taxonomies();
 				}, error => {
-					alert(error.code + ': ' + error.message);
+					this.handleError(error);
 				});
 			},
 			createApi() {
@@ -2355,7 +2428,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 								},0);	
 							}
 						}, error => {
-							alert(error.code + ': ' + error.message);
+							this.handleError(error);
 						});
 						return;
 					}
@@ -2387,7 +2460,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 							console.log("this.myApiList: ", this.myApiList);
 						}
 					}, error => {
-						console.error(error);
+						this.handleError(error);
 					});
 				}
 			},
@@ -2399,28 +2472,12 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					if (response.data != null) {
 						this.myApiList = response.data;
 						this.myApiList.forEach((value, key) => {
-							// console.log("value, key: ", value, key);
 							this.fixProps(value);
-							// !!!!!!!!!!!!!!!!!!
-							/*console.log("this.apiapiTag: ", this.apiapiTag);
-							console.log("this.apiapiGroup: ", this.apiapiGroup);
-							console.log("this.apiapiCategory: ", this.apiapiCategory);
-							var tttt = this.$root.rootData.myApiTagList.filter((item) => item.uuid == this.apiapiTag.apitagid );
-							this.myApiList.forEach((value, key) => {
-								
-							});
-							// this.api.tags.push(tttt);
-							console.log("tttt: ", tttt);*/
-
-							// var slcState = this.$root.rootData.myApiStateList.find((el) => el.uuid == value.apistateid );
-							// console.log("slcState: ", slcState.name);
-							// value.uuid = this.uuidv4();
-							// value.count = 1;
 						});
 						this.paginate = this.makePaginate(response.data);
 					}
 				}, error => {
-					console.error(error);
+					this.handleError(error);
 				});
 			},
 			getApiOptions(search, loading) {
@@ -2435,6 +2492,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 						this.apiOptions = [];
 					}
 					loading(false);
+				}, error => {
+					loading(false);
+					this.handleError(error);
 				});
 			},
 			getCategoryOptions(search, loading) {
@@ -2447,6 +2507,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 						this.categoryOptions = [];
 					}
 					loading(false);
+				}, error => {
+					loading(false);
+					this.handleError(error);
 				});
 			},
 			getTagOptions(search, loading) {
@@ -2459,6 +2522,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 						this.tagOptions = [];
 					}
 					loading(false);
+				}, error => {
+					loading(false);
+					this.handleError(error);
 				});
 			},
 			getGroupOptions(search, loading) {
@@ -2471,6 +2537,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 						this.groupOptions = [];
 					}
 					loading(false);
+				}, error => {
+					loading(false);
+					this.handleError(error);
 				});
 			},
 			// 2DO
@@ -2496,7 +2565,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 						console.log("apiapiCategory: ", _.uniq(_.map(this.apiapiTag, 'uuid')));
 					})
 				).catch(error => {
-					console.log(error.response);
+					this.handleError(error);
 				});
 			},
 			taxonomies() {
@@ -2533,11 +2602,11 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 										this.$root.rootData.myApiTagList = _.unionBy(this.$root.rootData.myApiTagList, this.api.tags, 'uuid');
 									}
 								}, error => {
-									alert(error.code + ': ' + error.message);
+									this.handleError(error);
 								});
 							}
 						}, error => {
-							alert(error.code + ': ' + error.message);
+							this.handleError(error);
 						});
 					} else {
 						this.api.tags.forEach((value, key) => {
@@ -2554,7 +2623,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 								this.$root.rootData.myApiTagList = _.unionBy(this.$root.rootData.myApiTagList, this.api.tags, 'uuid');
 							}
 						}, error => {
-							alert(error.code + ': ' + error.message);
+							this.handleError(error);
 						});
 					}
 				}
@@ -2574,7 +2643,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 							this.$root.rootData.myApiCategoryList = _.unionBy(this.$root.rootData.myApiCategoryList, this.api.categories, 'uuid');
 						}
 					}, error => {
-						alert(error.code + ': ' + error.message);
+						this.handleError(error);
 					});
 				}
 				if (Object.keys(this.changes).some(v => v == 'groups')) {
@@ -2593,7 +2662,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 							this.$root.rootData.myApiGroupList = _.unionBy(this.$root.rootData.myApiGroupList, this.api.groups, 'uuid');
 						}
 					}, error => {
-						alert(error.code + ': ' + error.message);
+						this.handleError(error);
 					});
 				}
 			},
@@ -2628,8 +2697,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 			api: {
 				handler(val, oldVal) {
 					this.changes = this.checkDiff(val, this.selectedApi);
-					console.log("this.isChanged: ", this.isChanged, Object.keys(this.changes).length, this.changes);
-					if ( Object.keys(this.changes).length == 0 ) {
+					if ( Object.keys(this.changes).length == 0 || (Object.keys(this.changes).length == 1 && Object.keys(this.changes).some(v => v == 'specs')) ) {
 						this.isChanged = false; 
 					} else {
 						this.isChanged = true; 
@@ -2637,6 +2705,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 							this.updateSw();
 						}
 					}
+						this.verChanged = _.has(this.changes, 'openapidocument.info.version'); 
+					console.log("this.isChanged: ", this.isChanged, Object.keys(this.changes).length, this.changes, "version: ", _.has(this.changes, 'openapidocument.info.version'), this.verChanged);
 				},
 				deep: true
 			},
@@ -2667,9 +2737,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				handler(val, oldVal) {
 					// var local = localStorage.getItem('swagger-editor-content');
 					var old = swEditor.getState().getIn(['spec', 'spec']);
-					this.changes = this.checkDiff(val, old);
-					// console.log("this.changes: ", this.changes);
-					if ( Object.keys(this.changes).length == 0 ) {
+					this.swChanges = this.checkDiff(val, old);
+					// console.log("swaggerText.swChanges: ", this.swChanges);
+					if ( Object.keys(this.swChanges).length == 0 ) {
 						// console.log("No change: ", this);
 					} else {
 						// console.log("Yes Change: ", this);
@@ -2681,8 +2751,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 		},
 		mounted() {
 			this.preload();
-			// console.log("this.$root.rootData: ", this.$root.rootData);
-			// this.ajaxUrl = abyss.ajax.my_api_list + '/' + this.$root.rootData.user.uuid;
 		},
 		computed: {
 			filteredApis() {

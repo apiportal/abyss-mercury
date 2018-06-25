@@ -46,12 +46,12 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 	});
 	Vue.filter('formatDateTime', function(value) {
 		if (value) {
-			return moment(String(value)).format('DD.MM.YYYY hh:mm')
+			return moment(String(value)).format('DD.MM.YYYY hh:mm');
 		}
 	});
 	Vue.filter('formatDate', function(value) {
 		if (value) {
-			return moment(String(value)).format('DD.MM.YYYY')
+			return moment(String(value)).format('DD.MM.YYYY');
 		}
 	});
 	Vue.filter('listCommaSeparated', function(item) {
@@ -105,11 +105,14 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 				// console.log("paginate: ", paginate);
 				return paginate;
 			},
-			// resetItem(obj, blank) {
-			// 	obj = _.cloneDeep(blank);
-			// 	// obj = Vue.util.extend({}, blank);
-			// 	// return obj;
-			// },
+			handleError(error) {
+				console.log("error: ", error);
+				console.log("error.response.status: ", error.response.status);
+				if ( error.response.status == 401) {
+					alert('Your session has expired');
+					window.location.href = '/abyss/login';
+				}
+			},
 			updateItem(url, item, head, arr) {
 				return axios.put(url, item, head).then(response => {
 				// return axios.post(url, item, head).then(response => {
@@ -117,8 +120,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 					console.log("PUT response: ", response);
 					return response;
 				}, error => {
-					console.error(error);
-					alert(error.code + ': ' + error.message);
+					this.handleError(error);
 				});
 			},
 			addItem(url, item, head, arr) {
@@ -139,7 +141,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 					console.log("arr: ", arr);
 					return response;
 				}, error => {
-					console.error(error);
+					this.handleError(error);
 				});
 			},
 			removeItem(url, item, head, arr) {
@@ -151,7 +153,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 						arr.splice(index, 1);
 						return response;
 					}, error => {
-						console.error(error);
+						this.handleError(error);
 					});
 				} else {
 					console.log("CANCEL: ");
@@ -228,7 +230,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 	Vue.component('api-nav', {
 		// mixins: [mixIndex],
 		// template: '#template-list',
-		props: ['name','groupname', 'categoryname', 'tagname', 'visibilityname', 'statename'],
+		props: ['name','groupname', 'categoryname', 'tagname', 'visibilityname', 'statename', 'pagecurrent'],
 		computed: {
 			
 		},
@@ -295,6 +297,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 			},
 			selectedTax: {},
 			filterTax: '',
+			abyssYamlList : abyss.abyssYamlList,
 			end: []
 		},
 		methods: {
@@ -324,6 +327,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 							// this.$refs.refMyApis.selectApi(this.$refs.refMyApis.api, 'edit');
 						}
 					}
+				}, error => {
+					this.handleError(error);
 				});
 			},
 			restoreTax(item) {
@@ -465,7 +470,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 					// console.log("this.rootData: ", JSON.stringify(this.rootData, null, '\t'));
 					console.log("this.rootData: ", this.rootData);
 				}, error => {
-					console.error(error);
+					this.handleError(error);
 				});
 			},
 			getEndpoint(lst) {
@@ -516,7 +521,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 						// console.log("this.rootData: ", JSON.stringify(this.rootData, null, '\t') );
 					})
 				).catch(error => {
-					console.log(error.response);
+					this.handleError(error);
 				});
 			},
 		},
@@ -529,8 +534,15 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 			
 		},
 		created() {
-			// this.$cookie.set('abyss.principal.uuid', '9820d2aa-eb02-4a58-8cc5-8b9a89504df9', 10); //ten day
-			// this.$cookie.set('abyss.principal.uuid', '32c9c734-11cb-44c9-b06f-0b52e076672d', 10); //one day
+			if (abyss.isAbyssSandbox) {
+				this.$cookie.set('abyss.session', abyss.session, 10);
+				this.$cookie.set('abyss.principal.uuid', '9820d2aa-eb02-4a58-8cc5-8b9a89504df9', 10); //ten day
+				// this.$cookie.set('abyss.principal.uuid', '32c9c734-11cb-44c9-b06f-0b52e076672d', 1); //one day
+			}
+			// console.log("this.$cookie.get(abyss.session): ", this.$cookie.get('abyss.session'));
+			// if ( !this.$cookie.get('abyss.session') ) {
+			// 	window.location.href = '/abyss/login';
+			// }
 			var principal = this.$cookie.get('abyss.principal.uuid');
 			this.newTax = _.cloneDeep(this.tax);
 			// console.log("principal: ", principal);
