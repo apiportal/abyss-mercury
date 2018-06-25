@@ -30,7 +30,7 @@
 				<a href="#"><i class="fas fa-fw fa-newspaper"></i><span class="right-nav-text">Subscriptions</span></a>
 			</li>
 			<li>
-				<a href="explore.html" class="js-collapse-open"><i class="fas fa-fw fa-globe"></i><span class="right-nav-text">Explore</span></a>
+				<a href="/abyss/explore" class="js-collapse-open"><i class="fas fa-fw fa-globe"></i><span class="right-nav-text">Explore</span></a>
 				<button type="button" data-toggle="collapse" data-target="#apiTax" aria-controls="apiTax" class="nav-caret" v-if="pageCurrent == 'explore'"></button>
 				<api-nav name="apiTax" visibilityname="apiVisibilityList" statename="apiStateList" groupname="apiGroupList" categoryname="apiCategoryList" tagname="apiTagList" :pagecurrent="pageCurrent" v-if="pageCurrent == 'explore'" inline-template>
 					<div th:replace="webroot/frags/api/api-nav.htm :: navTax"></div>
