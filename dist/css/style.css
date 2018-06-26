@@ -11696,6 +11696,8 @@ tbody tr.active {
       font-weight: 300; }
       .page-centered .logo-main .brand-text span, .page-auth .logo-main .brand-text span, .page-error .logo-main .brand-text span {
         font-weight: 700; }
+    .page-centered .logo-main sup, .page-auth .logo-main sup, .page-error .logo-main sup {
+      font-size: 12px; }
 
 @media (min-width: 576px) {
   .page-centered body, .page-auth body, .page-error body {
@@ -12128,6 +12130,8 @@ a#toggle_mobile_nav {
         font-weight: 300; }
         .navbar .nav-header .logo-wrap .brand-text span {
           font-weight: 700; }
+      .navbar .nav-header .logo-wrap sup {
+        font-size: 12px; }
   .navbar .toggle-left-nav-btn {
     padding: 0 18px; }
   .navbar .top-nav-search {
@@ -13449,6 +13453,8 @@ a#toggle_mobile_nav {
       -ms-flex-pack: center;
       justify-content: center;
       color: primary; }
+    .column-header .column-header-title .badge {
+      margin-top: 3px; }
   .column-header .column-min-button {
     position: absolute;
     top: 0;
@@ -13466,6 +13472,9 @@ a#toggle_mobile_nav {
   -ms-flex: 0 0 46px !important;
   flex: 0 0 46px !important;
   max-width: 46px !important; }
+  .column-minimize .column-header .column-header-title .badge {
+    margin-right: 0 !important;
+    margin-left: 15px !important; }
   .column-minimize + .column-main {
     max-width: 100% !important; }
   .column-minimize .column-header-button {

@@ -34,7 +34,7 @@
 							</template>
 						</v-select>
 						<ul class="nav flex-column nav-controls nav-controls-first column-space">
-							<my-api-list v-for="(a, index) in sortByNested(sortApi, myApiList)" :api="a" :openapi="openapi" :lindex="index" :key="a.uuid" v-if="!a.isproxyapi"></my-api-list>
+							<my-api-list v-for="(a, index) in sortByNested(sortApi, myApiList)" :api="a" :apilist="myApiList" :openapi="openapi" :lindex="index" :key="a.uuid"></my-api-list>
 						</ul>
 					</div>
 				</div>
@@ -63,7 +63,7 @@
 							</template>
 						</v-select>
 						<ul class="nav flex-column nav-controls nav-controls-first column-space">
-							<my-api-list v-for="(a, index) in sortByNested(sortApi, myApiList)" :api="a" :openapi="openapi" :lindex="index" :key="a.uuid" v-if="a.isproxyapi"></my-api-list>
+							<my-api-list v-for="(a, index) in sortByNested(sortApi, myProxyList)" :api="a" :apilist="myApiList" :openapi="openapi" :lindex="index" :key="a.uuid"></my-api-list>
 						</ul>
 					</div>
 				</div>
@@ -282,15 +282,15 @@
 									<label>Color {{api.color}}</label>
 									<div class="input-group api-color" data-format="hex" data-targetbg="#appcolor"><input type="text" class="form-control" v-model.lazy="api.color"><span class="input-group-addon"><i></i></span></div>
 								</div>
-								<div class="form-group v-select-color-green v-select-inline">
+								<div class="form-group v-select-color-green v-select-inline" v-if="rootState == 'edit'">
 									<label for="categories">Add to Categories:</label>
 									<v-select label="name" multiple :filterable="true" :options="categoryOptions" @search="getCategoryOptions" v-model="api.categories"></v-select>
 								</div>
-								<div class="form-group v-select-color-purple v-select-inline">
+								<div class="form-group v-select-color-purple v-select-inline" v-if="rootState == 'edit'">
 									<label for="tags">Add Tags:</label>
 									<v-select label="name" multiple taggable :filterable="false" :options="tagOptions" @search="getTagOptions" v-model="api.tags"></v-select>
 								</div>
-								<div class="form-group v-select-color-pink v-select-inline">
+								<div class="form-group v-select-color-pink v-select-inline" v-if="rootState == 'edit'">
 									<label for="group">Add Group:</label>
 									<v-select label="name" multiple :filterable="false" :options="$root.rootData.myApiGroupList"  v-model="api.groups" ref="refApiGroups"></v-select>
 								</div>
@@ -606,7 +606,7 @@
 			<aside class="column column-aside edit-column paths-column column-minimize">
 				<div class="clearfix column-header column-min-button">
 					<a href="#" class="btn btn-lg btn-link txt-link btn-square column-header-button" title="Create Path" v-on:click="addResource();"><i class="fas fa-lg fa-plus"></i></a>
-					<h5 class="column-header-title">Paths</h5>
+					<h5 class="column-header-title">Paths <span class="badge badge-pill badge-outline float-right mr-6" v-if="getObjCount(openapi.paths) > 0">{{getObjCount(openapi.paths)}}</span></h5>
 				</div>
 				<div class="column-content">
 					<form class="nicescroll-bar" id="config">

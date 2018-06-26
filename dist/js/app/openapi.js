@@ -1264,7 +1264,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 	Vue.component('my-api-list', {
 		mixins: [mixOas],
 		template: '#template-list',
-		props: ['api', 'openapi', 'lindex'],
+		props: ['api', 'openapi', 'lindex', 'apilist'],
 		computed: {
 			apiEnvironment : {
 				get() {
@@ -1407,7 +1407,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				pageState: 'init',
 				paginate: {},
 				ajaxApiUrl: abyss.ajax.api_list,
-				ajaxUrl: abyss.ajax.my_api_list + this.$cookie.get('abyss.principal.uuid'),
+				// ajaxUrl: abyss.ajax.my_api_list + this.$cookie.get('abyss.principal.uuid'),
+				ajaxUrl: abyss.ajax.my_business_api_list + this.$cookie.get('abyss.principal.uuid'),
+				ajaxMyProxiesUrl: abyss.ajax.my_proxy_api_list + this.$cookie.get('abyss.principal.uuid'),
 				ajaxHeaders: {},
 				
 				swChanges: {},
@@ -1453,7 +1455,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				},
 
 				myApiList: [],
-				// myProxyList: [],
+				myProxyList: [],
 				swaggerText: {
 					text: ''
 				},
@@ -1865,7 +1867,15 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				updateSw: _.debounce(function() {
 					// swEditor.specActions.updateSpec(jsyaml.dump(this.openapi));
 					this.importschema = JSON.stringify(this.openapi, null, 2);
-					swEditor.specActions.updateSpec(jsyaml.dump(this.postProcessDefinition()));
+					if (typeof swEditor == 'undefined') {
+						this.initSwagger();
+						setTimeout(() => {
+							swEditor.specActions.updateSpec(jsyaml.dump(this.postProcessDefinition()));
+						},1000);
+					} else {
+						swEditor.specActions.updateSpec(jsyaml.dump(this.postProcessDefinition()));
+					}
+					
 				}, 100),
 				listenSw: _.debounce(function(val) {
 					Vue.set(this.swaggerText, 'text', val);
@@ -1905,7 +1915,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					});
 					// console.log("swEditor: ", swEditor);
 					window.swEditor = swEditor;
-				}, 1000),
+				}, 0),
 				uploadSchema(val) {
 					// console.log("uploadSchema: ", val);
 					try {
@@ -1929,7 +1939,10 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					console.log("val: ", val);
 					if (val != '') {
 						var vm = this;
-						$.ajax(val)
+						$.ajax({
+							url: val,
+							// dataType: "jsonp",
+						})
 							.done(function(data) {
 								console.log("loadFromUrlSchema data: ", data);
 								if (typeof data === 'string') {
@@ -1937,7 +1950,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 								} else {
 									vm.importschema = JSON.stringify(data, null, 2);
 								}
-								vm.$root.setState('create');
 								if (load) {
 									vm.chooseLink();
 								}
@@ -2200,7 +2212,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 						console.log("createProxy response: ", response);
 						var newApi = response.data[0].response;
 						this.fixProps(newApi);
-						this.myApiList.push(newApi);
+						this.myProxyList.push(newApi);
 						setTimeout(() => {
 							this.$toast('info', {message: 'Proxy API created from this business API', title: 'Proxy API created', position: 'topLeft'});
 						},0);	
@@ -2212,11 +2224,14 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 			chooseSpec() {
 				// this.$emit('set-state', 'create');
 				this.$root.setState('create');
-				this.clearSchema();
+				// this.clearSchema();
+				this.loadFromUrlSchema('/data/pet3.json');
 				this.selectedApi = _.cloneDeep(this.api);
-				this.initSwagger();
-				setTimeout(() => {
-					this.updateSw();
+				// this.initSwagger();
+				// setTimeout(() => {
+					console.log("chooseSpec setTimeout: ", this.selectedApi);
+					// this.updateSw();
+					console.log("chooseSpec setTimeout: ", this.selectedApi);
 					$('#upload').collapse('show');
 					$('#servers').collapse('show');
 					$('#info').collapse('show');
@@ -2227,19 +2242,19 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 						// $('.input-color').colorpicker({});
 					});*/
 					this.apiColor();
-				},1000);
+				// },1000);
 			},
 			chooseLink() {
 				this.$root.setState('create');
 				this.selectedApi = _.cloneDeep(this.api);
-				this.initSwagger();
-				setTimeout(() => {
-					this.updateSw();
+				// this.initSwagger();
+				// setTimeout(() => {
+					// this.updateSw();
 					$('.list-column').addClass('column-minimize');
 					$('.create-column').addClass('column-minimize');
 					$('.edit-column').removeClass('column-minimize');
 					this.apiColor();
-				},1000);
+				// },1000);
 			},
 			selectApi(item, state) {
 				// console.log("pp selectApi: ", item);
@@ -2251,8 +2266,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					// this.openapi = item;
 					this.$root.setState(state);
 					this.selectedApi = _.cloneDeep(this.api);
-					this.initSwagger();
-					setTimeout(() => {
+					// this.initSwagger();
+					// setTimeout(() => {
 						this.updateSw();
 						// $('#api'+this.api.uuid).collapse('show');
 						// console.log("this.api: ", this.api);
@@ -2274,7 +2289,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 						} else {
 							// $('.create-column, .edit-column').addClass('column-minimize');
 						}
-					},1000);
+					// },1000);
 				}
 			},
 			apiColor() {
@@ -2479,6 +2494,20 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				}, error => {
 					this.handleError(error);
 				});
+				axios.get(this.ajaxMyProxiesUrl + '?page=' + p + param, this.ajaxHeaders)
+				.then(response => {
+					// console.log("response: ", response);
+					if (response.data != null) {
+						this.myProxyList = response.data;
+						this.myProxyList.forEach((value, key) => {
+							this.fixProps(value);
+						});
+						this.paginate = this.makePaginate(response.data);
+					}
+				}, error => {
+					this.handleError(error);
+				});
+
 			},
 			getApiOptions(search, loading) {
 				loading(true);
@@ -2705,7 +2734,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 							this.updateSw();
 						}
 					}
-						this.verChanged = _.has(this.changes, 'openapidocument.info.version'); 
+					this.verChanged = _.has(this.changes, 'openapidocument.info.version'); 
 					console.log("this.isChanged: ", this.isChanged, Object.keys(this.changes).length, this.changes, "version: ", _.has(this.changes, 'openapidocument.info.version'), this.verChanged);
 				},
 				deep: true

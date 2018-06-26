@@ -3,8 +3,8 @@
 <head th:include="webroot/frags/layout/head.htm :: header">
 </head>
 <body>
-<div th:replace="webroot/frags/layout/navs.htm :: navError"></div>
-<main>
+<main id="portal">
+	<div th:replace="webroot/frags/layout/navs.htm :: navError"></div>
 	<h1><i class="fas fa-check"></i></h1>
 	<h3 th:text="${context.get('http.errorMessage')}">???</h3>
 	<p th:text="${context.get('context.failureMessage')}">???</p>

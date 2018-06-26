@@ -3,6 +3,7 @@ define(['global'], function(abyss){
 	var abyssProtocol = hostProtocol;
 	// console.log("abyssProtocol: ", abyssProtocol);
 	var abyssHost = host;
+	var abyssVersion = version;
 	// console.log("abyssHost: ", abyssHost);
 	var abyssPort = hostPort;
 	var abyssJsonPort = hostJsonPort;
@@ -65,6 +66,8 @@ define(['global'], function(abyss){
 		// https://dev2.apiportal.com/abyss/openapi/Api.yaml
 		api_list: '/apis/',
 		my_api_list: '/apis/subject/',
+		my_business_api_list: '/apis/businesses/subject/',
+		my_proxy_api_list: '/apis/proxies/subject/',
 		proxy_list: '/apis/proxies/',
 		business_list: '/apis/businesses/',
 		// https://dev2.apiportal.com/abyss/openapi/Organization.yaml
@@ -124,6 +127,7 @@ define(['global'], function(abyss){
 		name: 'Abyss Api Portal',
 		version: 'V.0.0',
 		thy: true,
+		abyssVersion: abyssVersion,
 		abyssYamlList: abyssYamlList,
 		isAbyssSandbox: isAbyssSandbox,
 		abyssLocation: abyssLocation,
@@ -131,7 +135,7 @@ define(['global'], function(abyss){
 		abyssCredentials: abyssCredentials,
 		ajax: abyssAllDataList,
 		echo: 'http://local.abyss.com/000',
-		session: '8d7df76db8c3074836be188d50bce8e6',
+		session: '8527320cf28d22beab131a1002ad147b',
 	};
 });
 

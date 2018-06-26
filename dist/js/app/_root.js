@@ -271,6 +271,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 			pageClassPrefix: 'vs',
 			pageClass: '',
 			ajaxHeaders: {},
+			abyssVersion: abyss.abyssVersion,
 			// ajax_user_list: abyss.ajax.user_list,
 			// ajax_api_visibility_list: abyss.ajax.api_visibility_list,
 			// ajax_api_states_list: abyss.ajax.api_states_list,

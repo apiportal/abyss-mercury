@@ -1,4 +1,4 @@
-define(['Vue', 'axios', 'vee-validate'], function (Vue, axios, VeeValidate) {
+define(['config', 'Vue', 'axios', 'vee-validate'], function (abyss, Vue, axios, VeeValidate) {
 	Vue.use(VeeValidate)
 	// import { Validator } from 'vee-validate';
 	const dictionary = {
@@ -29,6 +29,7 @@ define(['Vue', 'axios', 'vee-validate'], function (Vue, axios, VeeValidate) {
 		data: {
 			remember: false,
 			terms: false,
+			abyssVersion: abyss.abyssVersion,
 			end: []
 		},
 		methods: {
@@ -45,7 +46,7 @@ define(['Vue', 'axios', 'vee-validate'], function (Vue, axios, VeeValidate) {
 			}
 		},
 		created() {
-			console.log("JS: auth.js: ", this);
+			console.log("JS: auth.js: ", this.abyssVersion);
 		}
 	});
 });
