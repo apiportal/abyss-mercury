@@ -15,8 +15,8 @@ define(['global'], function(abyss){
 	var abyssLocation = abyssProtocol + '://' + abyssHost + ':' + abyssPort + '/' + abyssPath;
 	var abyssJsonLocation = abyssProtocol + '://' + abyssHost + ':' + abyssJsonPort + '/' + abyssJsonPath;
 	var abyssYamlLocation = abyssProtocol + '://' + abyssHost + ':' + abyssYamlPort + '/' + abyssYamlPath;
-	// http://dev2.apiportal.com/abyss/oapi/
-	// http://dev2.apiportal.com/abyss/openapi/xxx.yaml
+	// https://dev2.apiportal.com/abyss/oapi/
+	// https://dev2.apiportal.com/abyss/openapi/xxx.yaml
 	var abyssYamlList = [
 		{"yaml":"Api", "path":"apis", "css": ""},
 		{"yaml":"ApiApiCategory", "path":"api-api-categories", "css": ""},
@@ -24,12 +24,14 @@ define(['global'], function(abyss){
 		{"yaml":"ApiApiTag", "path":"api-api-tags", "css": ""},
 		{"yaml":"ApiCategory", "path":"api-categories", "css": ""},
 		{"yaml":"ApiGroup", "path":"api-groups", "css": ""},
+		// {"yaml":"ApiLicense", "path":"api-license", "css": ""},
 		{"yaml":"ApisOfSubject", "path":"is/subjects/9820d2aa-eb02-4a58-8cc5-8b9a89504df9", "css": "txt-red"},
 		{"yaml":"ApiState", "path":"api-states", "css": ""},
 		{"yaml":"ApiTag", "path":"api-tags", "css": ""},
 		{"yaml":"ApiVisibilityType", "path":"api-visibility-types", "css": ""},
 		{"yaml":"Contract", "path":"contracts", "css": "txt-red"},
 		{"yaml":"ContractState", "path":"contract-states", "css": "txt-red"},
+		{"yaml":"License", "path":"licenses", "css": ""},
 		{"yaml":"Organization", "path":"organizations", "css": ""},
 		{"yaml":"Policy", "path":"policies", "css": "txt-red"},
 		{"yaml":"PolicyType", "path":"policy-types", "css": "txt-red"},
@@ -80,12 +82,22 @@ define(['global'], function(abyss){
 		subject_types: '/subject-types',
 		// https://dev2.apiportal.com/abyss/openapi/SubjectMembership.yaml
 		subject_memberships: '/subject-memberships',
+		subject_memberships_subject: '/subject-memberships/subject/',
 		// https://dev2.apiportal.com/abyss/openapi/ApiApiTag.yaml
 		api_tag: '/api-api-tags',
 		// https://dev2.apiportal.com/abyss/openapi/ApiApiGroup.yaml
 		api_group: '/api-api-groups',
 		// https://dev2.apiportal.com/abyss/openapi/ApiApiCategory.yaml
 		api_category: '/api-api-categories',
+
+		// https://dev2.apiportal.com/abyss/openapi/Policy.yaml
+		policies_list: '/policies/',
+		subject_policies_list: '/policies/subject/',
+		// https://dev2.apiportal.com/abyss/openapi/PolicyType.yaml
+		policy_types: '/policy-types',
+		// https://dev2.apiportal.com/abyss/openapi/License.yaml
+		licenses_list: '/licenses/',
+		subject_licenses_list: '/licenses/subject/',
 	};
 	var abyssJsonList = {
 		index: '/index.json',
@@ -121,6 +133,10 @@ define(['global'], function(abyss){
 		value.yurl = abyssYamlLocation + '/' + value.yaml + '.yaml';
 		value.aurl = abyssLocation + '/' + value.path + '/';
 	});
+	if (isAbyssSandbox === true) {
+		// abyssDataList.policy_types = '/data/POLICYTYPES.json';
+		// abyssDataList.policies = '/data/POLICIES.json';
+	}
 	var abyssAllDataList = Object.assign(abyssJsonList, abyssDataList);
 	console.log("abyssAllDataList: ", abyssAllDataList);
 	return {
@@ -135,7 +151,7 @@ define(['global'], function(abyss){
 		abyssCredentials: abyssCredentials,
 		ajax: abyssAllDataList,
 		echo: 'http://local.abyss.com/000',
-		session: '8527320cf28d22beab131a1002ad147b',
+		session: 'e51666ff540afd276ebd145681808149',
 	};
 });
 

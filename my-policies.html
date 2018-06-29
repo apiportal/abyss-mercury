@@ -1,0 +1,166 @@
+﻿<!DOCTYPE html>
+<html class="vs-api-policies" lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:include="webroot/frags/layout/head.htm :: header">
+<script src="/dist/js/lib/jquery.min.js"></script>
+<script src="/dist/js/lib/thymus.min.js" id="thymus"
+	data-thx-base-path="." data-thx-frag-extension=".htm"
+	data-thx-head-frag="th:include=webroot/frags/layout/head.htm :: header"
+	data-thx-preload-js="/dist/js/loader.js"
+	data-thx-onfrags="fragsListener();" data-thx-onfrag="fragListener()"></script>
+</head>
+<body>
+<div id="portal" class="wrapper" v-bind:class="pageClass">
+	<div th:replace="webroot/frags/layout/navs.htm :: navs"></div>
+	<main class="page-wrapper">
+	<api-policies inline-template v-on:set-state="setState" v-on:set-page="setPage" v-bind:root-state="rootState">
+		<div class="columns">
+			<section class="column column-main column-main-fixed">
+				<div class="column-main-fixed-overlay" v-if="rootState == 'add' || rootState == 'edit'" v-on:click="$emit('set-state', 'init'); cancelPolicy();"></div>
+				<div class="nicescroll--bar">
+					<table class="table table-hover table-bordered table-edge">
+						<tr>
+							<th class="td-bool" v-bind:class="sort.order" v-on:click="sortList(sort, 'isdeleted', Boolean)">Status</th>
+							<th class="td-name" v-bind:class="sort.order" v-on:click="sortList(sort, 'name', String)">Name</th>
+							<th class="td-name" v-bind:class="sort.order" v-on:click="sortList(sort, 'policyinstance.info.type', String)">Type</th>
+							<th class="td-name" v-bind:class="sort.order" v-on:click="sortList(sort, 'policyinstance.info.subType', String)">subType</th>
+							<th class="td-bool" v-bind:class="sort.order" v-on:click="sortList(sort, 'policyinstance.openApiLifeCycle.onProxyRequest', Boolean)">Proxy Request</th>
+							<th class="td-bool" v-bind:class="sort.order" v-on:click="sortList(sort, 'policyinstance.openApiLifeCycle.onProxyResponse', Boolean)">Proxy Response</th>
+							<th class="td-bool" v-bind:class="sort.order" v-on:click="sortList(sort, 'policyinstance.openApiLifeCycle.onBusinessRequest', Boolean)">Business Request</th>
+							<th class="td-bool" v-bind:class="sort.order" v-on:click="sortList(sort, 'policyinstance.openApiLifeCycle.onBusinessResponse', Boolean)">Business Response</th>
+							<th class="td-datetime-x" v-bind:class="sort.order" v-on:click="sortList(sort, 'created', Date)">Created / Updated / Deleted</th>
+							<th class="td-action-1"></th>
+							<th class="td-action-1"></th>
+						</tr>
+						<tr v-for="(policy, index) in sortByNested(sort, policyList)" v-bind:key="policy.uuid" v-bind:class="{'active': isSelected(index)}">
+							<td class="text-center">
+								<i class="fas fa-check-circle txt-green" title="Active" v-if="!policy.isdeleted"></i>
+								<i class="fas fa-times-circle txt-red" title="Deleted" v-if="policy.isdeleted"></i>
+							</td>
+							<td>{{policy.name}} <small class="d-block">{{policy.description}}</small></td>
+							<td>{{policy.policyinstance.info.type}}</td>
+							<td>{{policy.policyinstance.info.subType}}</td>
+							<td class="text-center"><i class="fas fa-circle" title="Active" v-bind:class="{'txt-purple': policy.policyinstance.openApiLifeCycle.onProxyRequest}"></i></td>
+							<td class="text-center"><i class="fas fa-circle" title="Active" v-bind:class="{'txt-purple': policy.policyinstance.openApiLifeCycle.onProxyResponse}"></i></td>
+							<td class="text-center"><i class="fas fa-circle" title="Active" v-bind:class="{'txt-cyan': policy.policyinstance.openApiLifeCycle.onBusinessRequest}"></i></td>
+							<td class="text-center"><i class="fas fa-circle" title="Active" v-bind:class="{'txt-cyan': policy.policyinstance.openApiLifeCycle.onBusinessResponse}"></i></td>
+							<td>
+								<div>
+									<strong class="small">CREATED:</strong>
+									<small>{{policy.created | formatDateTime}}</small>
+								</div>
+								<div>
+									<strong class="small">UPDATED:</strong>
+									<small>{{policy.updated | formatDateTime}}</small>
+								</div>
+								<div v-if="policy.isdeleted">
+									<strong class="small">DELETED:</strong>
+									<small>{{policy.deleted | formatDateTime}}</small>
+								</div>
+							</td>
+							<td class="td-action-1">
+								<a href="#" class="btn btn-xl txt-link btn-square" title="EDIT DIRECTORY" v-on:click="$emit('set-state', 'edit'); selectPolicy(policy, index);"><i class="fas fa-edit"></i></a>
+							</td>
+							<td class="td-action-1">
+								<a href="#" class="btn btn-xl txt-link txt-grey btn-square" title="DELETE DIRECTORY" v-on:click="deletePolicy(policy, index)"><i class="fas fa-trash-alt"></i></a>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</section>
+			<aside class="column column-aside add-column">
+				<div class="nicescroll-bar">
+					<div class="clearfix brd-b column-header column-min-button">
+						<h5 class="column-header-title" >
+						<span v-if="rootState == 'add'">Add New Policy</span>
+						<span v-if="rootState == 'edit'">Edit Policy</span>
+						</h5>
+					</div>
+					<div class="p-3">
+						<div class="form-group" v-bind:class="{ 'has-error': errors.has('name') }">
+							<label for="name">Policy Name:</label>
+							<input type="text" name="name" id="name" v-model="policy.name" v-validate="'required|min:2'" class="form-control" placeholder="name">
+							<em v-bind:class="{ 'show': errors.has('name') }">{{ errors.first('name') }}</em>
+						</div>
+						<div class="form-group" v-bind:class="{ 'has-error': errors.has('description') }">
+							<label for="description">Description:</label>
+							<textarea type="text" name="description" id="description" v-model="policy.description" v-validate="'required'" class="form-control" placeholder="Decription"></textarea>
+							<em v-bind:class="{ 'show': errors.has('description') }">{{ errors.first('description') }}</em>
+						</div>
+						<div class="form-group " v-bind:class="{ 'has-error': errors.has('type') }">
+							<label>Policy Type</label>
+							<select class="form-control" name="type" id="type" v-model="policy.typeid" v-validate="'required'" v-on:change="selectType($event.target.value)">
+								<option v-for="(type,index) in policyTypes" :value="type.uuid">{{type.type}} - {{type.subtype}}</option>
+							</select>
+							<em v-bind:class="{ 'show': errors.has('type') }">{{ errors.first('type') }}</em>
+						</div>
+						<div v-if="policy.policyinstance.info">
+							<h6>{{policy.policyinstance.info.title}}</h6>
+							<p class="small">{{policy.policyinstance.info.description}}</p>
+							<div v-for="(cf, conf, cix) in policy.policyinstance.configuration">
+								<div class="form-group" v-if="cf.schema.type == 'string' && !cf.schema.enum">
+									<label :for="conf+cix">{{cf.description}}:</label>
+									<input type="text" type="text" :name="conf+cix" :id="conf+cix" v-model="cf.value" class="form-control">
+								</div>
+								<div class="form-group" v-if="cf.schema.type == 'string' && cf.schema.enum">
+									<label :for="conf+cix">{{cf.description}}:</label>
+									<select class="form-control" :name="conf+cix" :id="conf+cix" v-model="cf.value" v-validate="'required'">
+										<option v-for="(enm,index) in cf.schema.enum" :value="enm">{{enm}}</option>
+									</select>
+								</div>
+								<div class="form-group form-inline" v-if="cf.schema.type == 'boolean'">
+									<label class="d-block">{{cf.description}}:</label>
+									<span class="switch switch-primary ml-auto">
+										<input type="checkbox" :name="conf+cix" :id="conf+cix" v-model="cf.value" checked>
+										<label :for="conf+cix"></label>
+									</span>
+								</div>
+							</div>
+							<div class="fow pt-3 brd-t brd-b mb-3">
+								<div class="fol-6 form-group ">
+									<label class="d-block">onProxyRequest</label>
+									<span class="switch switch-purple">
+										<input type="checkbox" name="onProxyRequest" id="onProxyRequest" v-model="policy.policyinstance.openApiLifeCycle.onProxyRequest" checked>
+										<label for="onProxyRequest"></label>
+									</span>
+								</div>
+								<div class="fol-6 form-group text-right">
+									<label class="d-block">onProxyResponse</label>
+									<span class="switch switch-purple">
+										<input type="checkbox" name="onProxyResponse" id="onProxyResponse" v-model="policy.policyinstance.openApiLifeCycle.onProxyResponse" checked>
+										<label for="onProxyResponse"></label>
+									</span>
+								</div>
+								<div class="fol-6 form-group ">
+									<label class="d-block">onBusinessRequest</label>
+									<span class="switch switch-cyan">
+										<input type="checkbox" name="onBusinessRequest" id="onBusinessRequest" v-model="policy.policyinstance.openApiLifeCycle.onBusinessRequest" checked>
+										<label for="onBusinessRequest"></label>
+									</span>
+								</div>
+								<div class="fol-6 form-group text-right">
+									<label class="d-block">onBusinessResponse</label>
+									<span class="switch switch-cyan">
+										<input type="checkbox" name="onBusinessResponse" id="onBusinessResponse" v-model="policy.policyinstance.openApiLifeCycle.onBusinessResponse" checked>
+										<label for="onBusinessResponse"></label>
+									</span>
+								</div>
+							</div>
+						</div>
+						<div class="form-group d-flex justify-content-between">
+							<button type="button" class="btn btn-secondary btn-rounded" v-on:click="$emit('set-state', 'init'); cancelPolicy()">CANCEL</button>
+							<button type="button" class="btn btn-primary btn-rounded" v-if="rootState == 'add'" v-on:click="policyAction('add')">ADD</button>
+							<button type="button" class="btn btn-primary btn-rounded" v-if="rootState == 'edit'" v-on:click="policyAction('edit')">SAVE</button>
+						</div>
+					</div>
+				</div>
+			</aside>
+			<div class="btn-float-br btn-float-under">
+				<button class="btn btn-xl btn-green btn-circle" v-on:click="$emit('set-state', 'add', 'init')" title="ADD NEW POLICY "><i class="fas fa-plus"></i></button>
+			</div>
+		</div>
+	</api-policies>
+	</main>
+</div>
+<script id="reqVue" data-module="api-policies" data-main="/dist/js/main" src="/dist/js/lib/require.min.js"></script>
+</body>
+</html>
