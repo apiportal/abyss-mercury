@@ -77,6 +77,7 @@ require.config({
 		"testJs": "app/_testJs",
 		"index": "app/index",
 		"api-policies": "app/api-policies",
+		"api-licenses": "app/api-licenses",
 		"my-apis": "app/my-apis",
 		"explore": "app/explore",
 		"users": "app/users",

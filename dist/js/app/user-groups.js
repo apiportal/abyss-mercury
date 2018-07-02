@@ -93,7 +93,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 				.then(response => {
 					console.log(response);
 					if (response.data != null) {
-						this.userOptions = response.data;
+						this.userOptions = response.data.filter( (item) => item.isdeleted == false );;
 					} else {
 						this.userOptions = [];
 					}
@@ -135,7 +135,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 				.then(response => {
 					console.log(response);
 					if (response.data != null) {
-						this.permissionOptions = response.data;
+						this.permissionOptions = response.data.filter( (item) => item.isdeleted == false );
 					} else {
 						this.permissionOptions = [];
 					}
@@ -280,10 +280,10 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 				axios.get(abyss.ajax.subject_memberships),
 			]).then(
 				axios.spread((subject_directories_list, organizations_list, user_list, subject_memberships) => {
-					this.directoryOptions = subject_directories_list.data;
-					this.orgOptions = organizations_list.data;
-					this.userList = user_list.data;
-					this.memberOptions = subject_memberships.data;
+					this.directoryOptions = subject_directories_list.data.filter( (item) => item.isdeleted == false );
+					this.orgOptions = organizations_list.data.filter( (item) => item.isdeleted == false );
+					this.userList = user_list.data.filter( (item) => item.isdeleted == false );
+					this.memberOptions = subject_memberships.data.filter( (item) => item.isdeleted == false );
 
 					this.getPage(1);
 				})

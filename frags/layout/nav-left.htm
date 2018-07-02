@@ -24,6 +24,9 @@
 				<a href="#"><i class="fas fa-fw fa-cubes"></i><span class="right-nav-text">My Apps</span></a>
 			</li>
 			<li>
+				<a href="/abyss/my-licenses"><i class="fas fa-fw fa-certificate"></i><span class="right-nav-text">My Licenses</span></a>
+			</li>
+			<li>
 				<a href="/abyss/my-policies"><i class="fas fa-fw fa-file-powerpoint"></i><span class="right-nav-text">My Policies</span></a>
 			</li>
 			<!-- <li>
@@ -56,11 +59,18 @@
 					</li>
 				</ul>
 			</li>
-			<li v-if="pageCurrent == 'my-apis'">
+			<!-- <li v-if="pageCurrent == 'my-apis'">
 				<a href="#" class="nav-caret" data-toggle="collapse" data-target="#platform_dr" aria-controls="platform_dr"><i class="fas fa-fw fa-file"></i><span class="right-nav-text">Platform APIs</span></a>
 				<ul id="platform_dr" class="collapse">
 					<li v-for="(y, index) in abyssYamlList"><a href="#" :class="y.css" v-on:click="$refs.refMyApis.loadFromUrlSchema(y.yurl, true)">{{y.yaml}}</a>
 						<a :href="y.aurl" target="_blank" class="nav-caret-sm"></a>
+					</li>
+				</ul>
+			</li> -->
+			<li v-if="pageCurrent == 'my-apis'">
+				<a href="#" class="nav-caret" data-toggle="collapse" data-target="#platform_dr" aria-controls="platform_dr"><i class="fas fa-fw fa-file"></i><span class="right-nav-text">Platform APIs</span></a>
+				<ul id="platform_dr" class="collapse">
+					<li v-for="(y, index) in abyssYamlList"><a href="#" v-on:click="$refs.refMyApis.loadFromUrlSchema(abyssYamlLocation + '/' + y, true)">{{y}}</a>
 					</li>
 				</ul>
 			</li>

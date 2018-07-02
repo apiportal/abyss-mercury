@@ -49,6 +49,8 @@ define(['global'], function(abyss){
 		{"yaml":"SubjectType", "path":"subject-types", "css": ""}
 	];
 	var abyssDataList = {
+		// https://dev2.apiportal.com/abyss/openapi/Util.yaml
+		api_yaml_list: '/yaml-files',
 		// https://dev2.apiportal.com/abyss/openapi/ApiState.yaml
 		api_states_list: '/api-states',
 		// https://dev2.apiportal.com/abyss/openapi/ApiVisibilityType.yaml
@@ -98,6 +100,10 @@ define(['global'], function(abyss){
 		// https://dev2.apiportal.com/abyss/openapi/License.yaml
 		licenses_list: '/licenses/',
 		subject_licenses_list: '/licenses/subject/',
+		// https://dev2.apiportal.com/abyss/openapi/ApiLicense.yaml
+		api_licenses: '/api-licenses/',
+		api_licenses_api: '/api-licenses/api/',
+		api_licenses_license: '/api-licenses/license/',
 	};
 	var abyssJsonList = {
 		index: '/index.json',
@@ -136,6 +142,7 @@ define(['global'], function(abyss){
 	if (isAbyssSandbox === true) {
 		// abyssDataList.policy_types = '/data/POLICYTYPES.json';
 		// abyssDataList.policies = '/data/POLICIES.json';
+		// abyssDataList.subject_licenses_list = '/data/LICENSES.json';
 	}
 	var abyssAllDataList = Object.assign(abyssJsonList, abyssDataList);
 	console.log("abyssAllDataList: ", abyssAllDataList);

@@ -388,8 +388,18 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					return this.index;
 				},
 				set(newVal) {
+					if (this.$parent.api.isproxyapi) {
+						Vue.set(this.$parent.api.extendeddocument.paths, newVal, this.$parent.api.extendeddocument.paths[this.index]);
+						Vue.delete(this.$parent.api.extendeddocument.paths, this.index);
+					}
 					Vue.set(this.openapi.paths, newVal, this.openapi.paths[this.index]);
 					Vue.delete(this.openapi.paths, this.index);
+				}
+			},
+			xPathEntry : {
+				get() {
+					var sarr = this.$parent.api.extendeddocument.paths[this.index];
+					return sarr['x-abyss-path'];
 				}
 			},
 			httpMethods() {
@@ -1206,6 +1216,48 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 			}
 		});
 // ■■■■■■■■ api-srvvar ■■■■■■■■ //
+	Vue.component('api-servers', {
+		mixins: [mixOas],
+		props: ["server", "sindex"],
+		computed: {
+			serverUrl : {
+				get() {
+					return this.server.url;
+				},
+				set(newVal) {
+					if (this.$parent.api.isproxyapi) {
+						var sarr = this.$parent.api.extendeddocument.servers.find( (item) => item.url == this.server.url );
+						Vue.set(sarr, 'url', newVal);
+					}
+					this.server.url = newVal;
+				}
+			},
+			xServerUrl : {
+				get() {
+					var sarr = this.$parent.api.extendeddocument.servers.find( (item) => item.url == this.server.url );
+					if (this.server.description) {
+						Vue.set(sarr, 'description', this.server.description);
+					}
+					return sarr['x-abyss-url'];
+				}
+			},
+		},
+		methods: {
+			addServer() {
+				this.$parent.addServer();
+			},
+			removeServer(i) {
+				this.$parent.removeServer(i);
+			},
+			addVariable(i) {
+				this.$parent.addVariable(i);
+			},
+		},
+		data() {
+			return {};
+		}
+	});
+// ■■■■■■■■ api-srvvar ■■■■■■■■ //
 	Vue.component('api-srvvar', {
 		mixins: [mixOas],
 		props: ["name", "variable", "server", "sindex"],
@@ -1362,6 +1414,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					clients: [],
 					servers: []
 				},
+				debugProxy : false,
 				importschema : null,
 				window : window,
 				currentSchema: '',
@@ -1399,11 +1452,16 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					type: Date,
 					order: 'desc'
 				},
-				sortMethod: {
-					key: 'openapi.paths',
-					type: String,
+				sortLicense: {
+					key: 'created',
+					type: Date,
 					order: 'desc'
 				},
+				// sortMethod: {
+				// 	key: 'openapi.paths',
+				// 	type: String,
+				// 	order: 'desc'
+				// },
 				pageState: 'init',
 				paginate: {},
 				ajaxApiUrl: abyss.ajax.api_list,
@@ -1453,7 +1511,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 						"My-Awesome-Header": "header value"
 					}
 				},
-
+				myLicenseList: [],
+				myPolicyList: [],
+				myApiLicenses: [],
 				myApiList: [],
 				myProxyList: [],
 				swaggerText: {
@@ -1503,7 +1563,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					"languageformat": 1,
 					"originaldocument": null,
 					"openapidocument": {},
-					"extendeddocument": {},
+					"extendeddocument": null,
 					"businessapiid": "2741ce5d-0fcb-4de3-a517-405c0ceffbbe",
 					"image": "",
 					"color": "#006699",
@@ -1944,14 +2004,13 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 							// dataType: "jsonp",
 						})
 							.done(function(data) {
-								console.log("loadFromUrlSchema data: ", data);
-								if (typeof data === 'string') {
-									vm.importschema = data;
-								} else {
-									vm.importschema = JSON.stringify(data, null, 2);
-								}
-								if (load) {
-									vm.chooseLink();
+								if (vm.beforeCancelApi()) {
+									console.log("loadFromUrlSchema data: ", data);
+									if (typeof data === 'string') {
+										vm.importschema = data;
+									} else {
+										vm.importschema = JSON.stringify(data, null, 2);
+									}
 								}
 							})
 							.fail(function(data, error) {
@@ -1959,7 +2018,12 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 								console.log("fail error: ", error);
 							})
 							.always(function() {
-								vm.loadSchema();
+								// setTimeout(() => {
+									vm.loadSchema();
+									if (load) {
+											vm.chooseLink();
+									}
+								// },100);	
 							});
 					}
 				},
@@ -2189,37 +2253,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 						console.log("apiChangeState response: ", response);
 						// this.$root.getRootData(this.$cookie.get('abyss.principal.uuid'));
 						this.$toast('info', {message: 'State changed ' + ' to <strong>' + slcState.name + '</strong>', title: 'State: ' + slcState.name, position: 'topLeft'});
-						// if (val == 10) {
-						// 	this.removeItem(this.ajaxUrl, item, this.ajaxHeaders, this.myApiList);
-						// }
 					});
 				}
-			},
-			createProxy(a) {
-				item = _.cloneDeep(a);
-				item.businessapiid = item.uuid;
-				item.isproxyapi = true;
-				// item.businessapiid = '2741ce5d-0fcb-4de3-a517-405c0ceffbbe';
-				// item.isproxyapi = false;
-				// this.updateItem(this.ajaxApiUrl + '/' + item.uuid, this.deleteProps(item), this.ajaxHeaders, this.myApiList).then(response => {
-				// 	console.log("createProxy response: ", response);
-				// 	this.$toast('info', {message: 'Proxy API created from this business API', title: 'Proxy API created', position: 'topLeft'});
-				// });
-				var itemArr = [];
-				itemArr.push(this.deleteProps(item));
-				axios.post(this.ajaxApiUrl, itemArr, this.ajaxHeaders).then(response => {
-					if (response.data[0].status != 500 ) {
-						console.log("createProxy response: ", response);
-						var newApi = response.data[0].response;
-						this.fixProps(newApi);
-						this.myProxyList.push(newApi);
-						setTimeout(() => {
-							this.$toast('info', {message: 'Proxy API created from this business API', title: 'Proxy API created', position: 'topLeft'});
-						},0);	
-					}
-				}, error => {
-					this.handleError(error);
-				});
 			},
 			chooseSpec() {
 				// this.$emit('set-state', 'create');
@@ -2245,32 +2280,33 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				// },1000);
 			},
 			chooseLink() {
-				this.$root.setState('create');
-				this.selectedApi = _.cloneDeep(this.api);
-				// this.initSwagger();
-				// setTimeout(() => {
-					// this.updateSw();
-					$('.list-column').addClass('column-minimize');
-					$('.create-column').addClass('column-minimize');
-					$('.edit-column').removeClass('column-minimize');
-					this.apiColor();
-				// },1000);
+				// if (this.beforeCancelApi()) {
+					this.$root.setState('create');
+					this.selectedApi = _.cloneDeep(this.api);
+					// this.initSwagger();
+					// setTimeout(() => {
+						// this.updateSw();
+						$('.list-column').addClass('column-minimize');
+						$('.create-column').addClass('column-minimize');
+						$('.edit-column').removeClass('column-minimize');
+						this.apiColor();
+					// },1000);
+				// }
 			},
 			selectApi(item, state) {
-				// console.log("pp selectApi: ", item);
+				console.log("item.extendeddocument: ", item.extendeddocument);
 				if (this.beforeCancelApi()) {
 					this.fixProps(item);
 					this.updateSchema(item.openapidocument);
-					// this.api = item;
 					this.api = _.cloneDeep(item);
 					// this.openapi = item;
 					this.$root.setState(state);
 					this.selectedApi = _.cloneDeep(this.api);
 					// this.initSwagger();
+					this.loadLicense(item);
 					// setTimeout(() => {
 						this.updateSw();
 						// $('#api'+this.api.uuid).collapse('show');
-						// console.log("this.api: ", this.api);
 						if ( state != 'preview') {
 							this.$refs.dropImage.removeAllFiles(true);
 							if (this.api.image != '') {
@@ -2279,12 +2315,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 							$('.list-column').addClass('column-minimize');
 							$('.create-column').addClass('column-minimize');
 							$('.edit-column').removeClass('column-minimize');
-							// $('.input-color').colorpicker({
-							// });
-							/*require(['css!colorpicker-css', 'colorpicker'],function(){
-								$('.input-color').initz_inputcolor();
-								// $('.input-color').colorpicker({});
-							});*/
 							this.apiColor();
 						} else {
 							// $('.create-column, .edit-column').addClass('column-minimize');
@@ -2373,6 +2403,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				// this.myApiList[index] = this.selectedApi;
 				// this.myApiList[index] = this.fixProps(this.selectedApi);
 				// var item = this.myApiList.find((el) => el.uuid == newApi.uuid );
+				this.myApiLicenses = [];
 				this.api = _.cloneDeep(this.newApi);
 				this.clearSchema();
 				this.selectedApi = _.cloneDeep(this.newApi);
@@ -2391,7 +2422,60 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				Vue.set(this, 'api',initial);
 				Vue.set(this, 'openapi',initial.openapidocument);
 			},
+			extDoc(a) {
+				if (this.debugProxy && a.isproxyapi) {
+					item = _.cloneDeep(a);
+					delete item.openapidocument['x-servers'];
+					delete item.openapidocument['x-path'];
+					delete item.openapidocument['x-abyss-servers'];
+					item.openapidocument.servers.forEach((value, key) => {
+						value['x-abyss-url'] = value.url;
+					});
+					for (var p in item.openapidocument.paths) {
+						var path = item.openapidocument.paths[p];
+						path['x-abyss-path'] = p;
+					}
+					console.log("item: ", item);
+					Vue.set(this.api, 'extendeddocument', item.openapidocument);
+				}
+			},
+			createProxy(a) {
+				item = _.cloneDeep(a);
+				item.businessapiid = item.uuid;
+				item.isproxyapi = true;
+				// item.openapidocument['x-abyss-servers'] = item.openapidocument.servers;
+				item.openapidocument.servers.forEach((value, key) => {
+					value['x-abyss-url'] = value.url;
+				});
+				for (var p in item.openapidocument.paths) {
+					var path = item.openapidocument.paths[p];
+					path['x-abyss-path'] = p;
+				}
+				Vue.set(item, 'extendeddocument', item.openapidocument);
+				// item.businessapiid = '2741ce5d-0fcb-4de3-a517-405c0ceffbbe';
+				// item.isproxyapi = false;
+				// this.updateItem(this.ajaxApiUrl + '/' + item.uuid, this.deleteProps(item), this.ajaxHeaders, this.myApiList).then(response => {
+				// 	console.log("createProxy response: ", response);
+				// 	this.$toast('info', {message: 'Proxy API created from this business API', title: 'Proxy API created', position: 'topLeft'});
+				// });
+				var itemArr = [];
+				itemArr.push(this.deleteProps(item));
+				axios.post(this.ajaxApiUrl, itemArr, this.ajaxHeaders).then(response => {
+					if (response.data[0].status != 500 ) {
+						console.log("createProxy response: ", response);
+						var newApi = response.data[0].response;
+						this.fixProps(newApi);
+						this.myProxyList.push(newApi);
+						setTimeout(() => {
+							this.$toast('info', {message: 'Proxy API created from this business API', title: 'Proxy API created', position: 'topLeft'});
+						},0);	
+					}
+				}, error => {
+					this.handleError(error);
+				});
+			},
 			saveMyApi() {
+				this.extDoc(this.api);
 				this.updateItem(this.ajaxApiUrl + '/' + this.api.uuid, this.deleteProps(this.api), this.ajaxHeaders, this.myApiList).then(response => {
 					console.log("SAVE response.data: ", response.data[0]);
 					var currApi = response.data[0];
@@ -2507,7 +2591,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				}, error => {
 					this.handleError(error);
 				});
-
 			},
 			getApiOptions(search, loading) {
 				loading(true);
@@ -2715,6 +2798,59 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				console.log("tags: ", tags);
 				console.log("ddd: ", ddd);
 			},
+			loadLicense(item) {
+				axios.get(abyss.ajax.api_licenses_api + item.uuid, this.ajaxHeaders).then(response => {
+					if (response.data != null) {
+						console.log("GET License response: ", response);
+						this.myApiLicenses = response.data.filter( (item) => item.isdeleted == false );
+						var actLcs = _.filter(this.myApiLicenses, { 'apiid': item.uuid });
+						actLcs.forEach((value, key) => {
+							// _.filter(obj, { 'subjectid': this.user.uuid })
+							console.log("*********: ", _.find(this.myLicenseList, { 'isdeleted': false }, (v) => _.includes(value.licenseid, v.uuid)));
+							Vue.set(_.find(this.myLicenseList, (v) => _.includes(value.licenseid, v.uuid)), 'isactive', true);
+						});
+					}
+				}, error => {
+					this.handleError(error);
+				});
+			},
+			setLicense(item) {
+				var actLcs = _.find(this.myApiLicenses, { 'licenseid': item.uuid, 'apiid': this.api.uuid });
+				var itemArr = [];
+				var itemObj = {
+					organizationid: this.$root.rootData.user.organizationid,
+					crudsubjectid: this.$root.rootData.user.uuid,
+					apiid: this.api.uuid,
+					licenseid: item.uuid,
+				};
+				if (actLcs) {
+					// Vue.set(actLcs, 'isdeleted', !item.isactive);
+					Vue.set(actLcs, 'isactive', item.isactive);
+					console.log("----------: ", actLcs);
+					this.updateItem(abyss.ajax.api_licenses + actLcs.uuid, this.deleteProps(actLcs), this.ajaxHeaders, this.myApiLicenses).then(response => {
+						console.log("UPDATE License response: ", response);
+					});
+				} else {
+					if (item.isactive) {
+						itemArr.push(itemObj);
+						axios.post(abyss.ajax.api_licenses, itemArr, this.ajaxHeaders).then(response => {
+							if (response.data[0].status != 500 ) {
+								console.log("ADD License response: ", response);
+							}
+						}, error => {
+							this.handleError(error);
+						});
+					} else {
+						// Vue.set(actLcs, 'isdeleted', !item.isactive);
+						Vue.set(actLcs, 'isactive', item.isactive);
+						this.updateItem(abyss.ajax.api_licenses + actLcs.uuid, this.deleteProps(actLcs), this.ajaxHeaders, this.myApiLicenses).then(response => {
+							console.log("ADD-UPDATE License response: ", response);
+						});
+					}
+				}
+				console.log("----------: ", actLcs);
+				console.log("item.isactive: ", item.isactive);
+			},
 		},
 		watch: {
 			openapi: {
@@ -2780,6 +2916,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 		},
 		mounted() {
 			this.preload();
+			// 2DO
 		},
 		computed: {
 			filteredApis() {
@@ -2799,7 +2936,25 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 			this.$root.setPage('my-apis', 'init');
 			// !!!!!!!!!!!!!!!!!!
 			// this.getTax();
-			this.getPage(1);
+			axios.all([
+				axios.get(abyss.ajax.subject_licenses_list + this.$root.rootData.user.uuid ),
+				axios.get(abyss.ajax.subject_policies_list + this.$root.rootData.user.uuid ),
+			]).then(
+				axios.spread((subject_licenses_list, subject_policies_list) => {
+					this.myLicenseList = subject_licenses_list.data.filter( (item) => item.isdeleted == false );
+					this.myPolicyList = subject_policies_list.data.filter( (item) => item.isdeleted == false );
+					// this.myApiLicenses = api_licenses.data.filter( (item) => item.isdeleted == false );
+					this.getPage(1);
+					var newLcs = this.myLicenseList;
+					newLcs.forEach((value, key) => {
+						Vue.set(value, 'policies', _.filter(this.myPolicyList, (v) => _.includes(value.licensedocument.termsOfService.policyKey, v.uuid)) );
+						Vue.set(value, 'isactive', false);
+					});
+					this.myLicenseList = newLcs;
+				})
+			).catch(error => {
+				this.handleError(error);
+			});
 		}
 	});
 

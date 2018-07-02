@@ -1,0 +1,327 @@
+﻿<!DOCTYPE html>
+<html class="vs-api-licenses" lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:include="webroot/frags/layout/head.htm :: header">
+<script src="/dist/js/lib/jquery.min.js"></script>
+<script src="/dist/js/lib/thymus.min.js" id="thymus"
+	data-thx-base-path="." data-thx-frag-extension=".htm"
+	data-thx-head-frag="th:include=webroot/frags/layout/head.htm :: header"
+	data-thx-preload-js="/dist/js/loader.js"
+	data-thx-onfrags="fragsListener();" data-thx-onfrag="fragListener()"></script>
+</head>
+<body>
+<div id="portal" class="wrapper" v-bind:class="pageClass">
+	<div th:replace="webroot/frags/layout/navs.htm :: navs"></div>
+	<main class="page-wrapper">
+	<api-licenses inline-template v-on:set-state="setState" v-on:set-page="setPage" v-bind:root-state="rootState" v-if="!$root.isLoading">
+		<div class="columns">
+			<section class="column column-main column-main-fixed">
+				<div class="column-main-fixed-overlay" v-if="rootState == 'add' || rootState == 'edit'" v-on:click="$emit('set-state', 'init'); cancelLicense();"></div>
+				<div class="nicescroll--bar">
+					<div class="fow m-0 p-3 justify-content-center">
+						<article v-for="(license, index) in sortByNested(sort, licenseList)" v-bind:key="license.uuid" v-bind:class="{'active': isSelected(index)}" class="fol-sm-6 fol-md-4 fol-lg-4 fol-xl-3 fol-xlm-3 fol-xlg-3 thumb-3x card-item field-controls">
+							<div class="field-sum bg-white shadow-sm">
+								<a href="#" class="field-link" data-toggle="collapse" v-bind:data-target="'#license'+index" v-bind:aria-controls="'license'+index">
+									<div class="h6">										
+									<i class="fas fa-check-circle txt-green" title="Active" v-if="!license.isdeleted"></i>
+									<i class="fas fa-times-circle txt-red" title="Deleted" v-if="license.isdeleted"></i>
+										{{license.name}}
+										<small>{{license.version}}</small>
+									</div>
+									<div>
+										<small class="text-uppercase" v-bind:class="{'txt-green': license.licensedocument.info.visibility == 'Public', 'txt-orange': license.licensedocument.info.visibility == 'Private'}">{{license.licensedocument.info.visibility}}</small>
+										<div class="d-flex text-uppercase float-right small text-muted">
+											<span v-if="!license.isdeleted" :title="license.updated | formatDateTime">
+												{{license.created | formatDateTime}}
+											</span>
+											<span class="ml-auto text-right" v-if="license.isdeleted">
+												{{license.deleted | formatDateTime}}
+											</span>
+										</div>
+									</div>
+									<div class="">{{license.licensedocument.info.title}}</div>
+									<code class="float-right d-block txt-line small txt-blue"><small>{{license.uuid}}</small></code>
+									<small class="d-block txt-line my-1 text-muted">{{license.licensedocument.info.description}}</small>
+								</a>
+								<div class="ficon-actions dropdown dropdown-hover">
+									<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
+									<ul class="dropdown-menu dropdown-menu-right" role="menu">
+										<li><a title="EDIT LICENSE" v-on:click="$emit('set-state', 'edit'); selectLicense(license, index);"><i class="fa fa-plus"></i> EDIT LICENSE</a></li>
+										<li><a class="" title="DELETE LICENSE" v-on:click="deleteLicense(license, index)"><i class="fa fa-trash-alt"></i> DELETE LICENSE</a></li>
+									</ul>
+								</div>
+							</div>
+							<div v-bind:id="'license'+index" class="collapse field-acc pb-0 bg-white shadow-sm">
+								<div class="fow">
+									<div class="fol-sm-4 small">
+										<strong class="d-block py-2 brd--b row text-center">Policies</strong>
+										<div v-for="(pol, index) in license.policies" class="brd-t py-2 row px-3" :title="pol.uuid + ' | ' + pol.description">
+											<h6 class="d-block">{{pol.name}}</h6>
+											<span class="d-block">{{pol.policyinstance.info.type}} - {{pol.policyinstance.info.subType}}</span>
+											<div class="d-flex mt-2 mb-1">
+												<span class="badge req-res-sm" v-bind:class="{'badge-cyan': pol.policyinstance.openApiLifeCycle.onBusinessRequest}">
+													<small>Business<br>Request</small>
+												</span>
+												<span class="badge req-res-sm ml-auto" v-bind:class="{'badge-cyan': pol.policyinstance.openApiLifeCycle.onBusinessResponse}">
+													<small>Business<br>Response</small>
+												</span>
+												<span class="badge req-res-sm" v-bind:class="{'badge-purple': pol.policyinstance.openApiLifeCycle.onProxyRequest}">
+													<small>Proxy<br>Request</small>
+												</span>
+												<span class="badge req-res-sm ml-auto" v-bind:class="{'badge-purple': pol.policyinstance.openApiLifeCycle.onProxyResponse}">
+													<small>Proxy<br>Response</small>
+												</span>
+											</div>
+											<!-- <div class="d-flex text-uppercase smalll text-light my-1">
+												<span class="txt-line font-weight-bold d-flex" v-bind:class="{'txt-purple': pol.policyinstance.openApiLifeCycle.onProxyRequest}">
+													<small>Proxy<br>Request</small>
+													<i class="fas fa-arrow-right"></i>
+												</span>
+												<span class="ml-auto text-right txt-line font-weight-bold d-flex" v-bind:class="{'txt-purple': pol.policyinstance.openApiLifeCycle.onProxyResponse}">
+													<i class="fas fa-arrow-left"></i>
+													<small>Proxy<br>Response</small>
+												</span>
+											</div>
+											<div class="d-flex text-uppercase smalll text-light">
+												<span class="txt-line font-weight-bold d-flex" v-bind:class="{'txt-cyan': pol.policyinstance.openApiLifeCycle.onBusinessRequest}">
+													<small>Business<br>Request</small>
+													<i class="fas fa-arrow-right"></i>
+												</span>
+												<span class="ml-auto text-right txt-line font-weight-bold d-flex" v-bind:class="{'txt-cyan': pol.policyinstance.openApiLifeCycle.onBusinessResponse}">
+													<i class="fas fa-arrow-left"></i>
+													<small>Business<br>Response</small>
+												</span>
+											</div> -->
+										</div>
+									</div>
+									<div class="fol-sm-4 small brd-sm-l brd-sm-r">
+										<strong class="d-block py-2 brd-b row text-center">SLA</strong>
+										<h6 class="mt-2">
+											{{license.licensedocument.sla.tierName}}
+										</h6>
+										<p class="mb-4">
+											{{license.licensedocument.sla.description}}
+										</p>
+										<p class="d-flex text-uppercase">
+											<span class="">
+												<strong class="lbl">support Hours</strong>
+												{{license.licensedocument.sla.supportHours}}
+											</span>
+											<span class="ml-auto text-right">
+												<strong class="lbl">availability</strong>
+												{{license.licensedocument.sla.availability}}
+											</span>
+										</p>
+										<p>
+											<strong class="lbl">black Out Hours Per Year</strong>
+											{{license.licensedocument.sla.blackOutHoursPerYear}}
+										</p>
+										<p>
+											<strong class="lbl">performance</strong>
+											{{license.licensedocument.sla.performance}}
+										</p>
+									</div>
+									<div class="fol-sm-4 small">
+										<strong class="d-block py-2 brd-b row text-center">Legal Aggreement</strong>
+										<h6 class="mt-2">
+											{{license.licensedocument.legal.name}}
+										</h6>
+										<p class="mb-4">
+											{{license.licensedocument.legal.description}}
+										</p>
+										<p class="d-flex text-uppercase">
+											<span class="">
+												<strong class="lbl">Agreement Type</strong>
+												{{license.licensedocument.legal.agreementType}}
+											</span>
+											<span class="ml-auto text-right">
+												<strong class="lbl">Document State</strong>
+												{{license.licensedocument.legal.documentState}}
+											</span>
+										</p>
+										<p>
+											<strong class="lbl">link</strong>
+											<span class="d-block text-truncate">
+												{{license.licensedocument.legal.link}}
+											</span>
+										</p>
+										<p>
+											<strong class="lbl">document Text</strong>
+											<span class="d-block text-truncate">
+												{{license.licensedocument.legal.documentText}}
+											</span>
+										</p>
+									</div>
+								</div>
+							</div>
+						</article>
+					</div>
+				</div>
+			</section>
+			<aside class="column column-aside add-column">
+				<div class="nicescroll-bar">
+					<div class="clearfix brd-b column-header column-min-button">
+						<h5 class="column-header-title" >
+						<span v-if="rootState == 'add'">Add New License</span>
+						<span v-if="rootState == 'edit'">Edit License</span>
+						</h5>
+					</div>
+					<div class="p-3">
+						<div class="form-group" v-bind:class="{ 'has-error': errors.has('name') }">
+							<label for="name">License Name:</label>
+							<input type="text" name="name" id="name" v-model="license.name" v-validate="'required'" class="form-control">
+							<em v-bind:class="{ 'show': errors.has('name') }">{{ errors.first('name') }}</em>
+						</div>
+						<div class="form-group" v-bind:class="{ 'has-error': errors.has('licenseversion') }">
+							<label for="licenseversion">License Version:</label>
+							<input type="text" name="licenseversion" id="licenseversion" v-model="license.version" v-validate="'required'" class="form-control">
+							<em v-bind:class="{ 'show': errors.has('licenseversion') }">{{ errors.first('licenseversion') }}</em>
+						</div>
+						<hr>
+						<div v-if="license.licensedocument.info">
+							<div class="form-group" v-bind:class="{ 'has-error': errors.has('infotitle') }">
+								<label for="infotitle">Title:</label>
+								<input type="text" name="infotitle" id="infotitle" v-model="license.licensedocument.info.title" v-validate="'required'" class="form-control">
+								<em v-bind:class="{ 'show': errors.has('infotitle') }">{{ errors.first('infotitle') }}</em>
+							</div>
+							<div class="form-group" v-bind:class="{ 'has-error': errors.has('infodescription') }">
+								<label for="infodescription">Description:</label>
+								<textarea type="text" name="infodescription" id="infodescription" v-model="license.licensedocument.info.description" v-validate="'required'" class="form-control"></textarea>
+								<em v-bind:class="{ 'show': errors.has('infodescription') }">{{ errors.first('infodescription') }}</em>
+							</div>
+							<div class="form-group">
+								<label>Visibility</label>
+								<select class="form-control" name="visibility" id="visibility" v-model="license.licensedocument.info.visibility" v-validate="'required'">
+									<option value="Public">Public</option>
+									<option value="Private">Private</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group d-flex justify-content-between">
+							<button type="button" class="btn btn-secondary btn-rounded" v-on:click="$emit('set-state', 'init'); cancelLicense()">CANCEL</button>
+							<button type="button" class="btn btn-primary btn-rounded" v-if="rootState == 'add'" v-on:click="licenseAction('add')">ADD</button>
+							<button type="button" class="btn btn-primary btn-rounded" v-if="rootState == 'edit'" v-on:click="licenseAction('edit')">SAVE</button>
+						</div>
+					</div>
+				</div>
+			</aside>
+			<aside class="column column-aside manage-column" v-if="license.licensedocument.sla">
+				<div class="nicescroll-bar">
+					<div class="clearfix brd-b column-header column-min-button">
+						<h5 class="column-header-title">Policies</h5>
+					</div>
+					<div class="p-3">
+						<div class="form-group v-select-color-violet" v-bind:class="{ 'has-error': errors.has('custom') }">
+							<label>Select Policies</label>
+							<v-select label="name" multiple :filterable="false" :options="policyList" v-model="license.policies" v-validate="'required'" :has-error="errors.has('custom')" name="custom">
+								<span slot="no-options"></span>
+								<template slot="option" slot-scope="option">
+									<strong>{{ option.name }}</strong>
+									<small class="d-block">{{option.policyinstance.info.type}} - {{option.policyinstance.info.subType}}</small>
+									<code class="d-block small"><small>{{option.uuid}}</small></code>
+								</template>
+								<template slot="selected-option" slot-scope="option">
+									<strong>{{ option.name }}</strong>
+									<small class="d-block">{{option.policyinstance.info.type}} - {{option.policyinstance.info.subType}}</small>
+									<code class="d-block small"><small>{{option.uuid}}</small></code>
+								</template>
+							</v-select>
+							<em v-bind:class="{ 'show': errors.has('custom') }">{{ errors.first('custom') }}</em>
+						</div>
+					</div>
+				</div>
+			</aside>
+			<aside class="column column-aside manage-column" v-if="license.licensedocument.sla">
+				<div class="nicescroll-bar">
+					<div class="clearfix brd-b column-header column-min-button">
+						<h5 class="column-header-title">SLA</h5>
+					</div>
+					<div class="p-3">
+						<div class="form-group" v-bind:class="{ 'has-error': errors.has('slatierName') }">
+							<label for="slatierName">SLA Tier Name:</label>
+							<input type="text" name="slatierName" id="slatierName" v-model="license.licensedocument.sla.tierName" v-validate="'required'" class="form-control">
+							<em v-bind:class="{ 'show': errors.has('slatierName') }">{{ errors.first('slatierName') }}</em>
+						</div>
+						<div class="form-group" v-bind:class="{ 'has-error': errors.has('sladescription') }">
+							<label for="sladescription">SLA Description:</label>
+							<textarea type="text" name="sladescription" id="sladescription" v-model="license.licensedocument.sla.description" v-validate="'required'" class="form-control"></textarea>
+							<em v-bind:class="{ 'show': errors.has('sladescription') }">{{ errors.first('sladescription') }}</em>
+						</div>
+						<div class="form-group" v-bind:class="{ 'has-error': errors.has('slasupportHours') }">
+							<label for="slasupportHours">SLA Support Hours:</label>
+							<input type="text" name="slasupportHours" id="slasupportHours" v-model="license.licensedocument.sla.supportHours" v-validate="'required'" class="form-control">
+							<em v-bind:class="{ 'show': errors.has('slasupportHours') }">{{ errors.first('slasupportHours') }}</em>
+						</div>
+						<div class="form-group" v-bind:class="{ 'has-error': errors.has('slaavailability') }">
+							<label for="slaavailability">Ailability:</label>
+							<input type="text" name="slaavailability" id="slaavailability" v-model="license.licensedocument.sla.availability" v-validate="'required'" class="form-control">
+							<em v-bind:class="{ 'show': errors.has('slaavailability') }">{{ errors.first('slaavailability') }}</em>
+						</div>
+						<div class="form-group" v-bind:class="{ 'has-error': errors.has('slablackOutHoursPerYear') }">
+							<label for="slablackOutHoursPerYear">SLA Blackout Hours Per Year</label>
+							<input type="text" name="slablackOutHoursPerYear" id="slablackOutHoursPerYear" v-model="license.licensedocument.sla.blackOutHoursPerYear" v-validate="'required'" class="form-control">
+							<em v-bind:class="{ 'show': errors.has('slablackOutHoursPerYear') }">{{ errors.first('slablackOutHoursPerYear') }}</em>
+						</div>
+						<div class="form-group" v-bind:class="{ 'has-error': errors.has('slaperformance') }">
+							<label for="slaperformance">SLA Performance:</label>
+							<input type="text" name="slaperformance" id="slaperformance" v-model="license.licensedocument.sla.performance" v-validate="'required'" class="form-control">
+							<em v-bind:class="{ 'show': errors.has('slaperformance') }">{{ errors.first('slaperformance') }}</em>
+						</div>
+					</div>
+				</div>
+			</aside>
+			<aside class="column column-aside manage-column">
+				<div class="nicescroll-bar">
+					<div class="clearfix brd-b column-header column-min-button">
+						<h5 class="column-header-title">Legal Agreement</h5>
+					</div>
+					<div class="p-3">
+						<div v-if="license.licensedocument.info">
+							<div class="form-group" v-bind:class="{ 'has-error': errors.has('legalname') }">
+								<label for="legalname">Legal Aggrement Name:</label>
+								<input type="text" name="legalname" id="legalname" v-model="license.licensedocument.legal.name" v-validate="'required'" class="form-control">
+								<em v-bind:class="{ 'show': errors.has('legalname') }">{{ errors.first('legalname') }}</em>
+							</div>
+							<div class="form-group" v-bind:class="{ 'has-error': errors.has('legaldescription') }">
+								<label for="legaldescription">Legal Aggrement Description:</label>
+								<textarea type="text" name="legaldescription" id="legaldescription" v-model="license.licensedocument.legal.description" v-validate="'required'" class="form-control"></textarea>
+								<em v-bind:class="{ 'show': errors.has('legaldescription') }">{{ errors.first('legaldescription') }}</em>
+							</div>
+							<div class="form-group">
+								<label>Agreement Type</label>
+								<select class="form-control" name="agreementType" id="agreementType" v-model="license.licensedocument.legal.agreementType" v-validate="'required'">
+									<option value="signup">signup</option>
+									<option value="eula">eula</option>
+								</select>
+							</div>
+							<div class="form-group">
+								<label>Document State</label>
+								<select class="form-control" name="documentState" id="documentState" v-model="license.licensedocument.legal.documentState" v-validate="'required'">
+									<option value="draft">draft</option>
+									<option value="active">active</option>
+									<option value="inactive">inactive</option>
+								</select>
+							</div>
+							<div class="form-group" v-bind:class="{ 'has-error': errors.has('legallink') }">
+								<label for="legallink">Legal Aggrement Link:</label>
+								<input type="text" name="legallink" id="legallink" v-model="license.licensedocument.legal.link" v-validate="'required'" class="form-control">
+								<em v-bind:class="{ 'show': errors.has('legallink') }">{{ errors.first('legallink') }}</em>
+							</div>
+							<div class="form-group" v-bind:class="{ 'has-error': errors.has('documentText') }">
+								<label for="documentText">Document Text</label>
+								<textarea type="text" name="documentText" id="documentText" v-model="license.licensedocument.legal.documentText" v-validate="'required'" class="form-control"></textarea>
+								<em v-bind:class="{ 'show': errors.has('documentText') }">{{ errors.first('documentText') }}</em>
+							</div>
+						</div>
+					</div>
+				</div>
+			</aside>
+			<div class="btn-float-br btn-float-under">
+				<button class="btn btn-xl btn-green btn-circle" v-on:click="$emit('set-state', 'add', 'init')" title="ADD NEW LICENSE "><i class="fas fa-plus"></i></button>
+			</div>
+		</div>
+	</api-licenses>
+	</main>
+</div>
+<script id="reqVue" data-module="api-licenses" data-main="/dist/js/main" src="/dist/js/lib/require.min.js"></script>
+</body>
+</html>

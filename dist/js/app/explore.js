@@ -102,7 +102,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select'], funct
 				axios.get(this.ajaxUrl, this.ajaxHeaders)
 				.then((response) => {
 					if (response.data != null) {
-						this.apiOptions = response.data;
+						this.apiOptions = response.data.filter( (item) => item.isdeleted == false );
 						console.log("this.apiOptions: ", this.apiOptions);
 					} else {
 						this.apiOptions = [];
@@ -121,7 +121,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select'], funct
 						if (response.data != null) {
 							this.apiList = [];
 							this.apiList.push(filter);
-							this.paginate = this.makePaginate(response.data);
+							// this.paginate = this.makePaginate(response.data);
 						}
 					}, error => {
 						this.handleError(error);
@@ -133,7 +133,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select'], funct
 				axios.get(this.ajaxUrl + '?page=' + p + param)
 				.then(response => {
 					// console.log("p: ", p);
-					this.apiList = response.data;
+					this.apiList = response.data.filter( (item) => item.isdeleted == false );
 					this.paginate = this.makePaginate(response.data);
 				}, error => {
 					this.handleError(error);

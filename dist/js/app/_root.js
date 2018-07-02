@@ -10,6 +10,24 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 	axios.defaults.withCredentials = abyss.abyssCredentials;
 	axios.defaults.timeout = 10000;
 	axios.defaults.responseType = 'json';
+	/*axios.defaults.validateStatus = function (status) {
+		// return status >= 200 && status < 300; // default
+		return status >= 200 && status < 300; // default
+		// return (status >= 200 && status < 300) || status == 404; // default
+	},*/
+	/*const UNAUTHORIZED = 401;
+	axios.interceptors.response.use(
+		response => response,
+		error => {
+			const {
+				status
+			} = error.response;
+			if (status === UNAUTHORIZED) {
+				dispatch(userSignOut());
+			}
+			return Promise.reject(error);
+		}
+	);*/
 	// Window.Vue = Vue;
 	// Window.Vue.use(VueIziToast);
 	// Vue.prototype.$toast = VueIziToast;
@@ -105,8 +123,29 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 				// console.log("paginate: ", paginate);
 				return paginate;
 			},
+			//2DO
+			handleErrorStatus(status) {
+				return status < 500; // Reject only if the status code is greater than or equal to 500
+			},
 			handleError(error) {
-				console.log("error: ", error);
+				/*if (error.response) {
+					// The request was made and the server responded with a status code
+					// that falls out of the range of 2xx
+					console.log("error.response.data", error.response.data);
+					console.log("error.response.status", error.response.status);
+					console.log("error.response.headers", error.response.headers);
+				}
+				else if (error.request) {
+					// The request was made but no response was received
+					// `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+					// http.ClientRequest in node.js
+					console.log("error.request", error.request);
+				}
+				else {
+					// Something happened in setting up the request that triggered an Error
+					console.log('error.message', error.message);
+				}
+				console.log("error.config", error.config);*/
 				console.log("error.response.status: ", error.response.status);
 				if ( error.response.status == 401) {
 					alert('Your session has expired');
@@ -298,7 +337,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 			},
 			selectedTax: {},
 			filterTax: '',
-			abyssYamlList : abyss.abyssYamlList,
+			abyssYamlLocation : abyss.abyssYamlLocation,
+			// abyssYamlList : abyss.abyssYamlList,
+			abyssYamlList : [],
 			end: []
 		},
 		methods: {
@@ -517,7 +558,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 						Vue.set(this.rootData, 'apiGroupList', api_group_list.data );
 						Vue.set(this.rootData, 'apiCategoryList', api_category_list.data );
 						Vue.set(this.rootData, 'apiTagList', api_tag_list.data );
-						console.log("ROOT this.rootData: ", this.rootData);
+						// console.log("ROOT this.rootData: ", this.rootData);
 						this.isLoading = false;
 						// console.log("this.rootData: ", JSON.stringify(this.rootData, null, '\t') );
 					})
@@ -539,6 +580,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 				this.$cookie.set('abyss.session', abyss.session, 10);
 				this.$cookie.set('abyss.principal.uuid', '9820d2aa-eb02-4a58-8cc5-8b9a89504df9', 10); //ten day
 				// this.$cookie.set('abyss.principal.uuid', '32c9c734-11cb-44c9-b06f-0b52e076672d', 1); //one day
+				// this.$cookie.set('abyss.principal.uuid', 'd6bba21e-6d4c-4f87-897e-436bd97d41c0', 1); //one day
 			}
 			// console.log("this.$cookie.get(abyss.session): ", this.$cookie.get('abyss.session'));
 			// if ( !this.$cookie.get('abyss.session') ) {
@@ -550,6 +592,15 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 			// this.$cookie.delete('abyss.principal.uuid');
 			// this.log(this.$options.name);
 			this.getRootData(principal);
+			// if (!this.$root.isLoading) {
+				axios.get(abyss.ajax.api_yaml_list, this.ajaxHeaders)
+				.then(response => {
+					// this.$root.abyssYamlList = _.sortBy(response.data);
+					Vue.set(this.$root, 'abyssYamlList', _.sortBy(response.data));
+				}, error => {
+					this.handleError(error);
+				});
+			// }
 		}
 	});
 });

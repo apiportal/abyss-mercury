@@ -6,7 +6,7 @@
 <div id="portal" class="wrapper" v-bind:class="pageClass">
 	<div th:replace="webroot/frags/layout/navs.htm :: navs"></div>
 	<main class="page-wrapper">
-	<index inline-template ref="refPage" v-on:set-state="setState" v-on:set-page="setPage" v-bind:root-state="rootState">
+	<index inline-template ref="refPage" v-on:set-state="setState" v-on:set-page="setPage" v-bind:root-state="rootState" v-if="!$root.isLoading">
 		<!-- <div class="columns"> -->
 			<!-- <section class="column column-main column-main-fixed"> -->
 				<!-- <div class="d-flex align-items-center w-100 h-100 text-center justify-content-center">

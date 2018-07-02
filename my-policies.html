@@ -12,7 +12,7 @@
 <div id="portal" class="wrapper" v-bind:class="pageClass">
 	<div th:replace="webroot/frags/layout/navs.htm :: navs"></div>
 	<main class="page-wrapper">
-	<api-policies inline-template v-on:set-state="setState" v-on:set-page="setPage" v-bind:root-state="rootState">
+	<api-policies inline-template v-on:set-state="setState" v-on:set-page="setPage" v-bind:root-state="rootState" v-if="!$root.isLoading">
 		<div class="columns">
 			<section class="column column-main column-main-fixed">
 				<div class="column-main-fixed-overlay" v-if="rootState == 'add' || rootState == 'edit'" v-on:click="$emit('set-state', 'init'); cancelPolicy();"></div>
@@ -23,10 +23,10 @@
 							<th class="td-name" v-bind:class="sort.order" v-on:click="sortList(sort, 'name', String)">Name</th>
 							<th class="td-name" v-bind:class="sort.order" v-on:click="sortList(sort, 'policyinstance.info.type', String)">Type</th>
 							<th class="td-name" v-bind:class="sort.order" v-on:click="sortList(sort, 'policyinstance.info.subType', String)">subType</th>
-							<th class="td-bool" v-bind:class="sort.order" v-on:click="sortList(sort, 'policyinstance.openApiLifeCycle.onProxyRequest', Boolean)">Proxy Request</th>
-							<th class="td-bool" v-bind:class="sort.order" v-on:click="sortList(sort, 'policyinstance.openApiLifeCycle.onProxyResponse', Boolean)">Proxy Response</th>
 							<th class="td-bool" v-bind:class="sort.order" v-on:click="sortList(sort, 'policyinstance.openApiLifeCycle.onBusinessRequest', Boolean)">Business Request</th>
 							<th class="td-bool" v-bind:class="sort.order" v-on:click="sortList(sort, 'policyinstance.openApiLifeCycle.onBusinessResponse', Boolean)">Business Response</th>
+							<th class="td-bool" v-bind:class="sort.order" v-on:click="sortList(sort, 'policyinstance.openApiLifeCycle.onProxyRequest', Boolean)">Proxy Request</th>
+							<th class="td-bool" v-bind:class="sort.order" v-on:click="sortList(sort, 'policyinstance.openApiLifeCycle.onProxyResponse', Boolean)">Proxy Response</th>
 							<th class="td-datetime-x" v-bind:class="sort.order" v-on:click="sortList(sort, 'created', Date)">Created / Updated / Deleted</th>
 							<th class="td-action-1"></th>
 							<th class="td-action-1"></th>
@@ -39,10 +39,10 @@
 							<td>{{policy.name}} <small class="d-block">{{policy.description}}</small></td>
 							<td>{{policy.policyinstance.info.type}}</td>
 							<td>{{policy.policyinstance.info.subType}}</td>
-							<td class="text-center"><i class="fas fa-circle" title="Active" v-bind:class="{'txt-purple': policy.policyinstance.openApiLifeCycle.onProxyRequest}"></i></td>
-							<td class="text-center"><i class="fas fa-circle" title="Active" v-bind:class="{'txt-purple': policy.policyinstance.openApiLifeCycle.onProxyResponse}"></i></td>
 							<td class="text-center"><i class="fas fa-circle" title="Active" v-bind:class="{'txt-cyan': policy.policyinstance.openApiLifeCycle.onBusinessRequest}"></i></td>
 							<td class="text-center"><i class="fas fa-circle" title="Active" v-bind:class="{'txt-cyan': policy.policyinstance.openApiLifeCycle.onBusinessResponse}"></i></td>
+							<td class="text-center"><i class="fas fa-circle" title="Active" v-bind:class="{'txt-purple': policy.policyinstance.openApiLifeCycle.onProxyRequest}"></i></td>
+							<td class="text-center"><i class="fas fa-circle" title="Active" v-bind:class="{'txt-purple': policy.policyinstance.openApiLifeCycle.onProxyResponse}"></i></td>
 							<td>
 								<div>
 									<strong class="small">CREATED:</strong>
@@ -58,10 +58,10 @@
 								</div>
 							</td>
 							<td class="td-action-1">
-								<a href="#" class="btn btn-xl txt-link btn-square" title="EDIT DIRECTORY" v-on:click="$emit('set-state', 'edit'); selectPolicy(policy, index);"><i class="fas fa-edit"></i></a>
+								<a href="#" class="btn btn-xl txt-link btn-square" title="EDIT POLICY" v-on:click="$emit('set-state', 'edit'); selectPolicy(policy, index);"><i class="fas fa-edit"></i></a>
 							</td>
 							<td class="td-action-1">
-								<a href="#" class="btn btn-xl txt-link txt-grey btn-square" title="DELETE DIRECTORY" v-on:click="deletePolicy(policy, index)"><i class="fas fa-trash-alt"></i></a>
+								<a href="#" class="btn btn-xl txt-link txt-grey btn-square" title="DELETE POLICY" v-on:click="deletePolicy(policy, index)"><i class="fas fa-trash-alt"></i></a>
 							</td>
 						</tr>
 					</table>
@@ -78,12 +78,12 @@
 					<div class="p-3">
 						<div class="form-group" v-bind:class="{ 'has-error': errors.has('name') }">
 							<label for="name">Policy Name:</label>
-							<input type="text" name="name" id="name" v-model="policy.name" v-validate="'required|min:2'" class="form-control" placeholder="name">
+							<input type="text" name="name" id="name" v-model="policy.name" v-validate="'required|min:2'" class="form-control">
 							<em v-bind:class="{ 'show': errors.has('name') }">{{ errors.first('name') }}</em>
 						</div>
 						<div class="form-group" v-bind:class="{ 'has-error': errors.has('description') }">
 							<label for="description">Description:</label>
-							<textarea type="text" name="description" id="description" v-model="policy.description" v-validate="'required'" class="form-control" placeholder="Decription"></textarea>
+							<textarea type="text" name="description" id="description" v-model="policy.description" v-validate="'required'" class="form-control"></textarea>
 							<em v-bind:class="{ 'show': errors.has('description') }">{{ errors.first('description') }}</em>
 						</div>
 						<div class="form-group " v-bind:class="{ 'has-error': errors.has('type') }">

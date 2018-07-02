@@ -92,7 +92,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 				.then(response => {
 					console.log(response);
 					if (response.data != null) {
-						this.orgOptions = response.data;
+						this.orgOptions = response.data.filter( (item) => item.isdeleted == false );
 					} else {
 						this.orgOptions = [];
 					}
@@ -105,7 +105,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 				.then(response => {
 					console.log(response);
 					if (response.data != null) {
-						this.directoryTypes = response.data;
+						this.directoryTypes = response.data.filter( (item) => item.isdeleted == false );
 					} else {
 						this.directoryTypes = [];
 					}

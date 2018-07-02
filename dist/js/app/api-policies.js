@@ -27,7 +27,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 					"crudsubjectid": null,
 					"subjectid": null,
 					"name": null,
-					"description": "",
+					"description": null,
 					"typeid": null,
 					"policyinstance": {},
 				},
@@ -66,7 +66,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 			getPolicyTypes() {
 				axios.get(abyss.ajax.policy_types, this.ajaxHeaders)
 				.then(response => {
-					console.log(response);
 					if (response.data != null) {
 						this.policyTypes = response.data;
 					} else {
@@ -156,7 +155,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 				var param = d || '';
 				axios.get(this.ajaxUrl + '?page=' + p + param, this.ajaxHeaders)
 				.then(response => {
-					console.log(response);
 					this.policyList = response.data;
 					this.paginate = this.makePaginate(response.data);
 				}, error => {
@@ -168,12 +166,11 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 			this.preload();
 		},
 		created() {
-			this.log(this.$options.name);
+			// this.log(this.$options.name);
 			this.$emit('set-page', 'policies', 'init');
 			this.newPolicy = _.cloneDeep(this.policy);
 			this.getPage(1);
 			this.getPolicyTypes();
-			// console.log("this.$root.rootData.user.organizationid: ", this.$root.rootData.user.organizationid);
 		}
 	});
 });

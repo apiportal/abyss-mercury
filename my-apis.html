@@ -8,7 +8,7 @@
 <div id="portal" class="wrapper" v-bind:class="pageClass">
 	<div th:replace="webroot/frags/layout/navs.htm :: navs"></div>
 	<main class="page-wrapper">
-	<my-apis inline-template ref="refMyApis" v-on:set-page="setPage" v-bind:root-state="rootState" v-if="!isLoading">
+	<my-apis inline-template ref="refMyApis" v-on:set-page="setPage" v-bind:root-state="rootState" v-if="!$root.isLoading">
 		<div class="columns tab-content">
 			<aside class="column column-aside list-column xxx">
 				<div class="clearfix column-header column-min-button">
@@ -114,72 +114,76 @@
 								</span>
 							</div>
 							<div id="servers" class="collapse">
-								<div v-for="(server,sindex) in openapi.servers" class="field-controls field-color-grey field-level-1">
-									<div class="field-sum">
-										<a href="#" class="field-link nav-caret" data-toggle="collapse" v-bind:data-target="'#server'+sindex" v-bind:aria-controls="'server'+sindex">
-											<span>{{server.url}}</span>
-										</a>
-									</div>
-									<div class="ficon-actions dropdown dropdown-hover">
-										<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
-										<ul class="dropdown-menu dropdown-menu-right" role="menu">
-											<li><a class="" title="Remove server" v-on:click="removeServer(sindex)" v-if="sindex > 0"><i class="fa fa-trash-alt"></i> Remove server</a></li>
-											<!-- <li><a href="#" title="Show Variables" data-toggle="collapse" v-bind:data-target="'#server'+sindex" v-bind:aria-controls="'server'+sindex"><i class="">V</i> Show Variables</a></li> -->
-											<li><a href="#" title="Add Variable" v-on:click="addVariable(sindex)"><i class="">V</i> Add Variable</a></li>
-											<li><a title="Add a server" v-on:click="addServer()"><i class="fa fa-plus"></i> Add a server</a></li>
-										</ul>
-									</div>
-									<div v-bind:id="'server'+sindex" class="collapse field-acc">
-										<div class="form-group" v-bind:class="{'has-error': errors.has('server'+sindex) }">
-											<label>URL</label>
-											<input class="form-control" placeholder="Required" v-model.lazy="server.url" :name="'server'+sindex" v-validate="'required'">
+								<api-servers v-for="(server,sindex) in openapi.servers" :server="server" :sindex="sindex" :key="sindex" inline-template>
+									<div class="field-controls field-color-grey field-level-1">
+										<div class="field-sum">
+											<a href="#" class="field-link nav-caret" data-toggle="collapse" v-bind:data-target="'#server'+sindex" v-bind:aria-controls="'server'+sindex">
+												<!-- <span>{{server.url}}</span> -->
+												<small class="d-block text-muted" v-if="$parent.api.isproxyapi">{{xServerUrl}}</small>
+												<strong class="d-block text-truncate">{{serverUrl}}</strong>
+											</a>
 										</div>
-										<div class="form-group">
-											<label>Description</label>
-											<input class="form-control" v-model.lazy="server.description">
+										<div class="ficon-actions dropdown dropdown-hover">
+											<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
+											<ul class="dropdown-menu dropdown-menu-right" role="menu">
+												<li><a class="" title="Remove server" v-on:click="removeServer(sindex)" v-if="sindex > 0"><i class="fa fa-trash-alt"></i> Remove server</a></li>
+												<!-- <li><a href="#" title="Show Variables" data-toggle="collapse" v-bind:data-target="'#server'+sindex" v-bind:aria-controls="'server'+sindex"><i class="">V</i> Show Variables</a></li> -->
+												<li><a href="#" title="Add Variable" v-on:click="addVariable(sindex)"><i class="">V</i> Add Variable</a></li>
+												<li><a title="Add a server" v-on:click="addServer()"><i class="fa fa-plus"></i> Add a server</a></li>
+											</ul>
 										</div>
-										<api-srvvar v-for="(variable,index) in server.variables" :name="index" :key="index" :variable="variable" :server="server" :sindex="sindex" inline-template>
-											<div class="position-relative row mt-3">
-												<div class="ficon-actions dropdown dropdown-hover">
-													<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
-													<ul class="dropdown-menu dropdown-menu-right" role="menu">
-														<li><a title="Remove variable" v-on:click="removeVariable(sindex)"><i class="fa fa-trash-alt"></i> Remove Variable</a></li>
-														<li><a v-on:click="addVEnum()" v-if="server.variables"><i class="fa fa-fw fa-plus"></i> Add Enum Value</a></li>
-													</ul>
-												</div>
-												<div class="field-acc">
-													<div class="form-group">
-														<label>Variable Name</label>
-														<input class="form-control" v-model.lazy="variableName">
+										<div v-bind:id="'server'+sindex" class="collapse field-acc">
+											<div class="form-group" v-bind:class="{'has-error': errors.has('server'+sindex) }">
+												<label>URL</label>
+												<input class="form-control" placeholder="Required" v-model.lazy="serverUrl" :name="'server'+sindex" v-validate="'required'">
+											</div>
+											<div class="form-group">
+												<label>Description</label>
+												<input class="form-control" v-model.lazy="server.description">
+											</div>
+											<api-srvvar v-for="(variable,index) in server.variables" :name="index" :key="index" :variable="variable" :server="server" :sindex="sindex" inline-template>
+												<div class="position-relative row mt-3">
+													<div class="ficon-actions dropdown dropdown-hover">
+														<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
+														<ul class="dropdown-menu dropdown-menu-right" role="menu">
+															<li><a title="Remove variable" v-on:click="removeVariable(sindex)"><i class="fa fa-trash-alt"></i> Remove Variable</a></li>
+															<li><a v-on:click="addVEnum()" v-if="server.variables"><i class="fa fa-fw fa-plus"></i> Add Enum Value</a></li>
+														</ul>
 													</div>
-													<div class="form-group">
-														<label>Description</label>
-														<input class="form-control" v-model.lazy="variable.description">
-													</div>
-													<div class="form-group mb-0">
-														<label>Default</label>
-														<input class="form-control" placeholder="Required" v-model.lazy="variable.default">
-													</div>
-												</div>
-												<api-venum v-for="(evalue,eindex) in variable.enum" :variable="variable" :eindex="eindex" :key="eindex" inline-template>
 													<div class="field-acc">
-														<div class="ficon-actions dropdown dropdown-hover">
-															<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
-															<ul class="dropdown-menu dropdown-menu-right" role="menu">
-																<li><a title="Add Enum value" v-on:click="addVEnum(variable)"><i class="fa fa-plus"></i> Add Enum value</a></li>
-																<li><a title="Remove Enum value" v-on:click="removeVEnum(eindex)"><i class="fa fa-trash-alt"></i> Remove Enum value</a></li>
-															</ul>
+														<div class="form-group">
+															<label>Variable Name</label>
+															<input class="form-control" v-model.lazy="variableName">
 														</div>
 														<div class="form-group">
-															<label>Enum Value</label>
-															<input class="form-control" v-model.lazy="vename">
+															<label>Description</label>
+															<input class="form-control" v-model.lazy="variable.description">
+														</div>
+														<div class="form-group mb-0">
+															<label>Default</label>
+															<input class="form-control" placeholder="Required" v-model.lazy="variable.default">
 														</div>
 													</div>
-												</api-venum>
-											</div>
-										</api-srvvar>
+													<api-venum v-for="(evalue,eindex) in variable.enum" :variable="variable" :eindex="eindex" :key="eindex" inline-template>
+														<div class="field-acc">
+															<div class="ficon-actions dropdown dropdown-hover">
+																<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
+																<ul class="dropdown-menu dropdown-menu-right" role="menu">
+																	<li><a title="Add Enum value" v-on:click="addVEnum(variable)"><i class="fa fa-plus"></i> Add Enum value</a></li>
+																	<li><a title="Remove Enum value" v-on:click="removeVEnum(eindex)"><i class="fa fa-trash-alt"></i> Remove Enum value</a></li>
+																</ul>
+															</div>
+															<div class="form-group">
+																<label>Enum Value</label>
+																<input class="form-control" v-model.lazy="vename">
+															</div>
+														</div>
+													</api-venum>
+												</div>
+											</api-srvvar>
+										</div>
 									</div>
-								</div>
+								</api-servers>
 							</div>
 						</article>
 						<article class="field-controls field-level-0" data-id="Info">
@@ -603,6 +607,129 @@
 					</form>
 				</div>
 			</aside>
+			<!-- <aside class="column column-aside edit-column licences-column column-minimize" v-if="api.isproxyapi"> -->
+			<aside class="column column-aside edit-column licences-column column-minimize">
+				<div class="clearfix column-header column-min-button">
+					<h5 class="column-header-title">Licenses <span class="badge badge-pill badge-outline float-right">{{myLicenseList.length}}</span></h5>
+				</div>
+				<div class="column-content">
+					<form class="nicescroll-bar" id="config">
+						<article v-for="(license, index) in sortBy(sortLicense, myLicenseList)" v-bind:key="license.uuid" class="field-controls field-level-0">
+							<div class="field-sum">
+								<a href="#" class="field-link" data-toggle="collapse" v-bind:data-target="'#license'+index" v-bind:aria-controls="'license'+index">
+									<div class="h6">										
+										{{license.name}}
+										<small>{{license.version}}</small>
+									</div>
+									<div>
+										<small class="text-uppercase" v-bind:class="{'txt-green': license.licensedocument.info.visibility == 'Public', 'txt-orange': license.licensedocument.info.visibility == 'Private'}">{{license.licensedocument.info.visibility}}</small>
+										<div class="d-flex text-uppercase float-right small text-muted">
+											<span v-if="!license.isdeleted" :title="license.updated | formatDateTime">
+												{{license.created | formatDateTime}}
+											</span>
+											<span class="ml-auto text-right" v-if="license.isdeleted">
+												{{license.deleted | formatDateTime}}
+											</span>
+										</div>
+									</div>
+									<div class="">{{license.licensedocument.info.title}}</div>
+									<small class="d-block txt-line my-1 text-muted">{{license.licensedocument.info.description}}</small>
+									<code class="d-block txt-line small txt-blue"><small>{{license.uuid}}</small></code>
+								</a>
+								<div class="ficon-actions dropdown dropdown-hover">
+									<span class="switch switch-primary">
+										<input type="checkbox" :name="'isactive'+index" :id="'isactive'+index" v-model="license.isactive" true-value="true" false-value="false" v-on:change="setLicense(license)">
+										<label :for="'isactive'+index"></label>
+									</span>
+								</div>
+							</div>
+							<div v-bind:id="'license'+index" class="collapse field-tabs field-level-1">
+								<div class="field-acc pb-0">
+									<div class="small">
+										<h6 class="field-header text-body row brd-0">Policies</h6>
+										<div v-for="(pol, index) in license.policies" class="brd-t py-2 row px-3" :title="pol.uuid + ' | ' + pol.description">
+											<h6 class="d-block">{{pol.name}}</h6>
+											<span class="d-block">{{pol.policyinstance.info.type}} - {{pol.policyinstance.info.subType}}</span>
+											<div class="d-flex mt-2 mb-1">
+												<span class="badge req-res-sm" v-bind:class="{'badge-cyan': pol.policyinstance.openApiLifeCycle.onBusinessRequest}">
+													<small>Business<br>Request</small>
+												</span>
+												<span class="badge req-res-sm ml-auto" v-bind:class="{'badge-cyan': pol.policyinstance.openApiLifeCycle.onBusinessResponse}">
+													<small>Business<br>Response</small>
+												</span>
+												<span class="badge req-res-sm" v-bind:class="{'badge-purple': pol.policyinstance.openApiLifeCycle.onProxyRequest}">
+													<small>Proxy<br>Request</small>
+												</span>
+												<span class="badge req-res-sm ml-auto" v-bind:class="{'badge-purple': pol.policyinstance.openApiLifeCycle.onProxyResponse}">
+													<small>Proxy<br>Response</small>
+												</span>
+											</div>
+										</div>
+									</div>
+									<div class="small">
+										<h6 class="field-header text-body row brd-b">SLA</h6>
+										<h6 class="mt-2">
+											{{license.licensedocument.sla.tierName}}
+										</h6>
+										<p class="mb-4">
+											{{license.licensedocument.sla.description}}
+										</p>
+										<p class="d-flex text-uppercase">
+											<span class="">
+												<strong class="lbl">support Hours</strong>
+												{{license.licensedocument.sla.supportHours}}
+											</span>
+											<span class="ml-auto text-right">
+												<strong class="lbl">availability</strong>
+												{{license.licensedocument.sla.availability}}
+											</span>
+										</p>
+										<p>
+											<strong class="lbl">black Out Hours Per Year</strong>
+											{{license.licensedocument.sla.blackOutHoursPerYear}}
+										</p>
+										<p>
+											<strong class="lbl">performance</strong>
+											{{license.licensedocument.sla.performance}}
+										</p>
+									</div>
+									<div class="small">
+										<h6 class="field-header text-body row brd-b">Legal Aggreement</h6>
+										<h6 class="mt-2">
+											{{license.licensedocument.legal.name}}
+										</h6>
+										<p class="mb-4">
+											{{license.licensedocument.legal.description}}
+										</p>
+										<p class="d-flex text-uppercase">
+											<span class="">
+												<strong class="lbl">Agreement Type</strong>
+												{{license.licensedocument.legal.agreementType}}
+											</span>
+											<span class="ml-auto text-right">
+												<strong class="lbl">Document State</strong>
+												{{license.licensedocument.legal.documentState}}
+											</span>
+										</p>
+										<p>
+											<strong class="lbl">link</strong>
+											<span class="d-block text-truncate">
+												{{license.licensedocument.legal.link}}
+											</span>
+										</p>
+										<p>
+											<strong class="lbl">document Text</strong>
+											<span class="d-block text-truncate">
+												{{license.licensedocument.legal.documentText}}
+											</span>
+										</p>
+									</div>
+								</div>
+							</div>
+						</article>
+					</form>
+				</div>
+			</aside>
 			<aside class="column column-aside edit-column paths-column column-minimize">
 				<div class="clearfix column-header column-min-button">
 					<a href="#" class="btn btn-lg btn-link txt-link btn-square column-header-button" title="Create Path" v-on:click="addResource();"><i class="fas fa-lg fa-plus"></i></a>
@@ -615,7 +742,8 @@
 							<article :id="sanitisePath()" class="field-controls field-level-0">
 								<div class="field-sum">
 									<a href="#" class="field-link field-link-2 nav-caret" data-toggle="collapse" v-bind:data-target="'#path'+iii" v-bind:aria-controls="'path'+iii">
-										<small>Path</small>
+										<small v-if="!$parent.api.isproxyapi">Path</small>
+										<small class="d-block text-muted" v-if="$parent.api.isproxyapi">{{xPathEntry}}</small>
 										<h6>{{index}}</h6>
 									</a>
 									<div class="ficon-actions dropdown dropdown-hover">
@@ -1034,7 +1162,7 @@
 					<label>Description</label>
 					<textarea class="form-control" v-model.lazy="response.description"></textarea>
 				</div>
-				<div class="form-group" v-if="!response.$ref">
+				<div class="form-group form-inline" v-if="!response.$ref">
 					<label class="">Required</label>
 					<span class="switch switch-primary ml-auto">
 						<input type="checkbox" :id="'response'+_uid" v-model="response.required">

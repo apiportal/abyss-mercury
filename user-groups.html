@@ -6,7 +6,7 @@
 <div id="portal" class="wrapper" v-bind:class="pageClass">
 	<div th:replace="webroot/frags/layout/navs.htm :: navs"></div>
 	<main class="page-wrapper">
-	<user-groups inline-template v-on:set-state="setState" v-on:set-page="setPage" v-bind:root-state="rootState">
+	<user-groups inline-template v-on:set-state="setState" v-on:set-page="setPage" v-bind:root-state="rootState" v-if="!$root.isLoading">
 		<div class="columns">
 			<section class="column column-main column-main-fixed">
 				<div class="column-main-fixed-overlay" v-if="rootState == 'add' || rootState == 'edit'" v-on:click="$emit('set-state', 'init'); cancelGroup()"></div>

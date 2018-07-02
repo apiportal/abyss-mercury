@@ -80,7 +80,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 			},
 			getGroupName(dir) {
 				var subGrp = this.memberOptions.filter((el) => el.subjectid == dir );
-				// console.log("subGrp: ", subGrp);
 				var grpName = [];
 				if (subGrp) {
 					subGrp.forEach((value, key) => {
@@ -176,7 +175,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 				.then(response => {
 					console.log(response);
 					if (response.data != null) {
-						this.groupOptions = response.data;
+						this.groupOptions = response.data.filter( (item) => item.isdeleted == false );;
 					} else {
 						this.groupOptions = [];
 					}
@@ -197,7 +196,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 				.then(response => {
 					console.log(response);
 					if (response.data != null) {
-						this.permissionOptions = response.data;
+						this.permissionOptions = response.data.filter( (item) => item.isdeleted == false );
 					} else {
 						this.permissionOptions = [];
 					}
@@ -363,12 +362,12 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 				axios.get(abyss.ajax.permission_list),
 			]).then(
 				axios.spread((subject_directories_list, organizations_list, user_group_list, subject_memberships, subject_types, permission_list) => {
-					this.directoryOptions = subject_directories_list.data;
-					this.orgOptions = organizations_list.data;
-					this.groupOptions = user_group_list.data;
-					this.memberOptions = subject_memberships.data;
-					this.typeOptions = subject_types.data;
-					this.permissionOptions = permission_list.data;
+					this.directoryOptions = subject_directories_list.data.filter( (item) => item.isdeleted == false );
+					this.orgOptions = organizations_list.data.filter( (item) => item.isdeleted == false );
+					this.groupOptions = user_group_list.data.filter( (item) => item.isdeleted == false );
+					this.memberOptions = subject_memberships.data.filter( (item) => item.isdeleted == false );
+					this.typeOptions = subject_types.data.filter( (item) => item.isdeleted == false );
+					this.permissionOptions = permission_list.data.filter( (item) => item.isdeleted == false );
 					console.log("this.directoryOption: ", this.directoryOption);
 
 					this.getPage(1);
