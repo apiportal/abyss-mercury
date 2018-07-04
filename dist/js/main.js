@@ -81,6 +81,7 @@ require.config({
 		"my-apis": "app/my-apis",
 		"explore": "app/explore",
 		"users": "app/users",
+		"apps": "app/apps",
 		"user-groups": "app/user-groups",
 		"user-directories": "app/user-directories",
 		"change-password": "app/change-password",

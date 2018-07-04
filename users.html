@@ -104,7 +104,8 @@
 									<small v-for="(u, index) in user.groups">
 										{{u.groupname}}<span v-if="index != (user.groups.length - 1)">, </span>
 									</small>
-									<small class="ml--auto">{{getGroupName(user.uuid)}}</small>
+									<!-- <small class="ml--auto">{{getGroupName(user.uuid)}}</small> -->
+									<!-- <small class="ml--auto">{{user.groupslist}}</small> -->
 								</div>
 								<div class="">
 									<strong class="small">PERMISSIONS:</strong>
@@ -135,22 +136,22 @@
 					<div class="p-3">
 						<div class="form-group" v-bind:class="{ 'has-error': errors.has('firstname') }">
 							<label for="firstname">First Name:</label>
-							<input type="text" name="firstname" id="firstname" v-model="user.firstname" v-validate="'required|min:2|alpha_spaces'" class="form-control" placeholder="First Name">
+							<input type="text" name="firstname" id="firstname" v-model="user.firstname" v-validate="'required|min:2|alpha_spaces'" class="form-control">
 							<em v-bind:class="{ 'show': errors.has('firstname') }">{{ errors.first('firstname') }}</em>
 						</div>
 						<div class="form-group" v-bind:class="{ 'has-error': errors.has('lastname') }">
 							<label for="lastname">Last Name:</label>
-							<input type="text" name="lastname" id="lastname" v-model="user.lastname" v-validate="'required|min:2|alpha_spaces'" class="form-control" placeholder="Last Name">
+							<input type="text" name="lastname" id="lastname" v-model="user.lastname" v-validate="'required|min:2|alpha_spaces'" class="form-control">
 							<em v-bind:class="{ 'show': errors.has('lastname') }">{{ errors.first('lastname') }}</em>
 						</div>
 						<div class="form-group" v-bind:class="{ 'has-error': errors.has('subjectname') }">
 							<label for="subjectname">UserName:</label>
-							<input type="text" name="subjectname" id="subjectname" v-model="user.subjectname" v-validate="{required: true, regex: /^[0-9A-Z_@.-]*$/i, min: 3}" class="form-control" placeholder="subjectname">
+							<input type="text" name="subjectname" id="subjectname" v-model="user.subjectname" v-validate="{required: true, regex: /^[0-9A-Z_@.-]*$/i, min: 3}" class="form-control">
 							<em v-bind:class="{ 'show': errors.has('subjectname') }">{{ errors.first('subjectname') }}</em>
 						</div>
 						<div class="form-group" v-bind:class="{ 'has-error': errors.has('displayname') }">
 							<label for="displayname">Display Name:</label>
-							<input type="text" name="displayname" id="displayname" v-model="user.displayname" v-validate="{required: true, alpha_spaces: true, min: 3, max: 30}" class="form-control" placeholder="displayname">
+							<input type="text" name="displayname" id="displayname" v-model="user.displayname" v-validate="{required: true, alpha_spaces: true, min: 3, max: 30}" class="form-control">
 							<em v-bind:class="{ 'show': errors.has('displayname') }">{{ errors.first('displayname') }}</em>
 						</div>
 						<div class="form-group" v-bind:class="{ 'has-error': errors.has('email') }">
@@ -161,9 +162,9 @@
 						<p v-if="rootState == 'edit'"><a href="#" class="txt-link" v-on:click="resetPassword = !resetPassword">Reset Password</a></p>
 						<div v-show="rootState == 'add' || resetPassword">
 							<div class="form-group js-showpass" v-bind:class="{ 'has-error': errors.has('password') }">
-								<label class="clearfix d-block" for="password">Password: <a href="#" class="float-right txt-link">Regenerate Password</a></label>
+								<label class="clearfix d-block" for="password">Password: <a href="#" class="float-right txt-link" v-on:click="regenPass()">Regenerate Password</a></label>
 								<div class="input-group">
-									<input type="password" name="password" id="password" v-model="user.password" v-validate="rootState == 'add' ? 'required|min:8|password_strength' : ''" class="form-control" placeholder="password">
+									<input type="password" name="password" id="password" v-model="user.password" v-validate="rootState == 'add' ? 'required|min:8|password_strength' : ''" class="form-control">
 									<a href="#" class="txt-link js-eye input-group-addon"><i class="fas fa-eye"></i></a>
 								</div>
 								<em v-bind:class="{ 'show': errors.has('password') }">{{ errors.first('password') }}</em>
@@ -199,7 +200,7 @@
 						</div>
 						<div class="form-group " v-bind:class="{ 'has-error': errors.has('typeid') }">
 							<label>User Type</label>
-							<select class="form-control" name="typeid" id="typeid" v-model="user.subjecttypeid" v-validate="'required'">
+							<select class="form-control" name="typeid" id="typeid" v-model="user.subjecttypeid" v-validate="'required'" disabled>
 								<option v-for="(typ,index) in typeOptions" :value="typ.uuid">{{typ.typename}}</option>
 							</select>
 							<em v-bind:class="{ 'show': errors.has('typeid') }">{{ errors.first('typeid') }}</em>
@@ -214,14 +215,22 @@
 						<div class="form-group v-select-color-pink">
 							<label>Add User to Group:</label>
 							<!-- <v-select label="groupname" multiple :filterable="false" :options="groupOptions" @search="getGroupOptions" v-model="user.groups"> -->
-							<v-select label="groupname" multiple :filterable="false" :options="groupOptions" v-model="user.groups">
+							<v-select label="groupname" multiple :filterable="false" :options="groupOptions" v-model="user.groups" :on-change="setUserGroups">
 								<span slot="no-options"></span>
+								<template slot="option" slot-scope="option">
+									<div>{{ option.groupname }}</div>
+									<code class="d-block small"><small>{{option.uuid}}</small></code>
+								</template>
+								<template slot="selected-option" slot-scope="option">
+									<div>{{ option.groupname }}</div>
+									<code class="d-block small"><small>{{option.uuid}}</small></code>
+								</template
 							</v-select>
 						</div>
 						<div class="form-group v-select-color-green">
 							<label>Assign Permission to User:</label>
 							<!-- <v-select label="permission" multiple :filterable="false" :options="permissionOptions" @search="getPermissionOptions" v-model="user.permissions"> -->
-							<v-select label="permission" multiple :filterable="false" :options="permissionOptions"  v-model="user.permissions">
+							<v-select label="permission" multiple :filterable="false" :options="permissionOptions" v-model="user.permissions" :on-change="setUserPermissions">
 								<span slot="no-options"></span>
 							</v-select>
 						</div>

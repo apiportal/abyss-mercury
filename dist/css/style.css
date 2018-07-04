@@ -10270,172 +10270,172 @@ input[type="button"].btn-block {
   border-color: rgba(135, 135, 135, 0.5); }
 
 .badge-primary {
-  color: #fff !important;
-  background-color: #177ec1 !important; }
+  color: #fff;
+  background-color: #177ec1; }
   .badge-primary[href]:hover, .badge-primary[href]:focus {
-    color: #fff !important;
+    color: #fff;
     text-decoration: none;
-    background-color: #126093 !important; }
+    background-color: #126093; }
 
 .badge-secondary {
-  color: #212121 !important;
-  background-color: #dddedf !important; }
+  color: #212121;
+  background-color: #dddedf; }
   .badge-secondary[href]:hover, .badge-secondary[href]:focus {
-    color: #212121 !important;
+    color: #212121;
     text-decoration: none;
-    background-color: #c3c5c6 !important; }
+    background-color: #c3c5c6; }
 
 .badge-success {
-  color: #fff !important;
-  background-color: #4cac00 !important; }
+  color: #fff;
+  background-color: #4cac00; }
   .badge-success[href]:hover, .badge-success[href]:focus {
-    color: #fff !important;
+    color: #fff;
     text-decoration: none;
-    background-color: #357900 !important; }
+    background-color: #357900; }
 
 .badge-info {
-  color: #fff !important;
-  background-color: #db408d !important; }
+  color: #fff;
+  background-color: #db408d; }
   .badge-info[href]:hover, .badge-info[href]:focus {
-    color: #fff !important;
+    color: #fff;
     text-decoration: none;
-    background-color: #c32573 !important; }
+    background-color: #c32573; }
 
 .badge-warning {
-  color: #fff !important;
-  background-color: #ec7700 !important; }
+  color: #fff;
+  background-color: #ec7700; }
   .badge-warning[href]:hover, .badge-warning[href]:focus {
-    color: #fff !important;
+    color: #fff;
     text-decoration: none;
-    background-color: #b95d00 !important; }
+    background-color: #b95d00; }
 
 .badge-danger {
-  color: #fff !important;
-  background-color: #e31e1e !important; }
+  color: #fff;
+  background-color: #e31e1e; }
   .badge-danger[href]:hover, .badge-danger[href]:focus {
-    color: #fff !important;
+    color: #fff;
     text-decoration: none;
-    background-color: #b71717 !important; }
+    background-color: #b71717; }
 
 .badge-white {
-  color: #212121 !important;
-  background-color: #fff !important; }
+  color: #212121;
+  background-color: #fff; }
   .badge-white[href]:hover, .badge-white[href]:focus {
-    color: #212121 !important;
+    color: #212121;
     text-decoration: none;
-    background-color: #e6e6e6 !important; }
+    background-color: #e6e6e6; }
 
 .badge-black {
-  color: #fff !important;
-  background-color: #212121 !important; }
+  color: #fff;
+  background-color: #212121; }
   .badge-black[href]:hover, .badge-black[href]:focus {
-    color: #fff !important;
+    color: #fff;
     text-decoration: none;
-    background-color: #080808 !important; }
+    background-color: #080808; }
 
 .badge-grey {
-  color: #fff !important;
-  background-color: #8b8e91 !important; }
+  color: #fff;
+  background-color: #8b8e91; }
   .badge-grey[href]:hover, .badge-grey[href]:focus {
-    color: #fff !important;
+    color: #fff;
     text-decoration: none;
-    background-color: #717578 !important; }
+    background-color: #717578; }
 
 .badge-light {
-  color: #212121 !important;
-  background-color: #f8f9fa !important; }
+  color: #212121;
+  background-color: #f8f9fa; }
   .badge-light[href]:hover, .badge-light[href]:focus {
-    color: #212121 !important;
+    color: #212121;
     text-decoration: none;
-    background-color: #dae0e5 !important; }
+    background-color: #dae0e5; }
 
 .badge-dark {
-  color: #fff !important;
-  background-color: #343a40 !important; }
+  color: #fff;
+  background-color: #343a40; }
   .badge-dark[href]:hover, .badge-dark[href]:focus {
-    color: #fff !important;
+    color: #fff;
     text-decoration: none;
-    background-color: #1d2124 !important; }
+    background-color: #1d2124; }
 
 .badge-blue {
-  color: #fff !important;
-  background-color: #177ec1 !important; }
+  color: #fff;
+  background-color: #177ec1; }
   .badge-blue[href]:hover, .badge-blue[href]:focus {
-    color: #fff !important;
+    color: #fff;
     text-decoration: none;
-    background-color: #126093 !important; }
+    background-color: #126093; }
 
 .badge-indigo {
-  color: #fff !important;
-  background-color: #161c9a !important; }
+  color: #fff;
+  background-color: #161c9a; }
   .badge-indigo[href]:hover, .badge-indigo[href]:focus {
-    color: #fff !important;
+    color: #fff;
     text-decoration: none;
-    background-color: #10146d !important; }
+    background-color: #10146d; }
 
 .badge-purple {
-  color: #fff !important;
-  background-color: #6f42c1 !important; }
+  color: #fff;
+  background-color: #6f42c1; }
   .badge-purple[href]:hover, .badge-purple[href]:focus {
-    color: #fff !important;
+    color: #fff;
     text-decoration: none;
-    background-color: #59339d !important; }
+    background-color: #59339d; }
 
 .badge-pink {
-  color: #fff !important;
-  background-color: #db408d !important; }
+  color: #fff;
+  background-color: #db408d; }
   .badge-pink[href]:hover, .badge-pink[href]:focus {
-    color: #fff !important;
+    color: #fff;
     text-decoration: none;
-    background-color: #c32573 !important; }
+    background-color: #c32573; }
 
 .badge-red {
-  color: #fff !important;
-  background-color: #e31e1e !important; }
+  color: #fff;
+  background-color: #e31e1e; }
   .badge-red[href]:hover, .badge-red[href]:focus {
-    color: #fff !important;
+    color: #fff;
     text-decoration: none;
-    background-color: #b71717 !important; }
+    background-color: #b71717; }
 
 .badge-orange {
-  color: #fff !important;
-  background-color: #ec7700 !important; }
+  color: #fff;
+  background-color: #ec7700; }
   .badge-orange[href]:hover, .badge-orange[href]:focus {
-    color: #fff !important;
+    color: #fff;
     text-decoration: none;
-    background-color: #b95d00 !important; }
+    background-color: #b95d00; }
 
 .badge-yellow {
-  color: #fff !important;
-  background-color: #ecb100 !important; }
+  color: #fff;
+  background-color: #ecb100; }
   .badge-yellow[href]:hover, .badge-yellow[href]:focus {
-    color: #fff !important;
+    color: #fff;
     text-decoration: none;
-    background-color: #b98b00 !important; }
+    background-color: #b98b00; }
 
 .badge-green {
-  color: #fff !important;
-  background-color: #4cac00 !important; }
+  color: #fff;
+  background-color: #4cac00; }
   .badge-green[href]:hover, .badge-green[href]:focus {
-    color: #fff !important;
+    color: #fff;
     text-decoration: none;
-    background-color: #357900 !important; }
+    background-color: #357900; }
 
 .badge-teal {
-  color: #fff !important;
-  background-color: #18cb96 !important; }
+  color: #fff;
+  background-color: #18cb96; }
   .badge-teal[href]:hover, .badge-teal[href]:focus {
-    color: #fff !important;
+    color: #fff;
     text-decoration: none;
-    background-color: #139d74 !important; }
+    background-color: #139d74; }
 
 .badge-cyan {
-  color: #fff !important;
-  background-color: #00bbbb !important; }
+  color: #fff;
+  background-color: #00bbbb; }
   .badge-cyan[href]:hover, .badge-cyan[href]:focus {
-    color: #fff !important;
+    color: #fff;
     text-decoration: none;
-    background-color: #008888 !important; }
+    background-color: #008888; }
 
 .fade {
   opacity: 0;
@@ -11751,6 +11751,10 @@ tbody tr.active {
 .preloader-it {
   background: #fff;
   position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
   z-index: 10001;
   height: 100%;
   width: 100%;
@@ -12133,28 +12137,26 @@ a#toggle_mobile_nav {
         font-size: 12px; }
   .navbar .toggle-left-nav-btn {
     padding: 0 18px; }
-  .navbar .top-nav-search {
-    padding-top: 14px; }
-    .navbar .top-nav-search .input-group {
-      width: 100%; }
-      .navbar .top-nav-search .input-group input {
-        border-radius: 50px;
-        border-color: rgba(0, 0, 0, 0.27);
-        height: 36px;
-        background: #fff;
-        padding-right: 30px; }
-      .navbar .top-nav-search .input-group .input-group-btn {
-        position: absolute;
-        right: 25px;
-        top: 8px;
-        z-index: 4; }
-        .navbar .top-nav-search .input-group .input-group-btn > .btn {
-          background: transparent none repeat scroll 0 0;
-          border: medium none;
-          padding: 0; }
-          .navbar .top-nav-search .input-group .input-group-btn > .btn i {
-            color: #878787;
-            font-size: 20px; }
+  .navbar .top-nav-search .input-group {
+    width: 100%; }
+    .navbar .top-nav-search .input-group input {
+      border-radius: 50px;
+      border-color: rgba(0, 0, 0, 0.27);
+      height: 36px;
+      background: #fff;
+      padding-right: 30px; }
+    .navbar .top-nav-search .input-group .input-group-btn {
+      position: absolute;
+      right: 25px;
+      top: 8px;
+      z-index: 4; }
+      .navbar .top-nav-search .input-group .input-group-btn > .btn {
+        background: transparent none repeat scroll 0 0;
+        border: medium none;
+        padding: 0; }
+        .navbar .top-nav-search .input-group .input-group-btn > .btn i {
+          color: #878787;
+          font-size: 20px; }
   .navbar .nav > li.dropdown {
     position: relative; }
   .navbar .nav > li.full-width-drp {
@@ -13347,7 +13349,8 @@ a#toggle_mobile_nav {
   .column h6 {
     margin-top: 0;
     margin-bottom: 0;
-    line-height: 20px; }
+    line-height: 20px;
+    word-wrap: break-word; }
 
 .column-fixed-right {
   height: 100%;
@@ -13690,7 +13693,8 @@ a#toggle_mobile_nav {
   max-width: 0 !important; }
 
 .vs-users .vs-init .columns .add-column,
-.vs-users .vs-init .columns .permissions-column {
+.vs-users .vs-init .columns .permissions-column, .vs-my-apps .vs-init .columns .add-column,
+.vs-my-apps .vs-init .columns .permissions-column {
   -webkit-box-flex: 0 !important;
   -ms-flex: 0 0 0px !important;
   flex: 0 0 0 !important;
@@ -13927,8 +13931,7 @@ strong.lbl {
 .req-res-sm {
   text-transform: uppercase;
   min-width: 65px;
-  padding: 3px 7px;
-  background-color: #DDD; }
+  padding: 3px 7px; }
   .req-res-sm i {
     margin: 0 5px 0 5px; }
 

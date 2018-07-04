@@ -24,13 +24,13 @@
 				</div>
 				<div class="column-content">
 					<div class="nicescroll-bar">
-						<v-select label="openapidocument.info.title" :filterable="false" :options="apiOptions" @search="getApiOptions" :on-change="filterApi" placeholder="Search API">
+						<v-select label="name" :filterable="true" :options="businessApiOptions" @search="getBusinessApiOptions" :on-change="filterApi" placeholder="Search API">
 							<span slot="no-options"></span>
 							<template slot="option" slot-scope="option">
-								<div>{{ option.openapidocument.info.title }}</div>
+								<div>{{ option.openapidocument.info.title }} <small class="text-muted">{{ option.openapidocument.info.version }}</small></div>
 							</template>
 							<template slot="selected-option" slot-scope="option">
-								<div>{{ option.openapidocument.info.title }}</div>
+								<div>{{ option.openapidocument.info.title }} <small class="text-muted">{{ option.openapidocument.info.version }}</small></div>
 							</template>
 						</v-select>
 						<ul class="nav flex-column nav-controls nav-controls-first column-space">
@@ -53,13 +53,13 @@
 				<div class="column-content">
 					<div class="nicescroll-bar">
 						<!-- 2DO -->
-						<v-select label="openapidocument.info.title" :filterable="false" :options="apiOptions" @search="getApiOptions" :on-change="filterApi" placeholder="Search Proxies">
+						<v-select label="name" :filterable="true" :options="proxyApiOptions" @search="getProxyApiOptions" :on-change="filterApi" placeholder="Search Proxies">
 							<span slot="no-options"></span>
 							<template slot="option" slot-scope="option">
-								<div>{{ option.openapidocument.info.title }}</div>
+								<div>{{ option.openapidocument.info.title }} <small class="text-muted">{{ option.openapidocument.info.version }}</small></div>
 							</template>
 							<template slot="selected-option" slot-scope="option">
-								<div>{{ option.openapidocument.info.title }}</div>
+								<div>{{ option.openapidocument.info.title }} <small class="text-muted">{{ option.openapidocument.info.version }}</small></div>
 							</template>
 						</v-select>
 						<ul class="nav flex-column nav-controls nav-controls-first column-space">
@@ -382,6 +382,12 @@
 													<li><a title="Add securityScheme" v-on:click="addSecurityDefinition('newSecurityScheme')"><i class="fa fa-plus"></i> Add securityScheme</a></li>
 													<li><a title="Add bearerAuth" v-on:click="addSecurityDefinition('bearerAuth')"><i class="fa fa-plus"></i> Add bearerAuth</a></li>
 													<li><a title="Add basicAuth" v-on:click="addSecurityDefinition('basicAuth')"><i class="fa fa-plus"></i> Add basicAuth</a></li>
+													<li><a title="Add abyssCookieAuth" v-on:click="addSecurityDefinition('abyssCookieAuth')"><i class="fa fa-plus"></i> Add abyssCookieAuth</a></li>
+													<li><a title="Add abyssHttpBasicAuth" v-on:click="addSecurityDefinition('abyssHttpBasicAuth')"><i class="fa fa-plus"></i> Add abyssHttpBasicAuth</a></li>
+													<li><a title="Add abyssApiKeyAuth" v-on:click="addSecurityDefinition('abyssApiKeyAuth')"><i class="fa fa-plus"></i> Add abyssApiKeyAuth</a></li>
+													<li><a title="Add abyssAppKeyAuth" v-on:click="addSecurityDefinition('abyssAppKeyAuth')"><i class="fa fa-plus"></i> Add abyssAppKeyAuth</a></li>
+													<li><a title="Add abyssAppKeyCookieAuth" v-on:click="addSecurityDefinition('abyssAppKeyCookieAuth')"><i class="fa fa-plus"></i> Add abyssAppKeyCookieAuth</a></li>
+													<li><a title="Add abyssJWTBearerAuth" v-on:click="addSecurityDefinition('abyssJWTBearerAuth')"><i class="fa fa-plus"></i> Add abyssJWTBearerAuth</a></li>
 													<li><a title="Remove securityScheme" v-on:click="removeSecurityDefinition(sdname)"><i class="fa fa-trash-alt"></i> Remove securityScheme</a></li>
 												</ul>
 											</div>
@@ -607,8 +613,7 @@
 					</form>
 				</div>
 			</aside>
-			<!-- <aside class="column column-aside edit-column licences-column column-minimize" v-if="api.isproxyapi"> -->
-			<aside class="column column-aside edit-column licences-column column-minimize">
+			<aside class="column column-aside edit-column licences-column column-minimize" v-if="api.isproxyapi">
 				<div class="clearfix column-header column-min-button">
 					<h5 class="column-header-title">Licenses <span class="badge badge-pill badge-outline float-right">{{myLicenseList.length}}</span></h5>
 				</div>
@@ -749,12 +754,13 @@
 									<div class="ficon-actions dropdown dropdown-hover">
 										<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
 										<ul class="dropdown-menu dropdown-menu-right" role="menu">
+											<li v-if="$root.abyssSandbox"><a v-bind:href="$root.abyssEndpoint+index" target="_blank"><i class="fa fa-copy"></i> Open</a></li>
 											<li><a v-on:click="duplicateResource(index)"><i class="fa fa-copy"></i> Duplicate path</a></li>
 											<li><a v-on:click="removePath(index)"><i class="is-danger fa fa-trash-alt"></i> Remove path</a></li>
 										</ul>
 									</div>
 								</div>
-								<div v-bind:id="'path'+iii" class="collapse field-acc p-0">
+								<div v-bind:id="'path'+iii" class="collapse field-tabs field-acc p-0">
 									<div class="px-3">
 										<div class="form-group">
 											<label>Path:</label>
@@ -772,11 +778,11 @@
 											<label>Operations</label>
 										</div>
 									</div>
-								</div>
 									<div v-if="Object.keys(httpMethods).length==0" class="ficon-act justify-content-end">
 										<a v-on:click="addOperation()">Add Operation <i class="fa fa-fw fa-plus"></i></a>
 									</div>
 									<api-method :openapi="openapi" :method="method" :index="key" :maintags="maintags" v-for="(method,key,oindex) in httpMethods" :path="index" :key="oindex"></api-method>
+								</div>
 							</article>
 						</api-resource>
 					</form>

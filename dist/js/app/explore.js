@@ -99,17 +99,20 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select'], funct
 		methods: {
 			getApiOptions(search, loading) {
 				loading(true);
-				axios.get(this.ajaxUrl, this.ajaxHeaders)
+				axios.get(this.ajaxUrl + '?likename=' + search, this.ajaxHeaders)
 				.then((response) => {
 					if (response.data != null) {
-						this.apiOptions = response.data.filter( (item) => item.isdeleted == false );
-						console.log("this.apiOptions: ", this.apiOptions);
+						this.apiOptions = response.data.filter( (item) => item.isdeleted == false && item.apivisibilityid == 'e63c2874-aa12-433c-9dcf-65c1e8738a14' );
+						this.apiOptions.forEach((value, key) => {
+							Vue.set(value, 'name', value.openapidocument.info.title);
+						});
 					} else {
 						this.apiOptions = [];
 					}
 					loading(false);
 				}, error => {
 					this.handleError(error);
+					loading(false);
 				});
 			},
 			filterApi(filter) {
@@ -133,7 +136,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select'], funct
 				axios.get(this.ajaxUrl + '?page=' + p + param)
 				.then(response => {
 					// console.log("p: ", p);
-					this.apiList = response.data.filter( (item) => item.isdeleted == false );
+					this.apiList = response.data.filter( (item) => item.isdeleted == false && item.apivisibilityid == 'e63c2874-aa12-433c-9dcf-65c1e8738a14' );
 					this.paginate = this.makePaginate(response.data);
 				}, error => {
 					this.handleError(error);

@@ -97,11 +97,11 @@
 							<h6>{{policy.policyinstance.info.title}}</h6>
 							<p class="small">{{policy.policyinstance.info.description}}</p>
 							<div v-for="(cf, conf, cix) in policy.policyinstance.configuration">
-								<div class="form-group" v-if="cf.schema.type == 'string' && !cf.schema.enum">
+								<div class="form-group" v-if="(cf.schema.type == 'string' || cf.schema.type == 'integer' || cf.schema.type == 'number') && !cf.schema.enum">
 									<label :for="conf+cix">{{cf.description}}:</label>
 									<input type="text" :name="conf+cix" :id="conf+cix" v-model="cf.value" class="form-control">
 								</div>
-								<div class="form-group" v-if="cf.schema.type == 'string' && cf.schema.enum">
+								<div class="form-group" v-if="(cf.schema.type == 'string' || cf.schema.type == 'integer' || cf.schema.type == 'number') && cf.schema.enum">
 									<label :for="conf+cix">{{cf.description}}:</label>
 									<select class="form-control" :name="conf+cix" :id="conf+cix" v-model="cf.value" v-validate="'required'">
 										<option v-for="(enm,index) in cf.schema.enum" :value="enm">{{enm}}</option>

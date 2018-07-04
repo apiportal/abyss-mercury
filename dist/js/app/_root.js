@@ -56,10 +56,15 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 	};
 	VeeValidate.Validator.localize(dictionary);
 	VeeValidate.Validator.extend('password_strength', {
-		getMessage: field => 'The password must contain at least: 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character (*,._&?)',
+		getMessage: field => 'The password must contain at least: 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character (!?=#*$@+-.,)',
 		validate: value => {
-			var strongRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})");
+			// var strongRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})");
+			// !?=#*$@+-.
+			var strongRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!\?@,=#\$%\^\+\-\.&\*])(?=.{8,})");
 			return strongRegex.test(value);
+			// !"#$%&'()*+,-./:;<=>?@[\]^_`{|}~
+			// . ^ $ * + - ? ( ) [ ] { } \ |
+			// !#%&'/:;<=>\$\(\)\*\+,\-\.\\?\[\]\^\{\|\}_`~@
 		}
 	});
 	Vue.filter('formatDateTime', function(value) {
@@ -87,6 +92,29 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 				return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
 					(c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
 				);
+			},
+			generatePassword(numLc, numUc, numDigits, numSpecial) {
+				numLc = numLc || 4;
+				numUc = numUc || 2;
+				numDigits = numDigits || 2;
+				numSpecial = numSpecial || 2;
+				var lcLetters = 'abcdefghijklmnopqrstuvwxyz';
+				var ucLetters = lcLetters.toUpperCase();
+				var numbers = '0123456789';
+				var special = '!?=#*$@+-.,';
+				var getRand = function(values) {
+					return values.charAt(Math.floor(Math.random() * values.length));
+				};
+				function shuffle(o){ //v1.0
+					for(var j, x, i = o.length; i; j = Math.floor(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
+					return o;
+				}
+				var pass = [];
+				for(var i = 0; i < numLc; ++i) { pass.push(getRand(lcLetters)) }
+				for(var i = 0; i < numUc; ++i) { pass.push(getRand(ucLetters)) }
+				for(var i = 0; i < numDigits; ++i) { pass.push(getRand(numbers)) }
+				for(var i = 0; i < numSpecial; ++i) { pass.push(getRand(special)) }
+				return shuffle(pass).join('');
 			},
 			getObjCount(obj) {
 				var count = 0;
@@ -155,8 +183,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 			updateItem(url, item, head, arr) {
 				return axios.put(url, item, head).then(response => {
 				// return axios.post(url, item, head).then(response => {
-					console.log("PUT item: ", item);
-					console.log("PUT response: ", response);
+					// console.log("PUT item: ", item);
+					// console.log("PUT response: ", response);
 					return response;
 				}, error => {
 					this.handleError(error);
@@ -310,13 +338,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 			pageClassPrefix: 'vs',
 			pageClass: '',
 			ajaxHeaders: {},
+			abyssEndpoint: abyss.abyssLocation,
+			abyssSandbox: abyss.isAbyssSandbox,
 			abyssVersion: abyss.abyssVersion,
-			// ajax_user_list: abyss.ajax.user_list,
-			// ajax_api_visibility_list: abyss.ajax.api_visibility_list,
-			// ajax_api_states_list: abyss.ajax.api_states_list,
-			// ajax_api_group_list: abyss.ajax.api_group_list,
-			// ajax_api_category_list: abyss.ajax.api_category_list,
-			// ajax_api_tag_list: abyss.ajax.api_tag_list,
 			rootData: {},
 			taxAction: '',
 			taxTitle: '',
@@ -538,7 +562,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 			},
 			getRootData(id) {
 				axios.all([
-					axios.get(abyss.ajax.user_list + '/' + id),
+					axios.get(abyss.ajax.subjects + '/' + id),
 					axios.get(abyss.ajax.api_visibility_list),
 					axios.get(abyss.ajax.api_states_list),
 					axios.get(abyss.ajax.api_group_list),
@@ -546,8 +570,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 					axios.get(abyss.ajax.api_tag_list),
 					// axios.get('/data/create-api.json')
 				]).then(
-					axios.spread((user_list, api_visibility_list, api_states_list, api_group_list, api_category_list, api_tag_list) => {
-						Vue.set(this.rootData, 'user', user_list.data[0] );
+					axios.spread((user, api_visibility_list, api_states_list, api_group_list, api_category_list, api_tag_list) => {
+						Vue.set(this.rootData, 'user', user.data[0] );
 						Vue.set(this.rootData, 'myApiVisibilityList', api_visibility_list.data );
 						Vue.set(this.rootData, 'myApiStateList', api_states_list.data );
 						Vue.set(this.rootData, 'myApiGroupList', api_group_list.data );

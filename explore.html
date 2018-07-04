@@ -21,13 +21,13 @@
 				<div v-on:click="$parent.selectApi(api, 'preview')" th:include="webroot/frags/api/api-preview.htm :: apiList"></div>
 			</api-list> -->
 			<div class="row bg-white">
-				<v-select label="openapidocument.info.title" :filterable="false" :options="apiOptions" @search="getApiOptions" :on-change="filterApi" placeholder="Search API">
+				<v-select label="name" :filterable="false" :options="apiOptions" @search="getApiOptions" :on-change="filterApi" placeholder="Search API">
 					<span slot="no-options"></span>
 					<template slot="option" slot-scope="option">
-						<div>{{ option.openapidocument.info.title }}</div>
+						<div>{{ option.openapidocument.info.title }} <small class="text-muted">{{ option.openapidocument.info.version }}</small></div>
 					</template>
 					<template slot="selected-option" slot-scope="option">
-						<div>{{ option.openapidocument.info.title }}</div>
+						<div>{{ option.openapidocument.info.title }} <small class="text-muted">{{ option.openapidocument.info.version }}</small></div>
 					</template>
 				</v-select>
 			</div>

@@ -43,7 +43,16 @@ define(['config', 'Vue', 'axios', 'vee-validate'], function (abyss, Vue, axios, 
 					}
 					// alert('Correct them errors!');
 				});
-			}
+			},
+			preload() {
+				$('.preloader-it > .la-anim-1').addClass('la-animate');
+				$(document).ready(function() {
+					$(".preloader-it").fadeOut("slow");
+				});
+			},
+		},
+		mounted() {
+			this.preload();
 		},
 		created() {
 			console.log("JS: auth.js: ", this.abyssVersion);

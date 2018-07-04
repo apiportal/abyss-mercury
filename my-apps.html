@@ -1,0 +1,166 @@
+﻿<!DOCTYPE html>
+<html class="vs-my-apps" lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:include="webroot/frags/layout/head.htm :: header">
+<script src="/dist/js/lib/jquery.min.js"></script>
+<script src="/dist/js/lib/thymus.min.js" id="thymus"
+	data-thx-base-path="." data-thx-frag-extension=".htm"
+	data-thx-head-frag="th:include=webroot/frags/layout/head.htm :: header"
+	data-thx-preload-js="/dist/js/loader.js"
+	data-thx-onfrags="fragsListener();" data-thx-onfrag="fragListener()"></script>
+</head>
+<body>
+<div id="portal" class="wrapper" v-bind:class="pageClass">
+	<div th:replace="webroot/frags/layout/navs.htm :: navs"></div>
+	<main class="page-wrapper">
+	<my-apps inline-template v-on:set-state="setState" v-on:set-page="setPage" v-bind:root-state="rootState" v-if="!$root.isLoading">
+		<div class="columns">
+			<section class="column column-main column-main-fixed">
+				<div class="column-main-fixed-overlay" v-if="rootState == 'add' || rootState == 'edit'" v-on:click="$emit('set-state', 'init'); cancelApp()"></div>
+				<div class="nicescroll--bar">
+					<table class="table table-hover table-bordered table-edge">
+						<tr>
+							<th class="td-bool" v-bind:class="sort.order" v-on:click="sortList(sort, 'isactivated', Boolean)">Status</th>
+							<th class="td-name" v-bind:class="sort.order" v-on:click="sortList(sort, 'firstname', String)">First Name</th>
+							<th class="td-name" v-bind:class="sort.order" v-on:click="sortList(sort, 'lastname', String)">Last Name</th>
+							<th class="td-name" v-bind:class="sort.order" v-on:click="sortList(sort, 'subjectname', String)">Appname / Email</th>
+							<th class="td-name" v-bind:class="sort.order" v-on:click="sortList(sort, 'displayname', String)">Display Name</th>
+							<th class="td-datetime-x" v-bind:class="sort.order" v-on:click="sortList(sort, 'created', Date)">Created / Updated / Deleted</th>
+							<th class="td-datetime" v-bind:class="sort.order" v-on:click="sortList(sort, 'totallogincount', Number)">Logins</th>
+							<th class="td-datetime" v-bind:class="sort.order" v-on:click="sortList(sort, 'failedlogincount', Number)">Failed Logins</th>
+							<th class="td-action-1"></th>
+							<th class="td-action-1"></th>
+						</tr>
+						<tr v-for="(app, index) in sortBy(sort, appList)" v-bind:key="app.uuid" v-bind:class="{'active': isSelected(index)}">
+							<td class="text-center">
+								<i class="fas fa-circle" title="Not Activated" v-if="!app.isactivated"></i>
+								<i class="fas fa-check-circle txt-green" title="Activated" v-if="app.isactivated"></i>
+								<i class="fas fa-times-circle txt-red" title="Deleted" v-if="app.isdeleted"></i>
+							</td>
+							<td>{{ app.firstname }}</td>
+							<td>{{ app.lastname }}</td>
+							<td>
+								<div class="d-block">{{app.subjectname}}</div>
+								<small class="d-block">{{app.email}}</small>
+								<code class="d-block small txt-purple"><small>{{app.uuid}}</small></code>
+							</td>
+							<td>
+								{{app.displayname}}
+							</td>
+							<td>
+								<div>
+									<strong class="small">CREATED:</strong>
+									<small>{{app.created | formatDateTime}}</small>
+								</div>
+								<div>
+									<strong class="small">UPDATED:</strong>
+									<small>{{app.updated | formatDateTime}}</small>
+								</div>
+								<div v-if="app.isdeleted">
+									<strong class="small">DELETED:</strong>
+									<small>{{app.deleted | formatDateTime}}</small>
+								</div>
+							</td>
+							<td>
+								<div class="d-flex align-items-center">
+									<div class="d-block small">
+										<strong class="d-block">LAST LOGIN</strong>
+										<span class="d-block">{{app.lastloginat | formatDateTime}}</span>
+									</div>
+									<strong class="ml-auto">{{app.totallogincount}}</strong>
+								</div>
+							</td>
+							<td>
+								<div class="d-flex align-items-center">
+									<div class="d-block small">
+										<strong class="d-block">LAST FAILED</strong>
+										<span class="d-block">{{app.lastfailedloginat | formatDateTime}}</span>
+									</div>
+									<strong class="ml-auto">{{app.failedlogincount}}</strong>
+								</div>
+							</td>
+							<td class="td-action-1">
+								<a href="#" class="btn btn-xl txt-link btn-square" title="EDIT APP" v-on:click="$emit('set-state', 'edit'); selectApp(app, index);"><i class="fas fa-edit"></i></a>
+							</td>
+							<td class="td-action-1">
+								<a href="#" class="btn btn-xl txt-link txt-grey btn-square" title="DELETE APP" v-on:click="deleteApp(app, index)"><i class="fas fa-trash-alt"></i></a>
+							</td>
+						</tr>
+					</table>
+					<div th:replace="webroot/frags/layout/pagination.htm :: pagination"></div>
+				</div>
+			</section>
+			<aside class="column column-aside add-column">
+				<div class="nicescroll-bar">
+					<div class="clearfix brd-b column-header column-min-button">
+						<h5 class="column-header-title" v-if="rootState == 'init' || rootState == 'add'">Add New App</h5>
+						<h5 class="column-header-title" v-if="rootState == 'edit'">Edit App</h5>
+					</div>
+					<div class="p-3">
+						<div class="form-group" v-bind:class="{ 'has-error': errors.has('firstname') }">
+							<label for="firstname">APP Name:</label>
+							<input type="text" name="firstname" id="firstname" v-model="app.firstname" v-validate="'required|min:2|alpha_spaces'" class="form-control">
+							<em v-bind:class="{ 'show': errors.has('firstname') }">{{ errors.first('firstname') }}</em>
+						</div>
+						<div class="form-group" v-bind:class="{ 'has-error': errors.has('lastname') }">
+							<label for="lastname">Description:</label>
+							<textarea name="lastname" id="lastname" v-model="app.lastname" v-validate="'required'" class="form-control"></textarea>
+							<em v-bind:class="{ 'show': errors.has('lastname') }">{{ errors.first('lastname') }}</em>
+						</div>
+						<div class="form-group form-inline">
+							<label class="d-block">Activate APP</label>
+							<span class="switch switch-primary ml-auto">
+								<input type="checkbox" name="isactived" id="isactived" v-model="app.isactived" checked>
+								<label for="isactived"></label>
+							</span>
+						</div>
+						<div class="form-group " v-bind:class="{ 'has-error': errors.has('orgid') }">
+							<label>Organization Id</label>
+							<select class="form-control" name="orgid" id="orgid" v-model="app.organizationid" v-validate="'required'">
+								<option v-for="(org,index) in orgOptions" :value="org.organizationid">{{org.name}}</option>
+							</select>
+							<em v-bind:class="{ 'show': errors.has('orgid') }">{{ errors.first('orgid') }}</em>
+						</div>
+						<div class="form-group " v-bind:class="{ 'has-error': errors.has('dirid') }">
+							<label>Directory</label>
+							<select class="form-control" name="dirid" id="dirid" v-model="app.subjectdirectoryid" v-validate="'required'">
+								<option v-for="(dir,index) in directoryOptions" :value="dir.uuid">{{dir.directoryname}}</option>
+							</select>
+							<em v-bind:class="{ 'show': errors.has('dirid') }">{{ errors.first('dirid') }}</em>
+						</div>
+						<!-- <div v-if="rootState == 'edit'"> -->
+						<div class="clearfix">
+							<div class="form-group text-center"><a href="#" class="btn btn-block btn-sm btn-green js-copy" data-clipboard-targets="#appkey,#appsecret">Copy APP Key & APP Secret</a></div>
+							<div class="form-group" v-bind:class="{ 'has-error': errors.has('appkey') }">
+								<label class="clearfix d-block" for="appkey">App Key: <a href="#" class="float-right txt-link" v-on:click="regenKey()">Regenerate APP Key</a></label>
+								<input type="text" name="appkey" id="appkey" :value="app.uuid" v-validate="'required'" class="form-control" readonly="">
+								<em v-bind:class="{ 'show': errors.has('appkey') }">{{ errors.first('appkey') }}</em>
+							</div>
+							<div class="form-group js-showpass" v-bind:class="{ 'has-error': errors.has('appsecret') }">
+								<label class="clearfix d-block" for="password">App Secret: <a href="#" class="float-right txt-link" v-on:click="regenPass(4,4,4,4)">Regenerate APP Secret</a></label>
+								<div class="input-group">
+									<input type="password" name="appsecret" id="appsecret" v-model="app.password" v-validate="resetPassword ? 'required|min:8|password_strength' : ''" class="form-control">
+									<a href="#" class="txt-link js-eye input-group-addon"><i class="fas fa-eye"></i></a>
+								</div>
+								<em v-bind:class="{ 'show': errors.has('appsecret') }">{{ errors.first('appsecret') }}</em>
+							</div>
+						</div>
+						<div class="form-group d-flex justify-content-between">
+							<button type="button" class="btn btn-secondary btn-rounded" v-on:click="$emit('set-state', 'init'); cancelApp()">CANCEL</button>
+							<button type="button" class="btn btn-primary btn-rounded" v-if="rootState == 'add'" v-on:click="appAction('add')">ADD APP</button>
+							<button type="button" class="btn btn-primary btn-rounded" v-if="rootState == 'edit'" v-on:click="appAction('edit')">SAVE</button>
+						</div>
+					</div>
+				</div>
+			</aside>
+			<div class="btn-float-br btn-float-under">
+				<!-- <button class="btn btn-xl btn-red btn-circle" v-on:click="fixRel()"><i class="fas fa-globe"></i></button> -->
+				<button class="btn btn-xl btn-green btn-circle" v-on:click="$emit('set-state', 'add', 'init')" title="ADD NEW APP "><i class="fas fa-plus"></i></button>
+			</div>
+		</div>
+	</my-apps>
+	</main>
+</div>
+<script src="/dist/js/plugins/clipboard.min.js"></script>
+<script id="reqVue" data-module="apps" data-main="/dist/js/main" src="/dist/js/lib/require.min.js"></script>
+</body>
+</html>
