@@ -409,8 +409,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 			abyssEndpoint: abyss.abyssLocation,
 			abyssSandbox: abyss.isAbyssSandbox,
 			abyssVersion: abyss.abyssVersion,
+			abyssOrgName: '',
+			abyssOrgId: '',
 			rootData: {},
-			orgName: '',
 			taxAction: '',
 			taxTitle: '',
 			taxList: '',
@@ -653,13 +654,13 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 						Vue.set(this.rootData, 'apiTagList', api_tag_list.data );
 						// console.log("ROOT this.rootData: ", this.rootData);
 						this.isLoading = false;
-						axios.get(abyss.ajax.organizations_list, this.ajaxHeaders)
+						/*axios.get(abyss.ajax.organizations_list, this.ajaxHeaders)
 						.then(response => {
 							var orgName = _.find(response.data, { 'uuid': this.rootData.user.organizationid });
 							this.orgName = orgName.name;
 						}, error => {
 							this.handleError(error);
-						});
+						});*/
 						// console.log("this.rootData: ", JSON.stringify(this.rootData, null, '\t') );
 					})
 				).catch(error => {
@@ -703,6 +704,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 			// if ( !this.$cookie.get('abyss.session') ) {
 			// 	window.location.href = '/abyss/login';
 			// }
+			this.abyssOrgName = this.$cookie.get('abyss.login.organization.name');
+			this.abyssOrgId = this.$cookie.get('abyss.login.organization.uuid');
 			var principal = this.$cookie.get('abyss.principal.uuid');
 			this.newTax = _.cloneDeep(this.tax);
 			// console.log("principal: ", principal);
