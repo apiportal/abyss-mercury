@@ -250,6 +250,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 					});
 					// 2DO append memberOptions.uuid
 					this.paginate = this.makePaginate(response.data);
+					this.preload();
 				}, error => {
 					this.handleError(error);
 				});
@@ -267,7 +268,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 			},
 		},
 		mounted() {
-			this.preload();
+			// this.preload();
 		},
 		created() {
 			// this.log(this.$options.name);

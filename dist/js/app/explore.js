@@ -1,49 +1,8 @@
 define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select'], function(abyss, Vue, axios, VeeValidate, _, VueSelect) {
 	Vue.component('v-select', VueSelect.VueSelect);
-// ■■■■■■■■ MIXINS ■■■■■■■■ //
-	const mixExplore = {
-		computed: {
-			compCategoriesToList : {
-				get() {
-					if (this.api.categories == null) {
-						this.api.categories = [];
-					}
-					// console.log("this.index: ", this.lindex);
-					return this.api.categories.map(e => e.name).join(', ');
-				},
-			},
-			compTagsToList : {
-				get() {
-					if (this.api.tags == null) {
-						this.api.tags = [];
-					}
-					return this.api.tags.map(e => e.name).join(', ');
-				},
-			},
-			compGroupsToList : {
-				get() {
-					if (this.api.groups == null) {
-						this.api.groups = [];
-					}
-					return this.api.groups.map(e => e.name).join(', ');
-				},
-			},
-		},
-		methods: {
-			apiGetStateName(val) {
-				var slcState = this.$root.rootData.myApiStateList.find((el) => el.uuid == val );
-				return slcState.name;
-			},
-			apiGetVisibilityName(val) {
-				var slcVisibility = this.$root.rootData.myApiVisibilityList.find((el) => el.uuid == val );
-				return slcVisibility.name;
-			},
-		}
-	};
 // ■■■■■■■■ api-list ■■■■■■■■ //
 	Vue.component('api-list', {
-		mixins: [mixExplore],
-		props: ['api', 'lindex'],
+		props: ['api', 'index'],
 		data() {
 			return {
 				isLoading: true,
@@ -66,7 +25,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select'], funct
 	});
 // ■■■■■■■■ index ■■■■■■■■ //
 	Vue.component('index', {
-		mixins: [mixExplore],
 		props: {
 			rootState: { type: String }
 		},
@@ -89,6 +47,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select'], funct
 				ajaxHeaders: {},
 				dashboardList: [],
 				apiList: [],
+				subjectPermissionList: [],
 				selectedApi: {},
 				api: {},
 				apiOptions: [],
@@ -138,29 +97,15 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select'], funct
 					// console.log("p: ", p);
 					this.apiList = response.data.filter( (item) => item.isdeleted == false && item.apivisibilityid == 'e63c2874-aa12-433c-9dcf-65c1e8738a14' );
 					this.paginate = this.makePaginate(response.data);
+					this.preload();
 				}, error => {
 					this.handleError(error);
 				});
 			},
-			selectApi(item, state) {
-				// this.api = item;
-				this.api = _.cloneDeep(item);
-				this.$root.setState(state);
-				this.selectedApi = _.cloneDeep(this.api);
-				// $('#api'+this.api.uuid).collapse('show');
-			},
-			isSelectedApi(i) {
-				return i === this.api.uuid;
-			},
-			cancelApi() {
-				this.api = {};
-				this.selectedApi = {};
-				this.$root.setState('init');
-				// this.selected = null;
-			},
+			////////////////
 		},
 		mounted() {
-			this.preload();
+			// this.preload();
 		},
 		created() {
 			this.log(this.$options.name);

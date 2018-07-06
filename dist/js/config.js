@@ -60,7 +60,7 @@ define(['global'], function(abyss){
 		// https://dev2.apiportal.com/abyss/openapi/Subject.yaml
 		subjects: '/subjects', //uuid
 		user_list: '/subjects/users/', //ABYSSP-205 NOT/NOW /subjects/users/{uuid]
-		app_list: '/subjects/apps/',
+		app_list: '/subjects/apps/', //useruuid
 		// https://dev2.apiportal.com/abyss/openapi/SubjectApp.yaml
 		subject_app_list: '/subject-apps', //uuid N/A
 		subject_app_subject_list: '/subject-apps/subject/', //uuid ABYSSP-183 GET
@@ -73,8 +73,14 @@ define(['global'], function(abyss){
 		user_group_list: '/subject-groups',
 		// https://dev2.apiportal.com/abyss/openapi/SubjectPermission.yaml
 		permission_list: '/subject-permissions', //uuid
-		permission_list_my_apis_subscriptions_subject: '/subject-permissions/my-apis-subscriptions/subject/{uuid}', //2DO ABYSSP-182 GET
-		permission_list_api_subscriptions_subject: '/subject-permissions/api-subscriptions/subject/{uuid}', //2DO ABYSSP-207
+		permission_list_my_apis_subscriptions_subject: '/subject-permissions/my-apis-subscriptions/subject/', //useruuid ABYSSP-182 GET
+		permission_list_api_subscriptions_subject: '/subject-permissions/api-subscriptions/subject/', // appuuid ABYSSP-207
+		// https://dev2.apiportal.com/abyss/openapi/Resource.yaml
+		resources: '/resources/', // uuid
+		// https://dev2.apiportal.com/abyss/openapi/ResourceAction.yaml
+		resourceActions: '/resource-actions/', // uuid
+		// https://dev2.apiportal.com/abyss/openapi/ResourceType.yaml
+		resourceTypes: '/resource-types/', // uuid
 		// https://dev2.apiportal.com/abyss/openapi/Api.yaml
 		api_list: '/apis/',
 		my_api_list: '/apis/subject/',
@@ -189,7 +195,7 @@ define(['global'], function(abyss){
 		abyssCredentials: abyssCredentials,
 		ajax: abyssAllDataList,
 		echo: 'http://local.abyss.com/000',
-		session: 'e51666ff540afd276ebd145681808149',
+		session: 'a51666ff540afd276ebd145681808149',
 	};
 });
 

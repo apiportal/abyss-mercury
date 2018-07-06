@@ -67,6 +67,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 			// !#%&'/:;<=>\$\(\)\*\+,\-\.\\?\[\]\^\{\|\}_`~@
 		}
 	});
+// ■■■■■■■■ FILTERS ■■■■■■■■ //
 	Vue.filter('formatDateTime', function(value) {
 		if (value) {
 			return moment(String(value)).format('DD.MM.YYYY hh:mm');
@@ -83,6 +84,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 			return item.map(e => e.name).join(', ');
 		}
 	});
+// ■■■■■■■■ MIXINS ■■■■■■■■ //
 	Vue.mixin({
 		methods: {
 			log(name) {
@@ -129,11 +131,14 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 				}
 			},
 			preload() {
-				$('.preloader-it > .la-anim-1').addClass('la-animate');
-				$(document).ready(function() {
+				// $(document).ready(function() {
 					$(".preloader-it").fadeOut("slow");
 					$('.nicescroll-bar').slimscroll({height:'100%',color: '#878787', disableFadeOut : true,borderRadius:0,size:'4px',alwaysVisible:false});
-				});
+					this.isLoading = false;
+				// });
+			},
+			preloadInit() {
+				$('.preloader-it > .la-anim-1').addClass('la-animate');
 			},
 			makePaginate(data) {
 				let paginate = {
@@ -179,6 +184,13 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 					alert('Your session has expired');
 					window.location.href = '/abyss/login';
 				}
+			},
+			getItem(url, item) {
+				return axios.get(url + item, this.ajaxHeaders).then(response => {
+					return response;
+				}, error => {
+					this.handleError(error);
+				});
 			},
 			updateItem(url, item, head, arr) {
 				return axios.put(url, item, head).then(response => {
@@ -291,7 +303,63 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 				// event.target.classList.add(srt.order)
 				// $event
 			},
-		}
+			selectProxy(item, state) {
+				// this.api = item;
+				// console.log("selectProxy: ", item);
+				this.api = _.cloneDeep(item);
+				this.$root.setState(state);
+				this.selectedApi = _.cloneDeep(this.api);
+				// $('#api'+this.api.uuid).collapse('show');
+			},
+			isSelectedProxy(i) {
+				return i === this.api.uuid;
+			},
+			cancelProxy() {
+				// console.log("cancelProxy: ",);
+				this.api = {};
+				this.selectedApi = {};
+				if (this.$root.pageCurrent == 'my-apps') {
+					this.$root.setState('edit');
+				} else {
+					this.$root.setState('init');
+				}
+			},
+			apiGetStateName(val) {
+				var slcState = this.$root.rootData.myApiStateList.find((el) => el.uuid == val );
+				return slcState.name;
+			},
+			apiGetVisibilityName(val) {
+				var slcVisibility = this.$root.rootData.myApiVisibilityList.find((el) => el.uuid == val );
+				return slcVisibility.name;
+			},
+		},
+		computed: {
+			compCategoriesToList : {
+				get() {
+					if (this.api.categories == null) {
+						this.api.categories = [];
+					}
+					// console.log("this.index: ", this.lindex);
+					return this.api.categories.map(e => e.name).join(', ');
+				},
+			},
+			compTagsToList : {
+				get() {
+					if (this.api.tags == null) {
+						this.api.tags = [];
+					}
+					return this.api.tags.map(e => e.name).join(', ');
+				},
+			},
+			compGroupsToList : {
+				get() {
+					if (this.api.groups == null) {
+						this.api.groups = [];
+					}
+					return this.api.groups.map(e => e.name).join(', ');
+				},
+			},
+		},
 	});
 // ■■■■■■■■ api-nav ■■■■■■■■ //
 	Vue.component('api-nav', {
@@ -342,6 +410,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 			abyssSandbox: abyss.isAbyssSandbox,
 			abyssVersion: abyss.abyssVersion,
 			rootData: {},
+			orgName: '',
 			taxAction: '',
 			taxTitle: '',
 			taxList: '',
@@ -584,6 +653,13 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 						Vue.set(this.rootData, 'apiTagList', api_tag_list.data );
 						// console.log("ROOT this.rootData: ", this.rootData);
 						this.isLoading = false;
+						axios.get(abyss.ajax.organizations_list, this.ajaxHeaders)
+						.then(response => {
+							var orgName = _.find(response.data, { 'uuid': this.rootData.user.organizationid });
+							this.orgName = orgName.name;
+						}, error => {
+							this.handleError(error);
+						});
 						// console.log("this.rootData: ", JSON.stringify(this.rootData, null, '\t') );
 					})
 				).catch(error => {
@@ -592,18 +668,35 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 			},
 		},
 		computed: {
+			/*getOrganization : {
+				get() {
+					if (!this.isLoading) {
+						console.log("this.rootData.user: ", this.rootData.user);
+						console.log("this.rootData.user.organizationid: ", this.rootData.user.organizationid);
+						axios.get(abyss.ajax.organizations_list, this.ajaxHeaders)
+						.then(response => {
+							console.log("response.data: ", response.data);
+							var orgName = _.find(response.data, { 'uuid': this.rootData.user.organizationid });
+							console.log("orgName.name: ", orgName.name);
+							this.orgName = orgName.name;
+						}, error => {
+							this.handleError(error);
+						});
+					}
+				},
+			},*/
 		},
 		mounted() {
 			this.setState('init');
 		},
 		beforeMount() {
-			
 		},
 		created() {
+			this.preloadInit();
 			if (abyss.isAbyssSandbox) {
 				this.$cookie.set('abyss.session', abyss.session, 10);
-				this.$cookie.set('abyss.principal.uuid', '9820d2aa-eb02-4a58-8cc5-8b9a89504df9', 10); //ten day
-				// this.$cookie.set('abyss.principal.uuid', '32c9c734-11cb-44c9-b06f-0b52e076672d', 1); //one day
+				// this.$cookie.set('abyss.principal.uuid', '9820d2aa-eb02-4a58-8cc5-8b9a89504df9', 10); //ten day
+				this.$cookie.set('abyss.principal.uuid', '32c9c734-11cb-44c9-b06f-0b52e076672d', 1); //one day
 				// this.$cookie.set('abyss.principal.uuid', 'd6bba21e-6d4c-4f87-897e-436bd97d41c0', 1); //one day
 			}
 			// console.log("this.$cookie.get(abyss.session): ", this.$cookie.get('abyss.session'));

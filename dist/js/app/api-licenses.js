@@ -177,13 +177,14 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment'], funct
 					});
 					this.licenseList = newLcs;
 					this.paginate = this.makePaginate(response.data);
+					this.preload();
 				}, error => {
 					this.handleError(error);
 				});
 			},
 		},
 		mounted() {
-			this.preload();
+			// this.preload();
 		},
 		created() {
 			this.log(this.$options.name);

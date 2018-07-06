@@ -1,4 +1,16 @@
 define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(abyss, Vue, axios, VeeValidate, _, moment) {
+	Vue.component('api-list', {
+		props: ['api', 'index'],
+		data() {
+			return {
+				isLoading: true,
+			};
+		},
+		computed: {
+		},
+		methods : {
+		}
+	});
 	Vue.component('my-apps', {
 		props: {
 			rootState: { type: String }
@@ -6,6 +18,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 		data() {
 			return {
 				isLoading: true,
+				isReady: false,
 				sort: {
 					key: 'firstname',
 					type: String,
@@ -20,9 +33,10 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 				ajaxHeaders: {},
 				selected: null,
 				resetPassword: true,
+				api: {},
 				app: {
 					"uuid": null,
-					"organizationid": null,
+					"organizationid": this.$root.rootData.user.organizationid,
 					"created": null,
 					"updated": null,
 					"deleted": null,
@@ -52,6 +66,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 					"subjectdirectoryid": null,
 					"islocked": false,
 					"issandbox": false,
+					"url": null,
+					"isrestrictedtoprocessing": false,
 				},
 				selectedApp: {},
 				newApp: {},
@@ -60,7 +76,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 				directoryOptions: [],
 				orgOptions: [],
 
-				myAppList: [],
+				permissionList: [],
 				appOptions: [],
 				end: []
 			};
@@ -117,6 +133,14 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 				this.selectedApp = _.cloneDeep(item);
 				this.app = item;
 				this.selected = i;
+				this.app.subscriptions.forEach((sub, k) => {
+					axios.get(abyss.ajax.api_list + sub.resource.resourcerefid, this.ajaxHeaders)
+					.then(response => {
+						Vue.set(sub, 'api', response.data[0] );
+					}, error => {
+						this.handleError(error);
+					});
+				});
 			},
 			isSelected(i) {
 				return i === this.selected;
@@ -147,7 +171,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 				Vue.delete(item, 'lastpasswordchangeat');
 				Vue.delete(item, 'lastauthenticatedat');
 				Vue.delete(item, 'lastfailedloginat');
-				Vue.delete(item, 'apiobj');
+				Vue.delete(item, 'appObj');
+				Vue.delete(item, 'subscriptions');
 				item.effectivestartdate = moment(this.app.effectivestartdate).toISOString();
 				item.effectiveenddate = moment(this.app.effectiveenddate).toISOString();
 				return item;
@@ -185,7 +210,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 								if (response.data[0].status != 500 ) {
 									var res = response.data[0].response;
 									this.appList.push(res);
-
 									var itemObj = {
 										organizationid: this.$root.rootData.user.organizationid,
 										crudsubjectid: this.$root.rootData.user.uuid,
@@ -198,8 +222,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 										console.log("addUserApp response: ", response);
 										if (response.data[0].status != 500 ) {
 											// this.appList.push(response.data[0].response);
-											this.$emit('set-state', 'init');
-											this.app = _.cloneDeep(this.newApp);
+											// this.$emit('set-state', 'init');
+											// this.app = _.cloneDeep(this.newApp);
 										}
 									}, error => {
 										this.handleError(error);
@@ -238,7 +262,22 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 						this.appList = _.filter(appList, (v) => _.includes( myAppList.map(e => e.appid), v.uuid)) ;
 						this.appList.forEach((value, key) => {
 							var flt = _.find(myAppList, { 'appid': value.uuid });
-							Vue.set(value, 'apiobj', flt );
+							Vue.set(value, 'appObj', flt );
+							axios.get(abyss.ajax.permission_list_api_subscriptions_subject + value.uuid, this.ajaxHeaders)
+							.then(response => {
+								Vue.set(value, 'subscriptions', response.data );
+								value.subscriptions.forEach((sub, k) => {
+									axios.get(abyss.ajax.resources + sub.resourceid, this.ajaxHeaders)
+									.then(response => {
+										Vue.set(sub, 'resource', response.data[0] );
+										this.preload();
+									}, error => {
+										this.handleError(error);
+									});
+								});
+							}, error => {
+								this.handleError(error);
+							});
 						});
 					})
 				).catch(error => {
@@ -247,7 +286,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 			},
 		},
 		mounted() {
-			this.preload();
+			// this.preload();
 			new ClipboardJS('.js-copy', {
 				text: function(trigger) {
 					// return trigger.getAttribute('aria-label');
@@ -267,7 +306,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 		},
 		created() {
 			// this.log(this.$options.name);
-			this.$emit('set-page', 'apps', 'init');
+			this.$emit('set-page', 'my-apps', 'init');
 			this.newApp = _.cloneDeep(this.app);
 			axios.all([
 				axios.get(abyss.ajax.subject_directories_list),

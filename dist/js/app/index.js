@@ -1,50 +1,8 @@
 define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select'], function(abyss, Vue, axios, VeeValidate, _, VueSelect) {
 	Vue.component('v-select', VueSelect.VueSelect);
-// ■■■■■■■■ MIXINS ■■■■■■■■ //
-	const mixIndex = {
-		computed: {
-			compCategoriesToList : {
-				get() {
-					if (this.api.categories == null) {
-						this.api.categories = [];
-					}
-					// console.log("this.index: ", this.lindex);
-					return this.api.categories.map(e => e.name).join(', ');
-				},
-			},
-			compTagsToList : {
-				get() {
-					if (this.api.tags == null) {
-						this.api.tags = [];
-					}
-					return this.api.tags.map(e => e.name).join(', ');
-				},
-			},
-			compGroupsToList : {
-				get() {
-					if (this.api.groups == null) {
-						this.api.groups = [];
-					}
-					return this.api.groups.map(e => e.name).join(', ');
-				},
-			},
-		},
-		methods: {
-			apiGetStateName(val) {
-				var slcState = this.$root.rootData.myApiStateList.find((el) => el.uuid == val );
-				return slcState.name;
-			},
-			apiGetVisibilityName(val) {
-				var slcVisibility = this.$root.rootData.myApiVisibilityList.find((el) => el.uuid == val );
-				return slcVisibility.name;
-			},
-		}
-	};
 // ■■■■■■■■ api-list ■■■■■■■■ //
 	Vue.component('api-list', {
-		mixins: [mixIndex],
-		// template: '#template-list',
-		props: ['api', 'lindex'],
+		props: ['api', 'index'],
 		data() {
 			return {
 				isLoading: true,
@@ -61,46 +19,12 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select'], funct
 			};
 		},
 		computed: {
-			/*compCategoriesToList : {
-				get() {
-					if (this.api.categories == null) {
-						this.api.categories = [];
-					}
-					// console.log("this.index: ", this.lindex);
-					return this.api.categories.map(e => e.name).join(', ');
-				},
-			},
-			compTagsToList : {
-				get() {
-					if (this.api.tags == null) {
-						this.api.tags = [];
-					}
-					return this.api.tags.map(e => e.name).join(', ');
-				},
-			},
-			compGroupsToList : {
-				get() {
-					if (this.api.groups == null) {
-						this.api.groups = [];
-					}
-					return this.api.groups.map(e => e.name).join(', ');
-				},
-			},*/
 		},
 		methods : {
-			/*apiGetStateName(val) {
-				var slcState = this.$root.rootData.myApiStateList.find((el) => el.uuid == val );
-				return slcState.name;
-			},
-			apiGetVisibilityName(val) {
-				var slcVisibility = this.$root.rootData.myApiVisibilityList.find((el) => el.uuid == val );
-				return slcVisibility.name;
-			},*/
 		}
 	});
 // ■■■■■■■■ index ■■■■■■■■ //
 	Vue.component('index', {
-		mixins: [mixIndex],
 		props: {
 			rootState: { type: String }
 		},
@@ -123,6 +47,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select'], funct
 				ajaxHeaders: {},
 				dashboardList: [],
 				apiList: [],
+				subjectPermissionList: [],
 				selectedApi: {},
 				api: {},
 
@@ -132,34 +57,24 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select'], funct
 		methods: {
 			getPage(p, d) {
 				var param = d || '';
-				axios.get(abyss.ajax.api_list + '?page=' + p + param)
-				.then(response => {
-					// console.log("p: ", p);
-					this.apiList = response.data;
-					this.paginate = this.makePaginate(response.data);
-				}, error => {
+				axios.all([
+					axios.get(abyss.ajax.api_list + '?page=' + p + param, this.ajaxHeaders),
+					axios.get(abyss.ajax.permission_list_my_apis_subscriptions_subject + this.$root.rootData.user.uuid, this.ajaxHeaders),
+				]).then(
+					axios.spread((app_list, subject_permission_list) => {
+						this.subjectPermissionList = subject_permission_list.data.filter( (item) => item.isdeleted == false );
+						this.apiList = app_list.data;
+						this.paginate = this.makePaginate(this.apiList);
+						this.preload();
+					})
+				).catch(error => {
 					this.handleError(error);
 				});
 			},
-			selectApi(item, state) {
-				// this.api = item;
-				this.api = _.cloneDeep(item);
-				this.$root.setState(state);
-				this.selectedApi = _.cloneDeep(this.api);
-				// $('#api'+this.api.uuid).collapse('show');
-			},
-			isSelectedApi(i) {
-				return i === this.api.uuid;
-			},
-			cancelApi() {
-				this.api = {};
-				this.selectedApi = {};
-				this.$root.setState('init');
-				// this.selected = null;
-			},
+			////////////////
 		},
 		mounted() {
-			this.preload();
+			// this.preload();
 		},
 		created() {
 			this.log(this.$options.name);

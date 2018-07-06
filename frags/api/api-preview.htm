@@ -3,7 +3,7 @@
 <body>
 <div class="fol-sm-6 fol-md-4 fol-lg-4 fol-xl-3 fol-xlm-3 fol-xlg-3 thumb card-item" th:fragment="apiList">
 <!-- <div class="fol-12 card-item" th:fragment="apiList"> -->
-	<div class="card" v-on:click="$parent.selectApi(api, 'preview')">
+	<div class="card" v-on:click="$parent.selectProxy(api, 'preview')">
 		<div class="xxx">
 			<div class="thumb-image" v-if="api.image" :style="{ 'background-image': 'url(' + api.image + ')' }"></div>
 			<div class="thumb-image" v-if="!api.image" :style="{ 'background-color': api.color }">{{api.openapidocument.info.title.substring(0, 3)}}</div>
@@ -11,13 +11,15 @@
 				<span class="float-right text-uppercase py-1"><span class="small">{{apiGetStateName(api.apistateid)}}</span><i class="fas fa-circle ml-1" v-bind:class="'stat-' + apiGetStateName(api.apistateid)"></i></span>
 				<h5 class="mb-0"><strong>{{api.openapidocument.info.title}}</strong></h5>
 				<p class="small">{{api.openapidocument.info.version}}</p>
+				<code class="d-block small txt-purple"><small>{{api.uuid}}</small></code>
 				<p>{{api.openapidocument.info.description}}</p>
 			</div>
 		</div>
 	</div>
 </div>
-<div class="preview-container" v-if="rootState == 'preview'" th:fragment="apiPreview">
-	<div class="preview-overlay" v-if="$root.rootState == 'preview'" v-on:click="cancelApi()"></div>
+<div class="preview-container" v-if="$root.rootState == 'preview'" th:fragment="apiPreview">
+	<div class="preview-overlay" v-if="$root.pageCurrent == 'my-apis' && $root.rootState == 'preview'" v-on:click="cancelApi()"></div>
+	<div class="preview-overlay" v-if="$root.pageCurrent != 'my-apis' && $root.rootState == 'preview'" v-on:click="cancelProxy()"></div>
 	<div class="card preview-item">
 		<div class="fow m-0">
 			<div class="fol-12 fol-sm p-0 brd-b brd-sm-b-0 brd-sm-r thumb">
@@ -31,10 +33,11 @@
 				</div>
 			</div>
 			<div class="fol pb-3 thumb-detail" v-if="$root.rootState == 'preview'">
-				<button type="button" class="close" v-on:click="cancelApi()">×</button>
+				<button type="button" class="close" v-if="$root.pageCurrent == 'my-apis'" v-on:click="cancelApi()">×</button>
+				<button type="button" class="close" v-if="$root.pageCurrent != 'my-apis'" v-on:click="cancelProxy()">×</button>
 				<ul role="tablist" class="row nav nav-tabs nav--justified" id="method1Tabs">
 					<li class="active" role="presentation"><a aria-expanded="true" data-toggle="tab" role="tab" href="#overview">Overview</a></li>
-					<li role="presentation"><a aria-expanded="true" data-toggle="tab" role="tab" href="#pricing">Pricing</a></li>
+					<li role="presentation"><a aria-expanded="true" data-toggle="tab" role="tab" href="#license">Licenses</a></li>
 					<li role="presentation"><a aria-expanded="true" data-toggle="tab" role="tab" href="#test">Test</a></li>
 				</ul>
 				<div class="tab-content py-3">
@@ -62,16 +65,62 @@
 						<p><label class="d-block font-weight-bold text-uppercase">Groups</label>{{compGroupsToList}}</p>
 						<p><small class="d-block">{{api.openapidocument.info.description}}</small></p>
 					</div>
-					<div id="pricing" class="tab-pane fade" role="tabpanel">
+					<div id="license" class="tab-pane fade" role="tabpanel">
 						<div class="fow">
-							<div class="fol-sm-4 column-width">
-								<h6>Gold</h6>
-							</div>
-							<div class="fol-sm-4 column-width">
-								<h6>Silver</h6>
-							</div>
-							<div class="fol-sm-4 column-width">
-								<h6>Bronze</h6>
+							<div class="fol-sm-4 column-width py-3" v-for="(license, index) in api.licenses" class="field-controls field-level-0">
+								<div class="h6">										
+									{{license.name}}
+									<small>{{license.version}}</small>
+								</div>
+								<div class="">{{license.licensedocument.info.title}}</div>
+								<small class="d-block txt-line my-1 text-muted">{{license.licensedocument.info.description}}</small>
+								<code class="d-block txt-line small txt-blue"><small>{{license.uuid}}</small></code>
+								<div class="small">
+									<h6 class="mt-2">
+										{{license.licensedocument.sla.tierName}}
+									</h6>
+									<p class="mb-4">
+										{{license.licensedocument.sla.description}}
+									</p>
+									<p class="d-flex text-uppercase">
+										<span class="">
+											<strong class="lbl">support Hours</strong>
+											{{license.licensedocument.sla.supportHours}}
+										</span>
+										<span class="ml-auto text-right">
+											<strong class="lbl">availability</strong>
+											{{license.licensedocument.sla.availability}}
+										</span>
+									</p>
+									<p>
+										<strong class="lbl">black Out Hours Per Year</strong>
+										{{license.licensedocument.sla.blackOutHoursPerYear}}
+									</p>
+									<p>
+										<strong class="lbl">performance</strong>
+										{{license.licensedocument.sla.performance}}
+									</p>
+								</div>
+								<div class="small">
+									<h6 class="mt-2">
+										{{license.licensedocument.legal.name}}
+									</h6>
+									<p class="mb-4">
+										{{license.licensedocument.legal.description}}
+									</p>
+									<p>
+										<strong class="lbl">link</strong>
+										<span class="d-block text-truncate">
+											{{license.licensedocument.legal.link}}
+										</span>
+									</p>
+									<p>
+										<strong class="lbl">document Text</strong>
+										<span class="d-block text-truncate">
+											{{license.licensedocument.legal.documentText}}
+										</span>
+									</p>
+								</div>
 							</div>
 						</div>
 					</div>

@@ -12098,7 +12098,10 @@ a#toggle_mobile_nav {
   .navbar .mobile-only-brand {
     display: -webkit-box;
     display: -ms-flexbox;
-    display: flex; }
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center; }
   .navbar .mobile-only-nav {
     padding-right: 15px;
     display: -webkit-box;
@@ -12371,7 +12374,10 @@ a#toggle_mobile_nav {
   .navbar {
     padding: 0; }
     .navbar .mobile-only-brand {
-      width: 100%; }
+      width: 100%;
+      -webkit-box-align: center;
+      -ms-flex-align: center;
+      align-items: center; }
       .navbar .mobile-only-brand .nav-header {
         text-align: center;
         width: 100%; }

@@ -613,7 +613,8 @@
 					</form>
 				</div>
 			</aside>
-			<aside class="column column-aside edit-column licences-column column-minimize" v-if="api.isproxyapi">
+			<!-- <aside class="column column-aside edit-column licences-column column-minimize" v-if="api.isproxyapi"> -->
+			<aside class="column column-aside edit-column licences-column column-minimize">
 				<div class="clearfix column-header column-min-button">
 					<h5 class="column-header-title">Licenses <span class="badge badge-pill badge-outline float-right">{{myLicenseList.length}}</span></h5>
 				</div>
@@ -650,27 +651,6 @@
 							</div>
 							<div v-bind:id="'license'+index" class="collapse field-tabs field-level-1">
 								<div class="field-acc pb-0">
-									<div class="small">
-										<h6 class="field-header text-body row brd-0">Policies</h6>
-										<div v-for="(pol, index) in license.policies" class="brd-t py-2 row px-3" :title="pol.uuid + ' | ' + pol.description">
-											<h6 class="d-block">{{pol.name}}</h6>
-											<span class="d-block">{{pol.policyinstance.info.type}} - {{pol.policyinstance.info.subType}}</span>
-											<div class="d-flex mt-2 mb-1">
-												<span class="badge req-res-sm" v-bind:class="{'badge-cyan': pol.policyinstance.openApiLifeCycle.onBusinessRequest}">
-													<small>Business<br>Request</small>
-												</span>
-												<span class="badge req-res-sm ml-auto" v-bind:class="{'badge-cyan': pol.policyinstance.openApiLifeCycle.onBusinessResponse}">
-													<small>Business<br>Response</small>
-												</span>
-												<span class="badge req-res-sm" v-bind:class="{'badge-purple': pol.policyinstance.openApiLifeCycle.onProxyRequest}">
-													<small>Proxy<br>Request</small>
-												</span>
-												<span class="badge req-res-sm ml-auto" v-bind:class="{'badge-purple': pol.policyinstance.openApiLifeCycle.onProxyResponse}">
-													<small>Proxy<br>Response</small>
-												</span>
-											</div>
-										</div>
-									</div>
 									<div class="small">
 										<h6 class="field-header text-body row brd-b">SLA</h6>
 										<h6 class="mt-2">
@@ -728,6 +708,27 @@
 												{{license.licensedocument.legal.documentText}}
 											</span>
 										</p>
+									</div>
+									<div class="small">
+										<h6 class="field-header text-body row brd-0">Policies</h6>
+										<div v-for="(pol, index) in license.policies" class="brd-t py-2 row px-3" :title="pol.uuid + ' | ' + pol.description">
+											<h6 class="d-block">{{pol.name}}</h6>
+											<span class="d-block">{{pol.policyinstance.info.type}} - {{pol.policyinstance.info.subType}}</span>
+											<div class="d-flex mt-2 mb-1">
+												<span class="badge req-res-sm" v-bind:class="{'badge-cyan': pol.policyinstance.openApiLifeCycle.onBusinessRequest}">
+													<small>Business<br>Request</small>
+												</span>
+												<span class="badge req-res-sm ml-auto" v-bind:class="{'badge-cyan': pol.policyinstance.openApiLifeCycle.onBusinessResponse}">
+													<small>Business<br>Response</small>
+												</span>
+												<span class="badge req-res-sm" v-bind:class="{'badge-purple': pol.policyinstance.openApiLifeCycle.onProxyRequest}">
+													<small>Proxy<br>Request</small>
+												</span>
+												<span class="badge req-res-sm ml-auto" v-bind:class="{'badge-purple': pol.policyinstance.openApiLifeCycle.onProxyResponse}">
+													<small>Proxy<br>Response</small>
+												</span>
+											</div>
+										</div>
 									</div>
 								</div>
 							</div>

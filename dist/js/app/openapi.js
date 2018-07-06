@@ -231,7 +231,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 // ■■■■■■■■ MIXINS ■■■■■■■■ //
 	const mixOas = {
 		computed: {
-			compCategoriesToList : {
+			/*compCategoriesToList : {
 				get() {
 					if (this.api.categories == null) {
 						this.api.categories = [];
@@ -255,7 +255,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					}
 					return this.api.groups.map(e => e.name).join(', ');
 				},
-			},
+			},*/
 		},
 		methods: {
 			// ■■ root
@@ -278,14 +278,14 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				}
 			},
 			// ■■ my-api-list, api-preview
-			apiGetStateName(val) {
+			/*apiGetStateName(val) {
 				var slcState = this.$root.rootData.myApiStateList.find((el) => el.uuid == val );
 				return slcState.name;
 			},
 			apiGetVisibilityName(val) {
 				var slcVisibility = this.$root.rootData.myApiVisibilityList.find((el) => el.uuid == val );
 				return slcVisibility.name;
-			},
+			},*/
 			
 			// ■■ api-mediatype, api-parameter, api-items, my-apis
 			mixEditSchema(obj, key, openapi) {
@@ -2219,6 +2219,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				Vue.delete(item, 'categoryList');
 				Vue.delete(item, 'qosPolicy');
 				Vue.delete(item, 'specs');
+				Vue.delete(item, 'licenses');
 				return item;
 			},
 			apiChangeEnvironment(item, val) {
@@ -2321,10 +2322,10 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					this.updateSchema(item.openapidocument);
 					this.api = _.cloneDeep(item);
 					// this.openapi = item;
-					this.$root.setState(state);
+					this.loadLicense(item);
 					this.selectedApi = _.cloneDeep(this.api);
 					// this.initSwagger();
-					this.loadLicense(item);
+					this.$root.setState(state);
 					// setTimeout(() => {
 						this.updateSw();
 						// $('#api'+this.api.uuid).collapse('show');
@@ -2631,6 +2632,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 							this.fixProps(value);
 						});
 						this.paginate = this.makePaginate(response.data);
+						this.preload();
 					}
 				}, error => {
 					this.handleError(error);
@@ -2845,37 +2847,20 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					});
 				}
 			},
-			grouped() {
-				// const grouped = _.groupBy(this.openapi.paths, 'subregion');
-				var tags = [];
-				for (var p in this.openapi.paths) {
-					console.log("p: ", p);
-					var path = this.openapi.paths[p];
-					console.log("path: ", path);
-					for (var o in path) {
-						var op = path[o];
-						var xxx = _.pick(op, ['tags']);
-						tags.push(_.values(xxx));
-						console.log("xxx: ", xxx);
-						console.log("o: ", o);
-						console.log("op: ", op);
-					}
-				}
-				var ddd = _.uniq(_.flattenDeep(tags));
-				console.log("tags: ", tags);
-				console.log("ddd: ", ddd);
-			},
 			loadLicense(item) {
 				axios.get(abyss.ajax.api_licenses_api + item.uuid, this.ajaxHeaders).then(response => {
 					if (response.data != null) {
 						console.log("GET License response: ", response);
 						this.myApiLicenses = response.data.filter( (item) => item.isdeleted == false );
 						var actLcs = _.filter(this.myApiLicenses, { 'apiid': item.uuid });
+						console.log("actLcs: ", actLcs);
 						actLcs.forEach((value, key) => {
 							// _.filter(obj, { 'subjectid': this.user.uuid })
 							console.log("*********: ", _.find(this.myLicenseList, { 'isdeleted': false }, (v) => _.includes(value.licenseid, v.uuid)));
-							Vue.set(_.find(this.myLicenseList, (v) => _.includes(value.licenseid, v.uuid)), 'isactive', true);
+							var slcLcs = _.find(this.myLicenseList, (v) => _.includes(value.licenseid, v.uuid));
+							Vue.set(slcLcs, 'isactive', true);
 						});
+						Vue.set(this.api, 'licenses', _.filter(this.myLicenseList, { 'isactive': true }));
 					}
 				}, error => {
 					this.handleError(error);
@@ -2982,8 +2967,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 			},
 		},
 		mounted() {
-			this.preload();
-			// 2DO
+			// this.preload();
 		},
 		computed: {
 			filteredApis() {
@@ -3011,13 +2995,13 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					this.myLicenseList = subject_licenses_list.data.filter( (item) => item.isdeleted == false );
 					this.myPolicyList = subject_policies_list.data.filter( (item) => item.isdeleted == false );
 					// this.myApiLicenses = api_licenses.data.filter( (item) => item.isdeleted == false );
-					this.getPage(1);
 					var newLcs = this.myLicenseList;
 					newLcs.forEach((value, key) => {
 						Vue.set(value, 'policies', _.filter(this.myPolicyList, (v) => _.includes(value.licensedocument.termsOfService.policyKey, v.uuid)) );
 						Vue.set(value, 'isactive', false);
 					});
 					this.myLicenseList = newLcs;
+					this.getPage(1);
 				})
 			).catch(error => {
 				this.handleError(error);

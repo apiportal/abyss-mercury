@@ -157,13 +157,14 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 				.then(response => {
 					this.policyList = response.data;
 					this.paginate = this.makePaginate(response.data);
+					this.preload();
 				}, error => {
 					this.handleError(error);
 				});
 			},
 		},
 		mounted() {
-			this.preload();
+			// this.preload();
 		},
 		created() {
 			// this.log(this.$options.name);
