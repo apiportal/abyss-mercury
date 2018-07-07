@@ -98,9 +98,10 @@
 								<label for="isactived"></label>
 							</span>
 						</div>
-						<div class="form-group">
+						<div class="form-group" v-bind:class="{ 'has-error': errors.has('url') }">
 							<label for="url">Url:</label>
-							<input type="text" name="url" id="url" v-model="app.url" class="form-control">
+							<input type="text" name="url" id="url" v-model="app.url" v-validate="'required|url'" class="form-control">
+							<em v-bind:class="{ 'show': errors.has('url') }">{{ errors.first('url') }}</em>
 						</div>
 						<div class="form-group form-inline">
 							<label class="d-block">issandbox</label>
@@ -116,13 +117,13 @@
 							</select>
 							<em v-bind:class="{ 'show': errors.has('orgid') }">{{ errors.first('orgid') }}</em>
 						</div>
-						<!-- <div class="form-group " v-bind:class="{ 'has-error': errors.has('dirid') }">
+						<div class="form-group " v-bind:class="{ 'has-error': errors.has('dirid') }">
 							<label>Directory</label>
 							<select class="form-control" name="dirid" id="dirid" v-model="app.subjectdirectoryid" v-validate="'required'">
 								<option v-for="(dir,index) in directoryOptions" :value="dir.uuid">{{dir.directoryname}}</option>
 							</select>
 							<em v-bind:class="{ 'show': errors.has('dirid') }">{{ errors.first('dirid') }}</em>
-						</div> -->
+						</div>
 						<div v-if="rootState == 'edit'">
 						<!-- <div class="clearfix"> -->
 							<div class="form-group text-center"><a href="#" class="btn btn-block btn-sm btn-green js-copy" data-clipboard-targets="#appkey,#appsecret">Copy APP Key & APP Secret</a></div>
