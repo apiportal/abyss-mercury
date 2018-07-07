@@ -75,13 +75,13 @@
 				<div class="nicescroll-bar">
 					<div class="clearfix brd-b column-header column-min-button">
 						<h5 class="column-header-title" >
-						<span v-if="rootState == 'add'">Add New Directory</span>
-						<span v-if="rootState == 'edit'">Edit Directory</span>
+						<span v-if="rootState == 'add'">Add New Access Manager</span>
+						<span v-if="rootState == 'edit'">Edit Access Manager</span>
 						</h5>
 					</div>
 					<div class="p-3">
 						<div class="form-group" v-bind:class="{ 'has-error': errors.has('directoryname') }">
-							<label for="directoryname">Directory Name:</label>
+							<label for="directoryname">Name:</label>
 							<input type="text" name="directoryname" id="directoryname" v-model="directory.directoryname" v-validate="'required|min:2|alpha_spaces'" class="form-control" placeholder="directoryname">
 							<em v-bind:class="{ 'show': errors.has('directoryname') }">{{ errors.first('directoryname') }}</em>
 						</div>
@@ -170,7 +170,7 @@
 			<aside class="column column-aside manage-column">
 				<div class="nicescroll-bar">
 					<div class="clearfix brd-b column-header column-min-button">
-						<h5 class="column-header-title">Directory Types</h5>
+						<h5 class="column-header-title">Access Manager Types</h5>
 					</div>
 					<article v-for="(t,index) in directoryTypes" class="field-controls field-color-grey field-level-1">
 						<div class="field-sum">
@@ -180,8 +180,8 @@
 							<div class="ficon-actions dropdown dropdown-hover">
 								<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
 								<ul class="dropdown-menu dropdown-menu-right" role="menu">
-									<li><a href="#" title="Add Directory Type" v-on:click="addType()"><i class="fas fa-lg fa-plus"></i> Add Directory Type</a></li>
-									<li><a title="Remove Directory Type" v-on:click="deleteType(t, index)"><i class="fa fa-trash-alt"></i> Remove Directory Type</a></li>
+									<li><a href="#" title="Add Access Manager Type" v-on:click="addType()"><i class="fas fa-lg fa-plus"></i> Add Access Manager Type</a></li>
+									<li><a title="Remove Access Manager Type" v-on:click="deleteType(t, index)"><i class="fa fa-trash-alt"></i> Remove Access Manager Type</a></li>
 								</ul>
 							</div>
 						</div>

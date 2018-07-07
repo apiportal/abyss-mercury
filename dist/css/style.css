@@ -13732,6 +13732,9 @@ a#toggle_mobile_nav {
   left: 0;
   background-color: rgba(221, 222, 223, 0.5); }
 
+.preview-scroll {
+  max-height: calc(100vh - (66px + 120px + 46px)); }
+
 .preview-container {
   position: absolute;
   top: 0;
@@ -13750,8 +13753,11 @@ a#toggle_mobile_nav {
   justify-content: center; }
 
 .preview-item {
+  position: fixed;
   width: 90%;
-  max-width: 1160px; }
+  max-width: 1160px;
+  max-height: calc(100vh - (66px + 120px));
+  overflow: hidden; }
   .preview-item .thumb {
     width: 290px;
     max-width: 290px;

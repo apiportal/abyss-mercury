@@ -270,15 +270,17 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 									axios.get(abyss.ajax.resources + sub.resourceid, this.ajaxHeaders)
 									.then(response => {
 										Vue.set(sub, 'resource', response.data[0] );
-										this.preload();
+										this.isLoading = false;
 									}, error => {
 										this.handleError(error);
 									});
 								});
+								//
 							}, error => {
 								this.handleError(error);
 							});
 						});
+						this.preload();
 					})
 				).catch(error => {
 					this.handleError(error);
@@ -305,7 +307,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 			});
 		},
 		created() {
-			// this.log(this.$options.name);
+			this.log(this.$options.name);
 			this.$emit('set-page', 'my-apps', 'init');
 			this.newApp = _.cloneDeep(this.app);
 			axios.all([

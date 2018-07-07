@@ -141,6 +141,13 @@ define(['global'], function(abyss){
 		api_licenses: '/api-licenses/',
 		api_licenses_api: '/api-licenses/api/',
 		api_licenses_license: '/api-licenses/license/',
+		// https://dev2.apiportal.com/abyss/openapi/Contract.yaml
+		contracts: '/contracts',
+		contracts_api: '/contracts/api/',
+		contracts_app: '/contracts/app/',
+		contracts_license: '/contracts/license/',
+		// https://dev2.apiportal.com/abyss/openapi/ContractState.yaml
+		contract_states: '/contract-states',
 	};
 	var abyssJsonList = {
 		index: '/index.json',

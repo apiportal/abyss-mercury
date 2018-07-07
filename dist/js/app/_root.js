@@ -4,30 +4,35 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 
 	axios.defaults.headers.common['Accept'] = 'application/json';
 	axios.defaults.headers.common['Content-Type'] = 'application/json';
-	if (abyss.isAbyssSandbox) {
-		axios.defaults.headers.common['Cookie'] = 'abyss.session='+abyss.session;
-	}
+	// if (abyss.isAbyssSandbox) {
+	// 	axios.defaults.headers.common['Cookie'] = 'abyss.session='+abyss.session;
+	// }
 	axios.defaults.withCredentials = abyss.abyssCredentials;
 	axios.defaults.timeout = 10000;
 	axios.defaults.responseType = 'json';
-	/*axios.defaults.validateStatus = function (status) {
+	axios.defaults.validateStatus = function (status) {
 		// return status >= 200 && status < 300; // default
-		return status >= 200 && status < 300; // default
-		// return (status >= 200 && status < 300) || status == 404; // default
-	},*/
-	/*const UNAUTHORIZED = 401;
-	axios.interceptors.response.use(
-		response => response,
-		error => {
-			const {
-				status
-			} = error.response;
-			if (status === UNAUTHORIZED) {
-				dispatch(userSignOut());
-			}
-			return Promise.reject(error);
+		return (status >= 200 && status < 300) || status == 404;
+	};
+	axios.interceptors.response.use((response) => {
+		if (response.status == 404) {
+			var res = {};
+			res.data = [];
+			// console.log('404 response', response);
+			return res;
+		} else{
+			// console.log(response.status + ": ", response);
+			return response;
 		}
-	);*/
+	}, (error) => {
+		console.log("interceptors: ", error);
+		if ( error.response.status == 401) {
+			// alert('Your session has expired');
+			window.location.href = '/abyss/login';
+		}
+		return error;
+		// return Promise.reject(error);
+	});
 	// Window.Vue = Vue;
 	// Window.Vue.use(VueIziToast);
 	// Vue.prototype.$toast = VueIziToast;
@@ -134,7 +139,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 				// $(document).ready(function() {
 					$(".preloader-it").fadeOut("slow");
 					$('.nicescroll-bar').slimscroll({height:'100%',color: '#878787', disableFadeOut : true,borderRadius:0,size:'4px',alwaysVisible:false});
-					this.isLoading = false;
+					// this.isLoading = false;
 				// });
 			},
 			preloadInit() {
@@ -179,11 +184,12 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 					console.log('error.message', error.message);
 				}
 				console.log("error.config", error.config);*/
-				console.log("error.response.status: ", error.response.status);
-				if ( error.response.status == 401) {
+				console.log("error: ", error);
+				// console.log("error.response.status: ", error.response.status);
+				/*if ( error.response.status == 401) {
 					alert('Your session has expired');
 					window.location.href = '/abyss/login';
-				}
+				}*/
 			},
 			getItem(url, item) {
 				return axios.get(url + item, this.ajaxHeaders).then(response => {
@@ -304,12 +310,47 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 				// $event
 			},
 			selectProxy(item, state) {
-				// this.api = item;
-				// console.log("selectProxy: ", item);
-				this.api = _.cloneDeep(item);
-				this.$root.setState(state);
-				this.selectedApi = _.cloneDeep(this.api);
-				// $('#api'+this.api.uuid).collapse('show');
+				axios.get(abyss.ajax.api_licenses_api + item.uuid, this.ajaxHeaders).then(response => {
+					if (response.data != null) {
+						var actLcs = response.data.filter( (item) => item.isdeleted == false );
+						var licenses = [];
+						actLcs.forEach((value, key) => {
+							axios.get(abyss.ajax.licenses_list + value.licenseid)
+							.then(response => {
+								licenses.push(response.data[0]);
+							}, error => {
+								this.handleError(error);
+							});
+						});
+						setTimeout(() => {
+							this.api = _.cloneDeep(item);
+							this.$root.setState(state);
+							this.selectedApi = _.cloneDeep(this.api);
+							Vue.set(this.api, 'licenses', licenses);
+							require(['slimscroll'],function(){
+								$('.nicescroll-bar').slimscroll({height:'100%',color: '#878787', disableFadeOut : true,borderRadius:0,size:'4px',alwaysVisible:false});
+							});
+							axios.get(abyss.ajax.contracts_api + this.api.uuid)
+							.then(response => {
+								var cont = response.data.filter( (item) => item.isdeleted == false );
+								// console.log("cont: ", cont);
+								// console.log("this.api.licenses: ", this.api.licenses);
+								// var ddd = _.filter(response.data, { 'apiid': this.api.uuid, 'licenseid': this.api.licenses.uuid });
+								// var ddd = _.filter(cont, (item) => _.find(this.api.licenses, { uuid: item.uuid }));
+								//2DO
+								// var ddd = _.filter(this.api.licenses, { 'apiid': this.api.uuid });
+								// console.log("ddd: ", ddd);
+							}, error => {
+								this.handleError(error);
+							});
+						},100);	
+					}
+				}, error => {
+					this.handleError(error);
+				});
+			},
+			setProxyLicense(i) {
+				console.log("i: ", i);
 			},
 			isSelectedProxy(i) {
 				return i === this.api.uuid;
@@ -638,9 +679,10 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 					axios.get(abyss.ajax.api_group_list),
 					axios.get(abyss.ajax.api_category_list),
 					axios.get(abyss.ajax.api_tag_list),
+					axios.get(abyss.ajax.contract_states),
 					// axios.get('/data/create-api.json')
 				]).then(
-					axios.spread((user, api_visibility_list, api_states_list, api_group_list, api_category_list, api_tag_list) => {
+					axios.spread((user, api_visibility_list, api_states_list, api_group_list, api_category_list, api_tag_list, contract_states) => {
 						Vue.set(this.rootData, 'user', user.data[0] );
 						Vue.set(this.rootData, 'myApiVisibilityList', api_visibility_list.data );
 						Vue.set(this.rootData, 'myApiStateList', api_states_list.data );
@@ -652,6 +694,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 						Vue.set(this.rootData, 'apiGroupList', api_group_list.data );
 						Vue.set(this.rootData, 'apiCategoryList', api_category_list.data );
 						Vue.set(this.rootData, 'apiTagList', api_tag_list.data );
+						Vue.set(this.rootData, 'contractStates', contract_states.data );
 						// console.log("ROOT this.rootData: ", this.rootData);
 						this.isLoading = false;
 						/*axios.get(abyss.ajax.organizations_list, this.ajaxHeaders)
@@ -696,8 +739,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 			this.preloadInit();
 			if (abyss.isAbyssSandbox) {
 				this.$cookie.set('abyss.session', abyss.session, 10);
-				// this.$cookie.set('abyss.principal.uuid', '9820d2aa-eb02-4a58-8cc5-8b9a89504df9', 10); //ten day
-				this.$cookie.set('abyss.principal.uuid', '32c9c734-11cb-44c9-b06f-0b52e076672d', 1); //one day
+				this.$cookie.set('abyss.principal.uuid', '9820d2aa-eb02-4a58-8cc5-8b9a89504df9', 10); //ten day
+				// this.$cookie.set('abyss.principal.uuid', '32c9c734-11cb-44c9-b06f-0b52e076672d', 1); //one day
 				// this.$cookie.set('abyss.principal.uuid', 'd6bba21e-6d4c-4f87-897e-436bd97d41c0', 1); //one day
 			}
 			// console.log("this.$cookie.get(abyss.session): ", this.$cookie.get('abyss.session'));

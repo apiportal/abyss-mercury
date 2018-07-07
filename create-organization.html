@@ -10,12 +10,12 @@
 	<form action="/abyss/create-organization" method="POST" id="validForm" v-on:submit="validateBeforeSubmit">
 		<div class="form-group" v-bind:class="{ 'has-error': errors.has('name') }">
 			<label for="name">Name</label>
-			<input type="text" name="name" id="name" class="form-control" placeholder="" v-validate="'required|min:3|alpha'">
+			<input type="text" name="name" id="name" class="form-control" placeholder="" v-validate="'required|min:3'">
 			<em v-bind:class="{ 'show': errors.has('name') }">{{ errors.first('name') }}</em>
 		</div>
 		<div class="form-group" v-bind:class="{ 'has-error': errors.has('description') }">
 			<label for="description">Description</label>
-			<input type="text" name="description" id="description" class="form-control" placeholder="" v-validate="'required|min:30|alpha'">
+			<input type="text" name="description" id="description" class="form-control" placeholder="" v-validate="'required|min:5'">
 			<em v-bind:class="{ 'show': errors.has('description') }">{{ errors.first('description') }}</em>
 		</div>
 		<div class="form-group" v-bind:class="{ 'has-error': errors.has('url') }">

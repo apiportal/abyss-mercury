@@ -13,7 +13,7 @@
 	<div th:replace="webroot/frags/layout/navs.htm :: navs"></div>
 	<main class="page-wrapper">
 	<my-apps inline-template v-on:set-state="setState" v-on:set-page="setPage" v-bind:root-state="rootState" v-if="!$root.isLoading">
-		<div class="columns" v-if="!isLoading">
+		<div class="columns">
 			<transition name="fade">
 			<div th:replace="webroot/frags/api/api-preview.htm :: apiPreview"></div>
 			</transition>
@@ -41,7 +41,7 @@
 								{{app.uuid}}
 							</td>
 							<td>
-								<div class="" v-for="(per, index) in app.subscriptions" v-bind:key="per.uuid" :title="per.description">
+								<div v-if="!isLoading" v-for="(per, index) in app.subscriptions" v-bind:key="per.uuid" :title="per.description">
 									{{per.permission}}
 									<div class="" :title="per.resource.description">
 										{{per.resource.resourcename}}
@@ -99,7 +99,7 @@
 							</span>
 						</div>
 						<div class="form-group">
-							<label for="url">AUrl:</label>
+							<label for="url">Url:</label>
 							<input type="text" name="url" id="url" v-model="app.url" class="form-control">
 						</div>
 						<div class="form-group form-inline">
@@ -109,20 +109,20 @@
 								<label for="issandbox"></label>
 							</span>
 						</div>
-						<!-- <div class="form-group " v-bind:class="{ 'has-error': errors.has('orgid') }">
+						<div class="form-group " v-bind:class="{ 'has-error': errors.has('orgid') }">
 							<label>Organization Id</label>
 							<select class="form-control" name="orgid" id="orgid" v-model="app.organizationid" v-validate="'required'">
 								<option v-for="(org,index) in orgOptions" :value="org.organizationid">{{org.name}}</option>
 							</select>
 							<em v-bind:class="{ 'show': errors.has('orgid') }">{{ errors.first('orgid') }}</em>
-						</div> -->
-						<div class="form-group " v-bind:class="{ 'has-error': errors.has('dirid') }">
+						</div>
+						<!-- <div class="form-group " v-bind:class="{ 'has-error': errors.has('dirid') }">
 							<label>Directory</label>
 							<select class="form-control" name="dirid" id="dirid" v-model="app.subjectdirectoryid" v-validate="'required'">
 								<option v-for="(dir,index) in directoryOptions" :value="dir.uuid">{{dir.directoryname}}</option>
 							</select>
 							<em v-bind:class="{ 'show': errors.has('dirid') }">{{ errors.first('dirid') }}</em>
-						</div>
+						</div> -->
 						<div v-if="rootState == 'edit'">
 						<!-- <div class="clearfix"> -->
 							<div class="form-group text-center"><a href="#" class="btn btn-block btn-sm btn-green js-copy" data-clipboard-targets="#appkey,#appsecret">Copy APP Key & APP Secret</a></div>
