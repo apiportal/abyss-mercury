@@ -78,9 +78,9 @@ define(['global'], function(abyss){
 		// https://dev2.apiportal.com/abyss/openapi/Resource.yaml
 		resources: '/resources/', // uuid
 		// https://dev2.apiportal.com/abyss/openapi/ResourceAction.yaml
-		resourceActions: '/resource-actions/', // uuid
+		resource_actions: '/resource-actions/', // uuid
 		// https://dev2.apiportal.com/abyss/openapi/ResourceType.yaml
-		resourceTypes: '/resource-types/', // uuid
+		resource_types: '/resource-types/', // uuid
 		// https://dev2.apiportal.com/abyss/openapi/Api.yaml
 		api_list: '/apis/',
 		my_api_list: '/apis/subject/',
@@ -100,7 +100,8 @@ define(['global'], function(abyss){
 		businesses_group_subject: '/apis/businesses/subject/{uuid}/tags/', //2DO ABYSSP-00
 
 		// https://dev2.apiportal.com/abyss/openapi/Organization.yaml
-		organizations_list: '/organizations',
+		organizations_list: '/organizations/',
+		subject_organizations_list: '/subject-organizations/subject/',
 		// https://dev2.apiportal.com/abyss/openapi/SubjectDirectoryType.yaml
 		subject_directory_types: '/subject-directory-types',
 		// https://dev2.apiportal.com/abyss/openapi/SubjectDirectory.yaml
@@ -189,7 +190,7 @@ define(['global'], function(abyss){
 		// abyssDataList.subject_licenses_list = '/data/LICENSES.json';
 	}
 	var abyssAllDataList = Object.assign(abyssJsonList, abyssDataList);
-	console.log("abyssAllDataList: ", abyssAllDataList);
+	// console.log("abyssAllDataList: ", abyssAllDataList);
 	return {
 		name: 'Abyss Api Portal',
 		version: 'V.0.0',

@@ -159,6 +159,10 @@
 							<input type="text" name="email" id="email" v-model="user.email" v-validate="'required|email'" class="form-control" placeholder="email">
 							<em v-bind:class="{ 'show': errors.has('email') }">{{ errors.first('email') }}</em>
 						</div>
+						<div class="form-group">
+							<label for="url">Url:</label>
+							<input type="text" name="url" id="url" v-model="user.url" class="form-control">
+						</div>
 						<p v-if="rootState == 'edit'"><a href="#" class="txt-link" v-on:click="resetPassword = !resetPassword">Reset Password</a></p>
 						<div v-show="rootState == 'add' || resetPassword">
 							<div class="form-group js-showpass" v-bind:class="{ 'has-error': errors.has('password') }">

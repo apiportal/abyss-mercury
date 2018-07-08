@@ -649,7 +649,7 @@
 								</div>
 							</div>
 							<div v-bind:id="'license'+index" class="collapse field-tabs field-level-1">
-								<div class="field-acc pb-0">
+								<div class="field-header text-body row brd-t-0 brd-b">
 									<div class="small">
 										<h6 class="field-header text-body row brd-b">SLA</h6>
 										<h6 class="mt-2">
@@ -695,13 +695,13 @@
 												{{license.licensedocument.legal.documentState}}
 											</span>
 										</p>
-										<p>
+										<p v-if="license.licensedocument.legal.link">
 											<strong class="lbl">link</strong>
 											<span class="d-block text-truncate">
-												{{license.licensedocument.legal.link}}
+												<a :href="license.licensedocument.legal.link" target="_blank">{{license.licensedocument.legal.link}}</a>
 											</span>
 										</p>
-										<p>
+										<p v-if="license.licensedocument.legal.documentText">
 											<strong class="lbl">document Text</strong>
 											<span class="d-block text-truncate">
 												{{license.licensedocument.legal.documentText}}
@@ -709,7 +709,7 @@
 										</p>
 									</div>
 									<div class="small">
-										<h6 class="field-header text-body row brd-0">Policies</h6>
+										<h6 class="field-header text-body row">Policies</h6>
 										<div v-for="(pol, index) in license.policies" class="brd-t py-2 row px-3" :title="pol.uuid + ' | ' + pol.description">
 											<h6 class="d-block">{{pol.name}}</h6>
 											<span class="d-block">{{pol.policyinstance.info.type}} - {{pol.policyinstance.info.subType}}</span>

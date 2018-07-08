@@ -28,15 +28,17 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 				paginate: {},
 				ajaxAppListUrl: abyss.ajax.app_list,
 				ajaxUrl: abyss.ajax.subject_app_list,
-				ajaxPutUrl: abyss.ajax.subjects,
-				ajaxUserAppListUrl: abyss.ajax.subject_app_subject_list + this.$cookie.get('abyss.principal.uuid'),
+				ajaxSubjects: abyss.ajax.subjects,
+				ajaxUserAppListUrl: abyss.ajax.subject_app_subject_list + this.$root.rootData.user.uuid,
 				ajaxHeaders: {},
 				selected: null,
-				resetPassword: true,
+				resetKey: false,
+				preventCancel: false,
 				api: {},
 				app: {
 					"uuid": null,
-					"organizationid": this.$root.rootData.user.organizationid,
+					"organizationid": null,
+					// "organizationid": this.$root.abyssOrgId,
 					"created": null,
 					"updated": null,
 					"deleted": null,
@@ -52,7 +54,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 					"secondaryemail": null,
 					"effectivestartdate": moment().format('YYYY-MM-DD HH:mm:ss'),
 					"effectiveenddate": moment().add(6, 'months').format('YYYY-MM-DD HH:mm:ss'),
-					"password": null,
+					"password": 'temppassword',
 					"picture": null,
 					"totallogincount": null,
 					"failedlogincount": null,
@@ -96,11 +98,15 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 				Vue.set(this.app, 'uuid',this.uuidv4());
 			},
 			cancelApp() {
-				var index = this.appList.indexOf(this.app);
-				this.appList[index] = this.selectedApp;
-				this.app = _.cloneDeep(this.newApp);
-				this.selectedApp = _.cloneDeep(this.newApp);
-				this.selected = null;
+				if (!this.preventCancel) {
+					this.preventCancel = false;
+					this.$emit('set-state', 'init'); 
+					var index = this.appList.indexOf(this.app);
+					this.appList[index] = this.selectedApp;
+					this.app = _.cloneDeep(this.newApp);
+					this.selectedApp = _.cloneDeep(this.newApp);
+					this.selected = null;
+				}
 			},
 			fixProps(item) {
 				if (item.effectiveenddate == null) {
@@ -124,11 +130,15 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 				if (item.subjectname == null) {
 					Vue.set(item,'subjectname', item.firstname);
 				}
+				if (item.url == null) {
+					Vue.set(item, 'url', '');
+				}
 				if (item.displayname == null) {
 					Vue.set(item,'displayname', item.lastname);
 				}
 			},
 			selectApp(item, i) {
+				this.preventCancel = false;
 				this.fixProps(item);
 				this.selectedApp = _.cloneDeep(item);
 				this.app = item;
@@ -146,16 +156,25 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 				return i === this.selected;
 			},
 			deleteApp(item) {
-				//2DO
-				axios.delete(this.ajaxUrl + '/' + item.uuid, item, this.ajaxHeaders).then(response => {
+				// console.log("item: ", item);
+				// console.log("ajaxUrl: ", this.ajaxUrl + '/' + item.appObj.uuid, item.appObj);
+				// console.log("ajaxSubjects: ", this.ajaxSubjects + '/' + item.uuid, item);
+				axios.delete(this.ajaxSubjects + '/' + item.uuid, item, this.ajaxHeaders).then(response => {
 					item.isdeleted = true;
-					console.log("deleteUser response: ", response);
+					console.log("deleteApp response: ", response);
+				}, error => {
+					this.handleError(error);
+				});
+				axios.delete(this.ajaxUrl + '/' + item.appObj.uuid, item.appObj, this.ajaxHeaders).then(response => {
+					item.isdeleted = true;
+					console.log("deleteUserApp response: ", response);
 				}, error => {
 					this.handleError(error);
 				});
 			},
 			deleteProps() {
 				var item = _.cloneDeep(this.app);
+				// Vue.delete(item, 'password');
 				Vue.delete(item, 'uuid');
 				Vue.delete(item, 'created');
 				Vue.delete(item, 'updated');
@@ -179,7 +198,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 			},
 			/*fixRel(act) {
 				var itemObj = {
-					organizationid: this.$root.rootData.user.organizationid,
+					organizationid: this.$root.abyssOrgId,
 					crudsubjectid: this.$root.rootData.user.uuid,
 					subjectid: this.$root.rootData.user.uuid,
 					appid: '4cd010b5-9ef1-4a09-a5d5-f1be56de2d09',
@@ -197,54 +216,90 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 					this.handleError(error);
 				});
 			},*/
+			beforeAppAction(c) {
+				// console.log("this.resetKey: ", this.resetKey);
+				// console.log("this.$root.rootState: ", this.$root.rootState);
+				if ( (this.app.password && this.app.uuid && !this.resetKey && this.$root.rootState != 'add') ) {
+					alert('Please copy APP Key and APP Secret!');
+					return false;
+				} else if (this.preventCancel) {
+					console.log("this.preventCancel: ", this.preventCancel);
+					if (!this.app.password || this.app.password == 'temppassword') {
+						alert('Please generate APP Secret!');
+						return false;
+					} else {
+						if (this.resetKey) {
+							this.preventCancel = false;
+							return true;
+						}
+					}
+				} else {
+					console.log("HEYOOO: ");
+					return true;
+				}
+			},
 			appAction(act) {
 				this.$validator.validateAll().then((result) => {
 					if (result) {
 						if (act == 'add') {
-							this.fixProps(this.app);
-							var iAppArr = [];
-							iAppArr.push(this.deleteProps());
-							// axios.post(this.ajaxAppListUrl, iAppArr, this.ajaxHeaders).then(response => {
-							axios.post(this.ajaxPutUrl, iAppArr, this.ajaxHeaders).then(response => {
-								console.log("addApp response: ", response);
-								if (response.data[0].status != 500 ) {
-									var res = response.data[0].response;
-									this.appList.push(res);
-									var itemObj = {
-										organizationid: this.$root.rootData.user.organizationid,
-										crudsubjectid: this.$root.rootData.user.uuid,
-										subjectid: this.$root.rootData.user.uuid,
-										apiid: res.uuid,
-									};
-									var itemArr = [];
-									itemArr.push(itemObj);
-									axios.post(this.ajaxUrl, itemArr, this.ajaxHeaders).then(response => {
-										console.log("addUserApp response: ", response);
-										if (response.data[0].status != 500 ) {
-											// this.appList.push(response.data[0].response);
-											// this.$emit('set-state', 'init');
-											// this.app = _.cloneDeep(this.newApp);
-										}
-									}, error => {
-										this.handleError(error);
-									});
-								}
-							}, error => {
-								this.handleError(error);
-							});
+							if (this.beforeAppAction()) {
+								this.fixProps(this.app);
+								var iAppArr = [];
+								iAppArr.push(this.deleteProps());
+												// console.log("ADDDDDDDDDDDDDDPOSTTT: ", this.app);
+								this.$emit('set-state', 'edit');
+								this.preventCancel = true;
+																// this.app.uuid = 'qqqqqqqqqqqqqqqqqqqqqqqqqq';
+								axios.post(this.ajaxSubjects, iAppArr, this.ajaxHeaders).then(response => {
+									console.log("addApp response: ", response);
+									if (response.data[0].status != 500 ) {
+										var res = response.data[0].response;
+										this.appList.push(res);
+										this.app = res;
+										var itemObj = {
+											organizationid: this.$root.abyssOrgId,
+											crudsubjectid: this.$root.rootData.user.uuid,
+											subjectid: this.$root.rootData.user.uuid,
+											apiid: res.uuid,
+										};
+										var itemArr = [];
+										itemArr.push(itemObj);
+										axios.post(this.ajaxUrl, itemArr, this.ajaxHeaders).then(response => {
+											console.log("addUserApp response: ", response);
+											if (response.data[0].status != 500 ) {
+												var res = response.data[0].response;
+												// this.appList.push(response.data[0].response);
+												// this.$emit('set-state', 'init');
+												// this.app = _.cloneDeep(this.newApp);
+												Vue.set(this.app, 'appObj', res);
+												Vue.set(this.app, 'subscriptions', []);
+												///////////////////////////
+												this.$emit('set-state', 'edit');
+												this.preventCancel = true;
+											}
+										}, error => {
+											this.handleError(error);
+										});
+									}
+								}, error => {
+									this.handleError(error);
+								});
+							}
 						}
 						if (act == 'edit') {
-							Vue.set(this.app,'subjectname', this.app.firstname);
-							Vue.set(this.app,'displayname', this.app.lastname);
-							// https://dev2.apiportal.com/abyss/oapi/subjects/apps/ NOT WORKING
-							this.updateItem(this.ajaxPutUrl + '/' + this.app.uuid, this.deleteProps(), this.ajaxHeaders, this.appList).then(response => {
-								console.log("editApp response: ", response);
-								this.$emit('set-state', 'init');
-								this.app = _.cloneDeep(this.newApp);
-								this.selected = null;
-							}, error => {
-								this.handleError(error);
-							});
+							if (this.beforeAppAction() && !this.preventCancel) {
+								Vue.set(this.app,'subjectname', this.app.firstname);
+								Vue.set(this.app,'displayname', this.app.lastname);
+								console.log("EDITTTTTTTTTTTTTTT: ", this.app);
+								this.updateItem(this.ajaxSubjects + '/' + this.app.uuid, this.deleteProps(), this.ajaxHeaders, this.appList).then(response => {
+									console.log("editApp response: ", response);
+									this.$emit('set-state', 'init');
+									this.app = _.cloneDeep(this.newApp);
+									this.selected = null;
+								}, error => {
+									this.handleError(error);
+								});
+							}
 						}
 						return;
 					}
@@ -254,12 +309,61 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 				var param = d || '';
 				axios.all([
 					axios.get(this.ajaxUserAppListUrl ),
+				]).then(
+					axios.spread((user_app_list) => {
+						// var myAppList = user_app_list.data.filter( (item) => item.isdeleted == false );
+						var myAppList = user_app_list.data;
+						console.log("myAppList: ", myAppList);
+						var appList = [];
+						myAppList.forEach((value, key) => {
+							axios.get(this.ajaxSubjects + '/' + value.appid, this.ajaxHeaders).then(response => {
+								if (response.data[0].status != 500 ) {
+									var res = response.data[0];
+									res.appObj = value;
+									
+									axios.get(abyss.ajax.permission_list_api_subscriptions_subject + res.uuid, this.ajaxHeaders)
+									.then(response => {
+										Vue.set(res, 'subscriptions', response.data );
+										if (res.subscriptions.length > 0) {
+											res.subscriptions.forEach((sub, k) => {
+												axios.get(abyss.ajax.resources + sub.resourceid, this.ajaxHeaders)
+												.then(response => {
+													Vue.set(sub, 'resource', response.data[0] );
+													appList.push(res);
+													this.isLoading = false;
+												}, error => {
+													this.handleError(error);
+												});
+											});
+										} else {
+											appList.push(res);
+											this.isLoading = false;
+										}
+									}, error => {
+										this.handleError(error);
+									});
+								}
+							}, error => {
+								this.handleError(error);
+							});
+						});
+						this.appList = appList;
+						this.preload();
+					})
+				).catch(error => {
+					this.handleError(error);
+				});
+			},
+			getPage222(p, d) {
+				var param = d || '';
+				axios.all([
+					axios.get(this.ajaxUserAppListUrl ),
 					axios.get(this.ajaxAppListUrl + '?page=' + p + param, this.ajaxHeaders),
 				]).then(
 					axios.spread((user_app_list, app_list) => {
 						var myAppList = user_app_list.data.filter( (item) => item.isdeleted == false );
 						var appList = app_list.data.filter( (item) => item.isdeleted == false );
-						this.appList = _.filter(appList, (v) => _.includes( myAppList.map(e => e.appid), v.uuid)) ;
+						this.appList = _.filter(appList, (v) => _.includes( myAppList.map(e => e.appid), v.uuid));
 						this.appList.forEach((value, key) => {
 							var flt = _.find(myAppList, { 'appid': value.uuid });
 							Vue.set(value, 'appObj', flt );
@@ -286,24 +390,24 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 					this.handleError(error);
 				});
 			},
+			resetCtrl(i) {
+				Vue.set(this, 'resetKey', true);
+			},
 		},
 		mounted() {
-			// this.preload();
+			vm = this;
 			new ClipboardJS('.js-copy', {
 				text: function(trigger) {
-					// return trigger.getAttribute('aria-label');
 					var targets = $(trigger).data('clipboard-targets');
 					targets = targets.split(',');
-					console.log("targets: ", targets);
 					var copyString = 'APP Key: ' + $(targets[0]).val() + '\nAPP Secret: ' + $(targets[1]).val();
-					// var copyString = 'APP Secret: ';
-					// var qtd = targets.length;
-					// for (var i = 0; i < qtd; i++) {
-					// 	copyString += ' APP Key: ' + $(targets[i]).val();
-					// }
-					// console.log("copyString: ", copyString);
 					return copyString;
 				}
+			}).on('success', function(e) {
+				console.info('Action:', e.action);
+				console.info('Text:', e.text);
+				console.info('Trigger:', e.trigger);
+				vm.resetCtrl();
 			});
 		},
 		created() {
@@ -312,11 +416,10 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 			this.newApp = _.cloneDeep(this.app);
 			axios.all([
 				axios.get(abyss.ajax.subject_directories_list),
-				axios.get(abyss.ajax.organizations_list),
 			]).then(
-				axios.spread((subject_directories_list, organizations_list) => {
+				axios.spread((subject_directories_list) => {
 					this.directoryOptions = subject_directories_list.data.filter( (item) => item.isdeleted == false );
-					this.orgOptions = organizations_list.data.filter( (item) => item.isdeleted == false );
+					this.orgOptions = this.$root.rootData.user.organizations.filter( (item) => item.isdeleted == false );
 					this.getPage(1);
 				})
 			).catch(error => {

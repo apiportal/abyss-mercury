@@ -44,6 +44,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 					"firstname": null,
 					"lastname": null,
 					"displayname": null,
+					"url": null,
 					"email": null,
 					"secondaryemail": null,
 					"effectivestartdate": moment().format('YYYY-MM-DD HH:mm:ss'),
@@ -284,6 +285,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 				if (item.islocked == null) {
 					Vue.set(item, 'islocked', false);
 				}
+				if (item.url == null) {
+					Vue.set(item, 'url', '');
+				}
 				if (item.crudsubjectid == null) {
 					Vue.set(item,'crudsubjectid','e20ca770-3c44-4a2d-b55d-2ebcaa0536bc');
 				}
@@ -312,6 +316,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 			},
 			deleteProps() {
 				var item = _.cloneDeep(this.user);
+				// Vue.delete(item, 'password');
 				Vue.delete(item, 'uuid');
 				Vue.delete(item, 'created');
 				Vue.delete(item, 'updated');
@@ -451,15 +456,14 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 			this.newUser = _.cloneDeep(this.user);
 			axios.all([
 				axios.get(abyss.ajax.subject_directories_list),
-				axios.get(abyss.ajax.organizations_list),
 				axios.get(abyss.ajax.user_group_list),
 				axios.get(abyss.ajax.subject_memberships),
 				axios.get(abyss.ajax.subject_types),
 				axios.get(abyss.ajax.permission_list),
 			]).then(
-				axios.spread((subject_directories_list, organizations_list, user_group_list, subject_memberships, subject_types, permission_list) => {
+				axios.spread((subject_directories_list, user_group_list, subject_memberships, subject_types, permission_list) => {
 					this.directoryOptions = subject_directories_list.data.filter( (item) => item.isdeleted == false );
-					this.orgOptions = organizations_list.data.filter( (item) => item.isdeleted == false );
+					this.orgOptions = this.$root.rootData.user.organizations.filter( (item) => item.isdeleted == false );
 					this.groupOptions = user_group_list.data.filter( (item) => item.isdeleted == false );
 					// this.groupOptions = user_group_list.data;
 					this.memberOptions = subject_memberships.data.filter( (item) => item.isdeleted == false );

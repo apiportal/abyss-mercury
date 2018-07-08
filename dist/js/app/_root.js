@@ -312,9 +312,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 			selectProxy(item, state) {
 				axios.get(abyss.ajax.api_licenses_api + item.uuid, this.ajaxHeaders).then(response => {
 					if (response.data != null) {
-						var actLcs = response.data.filter( (item) => item.isdeleted == false );
+						var apiLicenses = response.data.filter( (item) => item.isdeleted == false );
 						var licenses = [];
-						actLcs.forEach((value, key) => {
+						apiLicenses.forEach((value, key) => {
 							axios.get(abyss.ajax.licenses_list + value.licenseid)
 							.then(response => {
 								licenses.push(response.data[0]);
@@ -332,14 +332,18 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 							});
 							axios.get(abyss.ajax.contracts_api + this.api.uuid)
 							.then(response => {
-								var cont = response.data.filter( (item) => item.isdeleted == false );
-								// console.log("cont: ", cont);
-								// console.log("this.api.licenses: ", this.api.licenses);
+								var allApiContracts = response.data.filter( (item) => item.isdeleted == false );
+								var allMyApiContracts = response.data.filter( (item) => item.isdeleted == false && item.crudsubjectid == this.$root.rootData.user.uuid );
+								console.log("allApiContracts: ", allApiContracts);
+								console.log("this.api.licenses: ", this.api.licenses);
 								// var ddd = _.filter(response.data, { 'apiid': this.api.uuid, 'licenseid': this.api.licenses.uuid });
 								// var ddd = _.filter(cont, (item) => _.find(this.api.licenses, { uuid: item.uuid }));
 								//2DO
 								// var ddd = _.filter(this.api.licenses, { 'apiid': this.api.uuid });
-								// console.log("ddd: ", ddd);
+								var actLcs = _.find(this.api.licenses, (v) => _.includes(allApiContracts.map(e => e.licenseid), v.uuid));
+								Vue.set(actLcs, 'isactive', true);
+								// Vue.set(allApiContracts, 'activelicense', actLcs.uuid);
+								console.log("actLcs: ", actLcs);
 							}, error => {
 								this.handleError(error);
 							});
@@ -351,6 +355,71 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 			},
 			setProxyLicense(i) {
 				console.log("i: ", i);
+			},
+			deleteResource(item) {
+				axios.delete(abyss.ajax.resources, item, this.ajaxHeaders).then(response => {
+					console.log("DELETE response: ", response);
+				}, error => {
+					this.handleError(error);
+				});
+			},
+			getResources(item, typ, name, desc) {
+				axios.get(abyss.ajax.resources, this.ajaxHeaders)
+				// axios.get(abyss.ajax.resources_ref + item.uuid, this.ajaxHeaders)
+				.then(response => {
+					var res = response.data.find( (e) => e.resourcerefid == item.uuid );
+					if (res) {
+						Vue.set(item, 'resource', res );
+					} else {
+						this.createResource(item, typ, name, desc);
+					}
+					// Vue.set(item, 'resource', response.data );
+					// !! remove
+				}, error => {
+					this.handleError(error);
+				});
+			},
+			updateResource(item, typ, name, desc) {
+				var resType = this.$root.rootData.resourceTypes.find((e) => e.type == typ );
+				var descript = desc || '';
+				var resource = {
+					"organizationid": item.resource.organizationid,
+					"crudsubjectid": item.resource.crudsubjectid,
+					"resourcetypeid": item.resource.resourcetypeid,
+					"resourcename": name + ' ' + resType.type,
+					"description": descript,
+					"resourcerefid": item.uuid
+				};
+				console.log("resource: ", resource);
+				this.updateItem(abyss.ajax.resources + item.resource.uuid, resource, this.ajaxHeaders).then(response => {
+					var res = response.data[0];
+					console.log("updateResource response: ", response);
+					Vue.set(item, 'resource', res );
+				});
+			},
+			createResource(item, typ, name, desc) {
+				var resType = this.$root.rootData.resourceTypes.find((e) => e.type == typ );
+				var descript = desc || '';
+				var resource = {
+					"organizationid": this.$root.abyssOrgId,
+					"crudsubjectid": this.$root.rootData.user.uuid,
+					"resourcetypeid": resType.uuid, //fixed APP
+					"resourcename": name + ' ' + resType.type, //api.info.title + API
+					"description": descript, //api.info.description + api.info.version
+					"resourcerefid": item.uuid //api.uuid
+				};
+				var itemArr = [];
+				itemArr.push(resource);
+				console.log("RESOURCE!!!!: ", itemArr);
+				axios.post(abyss.ajax.resources, itemArr, this.ajaxHeaders).then(response => {
+					console.log("resources response: ", response);
+					var res = response.data[0];
+					if (response.data[0].status != 500 ) {
+						Vue.set(item, 'resource', res );
+					}
+				}, error => {
+					this.handleError(error);
+				});
 			},
 			isSelectedProxy(i) {
 				return i === this.api.uuid;
@@ -431,6 +500,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 			},
 		}
 	});
+// ■■■■■■■■ vue ■■■■■■■■ //
 	new Vue({
 		el: '#portal',
 		name: 'portal',
@@ -520,13 +590,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 				Vue.delete(item, 'updated');
 				Vue.delete(item, 'deleted');
 				Vue.delete(item, 'isdeleted');
-				// Vue.set(item, 'subjectid', this.rootData.user.uuid);
-				// Vue.set(item, 'crudsubjectid', this.rootData.user.uuid);
-				// Vue.set(item, 'description', '');
-				// Vue.set(item, 'organizationid', this.rootData.user.organizationid);
-				// Vue.set(item, 'externaldescription', '');
-				// Vue.set(item, 'externalurl', '');
-				// Vue.set(item, 'count', 0);
 				return item;
 			},
 			fixTax(item) {
@@ -556,7 +619,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 					Vue.set(item,'crudsubjectid',this.rootData.user.uuid);
 				}
 				if (item.organizationid == null) {
-					Vue.set(item,'organizationid',this.rootData.user.organizationid);
+					Vue.set(item,'organizationid',this.abyssOrgId);
 				}
 			},
 			addTax() {
@@ -680,9 +743,12 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 					axios.get(abyss.ajax.api_category_list),
 					axios.get(abyss.ajax.api_tag_list),
 					axios.get(abyss.ajax.contract_states),
+					axios.get(abyss.ajax.resource_types),
+					axios.get(abyss.ajax.resource_actions),
+					axios.get(abyss.ajax.subject_organizations_list + id),
 					// axios.get('/data/create-api.json')
 				]).then(
-					axios.spread((user, api_visibility_list, api_states_list, api_group_list, api_category_list, api_tag_list, contract_states) => {
+					axios.spread((user, api_visibility_list, api_states_list, api_group_list, api_category_list, api_tag_list, contract_states, resource_types, resource_actions, subject_organizations_list) => {
 						Vue.set(this.rootData, 'user', user.data[0] );
 						Vue.set(this.rootData, 'myApiVisibilityList', api_visibility_list.data );
 						Vue.set(this.rootData, 'myApiStateList', api_states_list.data );
@@ -695,16 +761,33 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 						Vue.set(this.rootData, 'apiCategoryList', api_category_list.data );
 						Vue.set(this.rootData, 'apiTagList', api_tag_list.data );
 						Vue.set(this.rootData, 'contractStates', contract_states.data );
+						Vue.set(this.rootData, 'resourceTypes', resource_types.data );
+						Vue.set(this.rootData, 'resourceActions', resource_actions.data );
+						Vue.set(this.rootData, 'subjectOrganizations', subject_organizations_list.data );
+						var orgs = [];
+						if (this.rootData.subjectOrganizations.length > 0) {
+							this.rootData.subjectOrganizations.forEach((value, key) => {
+								axios.get(abyss.ajax.organizations_list + value.organizationrefid, this.ajaxHeaders)
+								.then(response => {
+									var res = response.data;
+									orgs.push(response.data[0]);
+								}, error => {
+									this.handleError(error);
+								});
+							});
+							Vue.set(this.rootData.user, 'organizations', orgs );
+						} else {
+							axios.get(abyss.ajax.organizations_list + id, this.ajaxHeaders)
+							.then(response => {
+								var res = response.data;
+								console.log("res: ", res);
+								Vue.set(this.rootData.user, 'organizations', res );
+							}, error => {
+								this.handleError(error);
+							});
+						}
 						// console.log("ROOT this.rootData: ", this.rootData);
 						this.isLoading = false;
-						/*axios.get(abyss.ajax.organizations_list, this.ajaxHeaders)
-						.then(response => {
-							var orgName = _.find(response.data, { 'uuid': this.rootData.user.organizationid });
-							this.orgName = orgName.name;
-						}, error => {
-							this.handleError(error);
-						});*/
-						// console.log("this.rootData: ", JSON.stringify(this.rootData, null, '\t') );
 					})
 				).catch(error => {
 					this.handleError(error);
@@ -712,23 +795,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 			},
 		},
 		computed: {
-			/*getOrganization : {
-				get() {
-					if (!this.isLoading) {
-						console.log("this.rootData.user: ", this.rootData.user);
-						console.log("this.rootData.user.organizationid: ", this.rootData.user.organizationid);
-						axios.get(abyss.ajax.organizations_list, this.ajaxHeaders)
-						.then(response => {
-							console.log("response.data: ", response.data);
-							var orgName = _.find(response.data, { 'uuid': this.rootData.user.organizationid });
-							console.log("orgName.name: ", orgName.name);
-							this.orgName = orgName.name;
-						}, error => {
-							this.handleError(error);
-						});
-					}
-				},
-			},*/
 		},
 		mounted() {
 			this.setState('init');
@@ -739,14 +805,13 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 			this.preloadInit();
 			if (abyss.isAbyssSandbox) {
 				this.$cookie.set('abyss.session', abyss.session, 10);
+				this.$cookie.set('abyss.login.organization.name', 'monasdyas', 10); //ten day
+				this.$cookie.set('abyss.login.organization.uuid', '89db8aca-51b3-435b-a79d-e1f4067d2076', 10); //ten day
+				// this.$cookie.set('abyss.login.organization.uuid', '3c65fafc-8f3a-4243-9c4e-2821aa32d293', 10); //ten day
 				this.$cookie.set('abyss.principal.uuid', '9820d2aa-eb02-4a58-8cc5-8b9a89504df9', 10); //ten day
 				// this.$cookie.set('abyss.principal.uuid', '32c9c734-11cb-44c9-b06f-0b52e076672d', 1); //one day
 				// this.$cookie.set('abyss.principal.uuid', 'd6bba21e-6d4c-4f87-897e-436bd97d41c0', 1); //one day
 			}
-			// console.log("this.$cookie.get(abyss.session): ", this.$cookie.get('abyss.session'));
-			// if ( !this.$cookie.get('abyss.session') ) {
-			// 	window.location.href = '/abyss/login';
-			// }
 			this.abyssOrgName = this.$cookie.get('abyss.login.organization.name');
 			this.abyssOrgId = this.$cookie.get('abyss.login.organization.uuid');
 			var principal = this.$cookie.get('abyss.principal.uuid');

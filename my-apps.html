@@ -18,7 +18,7 @@
 			<div th:replace="webroot/frags/api/api-preview.htm :: apiPreview"></div>
 			</transition>
 			<section class="column column-main column-main-fixed">
-				<div class="column-main-fixed-overlay" v-if="rootState == 'add' || rootState == 'edit'" v-on:click="$emit('set-state', 'init'); cancelApp()"></div>
+				<div class="column-main-fixed-overlay" v-if="rootState == 'add' || rootState == 'edit'" v-on:click="cancelApp()"></div>
 				<div class="nicescroll--bar">
 					<table class="table table-hover table-bordered table-edge">
 						<tr>
@@ -98,10 +98,9 @@
 								<label for="isactived"></label>
 							</span>
 						</div>
-						<div class="form-group" v-bind:class="{ 'has-error': errors.has('url') }">
+						<div class="form-group">
 							<label for="url">Url:</label>
-							<input type="text" name="url" id="url" v-model="app.url" v-validate="'required|url'" class="form-control">
-							<em v-bind:class="{ 'show': errors.has('url') }">{{ errors.first('url') }}</em>
+							<input type="text" name="url" id="url" v-model="app.url" class="form-control">
 						</div>
 						<div class="form-group form-inline">
 							<label class="d-block">issandbox</label>
@@ -113,7 +112,8 @@
 						<div class="form-group " v-bind:class="{ 'has-error': errors.has('orgid') }">
 							<label>Organization Id</label>
 							<select class="form-control" name="orgid" id="orgid" v-model="app.organizationid" v-validate="'required'">
-								<option v-for="(org,index) in orgOptions" :value="org.organizationid">{{org.name}}</option>
+								<!-- <option v-for="(org,index) in orgOptions" :value="org.organizationid">{{org.name}}</option> -->
+								<option v-for="(org,index) in orgOptions" :value="org.uuid">{{org.name}}</option>
 							</select>
 							<em v-bind:class="{ 'show': errors.has('orgid') }">{{ errors.first('orgid') }}</em>
 						</div>
@@ -126,22 +126,25 @@
 						</div>
 						<div v-if="rootState == 'edit'">
 						<!-- <div class="clearfix"> -->
-							<div class="form-group text-center"><a href="#" class="btn btn-block btn-sm btn-green js-copy" data-clipboard-targets="#appkey,#appsecret">Copy APP Key & APP Secret</a></div>
+							<div class="form-group text-center" v-if="app.password && app.uuid"><a href="#" class="btn btn-block btn-sm btn-green js-copy" data-clipboard-targets="#appkey,#appsecret">Copy APP Key & APP Secret</a></div>
 							<div class="form-group">
 								<label class="clearfix d-block" for="appkey">App Key:</label>
-								<input type="text" name="appkey" id="appkey" :value="app.uuid" v-validate="'required'" class="form-control" readonly="">
+								<input type="text" name="appkey" id="appkey" :value="app.uuid" class="form-control" readonly="">
 							</div>
 							<div class="form-group js-showpass" v-bind:class="{ 'has-error': errors.has('appsecret') }">
-								<label class="clearfix d-block" for="password">App Secret: <a href="#" class="float-right txt-link" v-on:click="regenPass(4,4,4,4)">Regenerate APP Secret</a></label>
+								<label class="clearfix d-block" for="password">App Secret: <a href="#" class="float-right txt-link" v-on:click="regenPass(4,4,4,4)">
+									<span v-if="!preventCancel">Regenerate</span> 
+									<span v-if="preventCancel">Generate</span> 
+								APP Secret</a></label>
 								<div class="input-group">
-									<input type="password" name="appsecret" id="appsecret" v-model="app.password" v-validate="rootState == 'add' ? 'required|min:8|password_strength' : ''" class="form-control">
+									<input type="password" name="appsecret" id="appsecret" v-model="app.password" v-validate="preventCancel ? 'required|min:8|password_strength' : ''" class="form-control">
 									<a href="#" class="txt-link js-eye input-group-addon"><i class="fas fa-eye"></i></a>
 								</div>
 								<em v-bind:class="{ 'show': errors.has('appsecret') }">{{ errors.first('appsecret') }}</em>
 							</div>
 						</div>
 						<div class="form-group d-flex justify-content-between">
-							<button type="button" class="btn btn-secondary btn-rounded" v-on:click="$emit('set-state', 'init'); cancelApp()">CANCEL</button>
+							<button type="button" class="btn btn-secondary btn-rounded" v-on:click="cancelApp()">CANCEL</button>
 							<button type="button" class="btn btn-primary btn-rounded" v-if="rootState == 'add'" v-on:click="appAction('add')">ADD APP</button>
 							<button type="button" class="btn btn-primary btn-rounded" v-if="rootState == 'edit'" v-on:click="appAction('edit')">SAVE</button>
 						</div>

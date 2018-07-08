@@ -49,7 +49,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 				newDirectory: {},
 				directoryList: [],
 				directoryTypes: [],
-				orgOptions: [],
+				orgOptions: this.$root.rootData.user.organizations,
 				end: []
 			};
 		},
@@ -86,19 +86,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 				if (subType) {
 					return subType.typename;
 				}
-			},
-			getOrgOptions() {
-				axios.get(abyss.ajax.organizations_list, this.ajaxHeaders)
-				.then(response => {
-					console.log(response);
-					if (response.data != null) {
-						this.orgOptions = response.data.filter( (item) => item.isdeleted == false );
-					} else {
-						this.orgOptions = [];
-					}
-				}, error => {
-					this.handleError(error);
-				});
 			},
 			getDirectoryTypes() {
 				axios.get(abyss.ajax.subject_directory_types, this.ajaxHeaders)
@@ -208,7 +195,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 			this.newDirectory = _.cloneDeep(this.directory);
 			this.getPage(1);
 			this.getDirectoryTypes();
-			this.getOrgOptions();
 		}
 	});
 });

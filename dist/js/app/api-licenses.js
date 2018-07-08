@@ -15,7 +15,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment'], funct
 				pageState: 'init',
 				paginate: {},
 				ajaxLicenseUrl: abyss.ajax.licenses_list,
-				ajaxUrl: abyss.ajax.subject_licenses_list + this.$cookie.get('abyss.principal.uuid'),
+				ajaxUrl: abyss.ajax.subject_licenses_list + this.$root.rootData.user.uuid,
 				ajaxHeaders: {},
 				selected: null,
 				license: {
@@ -93,7 +93,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment'], funct
 					Vue.set(item,'crudsubjectid',this.$root.rootData.user.uuid);
 				}
 				if (item.organizationid == null) {
-					Vue.set(item,'organizationid',this.$root.rootData.user.organizationid);
+					Vue.set(item,'organizationid',this.$root.abyssOrgId);
 				}
 				if (item.licensedocument.legal.legalDocumentID == null) {
 					Vue.set(item.licensedocument.legal, 'legalDocumentID', this.uuidv4() );
@@ -112,6 +112,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment'], funct
 				axios.delete(this.ajaxLicenseUrl + item.uuid, item, this.ajaxHeaders).then(response => {
 					item.isdeleted = true;
 					console.log("deleteUser response: ", response);
+					this.deleteResource(item);
 				}, error => {
 					this.handleError(error);
 				});
@@ -128,6 +129,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment'], funct
 				Vue.delete(item, 'updated');
 				Vue.delete(item, 'deleted');
 				Vue.delete(item, 'isdeleted');
+				Vue.delete(item, 'resource');
 				Vue.delete(item, 'policies');
 				return item;
 			},
@@ -139,16 +141,15 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment'], funct
 							var itemArr = [];
 							itemArr.push(this.deleteProps());
 							console.log("itemArr: ", itemArr);
-							// this.addItem(this.ajaxUrl, itemArr, this.ajaxHeaders, this.licenseList).then(response => {
-							// axios.post(this.ajaxUrl, itemArr, this.ajaxHeaders).then(response => {
 							axios.post(this.ajaxLicenseUrl, itemArr, this.ajaxHeaders).then(response => {
 								console.log("addLicense response: ", response);
 								if (response.data[0].status != 500 ) {
-									var newLcs = response.data[0].response;
-									Vue.set(newLcs, 'policies', _.filter(this.policyList, (v) => _.includes(newLcs.licensedocument.termsOfService.policyKey, v.uuid)) );
-									this.licenseList.push(newLcs);
+									var item = response.data[0].response;
+									Vue.set(item, 'policies', _.filter(this.policyList, (v) => _.includes(item.licensedocument.termsOfService.policyKey, v.uuid)) );
+									this.licenseList.push(item);
 									this.$emit('set-state', 'init');
 									this.license = _.cloneDeep(this.newLicense);
+									this.createResource(item, 'LICENSE', item.name, item.licensedocument.info.description);
 								}
 							}, error => {
 								this.handleError(error);
@@ -158,6 +159,11 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment'], funct
 							console.log("this.deleteProps(): ", this.deleteProps());
 							this.updateItem(this.ajaxLicenseUrl + this.license.uuid, this.deleteProps(), this.ajaxHeaders, this.licenseList).then(response => {
 								console.log("editLicense response: ", response);
+								var item = response.data[0];
+								this.getResources(item, 'LICENSE', item.name, item.licensedocument.info.description);
+								setTimeout(() => {
+									this.updateResource(item, 'LICENSE', item.name, item.licensedocument.info.description);
+								},100);
 								this.$emit('set-state', 'init');
 								this.license = _.cloneDeep(this.newLicense);
 								this.selected = null;
@@ -171,11 +177,12 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment'], funct
 				var param = d || '';
 				axios.get(this.ajaxUrl + '?page=' + p + param, this.ajaxHeaders)
 				.then(response => {
-					var newLcs = response.data;
-					newLcs.forEach((value, key) => {
+					this.licenseList = response.data;
+					this.licenseList.forEach((value, key) => {
 						Vue.set(value, 'policies', _.filter(this.policyList, (v) => _.includes(value.licensedocument.termsOfService.policyKey, v.uuid)) );
+						this.getResources(value, 'LICENSE', value.name, value.licensedocument.info.description);
 					});
-					this.licenseList = newLcs;
+					// this.licenseList = newLcs;
 					this.paginate = this.makePaginate(response.data);
 					this.preload();
 				}, error => {
@@ -191,7 +198,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment'], funct
 			this.$emit('set-page', 'licenses', 'init');
 			this.newLicense = _.cloneDeep(this.license);
 			axios.all([
-				// axios.get(abyss.ajax.subject_policies_list + this.$cookie.get('abyss.principal.uuid')),
+				// axios.get(abyss.ajax.subject_policies_list + this.$root.rootData.user.uuid),
 				axios.get(abyss.ajax.subject_policies_list + this.$root.rootData.user.uuid ),
 			]).then(
 				axios.spread((subject_policies_list) => {
@@ -201,7 +208,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment'], funct
 			).catch(error => {
 				this.handleError(error);
 			});
-			// console.log("this.$root.rootData.user.organizationid: ", this.$root.rootData.user.organizationid);
+			// console.log("this.$root.abyssOrgId: ", this.$root.abyssOrgId);
 		}
 	});
 });

@@ -1457,18 +1457,14 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					type: Date,
 					order: 'desc'
 				},
-				// sortMethod: {
-				// 	key: 'openapi.paths',
-				// 	type: String,
-				// 	order: 'desc'
-				// },
 				pageState: 'init',
 				paginate: {},
 				ajaxApiUrl: abyss.ajax.api_list,
-				// ajaxUrl: abyss.ajax.my_api_list + this.$cookie.get('abyss.principal.uuid'),
-				ajaxUrl: abyss.ajax.my_business_api_list + this.$cookie.get('abyss.principal.uuid'),
-				ajaxMyBusinessUrl: abyss.ajax.my_business_api_list + this.$cookie.get('abyss.principal.uuid'),
-				ajaxMyProxiesUrl: abyss.ajax.my_proxy_api_list + this.$cookie.get('abyss.principal.uuid'),
+				ajaxBusinessUrl: abyss.ajax.business_list,
+				ajaxProxyUrl: abyss.ajax.proxy_list,
+				ajaxUrl: abyss.ajax.my_business_api_list + this.$root.rootData.user.uuid,
+				ajaxMyBusinessUrl: abyss.ajax.my_business_api_list + this.$root.rootData.user.uuid,
+				ajaxMyProxiesUrl: abyss.ajax.my_proxy_api_list + this.$root.rootData.user.uuid,
 				ajaxHeaders: {},
 				
 				swChanges: {},
@@ -1531,6 +1527,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					"info": {
 						"title": "API",
 						"version": "1.0.0",
+						"description": "",
 						"contact": {},
 						"license": {}
 					},
@@ -1595,7 +1592,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				apiapiCategory: [],
 				/*apiapiTag: {
 					"uuid": null,
-					"organizationid": this.$root.rootData.user.organizationid,
+					"organizationid": this.$root.abyssOrgId,
 					"created": null,
 					"updated": null,
 					"deleted": null,
@@ -1606,7 +1603,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				},
 				apiapiGroup: {
 					"uuid": null,
-					"organizationid": this.$root.rootData.user.organizationid,
+					"organizationid": this.$root.abyssOrgId,
 					"created": null,
 					"updated": null,
 					"deleted": null,
@@ -1617,7 +1614,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				},
 				apiapiCategory: {
 					"uuid": null,
-					"organizationid": this.$root.rootData.user.organizationid,
+					"organizationid": this.$root.abyssOrgId,
 					"created": null,
 					"updated": null,
 					"deleted": null,
@@ -2091,6 +2088,13 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 
 			// ■■■■■■■■■■■■■■■■■■■■■■■■ ABYSS ■■■■■■■■■■■■■■■■■■■■■■■■ //
 
+			apiEndpoint(item) {
+				if (item.isproxyapi) {
+					return this.ajaxProxyUrl;
+				} else {
+					return this.ajaxBusinessUrl;
+				}
+			},
 			dropSpecsSuccess(file, response) {
 				console.log("file, response ", file, response);
 				// this.specData = response.files;
@@ -2175,7 +2179,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					Vue.set(item,'crudsubjectid',this.$root.rootData.user.uuid);
 				}
 				if (item.organizationid == null) {
-					Vue.set(item,'organizationid',this.$root.rootData.user.organizationid);
+					Vue.set(item,'organizationid',this.$root.abyssOrgId);
 				}
 				if (item.tags == null) {
 					Vue.set(item, 'tags', []);
@@ -2220,13 +2224,14 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				Vue.delete(item, 'qosPolicy');
 				Vue.delete(item, 'specs');
 				Vue.delete(item, 'licenses');
+				Vue.delete(item, 'resource');
 				return item;
 			},
 			apiChangeEnvironment(item, val) {
 				if (val == 'islive' && !item.islive) {
 					item.islive = true;
 					item.issandbox = false;
-					this.updateItem(this.ajaxApiUrl + '/' + item.uuid, this.deleteProps(item), this.ajaxHeaders, this.myApiList).then(response => {
+					this.updateItem(this.apiEndpoint(item) + item.uuid, this.deleteProps(item), this.ajaxHeaders, this.myApiList).then(response => {
 						console.log("apiChangeEnvironment response: ", response);
 						this.$toast('info', {message: 'Environment changed successfully', title: 'Environment changed as LIVE', position: 'topLeft'});
 					});
@@ -2234,7 +2239,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				if (val == 'issandbox' && !item.issandbox) {
 					item.islive = false;
 					item.issandbox = true;
-					this.updateItem(this.ajaxApiUrl + '/' + item.uuid, this.deleteProps(item), this.ajaxHeaders, this.myApiList).then(response => {
+					this.updateItem(this.apiEndpoint(item) + item.uuid, this.deleteProps(item), this.ajaxHeaders, this.myApiList).then(response => {
 						console.log("apiChangeEnvironment response: ", response);
 						this.$toast('info', {message: 'Environment changed successfully', title: 'Environment changed as SANDBOX', position: 'topLeft'});
 					});
@@ -2243,14 +2248,14 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 			apiChangeVersion(item, val) {
 				if (val == 'isdefaultversion') {
 					item.isdefaultversion = !item.isdefaultversion;
-					this.updateItem(this.ajaxApiUrl + '/' + item.uuid, this.deleteProps(item), this.ajaxHeaders, this.myApiList).then(response => {
+					this.updateItem(this.apiEndpoint(item) + item.uuid, this.deleteProps(item), this.ajaxHeaders, this.myApiList).then(response => {
 						console.log("apiChangeVersion response: ", response);
 						this.$toast('info', {message: 'Version preference changed successfully', title: 'Version preference changed', position: 'topLeft'});
 					});
 				}
 				if (val == 'islatestversion') {
 					item.islatestversion = !item.islatestversion;
-					this.updateItem(this.ajaxApiUrl + '/' + item.uuid, this.deleteProps(item), this.ajaxHeaders, this.myApiList).then(response => {
+					this.updateItem(this.apiEndpoint(item) + item.uuid, this.deleteProps(item), this.ajaxHeaders, this.myApiList).then(response => {
 						console.log("apiChangeVersion response: ", response);
 						this.$toast('info', {message: 'Version preference changed successfully', title: 'Version preference changed', position: 'topLeft'});
 					});
@@ -2261,9 +2266,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				var curVisibility = this.$root.rootData.myApiVisibilityList.find((el) => el.uuid == item.apivisibilityid );
 				if (slcVisibility.uuid != curVisibility.uuid) {
 					item.apivisibilityid = slcVisibility.uuid;
-					this.updateItem(this.ajaxApiUrl + '/' + item.uuid, this.deleteProps(item), this.ajaxHeaders, this.myApiList).then(response => {
+					this.updateItem(this.apiEndpoint(item) + item.uuid, this.deleteProps(item), this.ajaxHeaders, this.myApiList).then(response => {
 						console.log("apiChangeVisibility response: ", response);
-						// this.$root.getRootData(this.$cookie.get('abyss.principal.uuid'));
+						// this.$root.getRootData(this.$root.rootData.user.uuid);
 						this.$toast('info', {message: 'Visibility changed ' + ' to <strong>' + slcVisibility.name + '</strong>', title: 'Visibility: ' + slcVisibility.name, position: 'topLeft'});
 					});
 				}
@@ -2273,9 +2278,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				var curState = this.$root.rootData.myApiStateList.find((el) => el.uuid == item.apistateid );
 				if (slcState.uuid != curState.uuid) {
 					item.apistateid = slcState.uuid;
-					this.updateItem(this.ajaxApiUrl + '/' + item.uuid, this.deleteProps(item), this.ajaxHeaders, this.myApiList).then(response => {
+					this.updateItem(this.apiEndpoint(item) + item.uuid, this.deleteProps(item), this.ajaxHeaders, this.myApiList).then(response => {
 						console.log("apiChangeState response: ", response);
-						// this.$root.getRootData(this.$cookie.get('abyss.principal.uuid'));
+						// this.$root.getRootData(this.$root.rootData.user.uuid);
 						this.$toast('info', {message: 'State changed ' + ' to <strong>' + slcState.name + '</strong>', title: 'State: ' + slcState.name, position: 'topLeft'});
 					});
 				}
@@ -2381,7 +2386,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				});
 			},
 			getApiById(item, state) {
-				axios.get(this.ajaxApiUrl + '/' + item.uuid).then(response => {
+				axios.get(this.apiEndpoint(item) + item.uuid).then(response => {
 					this.api = Object.assign(item, response.data);
 					this.$root.setState(state);
 					this.selectedApi = _.cloneDeep(this.api);
@@ -2412,8 +2417,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 						this.cancelApi();
 					}
 					return r;
-				}
-				else {
+				} else {
 					if (c) {
 						this.cancelApi();
 					}
@@ -2476,20 +2480,15 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					path['x-abyss-path'] = p;
 				}
 				Vue.set(item, 'extendeddocument', item.openapidocument);
-				// item.businessapiid = '2741ce5d-0fcb-4de3-a517-405c0ceffbbe';
-				// item.isproxyapi = false;
-				// this.updateItem(this.ajaxApiUrl + '/' + item.uuid, this.deleteProps(item), this.ajaxHeaders, this.myApiList).then(response => {
-				// 	console.log("createProxy response: ", response);
-				// 	this.$toast('info', {message: 'Proxy API created from this business API', title: 'Proxy API created', position: 'topLeft'});
-				// });
 				var itemArr = [];
 				itemArr.push(this.deleteProps(item));
-				axios.post(this.ajaxApiUrl, itemArr, this.ajaxHeaders).then(response => {
+				axios.post(this.ajaxProxyUrl, itemArr, this.ajaxHeaders).then(response => {
 					if (response.data[0].status != 500 ) {
 						console.log("createProxy response: ", response);
 						var newApi = response.data[0].response;
 						this.fixProps(newApi);
 						this.myProxyList.push(newApi);
+						this.createResource(newApi, 'API', newApi.openapidocument.info.title + ' ' + newApi.openapidocument.info.version, newApi.openapidocument.info.description);
 						setTimeout(() => {
 							this.$toast('info', {message: 'Proxy API created from this business API', title: 'Proxy API created', position: 'topLeft'});
 						},0);	
@@ -2500,12 +2499,17 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 			},
 			saveMyApi() {
 				this.extDoc(this.api);
-				this.updateItem(this.ajaxApiUrl + '/' + this.api.uuid, this.deleteProps(this.api), this.ajaxHeaders, this.myApiList).then(response => {
+				this.updateItem(this.apiEndpoint(this.api) + this.api.uuid, this.deleteProps(this.api), this.ajaxHeaders, this.myApiList).then(response => {
 					console.log("SAVE response.data: ", response.data[0]);
 					var currApi = response.data[0];
 					this.fixProps(currApi);
 					Object.assign(this.selectedApi, currApi);
-					console.log("this.selectedApi: ", this.selectedApi);
+					if (currApi.isproxyapi) {
+						this.getResources(currApi, 'API', currApi.openapidocument.info.title + ' ' + currApi.openapidocument.info.version, currApi.openapidocument.info.description);
+						setTimeout(() => {
+							this.updateResource(currApi, 'API', currApi.openapidocument.info.title + ' ' + currApi.openapidocument.info.version, currApi.openapidocument.info.description);
+						},100);
+					}
 					this.getPage(1);
 					var index = _.findIndex(this.myApiList, { 'uuid': this.selectedApi.uuid });
 					this.myApiList[index] = this.selectedApi;
@@ -2525,9 +2529,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 						}
 						var itemArr = [];
 						itemArr.push(this.deleteProps(this.api));
-						axios.post(this.ajaxApiUrl, itemArr, this.ajaxHeaders).then(response => {
-						// this.addItem(this.ajaxApiUrl, itemArr, this.ajaxHeaders, this.myApiList).then(response => {
-						// axios.post(abyss.echo, itemArr, this.ajaxHeaders).then(response => {
+						axios.post(this.ajaxBusinessUrl, itemArr, this.ajaxHeaders).then(response => {
 							if (response.data[0].status != 500 ) {
 								this.$root.setState('edit');
 								console.log("createApi response: ", response);
@@ -2563,7 +2565,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				if (filter == null) {
 					this.getPage(1);
 				} else {
-					// axios.get(this.ajaxMyBusinessUrl + '/' + filter.uuid, this.ajaxHeaders)
 					axios.get(this.ajaxMyBusinessUrl, this.ajaxHeaders)
 					.then(response => {
 						console.log("response: ", response);
@@ -2590,7 +2591,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				if (filter == null) {
 					this.getPage(1);
 				} else {
-					// axios.get(this.ajaxMyProxiesUrl + '/' + filter.uuid, this.ajaxHeaders)
 					axios.get(this.ajaxMyProxiesUrl, this.ajaxHeaders)
 					.then(response => {
 						console.log("response: ", response);
@@ -2610,7 +2610,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 			},
 			getPage(p, d) {
 				var param = d || '';
-				axios.get(this.ajaxUrl + '?page=' + p + param, this.ajaxHeaders)
+				axios.get(this.ajaxMyBusinessUrl + '?page=' + p + param, this.ajaxHeaders)
 				.then(response => {
 					// console.log("response: ", response);
 					if (response.data != null) {
@@ -2630,6 +2630,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 						this.myProxyList = response.data;
 						this.myProxyList.forEach((value, key) => {
 							this.fixProps(value);
+							this.getResources(value, 'API', value.openapidocument.info.title + ' ' + value.openapidocument.info.version, value.openapidocument.info.description);
 						});
 						this.paginate = this.makePaginate(response.data);
 						this.preload();
@@ -2640,9 +2641,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 			},
 			getBusinessApiOptions(search, loading) {
 				loading(true);
-				// !!! not working
 				axios.get(this.ajaxMyBusinessUrl + '?likename=' + search, this.ajaxHeaders)
-				// axios.get(this.ajaxMyBusinessUrl, this.ajaxHeaders);
 				.then((response) => {
 					if (response.data != null) {
 						this.businessApiOptions = response.data.filter( (item) => item.isdeleted == false );
@@ -2660,9 +2659,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 			},
 			getProxyApiOptions(search, loading) {
 				loading(true);
-				// !!! not working
 				axios.get(this.ajaxMyProxiesUrl + '?likename=' + search, this.ajaxHeaders)
-				// axios.get(this.ajaxMyProxiesUrl, this.ajaxHeaders)
 				.then((response) => {
 					if (response.data != null) {
 						this.proxyApiOptions = response.data.filter( (item) => item.isdeleted == false );
@@ -2758,7 +2755,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 							// value.count = 1;
 							value.crudsubjectid = this.$root.rootData.user.uuid;
 							value.description = "";
-							value.organizationid = this.$root.rootData.user.organizationid;
+							value.organizationid = this.$root.abyssOrgId;
 						});
 						console.log("diffffff: ", _.differenceBy(this.$root.rootData.myApiTagList, this.api.tags, 'uuid'));
 						axios.post(abyss.ajax.api_tag_list, newTags, this.ajaxHeaders).then(response => {
@@ -2773,7 +2770,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 									}
 									newObj.apiid = this.api.uuid;
 									newObj.apitagid = value.uuid;
-									newObj.organizationid = this.$root.rootData.user.organizationid;
+									newObj.organizationid = this.$root.abyssOrgId;
 									newObj.crudsubjectid = this.$root.rootData.user.uuid;
 									tags.push(this.deleteProps(newObj));
 								});
@@ -2794,7 +2791,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 							var newObj = {};
 							newObj.apiid = this.api.uuid;
 							newObj.apitagid = value.uuid;
-							newObj.organizationid = this.$root.rootData.user.organizationid;
+							newObj.organizationid = this.$root.abyssOrgId;
 							newObj.crudsubjectid = this.$root.rootData.user.uuid;
 							tags.push(this.deleteProps(newObj));
 						});
@@ -2814,7 +2811,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 						var newObj = {};
 						newObj.apiid = this.api.uuid;
 						newObj.apicategoryid = value.uuid;
-						newObj.organizationid = this.$root.rootData.user.organizationid;
+						newObj.organizationid = this.$root.abyssOrgId;
 						newObj.crudsubjectid = this.$root.rootData.user.uuid;
 						cats.push(this.deleteProps(newObj));
 					});
@@ -2833,7 +2830,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 						var newObj = {};
 						newObj.apiid = this.api.uuid;
 						newObj.apigroupid = value.uuid;
-						newObj.organizationid = this.$root.rootData.user.organizationid;
+						newObj.organizationid = this.$root.abyssOrgId;
 						newObj.crudsubjectid = this.$root.rootData.user.uuid;
 						grps.push(this.deleteProps(newObj));
 					});
@@ -2870,7 +2867,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				var actLcs = _.find(this.myApiLicenses, { 'licenseid': item.uuid, 'apiid': this.api.uuid });
 				var itemArr = [];
 				var itemObj = {
-					organizationid: this.$root.rootData.user.organizationid,
+					organizationid: this.$root.abyssOrgId,
 					crudsubjectid: this.$root.rootData.user.uuid,
 					apiid: this.api.uuid,
 					licenseid: item.uuid,
@@ -3008,5 +3005,4 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 			});
 		}
 	});
-
 });

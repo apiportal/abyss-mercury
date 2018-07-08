@@ -138,13 +138,13 @@
 												{{license.licensedocument.legal.documentState}}
 											</span>
 										</p>
-										<p>
+										<p v-if="license.licensedocument.legal.link">
 											<strong class="lbl">link</strong>
 											<span class="d-block text-truncate">
-												{{license.licensedocument.legal.link}}
+												<a :href="license.licensedocument.legal.link" target="_blank">{{license.licensedocument.legal.link}}</a>
 											</span>
 										</p>
-										<p>
+										<p v-if="license.licensedocument.legal.documentText">
 											<strong class="lbl">document Text</strong>
 											<span class="d-block text-truncate">
 												{{license.licensedocument.legal.documentText}}

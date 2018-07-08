@@ -14,7 +14,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 				pageState: 'init',
 				paginate: {},
 				ajaxPolicyUrl: abyss.ajax.policies_list,
-				ajaxUrl: abyss.ajax.subject_policies_list + this.$cookie.get('abyss.principal.uuid'),
+				ajaxUrl: abyss.ajax.subject_policies_list + this.$root.rootData.user.uuid,
 				ajaxHeaders: {},
 				selected: null,
 				policy: {
@@ -31,19 +31,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 					"typeid": null,
 					"policyinstance": {},
 				},
-				//unused schema
-				/*policyType: {
-					"uuid": null,
-					"organizationid": this.$root.rootData.user.organizationid,
-					"created": null,
-					"updated": null,
-					"deleted": null,
-					"isdeleted": false,
-					"crudsubjectid": this.$root.rootData.user.uuid,
-					"type": null,
-					"subtype": null,
-					"template": {},
-				},*/
 				selectedPolicy: {},
 				newPolicy: {},
 				policyList: [],
@@ -90,7 +77,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 					Vue.set(item,'crudsubjectid',this.$root.rootData.user.uuid);
 				}
 				if (item.organizationid == null) {
-					Vue.set(item,'organizationid',this.$root.rootData.user.organizationid);
+					Vue.set(item,'organizationid',this.$root.abyssOrgId);
 				}
 			},
 			selectPolicy(item, i) {
@@ -106,6 +93,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 				axios.delete(this.ajaxPolicyUrl + item.uuid, item, this.ajaxHeaders).then(response => {
 					item.isdeleted = true;
 					console.log("deleteUser response: ", response);
+					this.deleteResource(item);
 				}, error => {
 					this.handleError(error);
 				});
@@ -117,6 +105,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 				Vue.delete(item, 'updated');
 				Vue.delete(item, 'deleted');
 				Vue.delete(item, 'isdeleted');
+				Vue.delete(item, 'resource');
 				return item;
 			},
 			policyAction(act) {
@@ -126,14 +115,14 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 							this.fixProps(this.policy);
 							var itemArr = [];
 							itemArr.push(this.deleteProps());
-							// this.addItem(this.ajaxUrl, itemArr, this.ajaxHeaders, this.policyList).then(response => {
-							// axios.post(this.ajaxUrl, itemArr, this.ajaxHeaders).then(response => {
 							axios.post(this.ajaxPolicyUrl, itemArr, this.ajaxHeaders).then(response => {
 								console.log("addPolicy response: ", response);
 								if (response.data[0].status != 500 ) {
-									this.policyList.push(response.data[0].response);
+									var item = response.data[0].response;
+									this.policyList.push(item);
 									this.$emit('set-state', 'init');
 									this.policy = _.cloneDeep(this.newPolicy);
+									this.createResource(item, 'POLICY', item.name, item.description);
 								}
 							}, error => {
 								this.handleError(error);
@@ -142,6 +131,11 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 						if (act == 'edit') {
 							this.updateItem(this.ajaxPolicyUrl + this.policy.uuid, this.deleteProps(), this.ajaxHeaders, this.policyList).then(response => {
 								console.log("editPolicy response: ", response);
+								var item = response.data[0];
+								this.getResources(item, 'POLICY', item.name, item.description);
+								setTimeout(() => {
+									this.updateResource(item, 'POLICY', item.name, item.description);
+								},100);
 								this.$emit('set-state', 'init');
 								this.policy = _.cloneDeep(this.newPolicy);
 								this.selected = null;
@@ -156,6 +150,11 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 				axios.get(this.ajaxUrl + '?page=' + p + param, this.ajaxHeaders)
 				.then(response => {
 					this.policyList = response.data;
+
+					this.policyList.forEach((value, key) => {
+						this.getResources(value, 'POLICY', value.name, value.description);
+					});
+
 					this.paginate = this.makePaginate(response.data);
 					this.preload();
 				}, error => {
