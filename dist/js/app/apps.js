@@ -355,10 +355,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 				});
 			},
 			getPage222(p, d) {
-				var param = d || '';
 				axios.all([
 					axios.get(this.ajaxUserAppListUrl ),
-					axios.get(this.ajaxAppListUrl + '?page=' + p + param, this.ajaxHeaders),
+					axios.get(this.ajaxAppListUrl, this.ajaxHeaders),
 				]).then(
 					axios.spread((user_app_list, app_list) => {
 						var myAppList = user_app_list.data.filter( (item) => item.isdeleted == false );

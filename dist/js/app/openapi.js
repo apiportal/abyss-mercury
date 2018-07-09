@@ -2609,8 +2609,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				}
 			},
 			getPage(p, d) {
-				var param = d || '';
-				axios.get(this.ajaxMyBusinessUrl + '?page=' + p + param, this.ajaxHeaders)
+				axios.get(this.ajaxMyBusinessUrl, this.ajaxHeaders)
 				.then(response => {
 					// console.log("response: ", response);
 					if (response.data != null) {
@@ -2623,7 +2622,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				}, error => {
 					this.handleError(error);
 				});
-				axios.get(this.ajaxMyProxiesUrl + '?page=' + p + param, this.ajaxHeaders)
+				axios.get(this.ajaxMyProxiesUrl, this.ajaxHeaders)
 				.then(response => {
 					// console.log("response: ", response);
 					if (response.data != null) {

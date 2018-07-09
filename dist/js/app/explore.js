@@ -91,10 +91,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select'], funct
 				}
 			},
 			getPage(p, d) {
-				var param = d || '';
-				axios.get(this.ajaxUrl + '?page=' + p + param)
+				axios.get(this.ajaxUrl)
 				.then(response => {
-					// console.log("p: ", p);
 					this.apiList = response.data.filter( (item) => item.isdeleted == false && item.apivisibilityid == 'e63c2874-aa12-433c-9dcf-65c1e8738a14' );
 					this.paginate = this.makePaginate(response.data);
 					this.preload();

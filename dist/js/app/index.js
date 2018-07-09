@@ -56,9 +56,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select'], funct
 		},
 		methods: {
 			getPage(p, d) {
-				var param = d || '';
 				axios.all([
-					axios.get(abyss.ajax.api_list + '?page=' + p + param, this.ajaxHeaders),
+					axios.get(abyss.ajax.api_list, this.ajaxHeaders),
 					axios.get(abyss.ajax.permission_list_my_apis_subscriptions_subject + this.$root.rootData.user.uuid, this.ajaxHeaders),
 				]).then(
 					axios.spread((app_list, subject_permission_list) => {

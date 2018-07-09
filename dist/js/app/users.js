@@ -417,8 +417,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 				});
 			},
 			getPage(p, d) {
-				var param = d || '';
-				axios.get(this.ajaxUserListUrl + '?page=' + p + param, this.ajaxHeaders)
+				axios.get(this.ajaxUserListUrl, this.ajaxHeaders)
 				.then(response => {
 					this.userList = _.map(response.data, o => _.extend({permissionfilter: true, groupfilter: true, userfilter: true}, o));
 					this.userList.forEach((value, key) => {

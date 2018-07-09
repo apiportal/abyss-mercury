@@ -146,8 +146,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 				});
 			},
 			getPage(p, d) {
-				var param = d || '';
-				axios.get(this.ajaxUrl + '?page=' + p + param, this.ajaxHeaders)
+				axios.get(this.ajaxUrl, this.ajaxHeaders)
 				.then(response => {
 					this.policyList = response.data;
 

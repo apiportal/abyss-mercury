@@ -174,8 +174,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment'], funct
 				});
 			},
 			getPage(p, d) {
-				var param = d || '';
-				axios.get(this.ajaxUrl + '?page=' + p + param, this.ajaxHeaders)
+				axios.get(this.ajaxUrl, this.ajaxHeaders)
 				.then(response => {
 					this.licenseList = response.data;
 					this.licenseList.forEach((value, key) => {

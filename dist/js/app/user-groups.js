@@ -235,9 +235,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 				});
 			},
 			getPage(p, d) {
-				var param = d || '';
-				console.log("this.ajaxUrl: ", this.ajaxUrl);
-				axios.get(this.ajaxUrl + '?page=' + p + param, this.ajaxHeaders)
+				axios.get(this.ajaxUrl, this.ajaxHeaders)
 				.then(response => {
 					// this.groupList = response.data;
 					this.groupList = _.map(response.data, o => _.extend({users: []}, o));
