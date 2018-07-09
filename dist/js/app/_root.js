@@ -520,8 +520,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 			abyssEndpoint: abyss.abyssLocation,
 			abyssSandbox: abyss.isAbyssSandbox,
 			abyssVersion: abyss.abyssVersion,
-			abyssOrgName: '',
-			abyssOrgId: '',
+			abyssOrgName: null,
+			abyssOrgId: null,
 			rootData: {},
 			taxAction: '',
 			taxTitle: '',
@@ -815,10 +815,17 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 			this.abyssOrgName = this.$cookie.get('abyss.login.organization.name');
 			this.abyssOrgId = this.$cookie.get('abyss.login.organization.uuid');
 			var principal = this.$cookie.get('abyss.principal.uuid');
-			this.newTax = _.cloneDeep(this.tax);
+			var session = this.$cookie.get('abyss.session');
+			// console.log("this.abyssOrgName: ", this.abyssOrgName);
+			// console.log("this.abyssOrgId: ", this.abyssOrgId);
 			// console.log("principal: ", principal);
+			if (!this.abyssOrgName || !this.abyssOrgId || !principal || !session) {
+				// alert('COOKIE EXPIRED');
+				window.location.href = '/abyss/logout';
+			}
 			// this.$cookie.delete('abyss.principal.uuid');
 			// this.log(this.$options.name);
+			this.newTax = _.cloneDeep(this.tax);
 			this.getRootData(principal);
 			// if (!this.$root.isLoading) {
 				axios.get(abyss.ajax.api_yaml_list, this.ajaxHeaders)
