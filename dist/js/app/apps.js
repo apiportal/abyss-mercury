@@ -260,7 +260,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 											organizationid: this.$root.abyssOrgId,
 											crudsubjectid: this.$root.rootData.user.uuid,
 											subjectid: this.$root.rootData.user.uuid,
-											apiid: res.uuid,
+											appid: res.uuid,
 										};
 										var itemArr = [];
 										itemArr.push(itemObj);
