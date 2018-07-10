@@ -1438,8 +1438,8 @@
 			<button type="button"><i class="fas fa-ellipsis-h"></i></button>
 			<ul class="dropdown-menu dropdown-menu-right" role="menu" data-dropdown-in="slideInRight" data-dropdown-out="slideOutRight">
 				<li><a href="#" v-on:click="$parent.selectApi(api, 'edit')"><i class="fas fa-edit"></i>Edit</a></li>
-				<li v-if="!api.isproxyapi"><a href="#" v-on:click="$parent.createProxy(api, 'preview')"><i class="fas fa-code-branch"></i>Create Proxy</a></li>
-				<li><a href="#" v-on:click="$parent.selectApi(api, 'preview')"><i class="fas fa-file-alt"></i>Preview</a></li>
+				<li v-if="!api.isproxyapi"><a href="#" v-on:click="$parent.createProxy(api)"><i class="fas fa-code-branch"></i>Create Proxy</a></li>
+				<li><a href="#" v-on:click="previewApi(api)"><i class="fas fa-file-alt"></i>Preview</a></li>
 				<li class="dropdown-header">ENVIRONMENT</li>
 				<li v-bind:class="{'active': api.islive}"><a href="#" v-on:click="$parent.apiChangeEnvironment(api, 'islive')"><i class="fas fa-eye"></i>Live</a></li>
 				<li v-bind:class="{'active': api.issandbox}"><a href="#" v-on:click="$parent.apiChangeEnvironment(api, 'issandbox')"><i class="fas fa-eye"></i>Sandbox</a></li>

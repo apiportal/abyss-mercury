@@ -10850,8 +10850,8 @@ tbody.collapse .in, tbody.collapse .show {
   padding: 0 0;
   min-height: 66px;
   background: #fff;
-  -webkit-box-shadow: 0 1px 2px rgba(33, 33, 33, 0.15);
-  box-shadow: 0 1px 2px rgba(33, 33, 33, 0.15); }
+  -webkit-box-shadow: 0 1px 1px rgba(33, 33, 33, 0.3);
+  box-shadow: 0 1px 1px rgba(33, 33, 33, 0.3); }
   .navbar > .container,
   .navbar > .container-fluid {
     display: -webkit-box;
@@ -10897,7 +10897,8 @@ tbody.collapse .in, tbody.collapse .show {
   font-size: 24px;
   line-height: 1;
   color: inherit;
-  opacity: 0.7; }
+  opacity: 0.7;
+  z-index: 1; }
   .close:hover, .close:focus {
     color: inherit;
     text-decoration: none;
@@ -13765,6 +13766,16 @@ a#toggle_mobile_nav {
     -ms-flex: 0 0 290px;
     flex: 0 0 290px; }
 
+.preview-test {
+  position: fixed;
+  top: 66px;
+  right: 0;
+  bottom: 0;
+  background-color: #fff;
+  width: 90%;
+  max-width: 1160px;
+  overflow: hidden; }
+
 .column-width {
   width: 290px;
   max-width: 290px;
@@ -15548,7 +15559,7 @@ strong.lbl {
     transform: perspective(400px) rotate3d(1, 0, 0, 90deg);
     opacity: 0; } }
 
-.transition-all, .switch label:before, .switch label:after, .choose label, .card, .dropdown-hover > .dropdown-menu, .dropdown-hover:hover > .dropdown-menu, .fixed-sidebar-left, .fixed-sidebar-left .side-nav, .fixed-sidebar-left .side-nav li a, .page-wrapper, .navbar .nav-header, .navbar .nav > li > a, .field-controls, .column-fixed-right, .column-aside, .column-main {
+.transition-all, .switch label:before, .switch label:after, .choose label, .card, .dropdown-hover > .dropdown-menu, .dropdown-hover:hover > .dropdown-menu, .fixed-sidebar-left, .fixed-sidebar-left .side-nav, .fixed-sidebar-left .side-nav li a, .page-wrapper, .navbar .nav-header, .navbar .nav > li > a, .field-controls, .column-fixed-right, .column-aside, .column-main, .preview-test {
   -webkit-transition: all 0.2s ease-in-out;
   -o-transition: all 0.2s ease-in-out;
   transition: all 0.2s ease-in-out; }
@@ -15589,6 +15600,10 @@ strong.lbl {
   -webkit-box-shadow: 0 1px 3px rgba(33, 33, 33, 0.3);
   box-shadow: 0 1px 3px rgba(33, 33, 33, 0.3); }
 
+.shadow-xs {
+  -webkit-box-shadow: 0 1px 1px rgba(33, 33, 33, 0.3);
+  box-shadow: 0 1px 1px rgba(33, 33, 33, 0.3); }
+
 .img-circle {
   border-radius: 50%; }
 
@@ -15600,6 +15615,9 @@ strong.lbl {
 
 .txt-break {
   word-wrap: break-word; }
+
+.cursor-pointer {
+  cursor: pointer; }
 
 .w-auto {
   width: auto !important; }

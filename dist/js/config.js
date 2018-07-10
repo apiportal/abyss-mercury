@@ -77,6 +77,10 @@ define(['global'], function(abyss){
 		permission_list_api_subscriptions_subject: '/subject-permissions/api-subscriptions/subject/', // appuuid ABYSSP-207
 		// https://dev2.apiportal.com/abyss/openapi/Resource.yaml
 		resources: '/resources/', // uuid
+		resources_reference: '/resources/reference/', // uuid
+		resources_subject: '/resources/subject/{uuid}', // uuid ABYSSP-244
+		resources_type: '/resources/type/{uuid}', // uuid ABYSSP-244
+		resources_organization: '/resources/organization/{uuid}', // uuid ABYSSP-244
 		// https://dev2.apiportal.com/abyss/openapi/ResourceAction.yaml
 		resource_actions: '/resource-actions/', // uuid
 		// https://dev2.apiportal.com/abyss/openapi/ResourceType.yaml

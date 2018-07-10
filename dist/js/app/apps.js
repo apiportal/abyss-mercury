@@ -11,6 +11,23 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 		methods : {
 		}
 	});
+	Vue.component('api-preview', {
+		props: ['api'],
+		data() {
+			return {
+				isLoading: true,
+				isTest: false,
+				appList: [],
+			};
+		},
+		computed: {
+		},
+		methods : {
+		},
+		created() {
+			this.getMyApps();
+		}
+	});
 	Vue.component('my-apps', {
 		props: {
 			rootState: { type: String }

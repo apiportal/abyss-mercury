@@ -423,7 +423,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 					this.userList.forEach((value, key) => {
 						axios.get(abyss.ajax.subject_memberships_subject + value.uuid, this.ajaxHeaders)
 						.then(response => {
-							var flt = response.data
+							var flt = response.data;
 							console.log("flt: ", flt.map(e => e.subjectgroupid), flt);
 							var grpusr = _.filter(this.groupOptions, (v) => _.includes( flt.map(e => e.subjectgroupid), v.uuid)) ;
 							console.log("grpusr: ", grpusr);

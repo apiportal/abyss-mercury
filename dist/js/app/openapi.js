@@ -1400,6 +1400,24 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 			// this.log(this.$options.name);
 		},
 	});
+// ■■■■■■■■ api-preview ■■■■■■■■ //
+	Vue.component('api-preview', {
+		props: ['api'],
+		data() {
+			return {
+				isLoading: true,
+				isTest: false,
+				appList: [],
+			};
+		},
+		computed: {
+		},
+		methods : {
+		},
+		created() {
+			this.getMyApps();
+		}
+	});
 // ■■■■■■■■ MY-APIS ■■■■■■■■ //
 	Vue.component('v-select', VueSelect.VueSelect);
 	Vue.component('my-apis', {
@@ -1479,6 +1497,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				tagOptions: [],
 				groupOptions: [],
 				stateOptions: [],
+				appList: [],
 
 				dropSpecsOptions: {
 					url: 'https://httpbin.org/post',
@@ -1722,6 +1741,10 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 							newSecDef.description = 'Authorization method for extra security of sensitive methods';
 						} else if (name == 'abyssApiKeyAuth') {
 							newSecDef.name = 'abyss.api.key';
+							newSecDef.type = 'apiKey';
+							newSecDef.in = 'header';
+						} else if (name == 'abyssAppKeyAuth') {
+							newSecDef.name = 'abyss.app.key';
 							newSecDef.type = 'apiKey';
 							newSecDef.in = 'header';
 						} else if (name == 'abyssAppKeyCookieAuth') {
@@ -2326,26 +2349,24 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					this.fixProps(item);
 					this.updateSchema(item.openapidocument);
 					this.api = _.cloneDeep(item);
-					// this.openapi = item;
-					this.loadLicense(item);
+					// this.loadLicense(item);
+					if (item.isproxyapi) {
+						this.loadLicense(item);
+					}
 					this.selectedApi = _.cloneDeep(this.api);
 					// this.initSwagger();
 					this.$root.setState(state);
 					// setTimeout(() => {
 						this.updateSw();
 						// $('#api'+this.api.uuid).collapse('show');
-						if ( state != 'preview') {
-							this.$refs.dropImage.removeAllFiles(true);
-							if (this.api.image != '') {
-								this.$refs.dropImage.manuallyAddFile({ size: 123, name: this.api.image }, this.api.image);
-							}
-							$('.list-column').addClass('column-minimize');
-							$('.create-column').addClass('column-minimize');
-							$('.edit-column').removeClass('column-minimize');
-							this.apiColor();
-						} else {
-							// $('.create-column, .edit-column').addClass('column-minimize');
+						this.$refs.dropImage.removeAllFiles(true);
+						if (this.api.image != '') {
+							this.$refs.dropImage.manuallyAddFile({ size: 123, name: this.api.image }, this.api.image);
 						}
+						$('.list-column').addClass('column-minimize');
+						$('.create-column').addClass('column-minimize');
+						$('.edit-column').removeClass('column-minimize');
+						this.apiColor();
 					// },1000);
 				}
 			},
@@ -2391,12 +2412,10 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					this.$root.setState(state);
 					this.selectedApi = _.cloneDeep(this.api);
 					// $('#api'+this.api.uuid).collapse('show');
-					if ( state != 'preview') {
-						// $('.list-column').addClass('column-minimize');
-						this.$refs.dropImage.removeAllFiles(true);
-						if (this.api.image != '') {
-							this.$refs.dropImage.manuallyAddFile({ size: 123, name: this.api.image }, this.api.image);
-						}
+					// $('.list-column').addClass('column-minimize');
+					this.$refs.dropImage.removeAllFiles(true);
+					if (this.api.image != '') {
+						this.$refs.dropImage.manuallyAddFile({ size: 123, name: this.api.image }, this.api.image);
 					}
 				}, error => {
 					this.handleError(error);
@@ -2851,8 +2870,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 						var actLcs = _.filter(this.myApiLicenses, { 'apiid': item.uuid });
 						console.log("actLcs: ", actLcs);
 						actLcs.forEach((value, key) => {
-							// _.filter(obj, { 'subjectid': this.user.uuid })
-							console.log("*********: ", _.find(this.myLicenseList, { 'isdeleted': false }, (v) => _.includes(value.licenseid, v.uuid)));
 							var slcLcs = _.find(this.myLicenseList, (v) => _.includes(value.licenseid, v.uuid));
 							Vue.set(slcLcs, 'isactive', true);
 						});

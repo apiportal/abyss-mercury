@@ -3,76 +3,103 @@
 <body>
 <div class="fol-sm-6 fol-md-4 fol-lg-4 fol-xl-3 fol-xlm-3 fol-xlg-3 thumb card-item" th:fragment="apiList">
 <!-- <div class="fol-12 card-item" th:fragment="apiList"> -->
-	<div class="card" v-on:click="$parent.selectProxy(api, 'preview')">
+	<div class="card">
 		<div class="xxx">
-			<div class="thumb-image" v-if="api.image" :style="{ 'background-image': 'url(' + api.image + ')' }"></div>
-			<div class="thumb-image" v-if="!api.image" :style="{ 'background-color': api.color }">{{api.openapidocument.info.title.substring(0, 3)}}</div>
+			<div class="thumb-image cursor-pointer" v-on:click="$parent.previewApi(api)" v-if="api.image" :style="{ 'background-image': 'url(' + api.image + ')' }"></div>
+			<div class="thumb-image cursor-pointer" v-on:click="$parent.previewApi(api)" v-if="!api.image" :style="{ 'background-color': api.color }">{{api.openapidocument.info.title.substring(0, 3)}}</div>
 			<div class="card-body">
 				<span class="float-right text-uppercase py-1"><span class="small">{{apiGetStateName(api.apistateid)}}</span><i class="fas fa-circle ml-1" v-bind:class="'stat-' + apiGetStateName(api.apistateid)"></i></span>
-				<h5 class="mb-0"><strong>{{api.openapidocument.info.title}}</strong></h5>
-				<p class="small">{{api.openapidocument.info.version}}</p>
+				<h5 class="mb-0 cursor-pointer" v-on:click="$parent.previewApi(api, 'preview')"><strong>{{api.openapidocument.info.title}}</strong></h5>
+				<p class="small">{{api.openapidocument.info.version}} <span class="text-uppercase">{{apiEnvironment}}</span></p>
+				<div>Name Surname</div>
 				<code class="d-block small txt-purple"><small>{{api.uuid}}</small></code>
-				<p>{{api.openapidocument.info.description}}</p>
+				<div class="pt-2">{{api.openapidocument.info.description | truncate(75)}}</div>
 			</div>
 		</div>
 	</div>
 </div>
 <div class="preview-container" v-if="$root.rootState == 'preview'" th:fragment="apiPreview">
-	<div class="preview-overlay" v-if="$root.pageCurrent == 'my-apis' && $root.rootState == 'preview'" v-on:click="cancelApi()"></div>
-	<div class="preview-overlay" v-if="$root.pageCurrent != 'my-apis' && $root.rootState == 'preview'" v-on:click="cancelProxy()"></div>
-	<div class="card preview-item">
-		<div class="fow m-0">
-			<div class="fol-12 fol-sm p-0 brd-b brd-sm-b-0 brd-sm-r thumb">
-				<div class="thumb-image" v-if="api.image" :style="{ 'background-image': 'url(' + api.image + ')' }"></div>
-				<div class="thumb-image" v-if="!api.image" :style="{ 'background-color': api.color }">{{api.openapidocument.info.title.substring(0, 3)}}</div>
-				<div class="card-body">
-					<span class="float-right text-uppercase py-1"><span class="small">{{apiGetStateName(api.apistateid)}}</span><i class="fas fa-circle ml-1" v-bind:class="'stat-' + apiGetStateName(api.apistateid)"></i></span>
-					<h5 class="mb-0"><strong>{{api.openapidocument.info.title}}</strong></h5>
-					<p class="small">{{api.openapidocument.info.version}}</p>
-					<p>{{api.openapidocument.info.description}}</p>
-				</div>
-			</div>
-			<div class="fol pb-3 thumb-detail" v-if="$root.rootState == 'preview'">
-				<button type="button" class="close" v-if="$root.pageCurrent == 'my-apis'" v-on:click="cancelApi()">×</button>
-				<button type="button" class="close" v-if="$root.pageCurrent != 'my-apis'" v-on:click="cancelProxy()">×</button>
-				<ul role="tablist" class="row nav nav-tabs nav--justified" id="method1Tabs">
-					<li class="active" role="presentation"><a aria-expanded="true" data-toggle="tab" role="tab" href="#overview">Overview</a></li>
-					<li role="presentation"><a aria-expanded="true" data-toggle="tab" role="tab" href="#license">Licenses</a></li>
-					<li role="presentation"><a aria-expanded="true" data-toggle="tab" role="tab" href="#test">Test</a></li>
-				</ul>
-				<div class="tab-content">
-					<div id="overview" class="tab-pane fade active in" role="tabpanel">
-						<div class="fow form-row pt-3 pb-1">
-							<p class="fol-6 pb-2">
-								<label class="d-block font-weight-bold text-uppercase">Servers</label> 
-								<span class="d-block text-truncate" v-for="(sv, index) in api.openapidocument.servers" v-bind:title="sv.url">{{sv.url}}</span>
-							</p>
-							<p class="fol-6 pb-2">
-								<label class="d-block font-weight-bold text-uppercase">Created</label>
-								{{api.created | formatDate}}
-							</p>
-							<p class="fol-6 pb-2">
-								<label class="d-block font-weight-bold text-uppercase">Updated</label>
-								{{api.updated | formatDate}}
-							</p>
+	<api-preview :api="$root.previewedApi" pagecurrent="pageCurrent" inline-template>
+	<div class="preview-container">
+		<div class="preview-overlay" v-on:click="cancelPreviewApi()"></div>
+		<div class="card preview-item">
+			<div class="fow m-0">
+				<div class="fol-12 fol-sm p-0 brd-b brd-sm-b-0 brd-sm-r thumb">
+					<div class="thumb-image" v-if="api.image" :style="{ 'background-image': 'url(' + api.image + ')' }"></div>
+					<div class="thumb-image" v-if="!api.image" :style="{ 'background-color': api.color }">{{api.openapidocument.info.title.substring(0, 3)}}</div>
+					<div class="card-body">
+						<span class="float-right text-uppercase py-1"><span class="small">{{apiGetStateName(api.apistateid)}}</span><i class="fas fa-circle ml-1" v-bind:class="'stat-' + apiGetStateName(api.apistateid)"></i></span>
+						<h5 class="mb-0"><strong>{{api.openapidocument.info.title}}</strong></h5>
+						<p class="small">{{api.openapidocument.info.version}} <span class="text-uppercase">{{apiEnvironment}}</span></p>
+						<div>{{api.openapidocument.info.description | truncate(75)}}</div>
+						<div v-if="api.isproxyapi && !isLoading">
+							<button class="btn btn-sm btn-outline-blue btn-block my-3" v-if="$root.abyssSandbox" v-on:click="isTest=true">Test API</button>
+							<div class="form-group mt-2" v-if="appList.length > 0" v-bind:class="{ 'has-error': errors.has('appid') }">
+								<label>Select APP</label>
+								<select class="form-control" name="appid" id="appid" v-model="api.selectedApp" v-on:change="selectAppToSubscribe(api.selectedApp)" v-validate="'required'">
+									<option v-for="(app,index) in appList" :value="app">{{app.firstname}} - {{myAppsEnvironment(app)}}</option>
+								</select>
+								<em v-bind:class="{ 'show': errors.has('appid') }">{{ errors.first('appid') }}</em>
+							</div>
+							<button class="btn btn-green btn-block" v-if="appList.length > 0" v-on:click="subscribeToApp()">Subscribe</button>
+							<a href="/abyss/my-apps" v-if="appList.length == 0" class="btn btn-purple mt-2 btn-block">Create APP to subscribe</a>
+							<!-- Subscribed APPS List -->
+							<!-- Share readonly checkbox -->
 						</div>
-						<div class="fow form-row">
-							<p class="fol-6 pb-2"><label class="d-block font-weight-bold text-uppercase">Visibility</label><span class="text-capitalize">{{apiGetVisibilityName(api.apivisibilityid)}}</span></p>
-							<p class="fol-6 pb-2"><label class="d-block font-weight-bold text-uppercase">State</label><span class="text-capitalize">{{apiGetStateName(api.apistateid)}}</span></p>
-						</div>
-						<p><label class="d-block font-weight-bold text-uppercase">Categories</label>{{compCategoriesToList}}</p>
-						<p><label class="d-block font-weight-bold text-uppercase">Tags</label>{{compTagsToList}}</p>
-						<p><label class="d-block font-weight-bold text-uppercase">Groups</label>{{compGroupsToList}}</p>
-						<p><small class="d-block">{{api.openapidocument.info.description}}</small></p>
 					</div>
-					<div id="license" class="tab-pane fade" role="tabpanel">
-						<div class="fow ">
-							<div class="fol-sm-4 p-0 column-width preview-scroll shadow-sm" v-for="(license, index) in api.licenses">
-								<div class="nicescroll-bar">
-									<div class="p-3">
+				</div>
+				<div class="fol p-0 thumb-detail">
+					<button type="button" class="close" v-on:click="cancelPreviewApi()">×</button>
+					<div class="nicescroll-bar">
+						<div class="px-3">
+							<div class="fow small">
+								<div class="fol-sm-4 pt-3 pb-1 column-width preview--scroll">
+									<p class="">
+										<strong class="lbl">Servers</strong> 
+										<span class="d-block text-truncate" v-for="(sv, index) in api.openapidocument.servers" v-bind:title="sv.url">{{sv.url}}</span>
+									</p>
+									<p class="" v-if="api.openapidocument.info.license">
+										<strong class="lbl">License</strong>{{api.openapidocument.info.license.name}}
+									</p>
+									<div class="fow form-row">
+										<p class="fol-6">
+											<strong class="lbl">Version</strong>
+											<span class="text-uppercase">{{api.openapidocument.info.version}}</span>
+										</p>
+										<p class="fol-6">
+											<strong class="lbl">Environment</strong>
+											<span class="text-uppercase">{{apiEnvironment}}</span>
+										</p>
+										<p class="fol-6">
+											<strong class="lbl">Visibility</strong>
+											<span class="text-capitalize">{{apiGetVisibilityName(api.apivisibilityid)}}</span></p>
+										<p class="fol-6">
+											<strong class="lbl">State</strong>
+											<span class="text-capitalize">{{apiGetStateName(api.apistateid)}}</span>
+										</p>
+										<p class="fol-6">
+											<strong class="lbl">Created</strong>
+											{{api.created | formatDate}}
+										</p>
+										<p class="fol-6">
+											<strong class="lbl">Updated</strong>
+											{{api.updated | formatDate}}
+										</p>
+									</div>
+								</div>
+								<div class="fol-sm-8 pt-3 pb-1 preview--scroll brd-l">
+									<p><strong class="lbl">Categories</strong>{{compCategoriesToList}}</p>
+									<p><strong class="lbl">Tags</strong>{{compTagsToList}}</p>
+									<p><strong class="lbl">Groups</strong>{{compGroupsToList}}</p>
+									<p><strong class="lbl">Description</strong>{{api.openapidocument.info.description}}</p>
+								</div>
+							</div>
+							<div class="fow brd-t" v-if="api.isproxyapi">
+								<div class="fol-sm-4 p-0 column-width preview--scroll shadow-xs" v-for="(license, index) in api.licenses">
+									<div class="px-3 pt-3">
 										<div class="ficon-actions dropdown dropdown-hover" v-if="$root.abyssSandbox">
 											<span class="switch switch-primary">
-												<input type="radio" :name="'isactiveradio'+index" :id="'isactive'+index" v-model="license.isactive" v-on:change="setProxyLicense(license)">
+												<input type="radio" :id="'isactive'+index" v-model="api.selectedLicense" :value="license.uuid" v-on:change="setProxyLicense(license)">
 												<label :for="'isactive'+index"></label>
 											</span>
 										</div>
@@ -145,7 +172,12 @@
 				</div>
 			</div>
 		</div>
+		<div class="preview-test" v-if="isTest && $root.abyssSandbox">
+			<button type="button" class="close" v-on:click="isTest=false">×</button>
+			Contract Text 
+		</div>
 	</div>
+	</api-preview>
 </div>
 </body>
 </html>

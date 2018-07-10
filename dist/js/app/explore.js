@@ -23,6 +23,23 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select'], funct
 		methods : {
 		}
 	});
+	Vue.component('api-preview', {
+		props: ['api'],
+		data() {
+			return {
+				isLoading: true,
+				isTest: false,
+				appList: [],
+			};
+		},
+		computed: {
+		},
+		methods : {
+		},
+		created() {
+			this.getMyApps();
+		}
+	});
 // ■■■■■■■■ index ■■■■■■■■ //
 	Vue.component('index', {
 		props: {
@@ -48,8 +65,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select'], funct
 				dashboardList: [],
 				apiList: [],
 				subjectPermissionList: [],
-				selectedApi: {},
-				api: {},
 				apiOptions: [],
 
 				end: []
@@ -91,12 +106,16 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select'], funct
 				}
 			},
 			getPage(p, d) {
-				axios.get(this.ajaxUrl)
-				.then(response => {
-					this.apiList = response.data.filter( (item) => item.isdeleted == false && item.apivisibilityid == 'e63c2874-aa12-433c-9dcf-65c1e8738a14' );
-					this.paginate = this.makePaginate(response.data);
-					this.preload();
-				}, error => {
+				axios.all([
+					axios.get(this.ajaxUrl),
+				]).then(
+					axios.spread((api_list) => {
+						this.apiList = api_list.data.filter( (item) => item.isdeleted == false && item.apivisibilityid == 'e63c2874-aa12-433c-9dcf-65c1e8738a14' );
+						this.paginate = this.makePaginate(api_list.data);
+						this.preload();
+						// this.getMyApps();
+					})
+				).catch(error => {
 					this.handleError(error);
 				});
 			},
