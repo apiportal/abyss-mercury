@@ -97,7 +97,7 @@
 							<div class="fow brd-t" v-if="api.isproxyapi">
 								<div class="fol-sm-4 p-0 column-width preview--scroll shadow-xs" v-for="(license, index) in api.licenses">
 									<div class="px-3 pt-3">
-										<div class="ficon-actions dropdown dropdown-hover" v-if="$root.abyssSandbox">
+										<div class="ficon-actions dropdown dropdown-hover">
 											<span class="switch switch-primary">
 												<input type="radio" :id="'isactive'+index" v-model="api.selectedLicense" :value="license.uuid" v-on:change="setProxyLicense(license)">
 												<label :for="'isactive'+index"></label>
