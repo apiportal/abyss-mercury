@@ -90,13 +90,16 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 				return i === this.selected;
 			},
 			deletePolicy(item) {
-				axios.delete(this.ajaxPolicyUrl + item.uuid, item, this.ajaxHeaders).then(response => {
-					item.isdeleted = true;
-					console.log("deleteUser response: ", response);
-					this.deleteResource(item);
-				}, error => {
-					this.handleError(error);
-				});
+				var r = confirm('Are you sure to delete?');
+				if (r == true) {
+					axios.delete(this.ajaxPolicyUrl + item.uuid, item, this.ajaxHeaders).then(response => {
+						item.isdeleted = true;
+						console.log("DELETE policy response: ", response);
+						this.deleteResource(item);
+					}, error => {
+						this.handleError(error);
+					});
+				}
 			},
 			deleteProps() {
 				var item = _.cloneDeep(this.policy);

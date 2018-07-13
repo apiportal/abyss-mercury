@@ -6,22 +6,26 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select'], funct
 		data() {
 			return {
 				isLoading: true,
-				sort: {
-					key: 'name',
-					type: String,
-					order: 'asc'
-				},
-				sortApi: {
-					key: 'created',
-					type: Date,
-					order: 'desc'
-				},
 			};
 		},
-		computed: {
+		computed: {},
+		methods : {},
+		created() {
+			this.apiOwner(this.api);
 		},
-		methods : {
-		}
+	});
+	Vue.component('api-preview', {
+		props: ['api'],
+		data() {
+			return {
+				isLoading: true,
+			};
+		},
+		computed: {},
+		methods : {},
+		created() {
+			this.apiOwner(this.api);
+		},
 	});
 // ■■■■■■■■ index ■■■■■■■■ //
 	Vue.component('index', {
@@ -48,8 +52,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select'], funct
 				dashboardList: [],
 				apiList: [],
 				subjectPermissionList: [],
-				selectedApi: {},
-				api: {},
 
 				end: []
 			};
@@ -58,7 +60,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select'], funct
 			getPage(p, d) {
 				axios.all([
 					axios.get(abyss.ajax.api_list, this.ajaxHeaders),
-					axios.get(abyss.ajax.permission_list_my_apis_subscriptions_subject + this.$root.rootData.user.uuid, this.ajaxHeaders),
+					axios.get(abyss.ajax.permission_my_apis + this.$root.rootData.user.uuid, this.ajaxHeaders),
 				]).then(
 					axios.spread((app_list, subject_permission_list) => {
 						this.subjectPermissionList = subject_permission_list.data.filter( (item) => item.isdeleted == false );
@@ -76,8 +78,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select'], funct
 			// this.preload();
 		},
 		created() {
-			this.log(this.$options.name);
+			// this.log(this.$options.name);
 			this.$emit('set-page', 'index', 'init');
+			this.getMyApps();
 			this.getPage(1);
 		}
 	});

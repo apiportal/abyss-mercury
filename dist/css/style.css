@@ -13731,7 +13731,7 @@ a#toggle_mobile_nav {
   right: 0;
   bottom: 0;
   left: 0;
-  background-color: rgba(221, 222, 223, 0.5); }
+  background-color: rgba(221, 222, 223, 0.75); }
 
 .preview-scroll {
   max-height: calc(100vh - (66px + 120px + 46px)); }
@@ -13757,7 +13757,7 @@ a#toggle_mobile_nav {
   position: fixed;
   width: 90%;
   max-width: 1160px;
-  max-height: calc(100vh - (66px + 120px));
+  height: calc(100vh - (66px + 120px));
   overflow: hidden; }
   .preview-item .thumb {
     width: 290px;
@@ -13765,6 +13765,25 @@ a#toggle_mobile_nav {
     -webkit-box-flex: 0;
     -ms-flex: 0 0 290px;
     flex: 0 0 290px; }
+  @media (min-width: 1740px) {
+    .preview-item {
+      max-width: 1450px; } }
+
+.preview-item-inner {
+  height: 100%;
+  max-height: calc(100vh - (66px + 46px + 120px)); }
+
+.preview-item-thumb-inner {
+  height: 100%;
+  max-height: calc(100vh - (66px + 120px + 163px)); }
+
+.preview-test-container {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 7; }
 
 .preview-test {
   position: fixed;
@@ -13772,9 +13791,33 @@ a#toggle_mobile_nav {
   right: 0;
   bottom: 0;
   background-color: #fff;
+  -webkit-box-shadow: 0 1px 5px rgba(33, 33, 33, 0.3);
+  box-shadow: 0 1px 5px rgba(33, 33, 33, 0.3);
   width: 90%;
-  max-width: 1160px;
-  overflow: hidden; }
+  max-width: 1160px; }
+  .preview-test.slide-enter, .preview-test.slide-leave-to {
+    width: 0; }
+  .preview-test #swagger-ui {
+    height: 100%;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    padding-top: 46px; }
+    .preview-test #swagger-ui > div {
+      height: 100% !important;
+      overflow-y: auto; }
+  .preview-test .legal-text {
+    height: 100%;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    padding-top: 46px; }
+    .preview-test .legal-text > div {
+      height: 100% !important; }
 
 .column-width {
   width: 290px;
@@ -15618,6 +15661,9 @@ strong.lbl {
 
 .cursor-pointer {
   cursor: pointer; }
+
+.no-scroll {
+  overflow: hidden !important; }
 
 .w-auto {
   width: auto !important; }

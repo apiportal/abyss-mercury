@@ -29,7 +29,7 @@
 				</v-select>
 			</div>
 			<div class="fow cards justify-content-center">
-				<api-list v-for="(api, index) in sortByNested(sortApi, apiList)" :api="api" :index="index" :key="api.uuid" pagecurrent="pageCurrent" inline-template>
+				<api-list v-for="(api, index) in sortByNested(sortApi, apiList)" :api="api" :index="index" :key="api.uuid" inline-template>
 					<div th:replace="webroot/frags/api/api-preview.htm :: apiList"></div>
 				</api-list>
 			</div>

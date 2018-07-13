@@ -76,11 +76,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 					this.handleError(error);
 				});
 			},
-			deleteType222: function (item) {
-				this.removeItem(abyss.ajax.subject_directory_types + '/' + item.uuid, item, this.ajaxHeaders, this.directoryTypes).then(response => {
-					console.log("deleteDirectoryType response: ", response);
-				});
-			},
 			getTypeName(typ) {
 				var subType = this.directoryTypes.find((el) => el.uuid == typ );
 				if (subType) {
@@ -129,9 +124,15 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 				return i === this.selected;
 			},
 			deleteDirectory(item) {
-				this.removeItem(this.ajaxUrl + '/' + item.uuid, item, this.ajaxHeaders, this.directoryList).then(response => {
-					console.log("deleteDirectory response: ", response);
-				});
+				var r = confirm('Are you sure to delete?');
+				if (r == true) {
+					axios.delete(this.ajaxUrl + '/' + item.uuid, item, this.ajaxHeaders).then(response => {
+						item.isdeleted = true;
+						console.log("DELETE directory response: ", response);
+					}, error => {
+						this.handleError(error);
+					});
+				}
 			},
 			deleteProps() {
 				var item = _.cloneDeep(this.directory);

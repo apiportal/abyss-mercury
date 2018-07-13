@@ -1318,7 +1318,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 		template: '#template-list',
 		props: ['api', 'openapi', 'lindex', 'apilist'],
 		computed: {
-			apiEnvironment : {
+			// MIXED
+			/*apiEnvironment : {
 				get() {
 					if (this.api.islive) {
 						return 'Live';
@@ -1327,7 +1328,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 						return 'Sandbox';
 					}
 				}
-			},
+			},*/
 			apiDefaultVersion : {
 				get() {
 					if (this.api.isdefaultversion) {
@@ -1406,8 +1407,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 		data() {
 			return {
 				isLoading: true,
-				isTest: false,
-				appList: [],
 			};
 		},
 		computed: {
@@ -1415,7 +1414,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 		methods : {
 		},
 		created() {
-			this.getMyApps();
 		}
 	});
 // ■■■■■■■■ MY-APIS ■■■■■■■■ //
@@ -1497,7 +1495,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				tagOptions: [],
 				groupOptions: [],
 				stateOptions: [],
-				appList: [],
 
 				dropSpecsOptions: {
 					url: 'https://httpbin.org/post',
@@ -3014,6 +3011,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 						Vue.set(value, 'isactive', false);
 					});
 					this.myLicenseList = newLcs;
+					this.getMyApps();
 					this.getPage(1);
 				})
 			).catch(error => {

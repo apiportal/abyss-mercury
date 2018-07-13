@@ -46,19 +46,32 @@
 				<span>ADMIN</span><i class="fas fa-fw fa-ellipsis-h"></i>
 			</li>
 			<li>
-				<a href="#" class="nav-caret" data-toggle="collapse" data-target="#pageUserMngt" aria-controls="pageUserMngt"><i class="fas fa-fw fa-user"></i><span class="right-nav-text">User Management</span></a>
-				<ul id="pageUserMngt" class="collapse">
+				<a href="#" class="nav-caret" data-toggle="collapse" data-target="#id_mng">Identity Management</a>
+				<ul id="id_mng" class="collapse collapse-level-2">
 					<li>
-						<a href="/abyss/users">Users</a>
+						<a href="/abyss/identity-managers">Administer Identity Managers</a>
 					</li>
 					<li>
-						<a href="/abyss/user-groups">Groups</a>
+						<a href="#" class="nav-caret" data-toggle="collapse" data-target="#adm_id">Administer Identities</a>
+						<ul id="adm_id" class="collapse collapse-level-3">
+							<li>
+								<a href="/abyss/users">Administer Users</a>
+							</li>
+							<li>
+								<a href="/abyss/user-groups">Administer Groups</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+			</li>
+			<li>
+				<a href="#" class="nav-caret" data-toggle="collapse" data-target="#ac_mng">Access Management</a>
+				<ul id="ac_mng" class="collapse collapse-level-2">
+					<li>
+						<a href="/abyss/access-managers">Administer Access Managers</a>
 					</li>
 					<li>
-						<a href="/abyss/identity-managers">Identity Managers</a>
-					</li>
-					<li>
-						<a href="/abyss/access-managers">Access Managers</a>
+						<a href="#">Administer Permissions</a>
 					</li>
 				</ul>
 			</li>
@@ -77,7 +90,7 @@
 					</li>
 				</ul>
 			</li>
-			<li class="hide">
+			<li class="hidee">
 				<a href="#" class="nav-caret" data-toggle="collapse" data-target="#pages_dr" aria-controls="pages_dr"><i class="fas fa-fw fa-file"></i><span class="right-nav-text">Special Pages</span></a>
 				<ul id="pages_dr" class="collapse">
 					<li>
@@ -105,7 +118,7 @@
 					</li>
 				</ul>
 			</li>
-			<li class="hide">
+			<li class="hidee">
 				<a href="#" class="nav-caret" data-toggle="collapse" data-target="#dropdown_dr_lv1"><i class="fas fa-fw fa-info"></i><span class="right-nav-text">Helpers</span></a>
 				<ul id="dropdown_dr_lv1" class="collapse">
 					<li>
