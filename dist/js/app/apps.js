@@ -6,9 +6,10 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 				isLoading: true,
 			};
 		},
-		computed: {
-		},
-		methods : {
+		computed: {},
+		methods : {},
+		created() {
+			this.apiOwner(this.api);
 		}
 	});
 	Vue.component('api-preview', {
@@ -16,16 +17,12 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 		data() {
 			return {
 				isLoading: true,
-				isTest: false,
-				appList: [],
 			};
 		},
-		computed: {
-		},
-		methods : {
-		},
+		computed: {},
+		methods : {},
 		created() {
-			this.getMyApps();
+			this.apiOwner(this.api);
 		}
 	});
 	Vue.component('my-apps', {
@@ -176,18 +173,23 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 				// console.log("item: ", item);
 				// console.log("ajaxUrl: ", this.ajaxUrl + '/' + item.appObj.uuid, item.appObj);
 				// console.log("ajaxSubjects: ", this.ajaxSubjects + '/' + item.uuid, item);
-				axios.delete(this.ajaxSubjects + '/' + item.uuid, item, this.ajaxHeaders).then(response => {
-					item.isdeleted = true;
-					console.log("deleteApp response: ", response);
-				}, error => {
-					this.handleError(error);
-				});
-				axios.delete(this.ajaxUrl + '/' + item.appObj.uuid, item.appObj, this.ajaxHeaders).then(response => {
-					item.isdeleted = true;
-					console.log("deleteUserApp response: ", response);
-				}, error => {
-					this.handleError(error);
-				});
+				console.log("item: ", item);
+				var r = confirm('Are you sure to delete?');
+				if (r == true) {
+					// 2ASK NOT DELETING in apps deleting in users this.deleteProps()
+					axios.delete(this.ajaxSubjects + '/' + item.uuid, item, this.ajaxHeaders).then(response => {
+						item.isdeleted = true;
+						console.log("DELETE app response: ", response);
+						axios.delete(this.ajaxUrl + '/' + item.appObj.uuid, item.appObj, this.ajaxHeaders).then(response => {
+							item.appObj.isdeleted = true;
+							console.log("DELETE userApp response: ", response);
+						}, error => {
+							this.handleError(error);
+						});
+					}, error => {
+						this.handleError(error);
+					});
+				}
 			},
 			deleteProps() {
 				var item = _.cloneDeep(this.app);
@@ -263,10 +265,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 								this.fixProps(this.app);
 								var iAppArr = [];
 								iAppArr.push(this.deleteProps());
-												// console.log("ADDDDDDDDDDDDDDPOSTTT: ", this.app);
 								this.$emit('set-state', 'edit');
 								this.preventCancel = true;
-																// this.app.uuid = 'qqqqqqqqqqqqqqqqqqqqqqqqqq';
 								axios.post(this.ajaxSubjects, iAppArr, this.ajaxHeaders).then(response => {
 									console.log("addApp response: ", response);
 									if (response.data[0].status != 500 ) {
@@ -331,31 +331,33 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 						// var myAppList = user_app_list.data.filter( (item) => item.isdeleted == false );
 						var myAppList = user_app_list.data;
 						console.log("myAppList: ", myAppList);
-						var appList = [];
+						var appArr = [];
 						myAppList.forEach((value, key) => {
+							console.log("value.uuid: ", value.uuid);
 							axios.get(this.ajaxSubjects + '/' + value.appid, this.ajaxHeaders).then(response => {
 								if (response.data[0].status != 500 ) {
 									var res = response.data[0];
 									res.appObj = value;
 									
-									axios.get(abyss.ajax.permission_list_api_subscriptions_subject + res.uuid, this.ajaxHeaders)
+									axios.get(abyss.ajax.permissions_app + res.uuid, this.ajaxHeaders)
 									.then(response => {
 										Vue.set(res, 'subscriptions', response.data );
+										console.log("res: ", key, res);
 										if (res.subscriptions.length > 0) {
 											res.subscriptions.forEach((sub, k) => {
 												axios.get(abyss.ajax.resources + sub.resourceid, this.ajaxHeaders)
 												.then(response => {
 													Vue.set(sub, 'resource', response.data[0] );
-													appList.push(res);
-													this.isLoading = false;
 												}, error => {
 													this.handleError(error);
 												});
 											});
-										} else {
-											appList.push(res);
-											this.isLoading = false;
 										}
+										setTimeout(() => {
+											appArr.push(res);
+											this.isLoading = false;
+										},100);	
+										
 									}, error => {
 										this.handleError(error);
 									});
@@ -364,7 +366,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 								this.handleError(error);
 							});
 						});
-						this.appList = appList;
+						this.appList = appArr;
 						this.preload();
 					})
 				).catch(error => {
@@ -383,7 +385,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 						this.appList.forEach((value, key) => {
 							var flt = _.find(myAppList, { 'appid': value.uuid });
 							Vue.set(value, 'appObj', flt );
-							axios.get(abyss.ajax.permission_list_api_subscriptions_subject + value.uuid, this.ajaxHeaders)
+							axios.get(abyss.ajax.permissions_app + value.uuid, this.ajaxHeaders)
 							.then(response => {
 								Vue.set(value, 'subscriptions', response.data );
 								value.subscriptions.forEach((sub, k) => {

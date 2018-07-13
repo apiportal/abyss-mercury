@@ -31,6 +31,8 @@ require.config({
 		"vue": ["lib/require-vuejs.min"],
 		"axios": "lib/axios.min",
 		"ace": "lib/",
+		"swagger-ui": "swagger/swagger-ui-bundle",
+		"swagger-ui-css": "swagger/swagger-ui.css?noext",
 		//// plugins ////
 		"slimscroll": "plugins/jquery.slimscroll",
 		"moment": "plugins/moment.min",

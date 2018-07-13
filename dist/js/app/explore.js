@@ -6,39 +6,26 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select'], funct
 		data() {
 			return {
 				isLoading: true,
-				sort: {
-					key: 'name',
-					type: String,
-					order: 'asc'
-				},
-				sortApi: {
-					key: 'created',
-					type: Date,
-					order: 'desc'
-				},
 			};
 		},
-		computed: {
+		computed: {},
+		methods : {},
+		created() {
+			this.apiOwner(this.api);
 		},
-		methods : {
-		}
 	});
 	Vue.component('api-preview', {
 		props: ['api'],
 		data() {
 			return {
 				isLoading: true,
-				isTest: false,
-				appList: [],
 			};
 		},
-		computed: {
-		},
-		methods : {
-		},
+		computed: {},
+		methods : {},
 		created() {
-			this.getMyApps();
-		}
+			this.apiOwner(this.api);
+		},
 	});
 // ■■■■■■■■ index ■■■■■■■■ //
 	Vue.component('index', {
@@ -113,7 +100,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select'], funct
 						this.apiList = api_list.data.filter( (item) => item.isdeleted == false && item.apivisibilityid == 'e63c2874-aa12-433c-9dcf-65c1e8738a14' );
 						this.paginate = this.makePaginate(api_list.data);
 						this.preload();
-						// this.getMyApps();
 					})
 				).catch(error => {
 					this.handleError(error);
@@ -125,8 +111,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select'], funct
 			// this.preload();
 		},
 		created() {
-			this.log(this.$options.name);
+			// this.log(this.$options.name);
 			this.$emit('set-page', 'explore', 'init');
+			this.getMyApps();
 			this.getPage(1);
 		}
 	});

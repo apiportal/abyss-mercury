@@ -109,13 +109,16 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment'], funct
 				return i === this.selected;
 			},
 			deleteLicense(item) {
-				axios.delete(this.ajaxLicenseUrl + item.uuid, item, this.ajaxHeaders).then(response => {
-					item.isdeleted = true;
-					console.log("deleteUser response: ", response);
-					this.deleteResource(item);
-				}, error => {
-					this.handleError(error);
-				});
+				var r = confirm('Are you sure to delete?');
+				if (r == true) {
+					axios.delete(this.ajaxLicenseUrl + item.uuid, item, this.ajaxHeaders).then(response => {
+						item.isdeleted = true;
+						console.log("DELETE license response: ", response);
+						this.deleteResource(item);
+					}, error => {
+						this.handleError(error);
+					});
+				}
 			},
 			deleteProps() {
 				var item = _.cloneDeep(this.license);

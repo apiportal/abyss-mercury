@@ -1,7 +1,7 @@
 // define(['Vue', 'axios', 'vee-validate', 'moment'], function (Vue, axios, VeeValidate, moment) {
 // define(['config', 'Vue', 'axios', 'vee-validate', 'tiny-cookie', 'vue-cookie', 'moment', 'izitoast', 'vue-izitoast'], function (abyss, Vue, axios, VeeValidate, Cookie, VueCookie, moment, iziToast) {
 define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izitoast', 'vue-izitoast'], function (abyss, Vue, axios, VeeValidate, VueCookie, moment, iziToast) {
-
+// ■■■■■■■■ AXIOS ■■■■■■■■ //
 	axios.defaults.headers.common['Accept'] = 'application/json';
 	axios.defaults.headers.common['Content-Type'] = 'application/json';
 	// if (abyss.isAbyssSandbox) {
@@ -33,6 +33,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 		return error;
 		// return Promise.reject(error);
 	});
+// ■■■■■■■■ PLUGINS ■■■■■■■■ //
 	// Window.Vue = Vue;
 	// Window.Vue.use(VueIziToast);
 	// Vue.prototype.$toast = VueIziToast;
@@ -201,9 +202,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 			},
 			updateItem(url, item, head, arr) {
 				return axios.put(url, item, head).then(response => {
-				// return axios.post(url, item, head).then(response => {
-					// console.log("PUT item: ", item);
-					// console.log("PUT response: ", response);
 					return response;
 				}, error => {
 					this.handleError(error);
@@ -230,6 +228,21 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 					this.handleError(error);
 				});
 			},
+			/*deleteItem(url, item, head) {
+				var r = confirm('Are you sure to delete?');
+				if (r == true) {
+					return axios.delete(url, item, head).then(response => {
+						console.log("DELETE response: ", response);
+						item.isdeleted = true;
+						return response;
+					}, error => {
+						this.handleError(error);
+					});
+				} else {
+					console.log("CANCEL DELETE: ");
+					return false;
+				}
+			},
 			removeItem(url, item, head, arr) {
 				var r = confirm('Are you sure to delete?');
 				if (r == true) {
@@ -242,10 +255,10 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 						this.handleError(error);
 					});
 				} else {
-					console.log("CANCEL: ");
+					console.log("CANCEL DELETE: ");
 					return false;
 				}
-			},
+			},*/
 			checkDiff(object, base) {
 				function changes(object, base) {
 					// return _.transform(object, function(result, value, key) {
@@ -312,7 +325,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 			},
 			// ■■■■■■■■ resource ■■■■■■■■ //
 			deleteResource(item) {
-				axios.delete(abyss.ajax.resources, item, this.ajaxHeaders).then(response => {
+				axios.delete(abyss.ajax.resources + item.resource.uuid, item.resource, this.ajaxHeaders).then(response => {
 					console.log("DELETE response: ", response);
 				}, error => {
 					this.handleError(error);
@@ -331,22 +344,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 					this.handleError(error);
 				});
 			},
-			getResources222(item, typ, name, desc) {
-				axios.get(abyss.ajax.resources, this.ajaxHeaders)
-				// axios.get(abyss.ajax.resources_ref + item.uuid, this.ajaxHeaders)
-				.then(response => {
-					var res = response.data.find( (e) => e.resourcerefid == item.uuid );
-					if (res) {
-						Vue.set(item, 'resource', res );
-					} else {
-						this.createResource(item, typ, name, desc);
-					}
-					// Vue.set(item, 'resource', response.data );
-					// !! remove
-				}, error => {
-					this.handleError(error);
-				});
-			},
 			updateResource(item, typ, name, desc) {
 				var resType = this.$root.rootData.resourceTypes.find((e) => e.type == typ );
 				var descript = desc || '';
@@ -356,7 +353,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 					"resourcetypeid": item.resource.resourcetypeid,
 					"resourcename": name + ' ' + resType.type,
 					"description": descript,
-					"resourcerefid": item.uuid
+					"resourcerefid": item.uuid,
+					"isactive": true
 				};
 				console.log("resource: ", resource);
 				this.updateItem(abyss.ajax.resources + item.resource.uuid, resource, this.ajaxHeaders).then(response => {
@@ -374,52 +372,171 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 					"resourcetypeid": resType.uuid, //fixed APP
 					"resourcename": name + ' ' + resType.type, //api.info.title + API
 					"description": descript, //api.info.description + api.info.version
-					"resourcerefid": item.uuid //api.uuid
+					"resourcerefid": item.uuid, //api.uuid
+					"isactive": true
 				};
 				var itemArr = [];
 				itemArr.push(resource);
-				console.log("RESOURCE!!!!: ", itemArr);
 				axios.post(abyss.ajax.resources, itemArr, this.ajaxHeaders).then(response => {
-					console.log("resources response: ", response);
+					console.log("!! POST resources response: ", response);
 					if (response.data[0].status != 500 ) {
-						var res = response.data[0];
+						var res = response.data[0].response;
 						Vue.set(item, 'resource', res );
 					}
 				}, error => {
 					this.handleError(error);
 				});
 			},
+			// ■■■■■■■■ apiOwner ■■■■■■■■ //
+			apiOwner(item) {
+				axios.get(abyss.ajax.subjects + '/' + item.subjectid, this.ajaxHeaders)
+				.then(response => {
+					var res = response.data[0];
+					if (res) {
+						Vue.set(item, 'apiOwnerName', res.firstname + ' ' + res.lastname );
+					}
+				}, error => {
+					this.handleError(error);
+				});
+			},
+			// ■■■■■■■■ contract ■■■■■■■■ //
+			getContracts(item, licenses, res, mine) {
+				console.log("getContracts(): ", item);
+				Vue.set(item, 'contracts', res );
+				item.contracts.forEach((vCon, key) => {
+					// console.log("this.$root.rootData.contractStates: ", this.$root.rootData.contractStates);
+					// console.log("vCon: ", vCon);
+					// console.log("vCon.contractstateid: ", vCon.contractstateid);
+					var contState = this.$root.rootData.contractStates.find( (e) => e.uuid == vCon.contractstateid );
+					Vue.set(vCon, 'contractStateName', contState.name );
+					var contLicenseName = licenses.find( (e) => e.uuid == vCon.licenseid );
+					Vue.set(vCon, 'contractLicenseName', contLicenseName.name );
+					axios.get(abyss.ajax.subjects + '/' + vCon.crudsubjectid)
+					.then(response => {
+						var contPerson = response.data[0];
+						Vue.set(vCon, 'contractPerson', contPerson.firstname + ' ' + contPerson.lastname );
+					}, error => {
+						this.handleError(error);
+					});
+					// var dddddddddd = _.filter(this.$root.appList, { contracts: [ { apiid: item.uuid } ]});
+					// Vue.set(item, 'myContracts', dddddddddd);
+					// 2DO DELETED
+					// var hasCont = _.find(this.$root.appList, { contracts: [ { uuid: vCon.uuid } ]});
+					var hasCont = _.find(this.$root.appList, { contracts: [ { uuid: vCon.uuid, isdeleted: false } ]});
+					if (hasCont) {
+						Vue.set(vCon, 'subscribed', true );
+					}
+					this.getResources(vCon, 'CONTRACT', vCon.name, vCon.description);
+					setTimeout(() => {
+						axios.get(abyss.ajax.subjects + '/' + vCon.subjectid)
+						.then(response => {
+							var contApp = response.data[0];
+							Vue.set(vCon, 'contractApp', contApp.firstname );
+							Vue.set(vCon, 'contractAppId', contApp.uuid );
+							// console.log("vCon.subjectid: ", vCon.subjectid);
+							// console.log("abyss.ajax.permissions_app + vCon.subjectid: ", abyss.ajax.permissions_app + vCon.subjectid);
+							// 2DO PRIV
+							var subEnd = abyss.ajax.permission_my_apis + this.$root.rootData.user.uuid;
+							if (!mine) {
+								subEnd = abyss.ajax.permissions_app + vCon.subjectid;
+							}
+							// console.log("subEnd: ", subEnd);
+							axios.get(subEnd)
+							// axios.get(abyss.ajax.permissions_app + vCon.subjectid)
+							.then(response => {
+								var contSubs = response.data;
+								// console.log("getContracts item.resource.uuid: ", item.resource.uuid);
+								// console.log("getContracts item.openapidocument.info.title: ", item.openapidocument.info.title);
+								// console.log("getContracts vCon.subjectid: ", vCon.subjectid);
+								// console.log("getContracts contApp.firstname: ", contApp.firstname);
+								// console.log("vCon.resource.uuid: ", vCon.resource.uuid);
+								// console.log("item.resource.uuid: ", item.resource.uuid);
+								var sub = _.find(contSubs, { 'resourceid': item.resource.uuid });
+								// console.log("contSubs: ", contSubs);
+								// console.log("sub: ", sub);
+								// uncreated permission
+								if (!sub) {
+									var subscription = {
+										organizationid: this.$root.abyssOrgId,
+										crudsubjectid: this.$root.rootData.user.uuid,
+										permission: 'Subscription of ' + contApp.firstname + ' APP to ' + item.openapidocument.info.title + ' API',
+										description: 'Subscription of ' + contApp.firstname + ' APP to ' + item.openapidocument.info.title + ' API',
+										effectivestartdate: moment().toISOString(),
+										effectiveenddate: moment().add(1, 'years').toISOString(),
+										subjectid: vCon.subjectid,
+										resourceid: item.resource.uuid,
+										resourceactionid: 'c5639f00-94c9-4cc9-8ad9-df76f9d162a8',
+										// subjectgroupid: '4f1b55f0-2eae-40a5-8eff-278a30173344', //null
+										accessmanagerid: '6223ebbe-b30f-4976-bcf9-364003142379',
+										isactive: true,
+									};
+									alert('subscription unavailable');
+									console.log("NO subscription: ", subscription);
+									Vue.set(vCon, 'subscription', subscription);
+									vCon.subscriptions = [];
+									vCon.subscriptions.push(subscription);
+									/*var subsArr = [];
+									subsArr.push(subscription);
+									axios.post(abyss.ajax.permission_list, subsArr, this.ajaxHeaders).then(response => {
+										console.log("POST NO permission subscription response: ", response);
+										var res = response.data[0].response;
+										if (res) {
+											Vue.set(vCon, 'subscription', res);
+											vCon.subscriptions = [];
+											vCon.subscriptions.push(res);
+										}
+									}, error => {
+										this.handleError(error);
+									});*/
+								} else {
+									Vue.set(vCon, 'subscriptions', contSubs );
+									Vue.set(vCon, 'subscription', sub );
+								}
+							}, error => {
+								this.handleError(error);
+							});
+						}, error => {
+							this.handleError(error);
+						});
+					},100);
+				});
+			},
 			// ■■■■■■■■ my apps ■■■■■■■■ //
 			getMyApps() { // @explore.js - refactor apps.js getpage
 				axios.get(abyss.ajax.subject_app_subject_list + this.$root.rootData.user.uuid, this.ajaxHeaders)
 				.then(response => {
-					// var myAppList = user_app_list.data.filter( (item) => !item.isdeleted && !item.islocked && item.isactivated );
+					// var myAppList = response.data.filter( (item) => !item.isdeleted && !item.islocked && item.isactivated );
+					// var myAppList = response.data.filter( (item) => !item.isdeleted );
 					var myAppList = response.data;
-					var appList = [];
+					var appArr = [];
 					myAppList.forEach((value, key) => {
 						axios.get(abyss.ajax.subjects + '/' + value.appid, this.ajaxHeaders).then(response => {
 							if (response.data[0].status != 500 ) {
 								var res = response.data[0];
 								res.appObj = value;
-								axios.get(abyss.ajax.permission_list_api_subscriptions_subject + res.uuid, this.ajaxHeaders)
-								.then(response => {
-									Vue.set(res, 'subscriptions', response.data );
-									if (res.subscriptions.length > 0) {
-										res.subscriptions.forEach((sub, k) => {
-											axios.get(abyss.ajax.resources + sub.resourceid, this.ajaxHeaders)
-											.then(response => {
-												Vue.set(sub, 'resource', response.data[0] );
-												appList.push(res);
-												this.isLoading = false;
-											}, error => {
-												this.handleError(error);
+								axios.all([
+									axios.get(abyss.ajax.permissions_app + res.uuid, this.ajaxHeaders),
+									axios.get(abyss.ajax.contracts_app + res.uuid, this.ajaxHeaders),
+								]).then(
+									axios.spread((permissions_app, contracts_app) => {
+										Vue.set(res, 'contracts', contracts_app.data );
+										Vue.set(res, 'subscriptions', permissions_app.data );
+										if (res.subscriptions.length > 0) {
+											res.subscriptions.forEach((sub, k) => {
+												axios.get(abyss.ajax.resources + sub.resourceid, this.ajaxHeaders)
+												.then(response => {
+													Vue.set(sub, 'resource', response.data[0] );
+												}, error => {
+													this.handleError(error);
+												});
 											});
-										});
-									} else {
-										appList.push(res);
-										this.isLoading = false;
-									}
-								}, error => {
+										}
+										setTimeout(() => {
+											appArr.push(res);
+											this.isLoading = false;
+										},100);
+									})
+								).catch(error => {
 									this.handleError(error);
 								});
 							}
@@ -427,8 +544,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 							this.handleError(error);
 						});
 					});
-					// this.appList = appList;
-					Vue.set(this, 'appList', appList );
+					Vue.set(this.$root, 'appList', appArr );
 					this.preload(); //difff
 				}, error => {
 					this.handleError(error);
@@ -455,7 +571,11 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 				console.log("i: ", i);
 			},
 			cancelPreviewApi() {
+				$('body').removeClass('no-scroll');
+				$('.page-wrapper').removeClass('no-scroll');
 				this.$root.previewedApi = {};
+				this.hideLegalText();
+				this.cancelTestApi();
 				// console.log("this.$root.pageCurrent: ", this.$root.pageCurrent);
 				// console.log("this.$root.rootState: ", this.$root.rootState);
 				// console.log("this.$root.$refs.refMyApis.api.uuid: ", this.$root.$refs.refMyApis.api.uuid);
@@ -469,8 +589,11 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 				// console.log("this.$root.rootState: ", this.$root.rootState);
 			},
 			previewApi(item) {
-				console.log("item: ", item);
+				$('body').addClass('no-scroll');
+				$('.page-wrapper').addClass('no-scroll');
+				// console.log("previewApi: ", item);
 				if (item.isproxyapi) {
+					Vue.set(this.$root, 'previewedApi', _.cloneDeep(item));
 					axios.get(abyss.ajax.api_licenses_api + item.uuid, this.ajaxHeaders).then(response => {
 						if (response.data != null) {
 							var apiLicenses = response.data.filter( (item) => item.isdeleted == false );
@@ -484,34 +607,42 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 								});
 							});
 							setTimeout(() => {
-								// this.$root.previewedApi = _.cloneDeep(item);
-								Vue.set(this.$root, 'previewedApi', _.cloneDeep(item));
-								console.log("this.$root.previewedApi: ", this.$root.previewedApi);
-								// console.log("this.$root.previewedApi: ", this.$root.previewedApi.openapidocument.info.title);
-								this.$root.setState('preview');
-								// this.selectedApi = _.cloneDeep(this.$root.previewedApi);
 								Vue.set(this.$root.previewedApi, 'licenses', licenses);
-								require(['slimscroll'],function(){
-									$('.nicescroll-bar').slimscroll({height:'100%',color: '#878787', disableFadeOut : true,borderRadius:0,size:'4px',alwaysVisible:false});
-								});
 								this.getResources(this.$root.previewedApi, 'API', this.$root.previewedApi.openapidocument.info.title + ' ' + this.$root.previewedApi.openapidocument.info.version, this.$root.previewedApi.openapidocument.info.description);
-								/*axios.get(abyss.ajax.contracts_api + this.$root.previewedApi.uuid)
-								.then(response => {
-									var allApiContracts = response.data.filter( (item) => item.isdeleted == false );
-									var allMyApiContracts = response.data.filter( (item) => item.isdeleted == false && item.crudsubjectid == this.$root.rootData.user.uuid );
-									console.log("allApiContracts: ", allApiContracts);
-									console.log("this.$root.previewedApi.licenses: ", this.$root.previewedApi.licenses);
-									// var ddd = _.filter(response.data, { 'apiid': this.$root.previewedApi.uuid, 'licenseid': this.$root.previewedApi.licenses.uuid });
-									// var ddd = _.filter(cont, (item) => _.find(this.$root.previewedApi.licenses, { uuid: item.uuid }));
-									//2DO
-									// var ddd = _.filter(this.$root.previewedApi.licenses, { 'apiid': this.$root.previewedApi.uuid });
-									var actLcs = _.find(this.$root.previewedApi.licenses, (v) => _.includes(allApiContracts.map(e => e.licenseid), v.uuid));
-									Vue.set(actLcs, 'isactive', true);
-									// Vue.set(allApiContracts, 'activelicense', actLcs.uuid);
-									console.log("actLcs: ", actLcs);
-								}, error => {
-									this.handleError(error);
-								});*/
+								console.log("this.$root.appList: ", this.$root.appList);
+								// 2DO DELETED
+								// Vue.set( this.$root.previewedApi, 'filteredApps', _.reject(this.$root.appList, { contracts: [ { apiid: item.uuid } ]}) );
+								Vue.set( this.$root.previewedApi, 'filteredApps', _.reject(this.$root.appList, { contracts: [ { apiid: item.uuid, isdeleted: false } ]}) );
+								if (this.$root.rootData.user.uuid == this.$root.previewedApi.subjectid) {
+									axios.get(abyss.ajax.contracts_api + this.$root.previewedApi.uuid, this.ajaxHeaders)
+									.then(response => {
+										var res = response.data;
+										console.log("My Contracts response: ", res);
+										if (res) {
+											this.getContracts(this.$root.previewedApi, this.$root.previewedApi.licenses, res, true);
+										}
+									}, error => {
+										this.handleError(error);
+									});
+								} else {
+									console.log("item.uuid: ", item.uuid);
+									var mySubsApp = _.filter(this.$root.appList, { contracts: [ { apiid: item.uuid } ]});
+									var mySubsAppCont = [];
+									mySubsApp.forEach((value, key) => {
+										var ccc = _.find(value.contracts, { apiid: item.uuid });
+										mySubsAppCont.push(ccc);
+									});
+									console.log("mySubsApp: ", mySubsApp);
+									console.log("mySubsAppCont: ", mySubsAppCont);
+									// var xxx = _.filter(myRes, { 'subjectid': this.user.uuid });
+									this.getContracts(this.$root.previewedApi, this.$root.previewedApi.licenses, mySubsAppCont, false);
+								}
+								setTimeout(() => {
+									this.$root.setState('preview');
+									require(['slimscroll'],function(){
+										$('.nicescroll-bar').slimscroll({height:'100%',color: '#878787', disableFadeOut : true,borderRadius:0,size:'4px',alwaysVisible:false});
+									});
+								},1000);
 							},100);	
 						}
 					}, error => {
@@ -528,7 +659,33 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 					Vue.delete(this.api, 'selectedApp');
 				}
 			},
-			subscribeToApp(val) {
+			unsubscribeFromApi(cont) {
+				console.log("cont: ", cont);
+				console.log("cont.uuid: ", cont.uuid);
+				console.log("cont.resource: ", cont.resource);
+				console.log("cont.resource.uuid: ", cont.resource.uuid);
+				console.log("cont.subscription: ", cont.subscription);
+				console.log("cont.subscription.uuid: ", cont.subscription.uuid);
+				var r = confirm('Are you sure to unsubscribe?');
+				if (r == true) {
+					axios.delete(abyss.ajax.permission_list + '/' + cont.subscription.uuid, cont.subscription, this.ajaxHeaders).then(response => {
+						cont.subscription.isdeleted = true;
+						console.log("DELETE subscription response: ", response);
+						axios.delete(abyss.ajax.contracts + '/' + cont.uuid, cont, this.ajaxHeaders).then(response => {
+							cont.isdeleted = true;
+							console.log("DELETE contracts response: ", response);
+							this.getMyApps();
+							this.$root.setState('init');
+						}, error => {
+							this.handleError(error);
+						});
+						this.deleteResource(cont);
+					}, error => {
+						this.handleError(error);
+					});
+				}
+			},
+			subscribeToApi(val) {
 				if (!this.api.selectedApp) {
 					alert('Please select an APP');
 				} else if (!this.api.selectedLicense) {
@@ -540,12 +697,13 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 						permission: 'Subscription of ' + this.api.selectedApp.firstname + ' APP to ' + this.api.openapidocument.info.title + ' API',
 						description: 'Subscription of ' + this.api.selectedApp.firstname + ' APP to ' + this.api.openapidocument.info.title + ' API',
 						effectivestartdate: moment().toISOString(),
-						effectiveenddate: moment().add(1, 'year').toISOString(),
+						effectiveenddate: moment().add(1, 'years').toISOString(),
 						subjectid: this.api.selectedApp.uuid,
 						resourceid: this.api.resource.uuid,
 						resourceactionid: 'c5639f00-94c9-4cc9-8ad9-df76f9d162a8',
-						subjectgroupid: '4f1b55f0-2eae-40a5-8eff-278a30173344', //null
+						// subjectgroupid: '4f1b55f0-2eae-40a5-8eff-278a30173344', //null
 						accessmanagerid: '6223ebbe-b30f-4976-bcf9-364003142379',
+						isactive: true,
 					};
 					var contract = {
 						organizationid: this.$root.abyssOrgId,
@@ -563,21 +721,24 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 					var contArr = [];
 					contArr.push(contract);
 					axios.post(abyss.ajax.contracts, contArr, this.ajaxHeaders).then(response => {
-						console.log("contracts response: ", response);
+						console.log("!!!! POST contracts response: ", response);
 						if (response.data[0].status != 500 ) {
-							var res = response.data[0];
-							Vue.set(this.$root.previewedApi, 'contract', res);
-							this.createResource(res, 'CONTRACT', res.name, res.description);
+							var resCont = response.data[0].response;
+							// this.$root.previewedApi.contracts.push(resCont);
+							this.createResource(resCont, 'CONTRACT', resCont.name, resCont.description);
 							this.$toast('success', {title: 'Successful Contract', message: 'Contract of ' + this.api.selectedApp.firstname + ' APP to ' + this.api.openapidocument.info.title + ' API', position: 'topLeft'});
 							// subscription
 							var subsArr = [];
 							subsArr.push(subscription);
 							axios.post(abyss.ajax.permission_list, subsArr, this.ajaxHeaders).then(response => {
-								console.log("permission subscription response: ", response);
+								console.log("!!!! POST permission subscription response: ", response);
 								if (response.data[0].status != 500 ) {
-									var res = response.data[0];
-									Vue.set(this.$root.previewedApi, 'subscription', res);
+									var res = response.data[0].response;
+									// Vue.set(this.$root.previewedApi.contracts, 'subscription', res);
+									// this.$root.previewedApi.contracts.subscriptions.push(res);
 									this.$toast('success', {title: 'Successful Subscription', message: 'Subscription of ' + this.api.selectedApp.firstname + ' APP to ' + this.api.openapidocument.info.title + ' API', position: 'topLeft'});
+									this.getMyApps();
+									this.$root.setState('init');
 								}
 							}, error => {
 								this.handleError(error);
@@ -591,6 +752,47 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 					console.log("contract: ", contract);
 					this.$toast('success', {title: 'Successful Subscription', message: 'Subscription of ' + this.api.selectedApp.firstname + ' APP to ' + this.api.openapidocument.info.title + ' API', position: 'topLeft'});*/
 				}
+			},
+			hideLegalText() {
+				this.$root.isShowLegalText = false;
+				this.$root.legalText = '';
+				Vue.set(this.$root, 'legalText', {});
+			},
+			showLegalText(val) {
+				this.$root.isShowLegalText = true;
+				Vue.set(this.$root.legalText, 'name', val.name);
+				Vue.set(this.$root.legalText, 'description', val.description);
+				Vue.set(this.$root.legalText, 'documentText', val.documentText);
+				setTimeout(() => {
+					$('.nicescroll-bar').slimscroll({height:'100%',color: '#878787', disableFadeOut : true,borderRadius:0,size:'4px',alwaysVisible:false});
+				},100);
+				console.log("showLegalText: ");
+			},
+			cancelTestApi() {
+				this.$root.isTestApi = false;
+			},
+			testApi(val) {
+				this.$root.isTestApi = true;
+				// require(['swagger-ui'],function(){
+				// define(['swagger-ui'],function(SwaggerUIBundle){
+				var vm = this;
+				require(['swagger-ui', 'css!swagger-ui-css'],function(SwaggerUIBundle){
+					const swUi = SwaggerUIBundle({
+						// url: "https://petstore.swagger.io/v2/swagger.json",
+						spec: vm.$root.previewedApi.openapidocument,
+						dom_id: '#swagger-ui',
+						deepLinking: true,
+						presets: [
+							SwaggerUIBundle.presets.apis,
+							// SwaggerUIStandalonePreset
+						],
+						plugins: [
+							SwaggerUIBundle.plugins.DownloadUrl
+						],
+						// layout: "StandaloneLayout"
+					});
+					window.swUi = swUi;
+				});
 			},
 		},
 		computed: {
@@ -705,6 +907,10 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 			// abyssYamlList : abyss.abyssYamlList,
 			abyssYamlList : [],
 			previewedApi: {},
+			isTestApi: false,
+			isShowLegalText: false,
+			legalText: {},
+			appList: [],
 			end: []
 		},
 		methods: {
@@ -718,9 +924,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 			deleteTax(list, editing, item) {
 				// var itemArr = [];
 				// itemArr.push(item);
-				// this.removeItem(this.getEndpoint(list) + '/' + item.uuid, item, this.ajaxHeaders, this.rootData[list]).then(response => {
 				axios.delete(this.getEndpoint(list) + '/' + item.uuid, item, this.ajaxHeaders).then(response => {
-				// axios.delete(this.getEndpoint(list) + '/' + item.uuid, item, this.ajaxHeaders).then(response => {
 					console.log("response: ", response );
 					if (response) {
 						// ■■ update user's api groups, tags, categories and reload my api list
@@ -947,7 +1151,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 							});
 						}
 						// console.log("ROOT this.rootData: ", this.rootData);
-						this.isLoading = false;
+						if (this.rootData.contractStates) {
+							this.isLoading = false;
+						}
 					})
 				).catch(error => {
 					this.handleError(error);
