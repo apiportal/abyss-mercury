@@ -34,7 +34,7 @@
 								<p class="small">{{api.openapidocument.info.version}} <span class="text-uppercase">{{apiEnvironment}}</span></p>
 								<p>{{api.apiOwnerName}}</p>
 								<code class="d-block small txt-purple"><small>{{api.uuid}}</small></code>
-								<code class="d-block small txt-orange"><small>{{api.resource.uuid}}</small></code>
+								<code class="d-block small txt-orange" v-if="api.isproxyapi"><small>{{api.resource.uuid}}</small></code>
 								<div>{{api.openapidocument.info.description | truncate(75)}}</div>
 								<!-- <div v-if="api.isproxyapi && !isLoading"> -->
 								<div v-if="api.isproxyapi">
