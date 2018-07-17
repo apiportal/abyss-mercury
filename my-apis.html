@@ -385,8 +385,8 @@
 													<li><a title="Add abyssCookieAuth" v-on:click="addSecurityDefinition('abyssCookieAuth')"><i class="fa fa-plus"></i> Add abyssCookieAuth</a></li>
 													<li><a title="Add abyssHttpBasicAuth" v-on:click="addSecurityDefinition('abyssHttpBasicAuth')"><i class="fa fa-plus"></i> Add abyssHttpBasicAuth</a></li>
 													<li><a title="Add abyssApiKeyAuth" v-on:click="addSecurityDefinition('abyssApiKeyAuth')"><i class="fa fa-plus"></i> Add abyssApiKeyAuth</a></li>
-													<li><a title="Add abyssAppKeyAuth" v-on:click="addSecurityDefinition('abyssAppKeyAuth')"><i class="fa fa-plus"></i> Add abyssAppKeyAuth</a></li>
-													<li><a title="Add abyssAppKeyCookieAuth" v-on:click="addSecurityDefinition('abyssAppKeyCookieAuth')"><i class="fa fa-plus"></i> Add abyssAppKeyCookieAuth</a></li>
+													<li><a title="Add abyssAppAccessTokenAuth" v-on:click="addSecurityDefinition('abyssAppAccessTokenAuth')"><i class="fa fa-plus"></i> Add abyssAppAccessTokenAuth</a></li>
+													<li><a title="Add abyssAppAccessTokenCookieAuth" v-on:click="addSecurityDefinition('abyssAppAccessTokenCookieAuth')"><i class="fa fa-plus"></i> Add abyssAppAccessTokenCookieAuth</a></li>
 													<li><a title="Add abyssJWTBearerAuth" v-on:click="addSecurityDefinition('abyssJWTBearerAuth')"><i class="fa fa-plus"></i> Add abyssJWTBearerAuth</a></li>
 													<li><a title="Remove securityScheme" v-on:click="removeSecurityDefinition(sdname)"><i class="fa fa-trash-alt"></i> Remove securityScheme</a></li>
 												</ul>
@@ -931,7 +931,7 @@
 						</div>
 						<div class="form-group">
 							<label>OperationId</label>
-							<input class="form-control" v-model.lazy="method.operationId">
+							<input class="form-control" v-model.lazy="method.operationId" v-validate="'required'">
 						</div>
 						<div class="form-group">
 							<label>Summary</label>

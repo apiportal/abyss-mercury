@@ -1742,12 +1742,12 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 							newSecDef.name = 'abyss.api.key';
 							newSecDef.type = 'apiKey';
 							newSecDef.in = 'header';
-						} else if (name == 'abyssAppKeyAuth') {
-							newSecDef.name = 'abyss.app.key';
+						} else if (name == 'abyssAppAccessTokenAuth') {
+							newSecDef.name = 'abyss.app.access.token';
 							newSecDef.type = 'apiKey';
 							newSecDef.in = 'header';
-						} else if (name == 'abyssAppKeyCookieAuth') {
-							newSecDef.name = 'abyss.app.key';
+						} else if (name == 'abyssAppAccessTokenCookieAuth') {
+							newSecDef.name = 'abyss.app.access.token';
 							newSecDef.type = 'apiKey';
 							newSecDef.in = 'cookie';
 						} else if (name == 'abyssJWTBearerAuth') {
@@ -1982,7 +1982,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				}, 100),
 				listenSw: _.debounce(function(val) {
 					Vue.set(this.swaggerText, 'text', val);
-				}, 100),
+				}, 5000),
 				initSwagger: _.debounce(function(val) {
 					var vm = this;
 					const SpecUpdateListenerPlugin = function() {

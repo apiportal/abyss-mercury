@@ -271,7 +271,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 								// this.preventCancel = true;
 								axios.post(this.ajaxSubjects, iAppArr, this.ajaxHeaders).then(response => {
 									console.log("addApp response: ", response);
-									if (response.data[0].status != 500 ) {
+									// if (response.data[0].status != 500 ) {
 										var res = response.data[0].response;
 										this.$root.appList.push(res);
 										this.app = res;
@@ -286,7 +286,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 										itemArr.push(itemObj);
 										axios.post(this.ajaxUrl, itemArr, this.ajaxHeaders).then(response => {
 											console.log("addUserApp response: ", response);
-											if (response.data[0].status != 500 ) {
+											// if (response.data[0].status != 500 ) {
 												var res = response.data[0].response;
 												// this.$root.appList.push(response.data[0].response);
 												// this.$emit('set-state', 'init');
@@ -296,11 +296,11 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 												///////////////////////////
 												this.$emit('set-state', 'edit');
 												this.preventCancel = true;
-											}
+											// }
 										}, error => {
 											this.handleError(error);
 										});
-									}
+									// }
 								}, error => {
 									this.handleError(error);
 								});

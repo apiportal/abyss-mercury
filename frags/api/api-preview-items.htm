@@ -3,8 +3,8 @@
 <body>
 <div class="" th:fragment="apiContract">
 	<div v-if="con.subscription && con.subscription.accessToken">
-		<p class="small txt-break"><strong class="lbl">access Token</strong> {{con.subscription.accessToken.token}}</p>
-		<p class="small txt-break"><strong class="lbl">expire date</strong> {{con.subscription.accessToken.expiredate}}
+		<p class="small txt-break"><strong class="lbl">API Access Token</strong> {{con.subscription.accessToken.token}}</p>
+		<p class="small txt-break"><strong class="lbl">Expire date</strong> {{con.subscription.accessToken.expiredate}}
 		</p>
 		<p class="sandbox-item" v-if="$root.abyssSandbox">
 			<strong class="lbl">uuid</strong> 

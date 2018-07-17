@@ -20,6 +20,15 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 			res.data = [];
 			// console.log('404 response', response);
 			return res;
+		} else if (response.status == 207) {
+			var arr = [];
+			response.data.forEach((value, key) => {
+				if (value.status >= 400) {
+					arr.push(value.error.usermessage);
+					alert(arr.join(', '));
+					throw new axios.Cancel(arr.join(', '));  
+				}
+			});
 		// } else if (response.data[0].status != 500) {
 			// alert('500' + '\n' + response.data[0].error.usermessage);
 		} else {
@@ -554,7 +563,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 										subjectid: vCon.subjectid,
 										resourceid: item.resource.uuid,
 										resourceactionid: 'c5639f00-94c9-4cc9-8ad9-df76f9d162a8',
-										// subjectgroupid: '4f1b55f0-2eae-40a5-8eff-278a30173344', //null
 										accessmanagerid: '6223ebbe-b30f-4976-bcf9-364003142379',
 										isactive: true,
 									};
@@ -637,9 +645,11 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 					this.$root.setState('previewapp');
 					$('body').addClass('no-scroll');
 					$('.page-wrapper').addClass('no-scroll');
-					require(['slimscroll'],function(){
-						$('.nicescroll-bar').slimscroll({height:'100%',color: '#878787', disableFadeOut : true,borderRadius:0,size:'4px',alwaysVisible:false});
-					});
+					setTimeout(() => {
+						require(['slimscroll'],function(){
+							$('.nicescroll-bar').slimscroll({height:'100%',color: '#878787', disableFadeOut : true,borderRadius:0,size:'4px',alwaysVisible:false});
+						});
+					},100);
 				}
 			},
 			// ■■■■■■■■ my apps ■■■■■■■■ //
