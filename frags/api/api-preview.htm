@@ -1,22 +1,47 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <body>
+<div class="brd-b brd-0-last" th:fragment="apiDash" v-bind:title="api.openapidocument.info.description">
+	<a href="#" class="nav-link d-block" v-on:click="$parent.previewApi(api, 'preview')">
+		<span class="float-right text-uppercase">
+			<span class="small">{{apiGetStateName(api.apistateid)}}</span>
+			<i class="fas fa-circle ml-1" v-bind:class="'stat-' + apiGetStateName(api.apistateid)"></i>
+		</span>
+		<div>
+			<strong class="txt-black">{{api.openapidocument.info.title}}</strong>
+			<small class="">{{api.openapidocument.info.version}}</small>
+		</div>
+		<small class="float-right">{{activeVisibility}} {{apiEnvironment}}</small>
+		<span v-if="!api.isproxyapi">
+			<small>Proxies: <strong v-if="api.proxies">{{api.proxies.length}}</strong></small>
+		</span>
+		<div v-if="api.isproxyapi">
+			<div v-if="api.subscriptions">
+				<small class="text-uppercase">Subscriptions:</small> <strong class="txt-black">{{api.subscriptions.length}}</strong>
+			</div>
+			<small class="d-block">Business API: <strong>{{businessapi}}</strong></small>
+		</div>
+		<code class="d-block small" :style="{ 'color': api.color }"><small>{{api.uuid}}</small></code>
+	</a>
+</div>
+
 <div class="fol-sm-6 fol-md-4 fol-lg-4 fol-xl-3 fol-xlm-3 fol-xlg-3 thumb card-item" th:fragment="apiList">
 	<div class="card">
-		<div class="xxx">
-			<div class="thumb-image cursor-pointer" v-on:click="$parent.previewApi(api)" v-if="api.image" :style="{ 'background-image': 'url(' + api.image + ')' }"></div>
-			<div class="thumb-image cursor-pointer" v-on:click="$parent.previewApi(api)" v-if="!api.image" :style="{ 'background-color': api.color }">{{api.openapidocument.info.title.substring(0, 3)}}</div>
-			<div class="card-body">
-				<span class="float-right text-uppercase py-1"><span class="small">{{apiGetStateName(api.apistateid)}}</span><i class="fas fa-circle ml-1" v-bind:class="'stat-' + apiGetStateName(api.apistateid)"></i></span>
-				<h5 class="mb-0 cursor-pointer" v-on:click="$parent.previewApi(api, 'preview')"><strong>{{api.openapidocument.info.title}}</strong></h5>
-				<p class="small">{{api.openapidocument.info.version}} <span class="text-uppercase">{{apiEnvironment}}</span></p>
-				<p>{{api.apiOwnerName}}</p>
+		<div class="thumb-image cursor-pointer" v-on:click="$parent.previewApi(api)" v-if="api.image" :style="{ 'background-image': 'url(' + api.image + ')' }"></div>
+		<div class="thumb-image cursor-pointer" v-on:click="$parent.previewApi(api)" v-if="!api.image" :style="{ 'background-color': api.color }">{{api.openapidocument.info.title.substring(0, 3)}}</div>
+		<div class="card-body">
+			<span class="float-right text-uppercase py-1"><span class="small">{{apiGetStateName(api.apistateid)}}</span><i class="fas fa-circle ml-1" v-bind:class="'stat-' + apiGetStateName(api.apistateid)"></i></span>
+			<h5 class="mb-0 cursor-pointer" v-on:click="$parent.previewApi(api, 'preview')"><strong>{{api.openapidocument.info.title}}</strong></h5>
+			<p class="small">{{api.openapidocument.info.version}} <span class="text-uppercase">{{apiEnvironment}}</span></p>
+			<p>{{api.apiOwnerName}}</p>
+			<p class="sandbox-item">
 				<code class="d-block small txt-purple"><small>{{api.uuid}}</small></code>
-				<div class="pt-2">{{api.openapidocument.info.description | truncate(75)}}</div>
-			</div>
+			</p>
+			<div>{{api.openapidocument.info.description | truncate(75)}}</div>
 		</div>
 	</div>
 </div>
+
 <div class="preview-container" v-if="$root.rootState == 'preview'" th:fragment="apiPreview">
 	<api-preview :api="$root.previewedApi" ref="refApiPreview" inline-template>
 	<div class="preview-container">
@@ -33,25 +58,26 @@
 								<h5 class="mb-0"><strong>{{api.openapidocument.info.title}}</strong></h5>
 								<p class="small">{{api.openapidocument.info.version}} <span class="text-uppercase">{{apiEnvironment}}</span></p>
 								<p>{{api.apiOwnerName}}</p>
-								<code class="d-block small txt-purple"><small>{{api.uuid}}</small></code>
-								<code class="d-block small txt-orange" v-if="api.isproxyapi"><small>{{api.resource.uuid}}</small></code>
+								<p class="sandbox-item">
+									<code class="d-block small txt-purple"><small>{{api.uuid}}</small></code>
+									<code class="d-block small txt-orange" v-if="api.isproxyapi"><small>{{api.resource.uuid}}</small></code>
+								</p>
 								<div>{{api.openapidocument.info.description | truncate(75)}}</div>
-								<!-- <div v-if="api.isproxyapi && !isLoading"> -->
+								<button class="btn btn-sm btn-outline-purple btn-block my-3" v-if="$root.pageCurrent != 'my-apis'" v-on:click="testApi(api.openapidocument);">Test API</button>
+								<!-- <p v-if="$root.abyssSandbox">{{api.filteredApps.length}} / {{$root.appList.length}}</p> -->
 								<div v-if="api.isproxyapi">
-									<button class="btn btn-sm btn-outline-blue btn-block my-3" v-if="$root.pageCurrent != 'my-apis'" v-on:click="testApi();">Test API</button>
 									<div v-if="$root.appList.length > 0 && api.filteredApps.length > 0">
 										<div class="form-group mt-2" v-bind:class="{ 'has-error': errors.has('appid') }">
-											<label>Select APP {{api.filteredApps.length}}</label>
+											<label>Select APP</label>
 											<select class="form-control" name="appid" id="appid" v-model="api.selectedApp" v-on:change="selectAppToSubscribe(api.selectedApp)" v-validate="'required'">
 												<!-- <option v-for="(app,index) in $root.appList" :value="app">{{app.firstname}} - {{myAppsEnvironment(app)}}</option> -->
-												<option v-for="(app,index) in api.filteredApps" :value="app">{{app.firstname}} - {{myAppsEnvironment(app)}}</option>
+												<option v-for="(app,index) in api.filteredApps" :value="app" v-if="!app.isdeleted">{{app.firstname}} - {{myAppsEnvironment(app)}}</option>
 											</select>
 											<em v-bind:class="{ 'show': errors.has('appid') }">{{ errors.first('appid') }}</em>
 										</div>
 										<button class="btn btn-green btn-block" v-on:click="subscribeToApi()">Subscribe</button>
 									</div>
 									<a href="/abyss/my-apps" v-if="$root.appList.length == 0" class="btn btn-purple mt-2 btn-block">Create APP to subscribe</a>
-									<!-- Subscribed APPS List -->
 									<!-- Share readonly checkbox -->
 								</div>
 							</div>
@@ -59,33 +85,19 @@
 					</div>
 				</div>
 				<div class="fol-12 fol-sm p-0 brd-b brd-sm-b-0 brd-sm-r thumb" v-if="api.isproxyapi && api.contracts.length > 0">
-					<h5 class="mb-0 py-2 px-3">Contracts</h5>
+					<h5 class="mb-0 py-2 px-3 brd-b">Contracts</h5>
 					<div class="preview-item-inner">
 						<div class="nicescroll-bar">
-							<!-- <div class="small px-3 py-2 brd-t" v-for="(app,index) in api.myContracts" v-if="$root.abyssSandbox">
-								<strong>{{app.firstname}}</strong>
-							</div> -->
-							<div class="px-3 pt-2 pb-1 brd-t" v-for="(con,index) in api.contracts">
-								<h6>{{con.contractApp}}</h6>
-								<p><code class="d-block small txt-teal"><small>{{con.contractAppId}}</small></code></p>
-								<p>{{con.name}}</p>
-								<p>
-									<code class="d-block small txt-green"><small>{{con.uuid}}</small></code>
-									<code class="d-block small txt-orange"><small>{{con.resource.uuid}}</small></code>
-								</p>
-									<strong class="small text-uppercase">license</strong>
-									<h6>{{con.contractLicenseName}}</h6>
-								<div class="fow form-row small">
-									<p class="fol-12"><strong class="lbl">Person</strong> {{con.contractPerson}}</p>
-									<p class="fol-6"><strong class="lbl">environment</strong> {{con.environment}}</p>
-									<p class="fol-6"><strong class="lbl">contract state</strong> {{con.contractStateName}}</p>
-									<p class="fol-6"><strong class="lbl">status</strong> {{con.status}}</p>
-									<p class="fol-12"><strong class="lbl">subscription</strong> {{con.subscription.permission}}</p>
-									<p class="fol-12"><code class="d-block small txt-cyan">{{con.subscription.uuid}}</code></p>
-									<p class="fol-6"><strong class="lbl">Start Date</strong> {{con.subscription.effectivestartdate | formatDate}}</p>
-									<p class="fol-6"><strong class="lbl">End Date</strong> {{con.subscription.effectiveenddate | formatDate}}</p>
-									<p class="fol-12" v-if="con.subscribed"><button class="btn btn-sm btn-blue btn-block" v-on:click="unsubscribeFromApi(con)">Unsubscribe</button></p>
-									<p class="fol-12" v-if="con.isdeleted"><button class="btn btn-sm btn-outline-red btn-block">Unsubscribed</button></p>
+							<div class="px-3 pt-2 pb-1 brd-t brd-0-first field-controls" v-for="(con,index) in api.contracts" v-bind:class="{'api-unsubscribed': con.isdeleted}">
+								<a href="#" class="d-block" data-toggle="collapse" v-bind:data-target="'#con'+index" v-bind:aria-controls="'con'+index">
+									<small class="float-right text-uppercase mt-1 txt-green">{{con.contractStateName}}</small>
+									<h5 class="">{{con.contractApp}}</h5>
+									<p class="sandbox-item"><code class="d-block small txt-cyan"><small>{{con.contractAppId}}</small></code></p>
+									<p><strong class="lbl">license</strong> {{con.contractLicenseName}}</p>
+									<p class="sandbox-item small"><strong class="lbl">Person</strong> {{con.contractPerson}}</p>
+								</a>
+								<div v-bind:id="'con'+index" class="collapse field-tabs">
+									<div th:replace="webroot/frags/api/api-preview-items.htm :: apiContract"></div>
 								</div>
 							</div>
 						</div>
@@ -141,63 +153,14 @@
 								</div>
 								<div class="fow brd-t" v-if="api.isproxyapi">
 									<div class="fol-sm-4 p-0 column-width preview--scroll shadow-xs" v-for="(license, index) in api.licenses">
-										<div class="px-3 pt-3">
-											<div class="ficon-actions dropdown dropdown-hover">
-												<span class="switch switch-primary">
-													<input type="radio" :id="'isactive'+index" v-model="api.selectedLicense" :value="license.uuid" v-on:change="setProxyLicense(license)">
-													<label :for="'isactive'+index"></label>
-												</span>
-											</div>
-											<div class="h6">										
-												{{license.name}}
-												<small>{{license.version}}</small>
-											</div>
-											<p class="">{{license.licensedocument.info.title}}</p>
-											<p>
-												<code class="d-block txt-line small txt-blue"><small>{{license.uuid}}</small></code>
-											</p>
-											<p class="d-block txt-line mt-1 text-muted small">{{license.licensedocument.info.description}}</p>
-											<div class="small">
-												<h6 class="field-header text-body row brd-b">SLA</h6>
-												<h6 class="m-0">
-													{{license.licensedocument.sla.tierName}}
-												</h6>
-												<p class="mb-4">
-													{{license.licensedocument.sla.description}}
-												</p>
-												<p class="d-flex text-uppercase">
-													<span class="">
-														<strong class="lbl">support Hours</strong>
-														{{license.licensedocument.sla.supportHours}}
-													</span>
-													<span class="ml-auto text-right">
-														<strong class="lbl">availability</strong>
-														{{license.licensedocument.sla.availability}}
-													</span>
-												</p>
-												<p>
-													<strong class="lbl">black Out Hours Per Year</strong>
-													{{license.licensedocument.sla.blackOutHoursPerYear}}
-												</p>
-												<p>
-													<strong class="lbl">performance</strong>
-													{{license.licensedocument.sla.performance}}
-												</p>
-												<p>
-													<strong class="lbl">Legal Aggreement</strong>
-													{{license.licensedocument.legal.name}}
-												</p>
-												<p v-if="license.licensedocument.legal.link">
-													<strong class="lbl">Legal Aggreement Link</strong>
-													<span class="d-block text-truncate">
-														<a :href="license.licensedocument.legal.link" target="_blank">{{license.licensedocument.legal.link}}</a>
-													</span>
-												</p>
-												<p v-if="license.licensedocument.legal.documentText">
-													<a href="#" class="txt-link" v-on:click="showLegalText(license.licensedocument.legal)">Show Legal Agreement</a>
-												</p>
-											</div>
+										<!-- <div class="ficon-actions dropdown dropdown-hover" v-if="$root.pageCurrent != 'my-apps'"> -->
+										<div class="ficon-actions dropdown dropdown-hover" v-if="$root.appList.length > 0 && api.filteredApps.length > 0">
+											<span class="switch switch-primary">
+												<input type="radio" :id="'isactive'+index" v-model="api.selectedLicense" :value="license.uuid" v-on:change="setProxyLicense(license)">
+												<label :for="'isactive'+index"></label>
+											</span>
 										</div>
+										<div th:replace="webroot/frags/api/api-preview-items.htm :: apiLicense"></div>
 									</div>
 								</div>
 							</div>
@@ -206,41 +169,8 @@
 				</div>
 			</div>
 		</div>
-		<transition name="fade">
-		<div class="preview-overlay" v-on:click="cancelTestApi()" v-if="$root.isTestApi && $root.pageCurrent != 'my-apis'"></div>
-		</transition>
-		<transition name="slide">
-		<div class="preview-test" v-if="$root.isTestApi && $root.pageCurrent != 'my-apis'">
-			<div class="clearfix column-header column-min-button">
-				<div class="column-header-button">
-					<button type="button" class="close" v-on:click="cancelTestApi()">×</button>
-				</div>
-				<h5 class="px-3 py-2 m-0">Test</h5>
-			</div>
-			<div id="swagger-ui"></div>
-		</div>
-		</transition>
-		<transition name="fade">
-		<div class="preview-overlay" v-on:click="hideLegalText()" v-if="$root.isShowLegalText"></div>
-		</transition>
-		<transition name="slide">
-		<div class="preview-test" v-if="$root.isShowLegalText">
-			<div class="clearfix column-header column-min-button">
-				<div class="column-header-button">
-					<button type="button" class="close" v-on:click="hideLegalText()">×</button>
-				</div>
-				<h5 class="px-3 py-2 m-0">{{$root.legalText.name}}</h5>
-			</div>
-			<div class="legal-text">
-				<div class="nicescroll-bar">
-					<div class="p-3">
-						<h6>{{$root.legalText.description}}</h6>
-						{{$root.legalText.documentText}}
-					</div>
-				</div>
-			</div>
-		</div>
-		</transition>
+		<div th:replace="webroot/frags/api/api-preview-items.htm :: apiTest"></div>
+		<div th:replace="webroot/frags/api/api-preview-items.htm :: apiLegal"></div>
 	</div>
 	</api-preview>
 </div>

@@ -205,6 +205,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment'], funct
 			]).then(
 				axios.spread((subject_policies_list) => {
 					this.policyList = subject_policies_list.data.filter( (item) => item.isdeleted == false );
+					// this.policyList = subject_policies_list.data;
 					this.getPage(1);
 				})
 			).catch(error => {

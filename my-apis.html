@@ -649,7 +649,7 @@
 								</div>
 							</div>
 							<div v-bind:id="'license'+index" class="collapse field-tabs field-level-1">
-								<div class="field-header text-body row brd-t-0 brd-b">
+								<div class="px-3">
 									<div class="small">
 										<h6 class="field-header text-body row brd-b">SLA</h6>
 										<h6 class="mt-2">
@@ -1438,6 +1438,8 @@
 			<button type="button"><i class="fas fa-ellipsis-h"></i></button>
 			<ul class="dropdown-menu dropdown-menu-right" role="menu" data-dropdown-in="slideInRight" data-dropdown-out="slideOutRight">
 				<li><a href="#" v-on:click="$parent.selectApi(api, 'edit')"><i class="fas fa-edit"></i>Edit</a></li>
+				<li v-if="$root.abyssSandbox"><a href="#" v-on:click="$parent.validateOas(api.openapidocument, true)"><i class="fas fa-check"></i>Validate openapidocument</a></li>
+				<li v-if="$root.abyssSandbox"><a href="#" v-on:click="$parent.validateOas(api.extendeddocument, true)"><i class="fas fa-check"></i>Validate extendeddocument</a></li>
 				<li v-if="!api.isproxyapi"><a href="#" v-on:click="$parent.createProxy(api)"><i class="fas fa-code-branch"></i>Create Proxy</a></li>
 				<li><a href="#" v-on:click="previewApi(api)"><i class="fas fa-file-alt"></i>Preview</a></li>
 				<li class="dropdown-header">ENVIRONMENT</li>

@@ -87,7 +87,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 				.then(response => {
 					console.log(response);
 					if (response.data != null) {
-						this.directoryTypes = response.data.filter( (item) => item.isdeleted == false );
+						// this.directoryTypes = response.data.filter( (item) => item.isdeleted == false );
+						this.directoryTypes = response.data;
 					} else {
 						this.directoryTypes = [];
 					}

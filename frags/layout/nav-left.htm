@@ -29,12 +29,6 @@
 			<li>
 				<a href="/abyss/my-policies"><i class="fas fa-fw fa-file-powerpoint"></i><span class="right-nav-text">My Policies</span></a>
 			</li>
-			<!-- <li>
-				<a href="#"><i class="fas fa-fw fa-tags"></i><span class="right-nav-text">Plans</span></a>
-			</li> -->
-			<li>
-				<a href="#"><i class="fas fa-fw fa-newspaper"></i><span class="right-nav-text">Subscriptions</span></a>
-			</li>
 			<li>
 				<a href="/abyss/explore" class="js-collapse-open"><i class="fas fa-fw fa-globe"></i><span class="right-nav-text">Explore</span></a>
 				<button type="button" data-toggle="collapse" data-target="#apiTax" aria-controls="apiTax" class="nav-caret" v-if="pageCurrent == 'explore'"></button>
@@ -46,7 +40,7 @@
 				<span>ADMIN</span><i class="fas fa-fw fa-ellipsis-h"></i>
 			</li>
 			<li>
-				<a href="#" class="nav-caret" data-toggle="collapse" data-target="#id_mng">Identity Management</a>
+				<a href="#" class="nav-caret" data-toggle="collapse" data-target="#id_mng"><i class="fas fa-fw fa-address-card"></i><span class="right-nav-text">Identity Management</span></a>
 				<ul id="id_mng" class="collapse collapse-level-2">
 					<li>
 						<a href="/abyss/identity-managers">Administer Identity Managers</a>
@@ -65,7 +59,7 @@
 				</ul>
 			</li>
 			<li>
-				<a href="#" class="nav-caret" data-toggle="collapse" data-target="#ac_mng">Access Management</a>
+				<a href="#" class="nav-caret" data-toggle="collapse" data-target="#ac_mng"><i class="fas fa-fw fa-archway"></i><span class="right-nav-text">Access Management</span></a>
 				<ul id="ac_mng" class="collapse collapse-level-2">
 					<li>
 						<a href="/abyss/access-managers">Administer Access Managers</a>
@@ -75,14 +69,6 @@
 					</li>
 				</ul>
 			</li>
-			<!-- <li v-if="pageCurrent == 'my-apis'">
-				<a href="#" class="nav-caret" data-toggle="collapse" data-target="#platform_dr" aria-controls="platform_dr"><i class="fas fa-fw fa-file"></i><span class="right-nav-text">Platform APIs</span></a>
-				<ul id="platform_dr" class="collapse">
-					<li v-for="(y, index) in abyssYamlList"><a href="#" :class="y.css" v-on:click="$refs.refMyApis.loadFromUrlSchema(y.yurl, true)">{{y.yaml}}</a>
-						<a :href="y.aurl" target="_blank" class="nav-caret-sm"></a>
-					</li>
-				</ul>
-			</li> -->
 			<li v-if="pageCurrent == 'my-apis'">
 				<a href="#" class="nav-caret" data-toggle="collapse" data-target="#platform_dr" aria-controls="platform_dr"><i class="fas fa-fw fa-file"></i><span class="right-nav-text">Platform APIs</span></a>
 				<ul id="platform_dr" class="collapse">

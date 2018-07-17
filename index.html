@@ -1,31 +1,106 @@
 ﻿<!DOCTYPE html>
-<html class="vs-index" lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:v-bind="http://www.w3.org/1999/xhtml">
-<head th:replace="webroot/frags/layout/head.htm :: header">
+<html class="vs-index" lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:include="webroot/frags/layout/head.htm :: header">
+<script src="/dist/js/lib/jquery.min.js"></script>
+<script src="/dist/js/lib/thymus.min.js" id="thymus"
+	data-thx-base-path="." data-thx-frag-extension=".htm"
+	data-thx-head-frag="th:include=webroot/frags/layout/head.htm :: header"
+	data-thx-preload-js="/dist/js/loader.js"
+	data-thx-onfrags="fragsListener();" data-thx-onfrag="fragListener()"></script>
 </head>
 <body>
 <div id="portal" class="wrapper" v-bind:class="pageClass">
 	<div th:replace="webroot/frags/layout/navs.htm :: navs"></div>
 	<main class="page-wrapper">
 	<index inline-template ref="refPage" v-on:set-state="setState" v-on:set-page="setPage" v-bind:root-state="rootState" v-if="!$root.isLoading">
-		<!-- <div class="columns"> -->
-			<!-- <section class="column column-main column-main-fixed"> -->
-				<!-- <div class="d-flex align-items-center w-100 h-100 text-center justify-content-center">
-					<h1 th:text="'Welcome ' + ${context.get('user.name')}">Welcome</h1>
-				</div> -->
-			<!-- </section> -->
-		<!-- </div> -->
-		<!--  v-if="!api.isproxyapi" -->
-		<section class="xxx">
+		<!-- <section class="xxx" v-if="!isLoading"> -->
+		<section class="xxx" v-if="!isLoading">
 			<transition name="fade">
 			<div th:replace="webroot/frags/api/api-preview.htm :: apiPreview"></div>
 			</transition>
-			<!-- <api-list v-for="(api, index) in sortByNested(sortApi, apiList)" :api="api" :lindex="index" :key="api.uuid" inline-template class="fol-sm-6 fol-md-4 fol-lg-4 fol-xl-3 fol-xlm-3 fol-xlg-3 card-item">
-				<div v-on:click="$parent.selectApi(api, 'preview')" th:include="webroot/frags/api/api-preview.htm :: apiList"></div>
-			</api-list> -->
+			<transition name="fade">
+			<div th:replace="webroot/frags/api/app-preview.htm :: appPreview"></div>
+			</transition>
+
 			<div class="fow cards justify-content-center">
-				<api-list v-for="(api, index) in sortByNested(sortApi, apiList)" :api="api" :lindex="index" :key="api.uuid" inline-template>
-					<div th:replace="webroot/frags/api/api-preview.htm :: apiList"></div>
-				</api-list>
+				<div class="fol-sm-6 fol-xlm-4 fol-xll-3 p-3 card-item">
+					<div class="card">
+						<div class="card-scroll">
+							<div class="nicescroll-bar">
+								<div class="fow m-0 pt-3 justify-content-center">
+									<div class="fol">
+										<div class="bg-pink dash-circle d-inline-block txt-white text-center p-3 float-right">
+											My<br>Subscribers
+											<h1 class="m-0">{{mySubscribers}}</h1>
+										</div>
+									</div>
+									<div class="fol">
+										<div class="bg-cyan dash-circle d-inline-block txt-white text-center p-3">
+											My<br>Subscriptions
+											<h1 class="m-0">{{mySubscriptions}}</h1>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="fol-sm-6 fol-xlm-6 fol-xll-6 p-3 card-item">
+					<div class="card">
+						<div class="card-title"><h6>My APPS</h6></div>
+						<div class="card-scroll">
+							<div class="nicescroll-bar">
+								<div v-for="(app, index) in sortByNested(sortApp, $root.appList)" v-if="app.subscriptions" class="brd-b brd-0-last field-controls">
+									<a href="#" class="nav-link d-block" v-on:click="getMyAppDetail(app,index,true);">
+										<div class="">										
+											<i class="fas fa-check-circle txt-green" title="Active" v-if="!app.isdeleted"></i>
+											<i class="fas fa-times-circle txt-red" title="Deleted" v-if="app.isdeleted"></i>
+											<strong>{{app.firstname}}</strong>
+										</div>
+										<div>
+											<div class="d-flex text-uppercase float-right small text-muted">
+												<span v-if="!app.isdeleted" :title="app.updated | formatDateTime">
+													{{app.created | formatDateTime}}
+												</span>
+												<span class="ml-auto text-right" v-if="app.isdeleted">
+													{{app.deleted | formatDateTime}}
+												</span>
+											</div>
+										</div>
+										<div v-if="app.contracts"><small class="text-uppercase">Subscriptions:</small> <strong class="txt-black">{{app.contracts.length}}</strong></div>
+										<code class="d-block txt-line small txt-blue"><small>{{app.uuid}}</small></code>
+									</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="fol-sm-6 fol-xlm-4 fol-xll-3 p-3 card-item">
+					<div class="card">
+						<div class="card-title"><h6>My Proxy APIs</h6></div>
+						<div class="card-scroll">
+							<div class="nicescroll-bar">
+								<api-list v-for="(api, index) in sortByNested(sortProxy, myProxyApiList)" :api="api" :index="index" :key="api.uuid" inline-template>
+									<div th:replace="webroot/frags/api/api-preview.htm :: apiDash"></div>
+								</api-list>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="fol-sm-6 fol-xlm-4 fol-xll-3 p-3 card-item">
+					<div class="card">
+						<div class="card-title"><h6>My Business APIs</h6></div>
+						<div class="card-scroll">
+							<div class="nicescroll-bar">
+								<api-list v-for="(api, index) in sortByNested(sortApi, myBusinessApiList)" :api="api" :index="index" :key="api.uuid" v-if="api.proxies.length > 0" inline-template>
+									<div th:replace="webroot/frags/api/api-preview.htm :: apiDash"></div>
+								</api-list>
+							</div>
+						</div>
+					</div>
+				</div>
+
 			</div>
 		</section>
 	</index>

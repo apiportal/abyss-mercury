@@ -196,7 +196,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 				.then(response => {
 					console.log(response);
 					if (response.data != null) {
-						this.groupOptions = response.data.filter( (item) => item.isdeleted == false );;
+						this.groupOptions = response.data.filter( (item) => item.isdeleted == false );
 					} else {
 						this.groupOptions = [];
 					}

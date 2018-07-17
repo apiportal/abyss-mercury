@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div class="preview-container" v-if="$root.rootState == 'previewapp'" th:fragment="appPreview">
+	<div class="preview-overlay" v-on:click="cancelPreviewApp()"></div>
+	<div class="card preview-item preview-app">
+		<div class="fow m-0">
+			<div class="fol-12 p-0" v-if="app.contracts.length > 0">
+				<button type="button" class="close" v-on:click="cancelPreviewApp()">×</button>
+				<h5 class="mb-0 py-2 px-3 brd-b">{{app.firstname}}</h5>
+				<div class="preview-item-inner">
+					<div class="nicescroll-bar">
+						<div v-if="app.contracts" v-for="(con,index) in app.contracts" class="brd-b brd-0-last my-app-list px-3" v-bind:class="{'api-unsubscribed': con.isdeleted}">
+							<div class="fow">
+								<div class="fol-sm-4 p-0 thumb">
+									<api-list :api="con.api" :index="index" :key="con.api.uuid" v-if="con.api" inline-template>
+										<div th:replace="webroot/frags/api/api-preview.htm :: apiList"></div>
+									</api-list>
+									<div class="px-3 pb-3">
+										<button class="btn btn-sm btn-outline-purple btn-block" v-on:click="testApi(con.api.openapidocument);">Test API</button>
+									</div>
+								</div>
+								<div class="fol-sm-4 p-3 thumb brd-l brd-r">
+									<div th:replace="webroot/frags/api/api-preview-items.htm :: apiContract"></div>
+								</div>
+								<div class="fol-sm-4 p-0 thumb pb-1">
+									<div class="" v-for="(license, index) in con.license">
+										<div th:replace="webroot/frags/api/api-preview-items.htm :: apiLicense"></div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+</body>
+</html>

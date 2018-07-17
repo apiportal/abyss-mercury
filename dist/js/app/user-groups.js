@@ -93,7 +93,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 				.then(response => {
 					console.log(response);
 					if (response.data != null) {
-						this.userOptions = response.data.filter( (item) => item.isdeleted == false );;
+						this.userOptions = response.data.filter( (item) => item.isdeleted == false );
 					} else {
 						this.userOptions = [];
 					}

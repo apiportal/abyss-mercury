@@ -17,61 +17,100 @@
 			<transition name="fade">
 			<div th:replace="webroot/frags/api/api-preview.htm :: apiPreview"></div>
 			</transition>
-			<section class="column column-main column-main-fixed">
+			<section class="columnn column-main column-main-fixed">
 				<div class="column-main-fixed-overlay" v-if="rootState == 'add' || rootState == 'edit'" v-on:click="cancelApp()"></div>
 				<div class="nicescroll--bar">
-					<table class="table table-hover table-bordered table-edge">
-						<tr>
-							<th class="td-bool" v-bind:class="sort.order" v-on:click="sortList(sort, 'isactivated', Boolean)">Status</th>
-							<th class="td-name" v-bind:class="sort.order" v-on:click="sortList(sort, 'firstname', String)">App Name</th>
-							<th class="td-name" v-bind:class="sort.order" v-on:click="sortList(sort, 'uuid', String)">App Key</th>
-							<th class="td-name">Subscriptions</th>
-							<th class="td-datetime-x" v-bind:class="sort.order" v-on:click="sortList(sort, 'created', Date)">Created / Updated / Deleted</th>
-							<th class="td-action-1"></th>
-							<th class="td-action-1"></th>
-						</tr>
-						<tr v-for="(app, index) in sortBy(sort, appList)" v-bind:key="app.uuid" v-bind:class="{'active': isSelected(index)}">
-							<td class="text-center">
-								<i class="fas fa-circle" title="Not Activated" v-if="!app.isactivated"></i>
-								<i class="fas fa-check-circle txt-green" title="Activated" v-if="app.isactivated"></i>
-								<i class="fas fa-times-circle txt-red" title="Deleted" v-if="app.isdeleted"></i>
-							</td>
-							<td>{{ app.firstname }}<small class="d-block">{{app.lastname}}</small></td>
-							<td>
-								{{app.uuid}}
-							</td>
-							<td>
-								<div v-if="!isLoading" v-for="(per, index) in app.subscriptions" v-bind:key="per.uuid" :title="per.description">
-									{{per.permission}}
-									<div class="" :title="per.resource.description">
-										{{per.resource.resourcename}}
+					<div class="fow m-0 p-3 justify-content-center">
+						<article v-for="(app, index) in sortBy(sort, $root.appList)" v-bind:key="app.uuid" v-bind:class="{'active': isSelected(index)}" class="fol-sm-6 fol-md-4 fol-lg-4 fol-xl-3 fol-xlm-3 fol-xlg-3 thumb-3x card-item field-controls">
+							<div class="field-sum bg-white shadow-sm">
+								<a href="#" class="field-link app-collapse" data-toggle="collapse" v-bind:data-target="'#app'+index" v-bind:aria-controls="'app'+index" v-on:click="getMyAppDetail(app,index)">
+									<div class="h6">										
+									<i class="fas fa-check-circle txt-green" title="Active" v-if="!app.isdeleted"></i>
+									<i class="fas fa-times-circle txt-red" title="Deleted" v-if="app.isdeleted"></i>
+										{{app.firstname}}
+										<small class="d-block">{{app.lastname}}</small>
 									</div>
-									<code class="d-block small txt-purple"><small>{{per.resource.resourcerefid}}</small></code>
+									<div>
+										<div class="d-flex text-uppercase float-right small text-muted">
+											<span v-if="!app.isdeleted" :title="app.updated | formatDateTime">
+												{{app.created | formatDateTime}}
+											</span>
+											<span class="ml-auto text-right" v-if="app.isdeleted">
+												{{app.deleted | formatDateTime}}
+											</span>
+										</div>
+									</div>
+									<div v-if="app.contracts"><small class="text-uppercase">Subscriptions:</small> <strong class="txt-black">{{app.contracts.length}}</strong></div>
+									<code class="d-block txt-line small txt-blue"><small>{{app.uuid}}</small></code>
+								</a>
+								<div class="ficon-actions dropdown dropdown-hover">
+									<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
+									<ul class="dropdown-menu dropdown-menu-right" role="menu">
+										<li><a title="EDIT APP" v-on:click="$emit('set-state', 'edit'); selectApp(app, index);"><i class="fa fa-plus"></i> EDIT APP</a></li>
+										<li><a class="" title="DELETE APP" v-on:click="deleteApp(app, index)"><i class="fa fa-trash-alt"></i> DELETE APP</a></li>
+									</ul>
 								</div>
-							</td>
-							<td>
-								<div>
-									<strong class="small">CREATED:</strong>
-									<small>{{app.created | formatDateTime}}</small>
+							</div>
+							<div v-bind:id="'app'+index" class="collapse field-acc pb-0 bg-white shadow-sm">
+								
+								<div v-if="app.contracts" v-for="(con,index) in app.contracts" class="brd-b brd-0-last my-app-list" v-bind:class="{'api-unsubscribed': con.isdeleted}">
+									<div class="fow">
+										<div class="fol-sm-4 p-0">
+											<api-list :api="con.api" :index="index" :key="con.api.uuid" v-if="con.api" inline-template>
+												<div th:replace="webroot/frags/api/api-preview.htm :: apiList"></div>
+											</api-list>
+											<div class="px-3 pb-3">
+												<button class="btn btn-sm btn-outline-purple btn-block" v-on:click="testApi(con.api.openapidocument);">Test API</button>
+											</div>
+										</div>
+										<div class="fol-sm-4 p-3 brd-l brd-r">
+											<div th:replace="webroot/frags/api/api-preview-items.htm :: apiContract"></div>
+										</div>
+										<div class="fol-sm-4 p-0 pb-1">
+											<div class="" v-for="(license, index) in con.license">
+												<div th:replace="webroot/frags/api/api-preview-items.htm :: apiLicense"></div>
+											</div>
+										</div>
+									</div>
 								</div>
-								<div>
-									<strong class="small">UPDATED:</strong>
-									<small>{{app.updated | formatDateTime}}</small>
-								</div>
-								<div v-if="app.isdeleted">
-									<strong class="small">DELETED:</strong>
-									<small>{{app.deleted | formatDateTime}}</small>
-								</div>
-							</td>
-							<td class="td-action-1">
-								<a href="#" class="btn btn-xl txt-link btn-square" title="EDIT APP" v-on:click="$emit('set-state', 'edit'); selectApp(app, index);"><i class="fas fa-edit"></i></a>
-							</td>
-							<td class="td-action-1">
-								<a href="#" class="btn btn-xl txt-link txt-grey btn-square" title="DELETE APP" v-on:click="deleteApp(app, index)"><i class="fas fa-trash-alt"></i></a>
-							</td>
-						</tr>
-					</table>
-					<div th:replace="webroot/frags/layout/pagination.htm :: pagination"></div>
+
+								<!-- <div v-if="!isLoading && app.subscriptions.length > 0" v-for="(per, index) in app.subscriptions" v-bind:key="per.uuid" :title="per.description" class="brd-b brd-0-last my-app-list">
+									<div class="fow">
+										<div class="fol-sm-4 p-0">
+											<api-list :api="per.api" :index="index" :key="per.api.uuid" v-if="per.api" inline-template>
+												<div th:replace="webroot/frags/api/api-preview.htm :: apiList"></div>
+											</api-list>
+											<div class="px-3 pb-3">
+												<button class="btn btn-sm btn-outline-blue btn-block" v-on:click="testApi(per.api.openapidocument);">Test API</button>
+											</div>
+										</div>
+										<div class="fol-sm-4 px-3 py-2 brd-l brd-r">
+											<div class="fow form-row small">
+												<p class="fol-12">{{per.permission}}</p>
+												<p class="fol-12">
+													<code class="d-block small txt-purple"><small>{{per.uuid}}</small></code>
+													<code class="d-block small txt-orange"><small>{{per.resource.uuid}}</small></code>
+												</p>
+												<p class="fol-6"><strong class="lbl">Start Date</strong> {{per.effectivestartdate | formatDate}}</p>
+												<p class="fol-6"><strong class="lbl">End Date</strong> {{per.effectiveenddate | formatDate}}</p>
+												<p class="fol-12">{{per.contract.name}}</p>
+												<p class="fol-12"><code class="d-block small txt-purple"><small>{{per.contract.uuid}}</small></code></p>
+												<p class="fol-6"><strong class="lbl">environment</strong> {{per.contract.environment}}</p>
+												<p class="fol-6"><strong class="lbl">contract state</strong> {{per.contract.contractStateName}}</p>
+												<p class="fol-6"><strong class="lbl">status</strong> {{per.contract.status}}</p>
+											</div>
+										</div>
+										<div class="fol-sm-4 p-0 pb-1">
+											<div class="" v-for="(license, index) in per.contract.license">
+												<div th:replace="webroot/frags/api/api-license.htm :: apiLicense"></div>
+											</div>
+										</div>
+									</div>
+								</div> -->
+
+							</div>
+						</article>
+					</div>
 				</div>
 			</section>
 			<aside class="column column-aside add-column">
@@ -151,25 +190,8 @@
 					</div>
 				</div>
 			</aside>
-			<aside class="column column-aside permissions-column">
-				<div class="nicescroll-bar">
-					<div class="clearfix brd-b column-header column-min-button">
-						<h5 class="column-header-title">Subscriptions</h5>
-					</div>
-					<div class="p-3">
-						<div class="" v-for="(per, index) in app.subscriptions" v-bind:key="per.uuid" :title="per.description">
-							{{per.permission}}
-							<div class="" :title="per.resource.description">
-								{{per.resource.resourcename}}
-							</div>
-							<code class="d-block small txt-purple"><small>{{per.resource.resourcerefid}}</small></code>
-							<api-list :api="per.api" :index="index" :key="per.api.uuid" v-if="per.api" inline-template>
-								<div th:replace="webroot/frags/api/api-preview.htm :: apiList"></div>
-							</api-list>
-						</div>
-					</div>
-				</div>
-			</aside>
+			<div th:replace="webroot/frags/api/api-preview-items.htm :: apiTest"></div>
+			<div th:replace="webroot/frags/api/api-preview-items.htm :: apiLegal"></div>
 			<div class="btn-float-br btn-float-under">
 				<!-- <button class="btn btn-xl btn-red btn-circle" v-on:click="fixRel()"><i class="fas fa-globe"></i></button> -->
 				<button class="btn btn-xl btn-green btn-circle" v-on:click="$emit('set-state', 'add', 'init')" title="ADD NEW APP "><i class="fas fa-plus"></i></button>

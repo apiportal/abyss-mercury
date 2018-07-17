@@ -17,37 +17,6 @@ define(['global'], function(abyss){
 	var abyssYamlLocation = abyssProtocol + '://' + abyssHost + ':' + abyssYamlPort + '/' + abyssYamlPath;
 	// https://dev2.apiportal.com/abyss/oapi/
 	// https://dev2.apiportal.com/abyss/openapi/xxx.yaml
-	var abyssYamlList = [
-		{"yaml":"Api", "path":"apis", "css": ""},
-		{"yaml":"ApiApiCategory", "path":"api-api-categories", "css": ""},
-		{"yaml":"ApiApiGroup", "path":"api-api-groups", "css": ""},
-		{"yaml":"ApiApiTag", "path":"api-api-tags", "css": ""},
-		{"yaml":"ApiCategory", "path":"api-categories", "css": ""},
-		{"yaml":"ApiGroup", "path":"api-groups", "css": ""},
-		// {"yaml":"ApiLicense", "path":"api-license", "css": ""},
-		{"yaml":"ApisOfSubject", "path":"is/subjects/9820d2aa-eb02-4a58-8cc5-8b9a89504df9", "css": "txt-red"},
-		{"yaml":"ApiState", "path":"api-states", "css": ""},
-		{"yaml":"ApiTag", "path":"api-tags", "css": ""},
-		{"yaml":"ApiVisibilityType", "path":"api-visibility-types", "css": ""},
-		{"yaml":"Contract", "path":"contracts", "css": "txt-red"},
-		{"yaml":"ContractState", "path":"contract-states", "css": "txt-red"},
-		{"yaml":"License", "path":"licenses", "css": ""},
-		{"yaml":"Organization", "path":"organizations", "css": ""},
-		{"yaml":"Policy", "path":"policies", "css": "txt-red"},
-		{"yaml":"PolicyType", "path":"policy-types", "css": "txt-red"},
-		{"yaml":"Resource", "path":"resources", "css": "txt-red"},
-		{"yaml":"ResourceAction", "path":"resource-actions", "css": "txt-red"},
-		{"yaml":"ResourceType", "path":"resource-types", "css": "txt-red"},
-		{"yaml":"Subject", "path":"subjects", "css": ""},
-		{"yaml":"SubjectActivation", "path":"subject-activations", "css": "txt-red"},
-		{"yaml":"SubjectApp", "path":"subject-apps", "css": "txt-red"},
-		{"yaml":"SubjectDirectory", "path":"subject-directories", "css": ""},
-		{"yaml":"SubjectDirectoryType", "path":"subject-directory-types", "css": ""},
-		{"yaml":"SubjectGroup", "path":"subject-groups", "css": ""},
-		{"yaml":"SubjectMembership", "path":"subject-memberships", "css": ""},
-		{"yaml":"SubjectPermission", "path":"subject-permissions", "css": ""},
-		{"yaml":"SubjectType", "path":"subject-types", "css": ""}
-	];
 	var abyssDataList = {
 		// https://dev2.apiportal.com/abyss/openapi/Util.yaml
 		api_yaml_list: '/yaml-files',
@@ -83,6 +52,7 @@ define(['global'], function(abyss){
 		resources_organization: '/resources/organization/{uuid}', // uuid ABYSSP-244
 		// https://dev2.apiportal.com/abyss/openapi/ResourceAction.yaml
 		resource_actions: '/resource-actions/', // uuid
+		resource_actions_type: '/resource-actions/type/', //2DO uuid ABYSSP-263
 		// https://dev2.apiportal.com/abyss/openapi/ResourceType.yaml
 		resource_types: '/resource-types/', // uuid
 		// https://dev2.apiportal.com/abyss/openapi/Api.yaml
@@ -153,6 +123,10 @@ define(['global'], function(abyss){
 		contracts_license: '/contracts/license/',
 		// https://dev2.apiportal.com/abyss/openapi/ContractState.yaml
 		contract_states: '/contract-states',
+		// https://dev2.apiportal.com/abyss/openapi/ResourceAccessToken.yaml
+		resource_access_tokens: '/resource-access-tokens/',
+		resource_access_tokens_permission: '/resource-access-tokens/subject-permission/', //uuid
+		validate_oas: '/validate-oas',
 	};
 	var abyssJsonList = {
 		index: '/index.json',
@@ -184,10 +158,6 @@ define(['global'], function(abyss){
 	if (isAbyssSandbox === true) {
 		abyssYamlLocation = '/000?file=' + abyssYamlLocation;
 	}
-	abyssYamlList.forEach((value, key) => {
-		value.yurl = abyssYamlLocation + '/' + value.yaml + '.yaml';
-		value.aurl = abyssLocation + '/' + value.path + '/';
-	});
 	if (isAbyssSandbox === true) {
 		// abyssDataList.policy_types = '/data/POLICYTYPES.json';
 		// abyssDataList.policies = '/data/POLICIES.json';
@@ -200,7 +170,6 @@ define(['global'], function(abyss){
 		version: 'V.0.0',
 		thy: true,
 		abyssVersion: abyssVersion,
-		abyssYamlList: abyssYamlList,
 		isAbyssSandbox: isAbyssSandbox,
 		abyssLocation: abyssLocation,
 		abyssYamlLocation: abyssYamlLocation,

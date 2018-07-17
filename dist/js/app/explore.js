@@ -53,6 +53,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select'], funct
 				apiList: [],
 				subjectPermissionList: [],
 				apiOptions: [],
+				appList: [],
 
 				end: []
 			};
@@ -63,7 +64,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select'], funct
 				axios.get(this.ajaxUrl + '?likename=' + search, this.ajaxHeaders)
 				.then((response) => {
 					if (response.data != null) {
-						this.apiOptions = response.data.filter( (item) => item.isdeleted == false && item.apivisibilityid == 'e63c2874-aa12-433c-9dcf-65c1e8738a14' );
+						// this.apiOptions = response.data.filter( (item) => item.isdeleted == false && item.apivisibilityid == 'e63c2874-aa12-433c-9dcf-65c1e8738a14' );
+						this.apiOptions = response.data.filter( (item) => item.apivisibilityid == 'e63c2874-aa12-433c-9dcf-65c1e8738a14' );
 						this.apiOptions.forEach((value, key) => {
 							Vue.set(value, 'name', value.openapidocument.info.title);
 						});
@@ -97,7 +99,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select'], funct
 					axios.get(this.ajaxUrl),
 				]).then(
 					axios.spread((api_list) => {
-						this.apiList = api_list.data.filter( (item) => item.isdeleted == false && item.apivisibilityid == 'e63c2874-aa12-433c-9dcf-65c1e8738a14' );
+						// this.apiList = api_list.data.filter( (item) => item.isdeleted == false && item.apivisibilityid == 'e63c2874-aa12-433c-9dcf-65c1e8738a14' );
+						this.apiList = api_list.data.filter( (item) => item.apivisibilityid == 'e63c2874-aa12-433c-9dcf-65c1e8738a14' );
 						this.paginate = this.makePaginate(api_list.data);
 						this.preload();
 					})
