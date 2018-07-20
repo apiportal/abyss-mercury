@@ -274,10 +274,12 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 				axios.get(abyss.ajax.subject_directories_list),
 				axios.get(abyss.ajax.user_list),
 				axios.get(abyss.ajax.subject_memberships),
+				axios.get(abyss.ajax.organizations_list),
 			]).then(
-				axios.spread((subject_directories_list, user_list, subject_memberships) => {
+				axios.spread((subject_directories_list, user_list, subject_memberships, organizations_list) => {
 					this.directoryOptions = subject_directories_list.data.filter( (item) => item.isdeleted == false );
-					this.orgOptions = this.$root.rootData.user.organizations.filter( (item) => item.isdeleted == false );
+					// this.orgOptions = this.$root.rootData.user.organizations.filter( (item) => item.isdeleted == false );
+					this.orgOptions = organizations_list.data.filter( (item) => item.isdeleted == false );
 					this.userList = user_list.data.filter( (item) => item.isdeleted == false );
 					this.memberOptions = subject_memberships.data.filter( (item) => item.isdeleted == false );
 

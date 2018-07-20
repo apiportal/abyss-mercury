@@ -247,14 +247,16 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 				axios.get(abyss.ajax.subject_types),
 				axios.get(this.resourceEndpoint()),
 				axios.get(this.subjectEndpoint()),
+				axios.get(abyss.ajax.organizations_list),
 			]).then(
-				axios.spread((access_managers, access_manager_types, subject_types, resources, subjects) => {
+				axios.spread((access_managers, access_manager_types, subject_types, resources, subjects, organizations_list) => {
 					this.accessManagerTypes = access_manager_types.data;
 					this.subjectTypes = subject_types.data;
 					this.accessManagerOptions = access_managers.data;
 					this.resourceOptions = resources.data;
 					this.subjectOptions = subjects.data;
-					this.orgOptions = this.$root.rootData.user.organizations;
+					// this.orgOptions = this.$root.rootData.user.organizations;
+					this.orgOptions = organizations_list.data;
 					this.resourceActionOptions = this.$root.rootData.resourceActions;
 					this.getPage(1);
 				})
