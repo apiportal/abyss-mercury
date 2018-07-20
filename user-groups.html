@@ -45,8 +45,9 @@
 							<td>
 								<div class="d-block">{{group.groupname}}</div>
 								<small class="d-block">{{group.description}}</small>
+								<code class="d-block small txt-purple"><small>{{group.uuid}}</small></code>
 							</td>
-							<td>{{group.userCount}}</td>
+							<td class="text-center">{{group.userCount}}</td>
 							<td>
 								<div>
 									<strong class="small">CREATED:</strong>
@@ -167,17 +168,23 @@
 					</div>
 					<div class="p-3">
 						<div class="form-group v-select-color-purple">
-							<v-select label="subjectname" multiple :filterable="false" :options="userOptions" @search="getUserOptions" v-model="group.users">
+							<v-select label="subjectname" multiple :filterable="false" :options="userOptions" @search="getUserOptions" v-model="group.users" :on-change="setGroupUsers">
 								<span slot="no-options"></span>
 								<template slot="option" slot-scope="option">
-									<strong>{{ option.firstname }} {{ option.lastname }}</strong>
-									<div>{{ option.subjectname }}</div>
-									<small>{{ option.email }}</small>
+									<div :class="{'text-muted': option.isdeleted}">
+										<strong>{{ option.firstname }} {{ option.lastname }}</strong>
+										<div>{{ option.subjectname }}</div>
+										<small>{{ option.email }}</small>
+										<code class="d-block small"><small>{{option.uuid}}</small></code>
+									</div>
 								</template>
 								<template slot="selected-option" slot-scope="option">
-									<strong>{{ option.firstname }} {{ option.lastname }}</strong>
-									<div>{{ option.subjectname }}</div>
-									<small>{{ option.email }}</small>
+									<div :class="{'text-muted': option.isdeleted}">
+										<strong>{{ option.firstname }} {{ option.lastname }}</strong>
+										<div>{{ option.subjectname }}</div>
+										<small>{{ option.email }}</small>
+										<code class="d-block small"><small>{{option.uuid}}</small></code>
+									</div>
 								</template>
 							</v-select>
 						</div>

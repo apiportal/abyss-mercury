@@ -304,6 +304,17 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 			deleteUser(item) {
 				var r = confirm('Are you sure to delete?');
 				if (r == true) {
+					console.log("item.membershiplist: ", item.membershiplist);
+					if (item.membershiplist.length > 0) {
+						item.membershiplist.forEach((value, key) => {
+							console.log("value.uuid: ", value.uuid);
+							axios.delete(abyss.ajax.subject_memberships + '/' + value.uuid, value).then(response => {
+								console.log("DELETE subject_memberships response: ", response);
+							}, error => {
+								this.handleError(error);
+							});
+						});
+					}
 					axios.delete(this.ajaxUrl + '/' + item.uuid, item, this.ajaxHeaders).then(response => {
 						item.isdeleted = true;
 						console.log("DELETE user response: ", response);

@@ -49,6 +49,10 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 				orgOptions: [],
 				directoryOptions: [],
 				memberOptions: [],
+
+				memberAdd: [],
+				memberDelete: [],
+
 				date: null,
 				dateConfig: {
 					format: 'YYYY-MM-DD HH:mm:ss',
@@ -145,7 +149,31 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 					this.handleError(error);
 				});
 			},
+			setGroupUsers(filter) {
+				console.log("this.group.users: ", this.group.users);
+				if (filter && filter.length != 0) {
+					var itemArr = [];
+					filter.forEach((value, key) => {
+						console.log("value: ", value);
+						var newObj = {
+							"organizationid": value.organizationid,
+							"crudsubjectid": this.$root.rootData.user.uuid,
+							"subjectid": value.uuid,
+							"subjectgroupid": this.group.uuid
+						};
+						itemArr.push(newObj);
+					});
+					console.log("itemArr: ", itemArr);
+					console.log("this.group.membershiplist: ", this.group.membershiplist);
+					this.memberDelete = _.reject(this.group.membershiplist, (v) => _.includes( itemArr.map(e => e.subjectid), v.subjectid));
+					console.log("this.memberDelete: ", this.memberDelete);
+					this.memberAdd = _.reject(itemArr, (v) => _.includes( this.group.membershiplist.map(e => e.subjectid), v.subjectid));
+					console.log("this.memberAdd: ", this.memberAdd);
+				}
+			},
 			cancelGroup() {
+				this.memberDelete = [];
+				this.memberAdd = [];
 				var index = this.groupList.indexOf(this.group);
 				this.groupList[index] = this.selectedGroup;
 				this.group = _.cloneDeep(this.newGroup);
@@ -176,6 +204,17 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 			deleteGroup(item) {
 				var r = confirm('Are you sure to delete?');
 				if (r == true) {
+					console.log("item.membershiplist: ", item.membershiplist);
+					if (item.membershiplist.length > 0) {
+						item.membershiplist.forEach((value, key) => {
+							console.log("value.uuid: ", value.uuid);
+							axios.delete(abyss.ajax.subject_memberships + '/' + value.uuid, value).then(response => {
+								console.log("DELETE subject_memberships response: ", response);
+							}, error => {
+								this.handleError(error);
+							});
+						});
+					}
 					axios.delete(this.ajaxUrl + '/' + item.uuid, item, this.ajaxHeaders).then(response => {
 						item.isdeleted = true;
 						console.log("DELETE group response: ", response);
@@ -198,6 +237,36 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 				item.effectiveenddate = moment(this.group.effectiveenddate).toISOString();
 				return item;
 			},
+			addDeleteGroupUsers() {
+				if (this.memberAdd.length > 0) {
+					console.log("ADD: ");
+					axios.post(abyss.ajax.subject_memberships, this.memberAdd, this.ajaxHeaders).then(response => {
+						console.log("response: ", response);
+						if (response.data[0].status != 500 ) {
+							console.log("memberAdd response.data[0].response: ", response.data[0].response);
+						}
+					}, error => {
+						this.handleError(error);
+					});
+				}
+				if (this.memberDelete.length > 0) {
+					console.log("DELETE: ");
+					this.memberDelete.forEach((value, key) => {
+						var obj = _.cloneDeep(value);
+						Vue.delete(obj, 'uuid');
+						Vue.delete(obj, 'created');
+						Vue.delete(obj, 'updated');
+						Vue.delete(obj, 'deleted');
+						Vue.delete(obj, 'isdeleted');
+						Vue.delete(obj, 'isactivated');
+						axios.delete(abyss.ajax.subject_memberships + '/' +value.uuid, obj, this.ajaxHeaders).then(response => {
+							console.log("DELETE License response: ", response);
+						}, error => {
+							this.handleError(error);
+						});
+					});
+				}
+			},
 			groupAction(act) {
 				this.$validator.validateAll().then((result) => {
 					console.log("result: ", result);
@@ -211,6 +280,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 								console.log("addGroup response: ", response);
 								if (response.data[0].status != 500 ) {
 									this.groupList.push(response.data[0].response);
+									this.addDeleteGroupUsers();
 									this.$emit('set-state', 'init');
 									this.group = _.cloneDeep(this.newGroup);
 								}
@@ -221,6 +291,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 						if (act == 'edit') {
 							this.updateItem(this.ajaxUrl + '/' + this.group.uuid, this.deleteProps(), this.ajaxHeaders, this.groupList).then(response => {
 								console.log("editGroup response: ", response);
+								this.addDeleteGroupUsers();
 								// console.log("this.group: ", JSON.stringify(this.group, null, '\t') );
 								this.$emit('set-state', 'init');
 								this.group = _.cloneDeep(this.newGroup);
@@ -238,11 +309,15 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 					// this.groupList = response.data;
 					this.groupList = _.map(response.data, o => _.extend({users: []}, o));
 					this.groupList.forEach((value, key) => {
-						var flt = this.memberOptions.filter((item) => item.subjectgroupid == value.uuid );
+						// var flt = this.memberOptions.filter((item) => item.subjectgroupid == value.uuid );
+						var flt = this.memberOptions.filter((item) => item.subjectgroupid == value.uuid && item.isdeleted == false );
 						// console.log("flt: ", flt);
-						var grpusr = _.filter(this.userList, (item) => _.find(flt, { subjectid: item.uuid }));
+						var grpusr = _.filter(this.userList, (item) => _.find(flt, { subjectid: item.uuid, isdeleted: false }));
 						// console.log("grpusr: ", grpusr);
-						value.users = grpusr;
+						Vue.set(value, 'membershiplist', flt);
+						Vue.set(value, 'users', grpusr);
+						Vue.set(value, 'userCount', grpusr.length);
+						// value.users = grpusr;
 					});
 					// 2DO append memberOptions.uuid
 					this.paginate = this.makePaginate(response.data);
