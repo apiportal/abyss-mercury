@@ -176,8 +176,8 @@
 						</div>
 						<div class="form-group d-flex justify-content-between">
 							<button type="button" class="btn btn-secondary btn-rounded" v-on:click="$emit('set-state', 'init'); cancelPermission()">CANCEL</button>
-							<button type="button" class="btn btn-primary btn-rounded" v-if="rootState == 'add'" v-on:click="permissonAction('add')">ADD</button>
-							<button type="button" class="btn btn-primary btn-rounded" v-if="rootState == 'edit'" v-on:click="permissonAction('edit')">SAVE</button>
+							<button type="button" class="btn btn-primary btn-rounded" v-if="rootState == 'add'" v-on:click="permissionAction('add')">ADD</button>
+							<button type="button" class="btn btn-primary btn-rounded" v-if="rootState == 'edit'" v-on:click="permissionAction('edit')">SAVE</button>
 						</div>
 					</div>
 				</div>

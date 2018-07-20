@@ -129,6 +129,12 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 				Vue.delete(item, 'updated');
 				Vue.delete(item, 'deleted');
 				Vue.delete(item, 'isdeleted');
+				Vue.delete(item, 'resource');
+				Vue.delete(item, 'accessManager');
+				Vue.delete(item, 'resourceAction');
+				Vue.delete(item, 'subject');
+				item.effectivestartdate = moment(item.effectivestartdate).toISOString();
+				item.effectiveenddate = moment(item.effectiveenddate).toISOString();
 				return item;
 			},
 			permissionAction(act) {
@@ -150,7 +156,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 							});
 						}
 						if (act == 'edit') {
-							this.updateItem(abyss.ajax.permission_list + this.permission.uuid, this.deleteProps(), this.ajaxHeaders, this.permissionList).then(response => {
+							this.updateItem(abyss.ajax.permission_list + '/' + this.permission.uuid, this.deleteProps(), this.ajaxHeaders, this.permissionList).then(response => {
 								console.log("editPermission response: ", response);
 								var item = response.data[0];
 								this.$emit('set-state', 'init');

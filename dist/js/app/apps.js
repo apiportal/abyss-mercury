@@ -336,6 +336,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 					}
 				});
 			},
+			//Subscription of Test App APP to Swagger Petstore 2 API
 			setAppSubsAndToken() {
 				var subscription = {
 					organizationid: this.$root.abyssOrgId,
@@ -344,7 +345,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 					description: 'Subscription of my own ' + this.app.firstname + ' APP',
 					effectivestartdate: moment().toISOString(),
 					effectiveenddate: moment().add(1, 'years').toISOString(),
-					subjectid: this.app.uuid,
+					subjectid: this.$root.rootData.user.uuid,
 					resourceid: this.app.resource.uuid,
 					resourceactionid: 'e085cb50-8a98-4511-bc8a-00edabbae8a9', // OWN_APP
 					accessmanagerid: '6223ebbe-b30f-4976-bcf9-364003142379',
