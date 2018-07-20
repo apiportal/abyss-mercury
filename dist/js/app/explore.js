@@ -27,8 +27,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select'], funct
 			this.apiOwner(this.api);
 		},
 	});
-// ■■■■■■■■ index ■■■■■■■■ //
-	Vue.component('index', {
+// ■■■■■■■■ explore ■■■■■■■■ //
+	Vue.component('explore', {
 		props: {
 			rootState: { type: String }
 		},

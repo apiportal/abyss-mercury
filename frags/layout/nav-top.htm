@@ -92,10 +92,10 @@
 					<a href="#" class="dropdown-toggle pr-0" data-toggle="dropdown"><img src="/dist/img/avatar.jpg" alt="user_auth" class="user-auth-img img-circle"/><span class="user-online-status"></span></a>
 					<ul class="dropdown-menu user-auth-dropdown" data-dropdown-in="flipInX" data-dropdown-out="flipOutX">
 						<li>
-							<a href="/abyss/change-password"><i class="fas fa-user"></i><span>Change Password</span></a>
+							<a href="#" v-on:click="$root.listOrganizations()" class="organizations_panel_btn"><i class="fas fa-building"></i><span>My Organizations</span></a>
 						</li>
 						<li>
-							<a href="#"><i class="fas fa-money-bill-alt"></i><span>my balance</span></a>
+							<a href="#" v-on:click="$root.editProfile()" class="profile_panel_btn"><i class="fas fa-user"></i><span>My Profile</span></a>
 						</li>
 						<li>
 							<a href="#"><i class="fas fa-envelope"></i><span>Inbox</span></a>
@@ -104,7 +104,7 @@
 							<a href="#" id="setting_panel_btn"><i class="fas fa-cog"></i><span>Settings</span></a>
 						</li>
 						<li class="divider"></li>
-						<li class="sub-menu dropdown-hover dropdown">
+						<!-- <li class="sub-menu dropdown-hover dropdown">
 							<a href="#" class="dropdown-toggle pr-0 level-2-drp"><i class="fas fa-check-circle txt-success"></i> available</a>
 							<ul class="dropdown-menu open-left-side">
 								<li>
@@ -117,6 +117,9 @@
 									<a href="#"><i class="fas fa-minus-circle txt-danger"></i><span>offline</span></a>
 								</li>
 							</ul>	
+						</li> -->
+						<li>
+							<a href="/abyss/change-password"><i class="fas fa-lock"></i><span>Change Password</span></a>
 						</li>
 						<li class="divider"></li>
 						<li>

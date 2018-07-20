@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <body>
-	<div th:fragment="navRight">
+	<div class="right-sidebars" th:fragment="navRight">
 		<div class="fixed-sidebar-right">
 			<ul class="right-sidebar">
 				<li>
@@ -394,6 +394,7 @@
 		</div>
 		<div class="setting-panel">
 			<ul class="right-sidebar nicescroll-bar pa-0">
+				<li><button type="button" class="close" id="setting_panel_btn">×</button><h5 class="mb-0 py-2 px-3">Settings</h5></li>
 				<li>
 					<ul class="nav nav-controls">
 						<li class="nav-item">
@@ -409,7 +410,74 @@
 				</li>
 			</ul>
 		</div>
-		<div class="right-sidebar-backdrop"></div>
+		<div class="organizations-panel">
+			<ul class="right-sidebar nicescroll-bar pa-0">
+				<li><button type="button" class="close organizations_panel_btn" v-on:click="$root.cancelRightSidebar()">×</button><h5 class="mb-0 py-2 px-3">Organizations</h5></li>
+				<li v-if="!$root.isLoading && showOrganizations">
+					<my-organizations v-if="org.organizationid == defaultOrganization.uuid" :key="org.uuid" v-for="(org,index) in sortByNested(sortOrg, $root.rootData.user.organizations)" :org="org" :index="index" :orgs="$root.rootData.user.organizations" :deforg="defaultOrganization" title="edit" col="root" inline-template>
+						<div class="field-controls">
+							<div th:replace="webroot/frags/layout/modal.htm :: organizations"></div>
+							<my-organizations v-if="sorg.organizationid == org.uuid" :key="sorg.uuid" v-for="(sorg,index) in $root.rootData.user.organizations" :org="sorg" :index="index" :orgs="$root.rootData.user.organizations" :deforg="deforg" title="edit" col="sub1" inline-template>
+								<div class="field-controls">
+									<div th:replace="webroot/frags/layout/modal.htm :: organizations"></div>
+									<my-organizations v-if="ssorg.organizationid == org.uuid" :key="ssorg.uuid" v-for="(ssorg,index) in $root.rootData.user.organizations" :org="ssorg" :index="index" :orgs="$root.rootData.user.organizations" :deforg="deforg" title="edit" col="sub2" inline-template>
+										<div class="field-controls">
+											<div th:replace="webroot/frags/layout/modal.htm :: organizations"></div>
+										</div>
+									</my-organizations>
+								</div>
+							</my-organizations>
+						</div>
+					</my-organizations>
+					<my-organizations v-for="(org,index) in newOrganization" :key="org.uuid" :org="org" :index="index" :orgs="$root.rootData.user.organizations" :deforg="defaultOrganization" title="add" col="add" inline-template>
+						<div class="field-controls">
+							<div th:replace="webroot/frags/layout/modal.htm :: organizations"></div>
+						</div>
+					</my-organizations>
+				</li>
+			</ul>
+		</div>
+		<div class="profile-panel">
+			<ul class="right-sidebar nicescroll-bar pa-0">
+				<li><button type="button" class="close profile_panel_btn" v-on:click="$root.cancelRightSidebar()">×</button><h5 class="mb-0 py-2 px-3">My Profile</h5></li>
+				<li v-if="!$root.isLoading && showProfile">
+					<div class="px-3 pt-3 brd-t">
+						<div class="form-group">
+							<label for="subjectname">UserName:</label>
+							<p>{{$root.rootData.user.subjectname}}</p>
+						</div>
+						<div class="form-group">
+							<label for="email">Email:</label>
+							<p>{{$root.rootData.user.email}}</p>
+						</div>
+						<div class="form-group" v-bind:class="{ 'has-error': errors.has('firstname') }">
+							<label for="firstname">First Name:</label>
+							<input type="text" name="firstname" id="firstname" v-model="$root.rootData.user.firstname" v-validate="'required|min:2|alpha_spaces'" class="form-control">
+							<em v-bind:class="{ 'show': errors.has('firstname') }">{{ errors.first('firstname') }}</em>
+						</div>
+						<div class="form-group" v-bind:class="{ 'has-error': errors.has('lastname') }">
+							<label for="lastname">Last Name:</label>
+							<input type="text" name="lastname" id="lastname" v-model="$root.rootData.user.lastname" v-validate="'required|min:2|alpha_spaces'" class="form-control">
+							<em v-bind:class="{ 'show': errors.has('lastname') }">{{ errors.first('lastname') }}</em>
+						</div>
+						<div class="form-group" v-bind:class="{ 'has-error': errors.has('displayname') }">
+							<label for="displayname">Display Name:</label>
+							<input type="text" name="displayname" id="displayname" v-model="$root.rootData.user.displayname" v-validate="{required: true, alpha_spaces: true, min: 3, max: 30}" class="form-control">
+							<em v-bind:class="{ 'show': errors.has('displayname') }">{{ errors.first('displayname') }}</em>
+						</div>
+						<div class="form-group">
+							<label for="url">Url:</label>
+							<input type="text" name="url" id="url" v-model="$root.rootData.user.url" class="form-control">
+						</div>
+						<div class="form-group d-flex justify-content-between">
+							<button type="button" class="btn btn-secondary btn-rounded profile_panel_btn" v-on:click="$root.cancelRightSidebar()">CANCEL</button>
+							<button type="button" class="btn btn-primary btn-rounded profile_panel_btn" v-on:click="$root.saveProfile()">SAVE</button>
+						</div>
+					</div>
+				</li>
+			</ul>
+		</div>
+		<div class="right-sidebar-backdrop" v-on:click="cancelRightSidebar()"></div>
 	</div>
 </body>
 </html>

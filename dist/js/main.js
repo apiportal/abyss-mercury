@@ -84,6 +84,8 @@ require.config({
 		"explore": "app/explore",
 		"users": "app/users",
 		"apps": "app/apps",
+		"permissions": "app/permissions",
+		"access-managers": "app/access-managers",
 		"user-groups": "app/user-groups",
 		"user-directories": "app/user-directories",
 		"change-password": "app/change-password",

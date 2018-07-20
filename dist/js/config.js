@@ -47,12 +47,12 @@ define(['global'], function(abyss){
 		// https://dev2.apiportal.com/abyss/openapi/Resource.yaml
 		resources: '/resources/', // uuid
 		resources_reference: '/resources/reference/', // uuid
-		resources_subject: '/resources/subject/{uuid}', // uuid ABYSSP-244
-		resources_type: '/resources/type/{uuid}', // uuid ABYSSP-244
-		resources_organization: '/resources/organization/{uuid}', // uuid ABYSSP-244
+		resources_subject: '/resources/subject/', // uuid ABYSSP-244
+		resources_type: '/resources/type/', // uuid ABYSSP-244
+		resources_organization: '/resources/organization/', // uuid ABYSSP-244
 		// https://dev2.apiportal.com/abyss/openapi/ResourceAction.yaml
 		resource_actions: '/resource-actions/', // uuid
-		resource_actions_type: '/resource-actions/type/', //2DO uuid ABYSSP-263
+		resource_actions_type: '/resource-actions/type/', //N/A uuid instead resource_actions ABYSSP-263
 		// https://dev2.apiportal.com/abyss/openapi/ResourceType.yaml
 		resource_types: '/resource-types/', // uuid
 		// https://dev2.apiportal.com/abyss/openapi/Api.yaml
@@ -63,12 +63,12 @@ define(['global'], function(abyss){
 		proxy_list: '/apis/proxies/',
 		business_list: '/apis/businesses/',
 
-		business_tag_subject: '/apis/businesses/tag/{tag}/subject/{uuid}/', //2DO ABYSSP-85
-		business_category_subject: '/apis/businesses/category/{category}/subject/{uuid}/', //2DO ABYSSP-85
-		business_group_subject: '/apis/businesses/group/{group}/subject/{uuid}/', //2DO ABYSSP-85
-		proxies_tag_subject: '/apis/proxies/group/{group}/subject/{uuid}/', //2DO ABYSSP-85
-		proxies_category_subject: '/apis/proxies/category/{category}/subject/{uuid}/', //2DO ABYSSP-85
-		proxies_group_subject: '/apis/proxies/tag/{tag}/subject/{uuid}/', //2DO ABYSSP-85
+		business_tag_subject: '/apis/businesses/tag/{tag}/subject/', //2DO uuid ABYSSP-85
+		business_category_subject: '/apis/businesses/category/{category}/subject/', //2DO uuid ABYSSP-85
+		business_group_subject: '/apis/businesses/group/{group}/subject/', //2DO uuid ABYSSP-85
+		proxies_tag_subject: '/apis/proxies/group/{group}/subject/', //2DO uuid ABYSSP-85
+		proxies_category_subject: '/apis/proxies/category/{category}/subject/', //2DO uuid ABYSSP-85
+		proxies_group_subject: '/apis/proxies/tag/{tag}/subject/', //2DO uuid ABYSSP-85
 
 		businesses_group_subject_aggregate: '/apis/businesses/subject/{uuid}/tags/aggregate/{aggregation}', //2DO ABYSSP-00
 		businesses_group_subject: '/apis/businesses/subject/{uuid}/tags/', //2DO ABYSSP-00
@@ -76,6 +76,7 @@ define(['global'], function(abyss){
 		// https://dev2.apiportal.com/abyss/openapi/Organization.yaml
 		organizations_list: '/organizations/',
 		subject_organizations_list: '/subject-organizations/subject/',
+		subject_organizations: '/subject-organizations/',
 		// https://dev2.apiportal.com/abyss/openapi/SubjectDirectoryType.yaml
 		subject_directory_types: '/subject-directory-types',
 		// https://dev2.apiportal.com/abyss/openapi/SubjectDirectory.yaml
@@ -87,22 +88,22 @@ define(['global'], function(abyss){
 		subject_memberships_subject: '/subject-memberships/subject/',
 		// https://dev2.apiportal.com/abyss/openapi/ApiApiTag.yaml
 		api_tag: '/api-api-tags', //uuid
-		api_tag_subject: '/api-api-tags/subject/{uuid}', //2DO ABYSSP-00 GET
-		api_tag_api: '/api-api-tags/api/{uuid}', //2DO ABYSSP-14 GET
-		api_tag_proxies_subject: '/api-api-tags/proxies/subject/{uuid}', //2DO ABYSSP-14 GET
-		api_tag_businesses_subject: '/api-api-tags/businesses/subject/{uuid}', //2DO ABYSSP-12 GET
+		api_tag_subject: '/api-api-tags/subject/', //2DO uuid ABYSSP-00 GET
+		api_tag_api: '/api-api-tags/api/', //2DO uuid ABYSSP-14 GET
+		api_tag_proxies_subject: '/api-api-tags/proxies/subject/', //2DO uuid ABYSSP-14 GET
+		api_tag_businesses_subject: '/api-api-tags/businesses/subject/', //2DO uuid ABYSSP-12 GET
 		// https://dev2.apiportal.com/abyss/openapi/ApiApiGroup.yaml
 		api_group: '/api-api-groups', //uuid
-		api_group_subject: '/api-api-groups/subject/{uuid}', //2DO ABYSSP-18
-		api_group_api: '/api-api-groups/api/{uuid}', //2DO ABYSSP-16
-		api_group_proxies_subject: '/api-api-groups/proxies/subject/{uuid}', //2DO ABYSSP-20
-		api_group_businesses_subject: '/api-api-groups/businesses/subject/{uuid}', //2DO ABYSSP-18
+		api_group_subject: '/api-api-groups/subject/', //2DO uuid ABYSSP-18
+		api_group_api: '/api-api-groups/api/', //2DO uuid ABYSSP-16
+		api_group_proxies_subject: '/api-api-groups/proxies/subject/', //2DO uuid ABYSSP-20
+		api_group_businesses_subject: '/api-api-groups/businesses/subject/', //2DO uuid ABYSSP-18
 		// https://dev2.apiportal.com/abyss/openapi/ApiApiCategory.yaml
 		api_category: '/api-api-categories',
-		api_category_subject: '/api-api-categories/subject/{uuid}', //2DO ABYSSP-22
-		api_category_api: '/api-api-categories/api/{uuid}', //2DO ABYSSP-00
-		api_category_proxies_subject: '/api-api-categories/proxies/subject/{uuid}', //2DO ABYSSP-26
-		api_category_businesses_subject: '/api-api-categories/businesses/subject/{uuid}', //2DO ABYSSP-24
+		api_category_subject: '/api-api-categories/subject/', //2DO uuid ABYSSP-22
+		api_category_api: '/api-api-categories/api/', //2DO uuid ABYSSP-00
+		api_category_proxies_subject: '/api-api-categories/proxies/subject/', //2DO uuid ABYSSP-26
+		api_category_businesses_subject: '/api-api-categories/businesses/subject/', //2DO uuid ABYSSP-24
 
 		// https://dev2.apiportal.com/abyss/openapi/Policy.yaml
 		policies_list: '/policies/',
@@ -127,6 +128,10 @@ define(['global'], function(abyss){
 		resource_access_tokens: '/resource-access-tokens/',
 		resource_access_tokens_permission: '/resource-access-tokens/subject-permission/', //uuid
 		validate_oas: '/validate-oas',
+		// https://dev2.apiportal.com/abyss/openapi/AccessManager.yaml
+		access_managers: '/access-managers',
+		// https://dev2.apiportal.com/abyss/openapi/AccessManagerType.yaml
+		access_manager_types: '/access-manager-types',
 	};
 	var abyssJsonList = {
 		index: '/index.json',

@@ -42,6 +42,7 @@
 									</div>
 									<div v-if="app.contracts"><small class="text-uppercase">Subscriptions:</small> <strong class="txt-black">{{app.contracts.length}}</strong></div>
 									<code class="d-block txt-line small txt-blue"><small>{{app.uuid}}</small></code>
+									<code class="d-block txt-line small txt-orange" v-if="app.resource"><small>{{app.resource.uuid}}</small></code>
 								</a>
 								<div class="ficon-actions dropdown dropdown-hover">
 									<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
@@ -73,41 +74,6 @@
 										</div>
 									</div>
 								</div>
-
-								<!-- <div v-if="!isLoading && app.subscriptions.length > 0" v-for="(per, index) in app.subscriptions" v-bind:key="per.uuid" :title="per.description" class="brd-b brd-0-last my-app-list">
-									<div class="fow">
-										<div class="fol-sm-4 p-0">
-											<api-list :api="per.api" :index="index" :key="per.api.uuid" v-if="per.api" inline-template>
-												<div th:replace="webroot/frags/api/api-preview.htm :: apiList"></div>
-											</api-list>
-											<div class="px-3 pb-3">
-												<button class="btn btn-sm btn-outline-blue btn-block" v-on:click="testApi(per.api.openapidocument);">Test API</button>
-											</div>
-										</div>
-										<div class="fol-sm-4 px-3 py-2 brd-l brd-r">
-											<div class="fow form-row small">
-												<p class="fol-12">{{per.permission}}</p>
-												<p class="fol-12">
-													<code class="d-block small txt-purple"><small>{{per.uuid}}</small></code>
-													<code class="d-block small txt-orange"><small>{{per.resource.uuid}}</small></code>
-												</p>
-												<p class="fol-6"><strong class="lbl">Start Date</strong> {{per.effectivestartdate | formatDate}}</p>
-												<p class="fol-6"><strong class="lbl">End Date</strong> {{per.effectiveenddate | formatDate}}</p>
-												<p class="fol-12">{{per.contract.name}}</p>
-												<p class="fol-12"><code class="d-block small txt-purple"><small>{{per.contract.uuid}}</small></code></p>
-												<p class="fol-6"><strong class="lbl">environment</strong> {{per.contract.environment}}</p>
-												<p class="fol-6"><strong class="lbl">contract state</strong> {{per.contract.contractStateName}}</p>
-												<p class="fol-6"><strong class="lbl">status</strong> {{per.contract.status}}</p>
-											</div>
-										</div>
-										<div class="fol-sm-4 p-0 pb-1">
-											<div class="" v-for="(license, index) in per.contract.license">
-												<div th:replace="webroot/frags/api/api-license.htm :: apiLicense"></div>
-											</div>
-										</div>
-									</div>
-								</div> -->
-
 							</div>
 						</article>
 					</div>
@@ -122,7 +88,7 @@
 					<div class="p-3">
 						<div class="form-group" v-bind:class="{ 'has-error': errors.has('firstname') }">
 							<label for="firstname">APP Name:</label>
-							<input type="text" name="firstname" id="firstname" v-model="app.firstname" v-validate="'required|min:2|alpha_spaces'" class="form-control">
+							<input type="text" name="firstname" id="firstname" v-model="app.firstname" v-validate="'required'" class="form-control">
 							<em v-bind:class="{ 'show': errors.has('firstname') }">{{ errors.first('firstname') }}</em>
 						</div>
 						<div class="form-group" v-bind:class="{ 'has-error': errors.has('lastname') }">
@@ -137,9 +103,10 @@
 								<label for="isactived"></label>
 							</span>
 						</div>
-						<div class="form-group">
+						<div class="form-group" v-bind:class="{ 'has-error': errors.has('url') }">
 							<label for="url">Url:</label>
-							<input type="text" name="url" id="url" v-model="app.url" class="form-control">
+							<input type="text" name="url" id="url" v-model="app.url" class="form-control" v-validate="'url'">
+							<em v-bind:class="{ 'show': errors.has('url') }">{{ errors.first('url') }}</em>
 						</div>
 						<div class="form-group form-inline">
 							<label class="d-block">issandbox</label>
@@ -163,7 +130,7 @@
 							</select>
 							<em v-bind:class="{ 'show': errors.has('dirid') }">{{ errors.first('dirid') }}</em>
 						</div>
-						<div v-if="rootState == 'edit'">
+						<div v-if="rootState == 'edit' && showSecretAndKey">
 						<!-- <div class="clearfix"> -->
 							<div class="form-group text-center" v-if="app.password && app.uuid"><a href="#" class="btn btn-block btn-sm btn-green js-copy" data-clipboard-targets="#appkey,#appsecret">Copy APP Key & APP Secret</a></div>
 							<div class="form-group">

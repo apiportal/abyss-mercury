@@ -44,6 +44,7 @@
 		<p class="fol-6"><strong class="lbl">End Date</strong> {{con.subscription.effectiveenddate | formatDate}}</p>
 	</div>
 	<p class="" v-if="con.subscribed"><button class="btn btn-sm btn-cyan btn-block" v-on:click="unsubscribeFromApi(con)">Unsubscribe</button></p>
+	<p class="" v-if="!con.subscribed && !con.isdeleted"><button class="btn btn-sm btn-cyan btn-block" v-on:click="unsubscribeFromApi(con)">Terminate Subscription</button></p>
 </div>
 
 <div class="px-3 pt-3" th:fragment="apiLicense">

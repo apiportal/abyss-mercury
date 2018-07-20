@@ -12,13 +12,13 @@
 <div id="portal" class="wrapper" v-bind:class="pageClass">
 	<div th:replace="webroot/frags/layout/navs.htm :: navs"></div>
 	<main class="page-wrapper">
-	<index inline-template ref="refPage" v-on:set-state="setState" v-on:set-page="setPage" v-bind:root-state="rootState" v-if="!$root.isLoading">
+	<explore inline-template ref="refPage" v-on:set-state="setState" v-on:set-page="setPage" v-bind:root-state="rootState" v-if="!$root.isLoading">
 		<section class="xxx">
 			<transition name="fade">
 			<div th:replace="webroot/frags/api/api-preview.htm :: apiPreview"></div>
 			</transition>
 			<div class="row bg-white">
-				<v-select label="name" :filterable="false" :options="apiOptions" @search="getApiOptions" :on-change="filterApi" placeholder="Search API">
+				<v-select label="name" :filterable="true" :options="apiOptions" @search="getApiOptions" :on-change="filterApi" placeholder="Search API">
 					<span slot="no-options"></span>
 					<template slot="option" slot-scope="option">
 						<div>{{ option.openapidocument.info.title }} <small class="text-muted">{{ option.openapidocument.info.version }}</small></div>
@@ -34,7 +34,7 @@
 				</api-list>
 			</div>
 		</section>
-	</index>
+	</explore>
 	</main>
 </div>
 <script id="reqVue" data-module="explore" data-main="/dist/js/main" src="/dist/js/lib/require.min.js"></script>

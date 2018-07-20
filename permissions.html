@@ -1,0 +1,194 @@
+﻿<!DOCTYPE html>
+<html class="vs-permissions" lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:include="webroot/frags/layout/head.htm :: header">
+<script src="/dist/js/lib/jquery.min.js"></script>
+<script src="/dist/js/lib/thymus.min.js" id="thymus"
+	data-thx-base-path="." data-thx-frag-extension=".htm"
+	data-thx-head-frag="th:include=webroot/frags/layout/head.htm :: header"
+	data-thx-preload-js="/dist/js/loader.js"
+	data-thx-onfrags="fragsListener();" data-thx-onfrag="fragListener()"></script>
+</head>
+<body>
+<div id="portal" class="wrapper" v-bind:class="pageClass">
+	<div th:replace="webroot/frags/layout/navs.htm :: navs"></div>
+	<main class="page-wrapper">
+	<permissions inline-template ref="refPage" v-on:set-state="setState" v-on:set-page="setPage" v-bind:root-state="rootState" v-if="!$root.isLoading">
+		<div class="columns">
+			<section class="column column-main column-main-fixed">
+				<div class="column-main-fixed-overlay" v-if="rootState == 'add' || rootState == 'edit'" v-on:click="$emit('set-state', 'init'); cancelPermission();"></div>
+				<div class="nicescroll--bar">
+					<div class="bg-white">
+						<v-select label="permission" :filterable="true" :options="permissionOptions" @search="getPermissionOptions" :on-change="filterPermission" placeholder="Search">
+							<span slot="no-options"></span>
+						</v-select>
+					</div>
+					<table class="table table-hover table-bordered table-edge">
+						<tr>
+							<th class="td-bool" v-bind:class="sort.order" v-on:click="sortList(sort, 'isdeleted', Boolean)">Status</th>
+							<th class="td-name" v-bind:class="sort.order" v-on:click="sortList(sort, 'permission', String)">Permission Name / Resource</th>
+							<th class="td-bool" v-bind:class="sort.order" v-on:click="sortList(sort, 'resource.resourceType', String)">Resource Type</th>
+							<th class="td-name" v-bind:class="sort.order" v-on:click="sortList(sort, 'subject.firstname', String)">subject</th>
+							<th class="td-bool" v-bind:class="sort.order" v-on:click="sortList(sort, 'subject.subjectType', String)">Subject Type</th>
+							<th class="td-name" v-bind:class="sort.order" v-on:click="sortList(sort, 'resourceAction.description', String)">Resource Action</th>
+							<th class="td-name" v-bind:class="sort.order" v-on:click="sortList(sort, 'accessManager.accessmanagername', String)">access manager</th>
+							<th class="td-date" v-bind:class="sort.order" v-on:click="sortList(sort, 'effectivestartdate', Date)">Effective Between</th>
+							<!-- <th class="td-datetime" v-bind:class="sort.order" v-on:click="sortList(sort, 'effectiveenddate', Date)">Effective To</th> -->
+							<th class="td-datetime-x" v-bind:class="sort.order" v-on:click="sortList(sort, 'created', Date)">Created / Updated / Deleted</th>
+							<th class="td-action-1"></th>
+							<th class="td-action-1"></th>
+						</tr>
+						<tr v-for="(permission, index) in sortByNested(sort, permissionList)" v-bind:key="permission.uuid" v-bind:class="{'active': isSelected(index)}">
+							<td class="text-center">
+								<i class="fas fa-check-circle txt-green" title="Active" v-if="!permission.isdeleted"></i>
+								<i class="fas fa-times-circle txt-red" title="Deleted" v-if="permission.isdeleted"></i>
+							</td>
+							<td>
+								<strong :title="permission.description">{{permission.permission}}</strong>
+								<code class="d-block txt-line small txt-blue"><small>{{permission.uuid}}</small></code>
+								<div v-if="permission.resource" :title="permission.resource.description">
+									<small><strong>RESOURCE: </strong> {{permission.resource.resourcename}}</small>
+									<code class="d-block txt-line small txt-green"><small>{{permission.resourceid}}</small></code>
+									<code class="d-block txt-line small txt-cyan"><small>REF: {{permission.resource.resourcerefid}}</small></code>
+								</div>
+							</td>
+							<td class="text-center" v-if="permission.resource" :title="permission.resource.resourcetypeid">
+								{{permission.resource.resourceType}}
+							</td>
+							<td v-if="permission.subject">
+								<strong :title="permission.subject.lastname">{{permission.subject.firstname}}</strong>
+								<small class="d-block"><strong>EMAIL:</strong> {{permission.subject.email}}</small>
+								<small class="d-block"><strong>URL:</strong> {{permission.subject.url}}</small>
+								<code class="d-block txt-line small txt-blue"><small>{{permission.subjectid}}</small></code>
+							</td>
+							<td class="text-center" v-if="permission.subject">
+								{{permission.subject.subjectType}}
+							</td>
+							<td :title="permission.resourceAction.resourcetypeid">
+								{{permission.resourceAction.actionname}} 
+								<small class="d-block">{{permission.resourceAction.description}} ({{permission.resourceAction.resourceType}})</small>
+
+							</td>
+							<td>
+								{{permission.accessManager.accessmanagername}}
+								<!-- <small class="d-block">{{permission.accessManager.description}}</small> -->
+								<!-- <small class="d-block">{{permission.accessManager.accessManagerType.typename}}</small> -->
+								<code class="d-block txt-line small txt-blue"><small>{{permission.accessmanagerid}}</small></code>
+							</td>
+							<td>
+								<small class="d-block">{{permission.effectivestartdate | formatDateTime}}</small>
+								<small class="d-block">{{permission.effectiveenddate | formatDateTime}}</small>
+							</td>
+							<td>
+								<div>
+									<strong class="small">CREATED:</strong>
+									<small>{{permission.created | formatDateTime}}</small>
+								</div>
+								<div>
+									<strong class="small">UPDATED:</strong>
+									<small>{{permission.updated | formatDateTime}}</small>
+								</div>
+								<div v-if="permission.isdeleted">
+									<strong class="small">DELETED:</strong>
+									<small>{{permission.deleted | formatDateTime}}</small>
+								</div>
+							</td>
+							<td class="td-action-1">
+								<a href="#" class="btn btn-xl txt-link btn-square" title="EDIT PERMISSION" v-on:click="$emit('set-state', 'edit'); selectPermission(permission, index);"><i class="fas fa-edit"></i></a>
+							</td>
+							<td class="td-action-1">
+								<a href="#" class="btn btn-xl txt-link txt-grey btn-square" title="DELETE PERMISSION" v-on:click="deletePermission(permission, index)"><i class="fas fa-trash-alt"></i></a>
+							</td>
+						</tr>
+					</table>
+					<div th:replace="webroot/frags/layout/pagination.htm :: pagination"></div>
+				</div>
+			</section>
+			<aside class="column column-aside add-column">
+				<div class="nicescroll-bar">
+					<div class="clearfix brd-b column-header column-min-button">
+						<h5 class="column-header-title" >
+						<span v-if="rootState == 'add'">Add New Permission</span>
+						<span v-if="rootState == 'edit'">Edit Permission</span>
+						</h5>
+					</div>
+					<div class="p-3">
+						<div class="form-group" v-bind:class="{ 'has-error': errors.has('name') }">
+							<label for="name">Permission Name:</label>
+							<input type="text" name="name" id="name" v-model="permission.permission" v-validate="'required|min:2'" class="form-control">
+							<em v-bind:class="{ 'show': errors.has('name') }">{{ errors.first('name') }}</em>
+						</div>
+						<div class="form-group" v-bind:class="{ 'has-error': errors.has('description') }">
+							<label for="description">Description:</label>
+							<textarea type="text" name="description" id="description" v-model="permission.description" v-validate="'required'" class="form-control"></textarea>
+							<em v-bind:class="{ 'show': errors.has('description') }">{{ errors.first('description') }}</em>
+						</div>
+						<div class="form-group " v-bind:class="{ 'has-error': errors.has('organization') }">
+							<label>Organization Id</label>
+							<select class="form-control" name="organization" id="organization" v-model="permission.organizationid" v-validate="'required'">
+								<!-- <option v-for="(org,index) in orgOptions" :value="org.organizationid">{{org.name}}</option> -->
+								<option v-for="(org,index) in orgOptions" :value="org.uuid">{{org.name}}</option>
+							</select>
+							<em v-bind:class="{ 'show': errors.has('organization') }">{{ errors.first('organization') }}</em>
+						</div>
+						<div class="form-group " v-bind:class="{ 'has-error': errors.has('accessManager') }">
+							<label>Access Manager</label>
+							<select class="form-control" name="accessManager" id="accessManager" v-model="permission.accessmanagerid" v-validate="'required'">
+								<option v-for="(am,index) in accessManagerOptions" :value="am.uuid">{{am.accessmanagername}}</option>
+							</select>
+							<em v-bind:class="{ 'show': errors.has('accessManager') }">{{ errors.first('accessManager') }}</em>
+						</div>
+						<div class="form-group " v-bind:class="{ 'has-error': errors.has('subject') }">
+							<label>Subject</label>
+							<select class="form-control" name="subject" id="subject" v-model="permission.subjectid" v-validate="'required'">
+								<option v-for="(sb,index) in subjectOptions" :value="sb.uuid">{{sb.firstname}}</option>
+							</select>
+							<em v-bind:class="{ 'show': errors.has('subject') }">{{ errors.first('subject') }}</em>
+						</div>
+						<div class="form-group " v-bind:class="{ 'has-error': errors.has('resource') }">
+							<label>Resource</label>
+							<select class="form-control" name="resource" id="resource" v-model="permission.resourceid" v-validate="'required'">
+								<option v-for="(rs,index) in resourceOptions" :value="rs.uuid">{{rs.resourcename}}</option>
+							</select>
+							<em v-bind:class="{ 'show': errors.has('resource') }">{{ errors.first('resource') }}</em>
+						</div>
+						<div class="form-group " v-bind:class="{ 'has-error': errors.has('resourceAction') }">
+							<label>Resource Action</label>
+							<select class="form-control" name="resourceAction" id="resourceAction" v-model="permission.resourceactionid" v-validate="'required'">
+								<option v-for="(ra,index) in resourceActionOptions" :value="ra.uuid">{{ra.actionname}} - {{ra.description}}</option>
+							</select>
+							<em v-bind:class="{ 'show': errors.has('resourceAction') }">{{ errors.first('resourceAction') }}</em>
+						</div>
+						<div class="form-group form-group-date" v-bind:class="{ 'has-error': errors.has('effectivestartdate') }">
+							<label class="">Effective From</label>
+							<div class="input-group w-100">
+								<date-picker name="effectivestartdate" v-model="permission.effectivestartdate" :config="dateConfig" v-validate="'required'"></date-picker>
+								<span class="input-group-addon"><i class="fa fa-calendar-alt"></i></span>
+							</div>
+							<em v-bind:class="{ 'show': errors.has('effectivestartdate') }">{{ errors.first('effectivestartdate') }}</em>
+						</div>
+						<div class="form-group" v-bind:class="{ 'has-error': errors.has('effectiveenddate') }">
+							<label class="">Effective To</label>
+							<div class="input-group w-100">
+								<date-picker name="effectiveenddate" v-model="permission.effectiveenddate" :config="dateConfig" v-validate="'required'"></date-picker>
+								<span class="input-group-addon"><i class="fa fa-calendar-alt"></i></span>
+							</div>
+							<em v-bind:class="{ 'show': errors.has('effectiveenddate') }">{{ errors.first('effectiveenddate') }}</em>
+						</div>
+						<div class="form-group d-flex justify-content-between">
+							<button type="button" class="btn btn-secondary btn-rounded" v-on:click="$emit('set-state', 'init'); cancelPermission()">CANCEL</button>
+							<button type="button" class="btn btn-primary btn-rounded" v-if="rootState == 'add'" v-on:click="permissonAction('add')">ADD</button>
+							<button type="button" class="btn btn-primary btn-rounded" v-if="rootState == 'edit'" v-on:click="permissonAction('edit')">SAVE</button>
+						</div>
+					</div>
+				</div>
+			</aside>
+			<div class="btn-float-br btn-float-under">
+				<button class="btn btn-xl btn-green btn-circle" v-on:click="$emit('set-state', 'add', 'init')" title="ADD NEW PERMISSION "><i class="fas fa-plus"></i></button>
+			</div>
+		</div>
+	</permissions>
+	</main>
+</div>
+<script id="reqVue" data-module="permissions" data-main="/dist/js/main" src="/dist/js/lib/require.min.js"></script>
+</body>
+</html>

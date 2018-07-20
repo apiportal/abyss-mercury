@@ -50,7 +50,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 				directoryOptions: [],
 				memberOptions: [],
 				date: null,
-					config: {
+				dateConfig: {
 					format: 'YYYY-MM-DD HH:mm:ss',
 					useCurrent: false,
 					showClear: true,

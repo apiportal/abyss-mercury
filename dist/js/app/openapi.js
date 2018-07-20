@@ -1985,6 +1985,21 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				}, 5000),
 				initSwagger: _.debounce(function(val) {
 					var vm = this;
+					/*const xxxx = function() {
+						return {
+							statePlugins: {
+								editor: {
+									wrapActions: {
+										updateSpec: (oriAction) => (...args) => {
+											const [str] = args;
+											vm.listenSw(str);
+											return oriAction(...args);
+										}
+									}
+								}
+							}
+						};
+					};*/
 					const SpecUpdateListenerPlugin = function() {
 						return {
 							statePlugins: {
@@ -2018,6 +2033,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					});
 					// console.log("swEditor: ", swEditor);
 					window.swEditor = swEditor;
+					/*window.addEventListener('storage', function(e) {  
+						alert('Woohoo, someone changed my localstorage va another tab/window!');
+					});*/
 				}, 0),
 				uploadSchema(val) {
 					// console.log("uploadSchema: ", val);

@@ -114,7 +114,8 @@
 						<div class="form-group " v-bind:class="{ 'has-error': errors.has('orgid') }">
 							<label>Organization Id</label>
 							<select class="form-control" name="orgid" id="orgid" v-model="directory.organizationid" v-validate="'required'">
-								<option v-for="(org,index) in orgOptions" :value="org.organizationid">{{org.name}}</option>
+								<!-- <option v-for="(org,index) in orgOptions" :value="org.organizationid">{{org.name}}</option> -->
+								<option v-for="(org,index) in orgOptions" :value="org.uuid">{{org.name}}</option>
 							</select>
 							<em v-bind:class="{ 'show': errors.has('orgid') }">{{ errors.first('orgid') }}</em>
 						</div>
@@ -197,7 +198,8 @@
 							<div class="form-group ">
 								<label>Organization Id</label>
 								<select class="form-control" v-model="t.organizationid">
-									<option v-for="(org,index) in orgOptions" :value="org.organizationid">{{org.name}}</option>
+									<!-- <option v-for="(org,index) in orgOptions" :value="org.organizationid">{{org.name}}</option> -->
+									<option v-for="(org,index) in orgOptions" :value="org.uuid">{{org.name}}</option>
 								</select>
 							</div>
 						</div>

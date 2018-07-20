@@ -510,36 +510,41 @@ define(['config', 'jquery', 'bootstrap', 'domready'], function(config, $){
 		if( $('[data-toggle="popover"]').length > 0 )
 			$('[data-toggle="popover"]').popover()
 		// ■■ Sidebar Navigation
-		$(document).on('click', '#toggle_nav_btn,#open_right_sidebar,#setting_panel_btn', function (e) {
+		$(document).on('click', '#toggle_nav_btn,#open_right_sidebar,#setting_panel_btn,.organizations_panel_btn,.profile_panel_btn', function (e) {
 			$(".dropdown.open > .dropdown-toggle").dropdown("toggle"); //3
 			// $(".dropdown.show > .dropdown-toggle").dropdown("toggle"); //4
 			console.log("dropdown-toggle: ");
 			return false;
 		});
 		$(document).on('click', '#toggle_nav_btn', function (e) {
-			$wrapper.removeClass('open-right-sidebar open-setting-panel').toggleClass('slide-nav-toggle');
+			$wrapper.removeClass('open-right-sidebar open-setting-panel open-organizations-panel open-profile-panel').toggleClass('slide-nav-toggle');
 			return false;
 		});
 		$(document).on('click', '#open_right_sidebar', function (e) {
-			$wrapper.toggleClass('open-right-sidebar').removeClass('open-setting-panel');
-			return false;
-		});
-		$(document).on('click','.product-carousel .owl-nav',function(e){
+			$wrapper.toggleClass('open-right-sidebar').removeClass('open-setting-panel open-organizations-panel open-profile-panel');
 			return false;
 		});
 		$(document).on('click', 'body', function (e) {
-			if($(e.target).closest('.fixed-sidebar-right,.setting-panel').length > 0) {
+			if($(e.target).closest('.fixed-sidebar-right,.setting-panel,.organizations-panel,.profile-panel').length > 0) {
 				return;
 			}
-			$wrapper.removeClass('open-right-sidebar open-setting-panel');
+			$wrapper.removeClass('open-right-sidebar open-setting-panel open-organizations-panel open-profile-panel');
 			return;
 		});
 		$(document).on('show.bs.dropdown', '.nav.navbar-right.top-nav .dropdown', function (e) {
-			$wrapper.removeClass('open-right-sidebar open-setting-panel');
+			$wrapper.removeClass('open-right-sidebar open-setting-panel open-organizations-panel open-profile-panel');
 			return;
 		});
 		$(document).on('click', '#setting_panel_btn', function (e) {
 			$wrapper.toggleClass('open-setting-panel').removeClass('open-right-sidebar');
+			return false;
+		});
+		$(document).on('click', '.organizations_panel_btn', function (e) {
+			$wrapper.toggleClass('open-organizations-panel').removeClass('open-right-sidebar');
+			return false;
+		});
+		$(document).on('click', '.profile_panel_btn', function (e) {
+			$wrapper.toggleClass('open-profile-panel').removeClass('open-right-sidebar');
 			return false;
 		});
 		$(document).on('click', '#toggle_mobile_nav', function (e) {

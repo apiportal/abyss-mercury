@@ -1,6 +1,12 @@
 ﻿<!DOCTYPE html>
-<html class="vs-users" lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:v-bind="http://www.w3.org/1999/xhtml" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<html class="vs-users" lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:include="webroot/frags/layout/head.htm :: header">
+<script src="/dist/js/lib/jquery.min.js"></script>
+<script src="/dist/js/lib/thymus.min.js" id="thymus"
+	data-thx-base-path="." data-thx-frag-extension=".htm"
+	data-thx-head-frag="th:include=webroot/frags/layout/head.htm :: header"
+	data-thx-preload-js="/dist/js/loader.js"
+	data-thx-onfrags="fragsListener();" data-thx-onfrag="fragListener()"></script>
 </head>
 <body>
 <div id="portal" class="wrapper" v-bind:class="pageClass">
@@ -195,12 +201,13 @@
 						<h5 class="column-header-title">User Management</h5>
 					</div>
 					<div class="p-3">
-						<div class="form-group " v-bind:class="{ 'has-error': errors.has('orgid') }">
+						<div class="form-group " v-bind:class="{ 'has-error': errors.has('organization') }">
 							<label>Organization Id</label>
-							<select class="form-control" name="orgid" id="orgid" v-model="user.organizationid" v-validate="'required'">
-								<option v-for="(org,index) in orgOptions" :value="org.organizationid">{{org.name}}</option>
+							<select class="form-control" name="organization" id="organization" v-model="user.organizationid" v-validate="'required'">
+								<!-- <option v-for="(org,index) in orgOptions" :value="org.organizationid">{{org.name}}</option> -->
+								<option v-for="(org,index) in orgOptions" :value="org.uuid">{{org.name}}</option>
 							</select>
-							<em v-bind:class="{ 'show': errors.has('orgid') }">{{ errors.first('orgid') }}</em>
+							<em v-bind:class="{ 'show': errors.has('organization') }">{{ errors.first('organization') }}</em>
 						</div>
 						<div class="form-group " v-bind:class="{ 'has-error': errors.has('typeid') }">
 							<label>User Type</label>

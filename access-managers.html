@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html class="vs-user-directories" lang="en" xmlns:th="http://www.thymeleaf.org">
+<html class="vs-access-managers" lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:include="webroot/frags/layout/head.htm :: header">
 <script src="/dist/js/lib/jquery.min.js"></script>
 <script src="/dist/js/lib/thymus.min.js" id="thymus"
@@ -12,60 +12,47 @@
 <div id="portal" class="wrapper" v-bind:class="pageClass">
 	<div th:replace="webroot/frags/layout/navs.htm :: navs"></div>
 	<main class="page-wrapper">
-	<user-directories inline-template v-on:set-state="setState" v-on:set-page="setPage" v-bind:root-state="rootState" v-if="!$root.isLoading">
+	<access-managers inline-template v-on:set-state="setState" v-on:set-page="setPage" v-bind:root-state="rootState" v-if="!$root.isLoading">
 		<div class="columns">
 			<section class="column column-main column-main-fixed">
-				<div class="column-main-fixed-overlay" v-if="rootState == 'add' || rootState == 'edit'" v-on:click="$emit('set-state', 'init'); cancelDirectory();"></div>
+				<div class="column-main-fixed-overlay" v-if="rootState == 'add' || rootState == 'edit'" v-on:click="$emit('set-state', 'init'); cancelAccessManager();"></div>
 				<div class="nicescroll--bar">
 					<table class="table table-hover table-bordered table-edge">
 						<tr>
 							<th class="td-bool" v-bind:class="sort.order" v-on:click="sortList(sort, 'isactive', Boolean)">Status</th>
-							<th class="td-name" v-bind:class="sort.order" v-on:click="sortList(sort, 'directoryname', String)">Name</th>
-							<th class="td-name" v-bind:class="sort.order" v-on:click="sortList(sort, 'directorytypeid', String)">Type</th>
-							<th class="td-bool" v-bind:class="sort.order" v-on:click="sortList(sort, 'directorypriorityorder', Number)">Order</th>
-							<th class="td-bool" v-on:click="sortList(sort, 'istemplate', Boolean)">istemplate</th>
-							<th class="td-datetime">Syncronization</th>
+							<th class="td-name" v-bind:class="sort.order" v-on:click="sortList(sort, 'accessmanagername', String)">Name</th>
+							<th class="td-name" v-bind:class="sort.order" v-on:click="sortList(sort, 'accessmanagertypeid', String)">Type</th>
 							<th class="td-datetime-x" v-bind:class="sort.order" v-on:click="sortList(sort, 'created', Date)">Created / Updated / Deleted</th>
 							<th class="td-action-1"></th>
 							<th class="td-action-1"></th>
 						</tr>
-						<tr v-for="(directory, index) in sortBy(sort, directoryList)" v-bind:key="directory.uuid" v-bind:class="{'active': isSelected(index)}">
+						<tr v-for="(accessManager, index) in sortBy(sort, accessManagerList)" v-bind:key="accessManager.uuid" v-bind:class="{'active': isSelected(index)}">
 							<td class="text-center">
-								<i class="fas fa-circle" title="Active" v-if="!directory.isactive"></i>
-								<i class="fas fa-check-circle txt-green" title="Active" v-if="directory.isactive"></i>
-								<i class="fas fa-times-circle txt-red" title="Deleted" v-if="directory.isdeleted"></i>
+								<i class="fas fa-circle" title="Active" v-if="!accessManager.isactive"></i>
+								<i class="fas fa-check-circle txt-green" title="Active" v-if="accessManager.isactive"></i>
+								<i class="fas fa-times-circle txt-red" title="Deleted" v-if="accessManager.isdeleted"></i>
 							</td>
-							<td>{{directory.directoryname}} <small class="d-block">{{directory.description}}</small></td>
-							<td>{{getTypeName(directory.directorytypeid)}}</td>
-							<td>{{directory.directorypriorityorder}}</td>
-							<td>{{directory.istemplate}}</td>
-							<td>
-								<div class="d-flex align-items-center">
-									<div class="d-block small">
-										{{directory.lastsyncronizedat | formatDateTime}}
-									</div>
-									<strong class="ml-auto">{{directory.lastsyncronizationduration}}</strong>
-								</div>
-							</td>
+							<td>{{accessManager.accessmanagername}} <small class="d-block">{{accessManager.description}}</small></td>
+							<td>{{getTypeName(accessManager.accessmanagertypeid)}} <code class="d-block txt-line small txt-blue"><small>{{accessManager.accessmanagertypeid}}</small></code></td>
 							<td>
 								<div>
 									<strong class="small">CREATED:</strong>
-									<small>{{directory.created | formatDateTime}}</small>
+									<small>{{accessManager.created | formatDateTime}}</small>
 								</div>
 								<div>
 									<strong class="small">UPDATED:</strong>
-									<small>{{directory.updated | formatDateTime}}</small>
+									<small>{{accessManager.updated | formatDateTime}}</small>
 								</div>
-								<div v-if="directory.isdeleted">
+								<div v-if="accessManager.isdeleted">
 									<strong class="small">DELETED:</strong>
-									<small>{{directory.deleted | formatDateTime}}</small>
+									<small>{{accessManager.deleted | formatDateTime}}</small>
 								</div>
 							</td>
 							<td class="td-action-1">
-								<a href="#" class="btn btn-xl txt-link btn-square" title="EDIT DIRECTORY" v-on:click="$emit('set-state', 'edit'); selectDirectory(directory, index);"><i class="fas fa-edit"></i></a>
+								<a href="#" class="btn btn-xl txt-link btn-square" title="EDIT ACCESS MANAGER" v-on:click="$emit('set-state', 'edit'); selectAccessManager(accessManager, index);"><i class="fas fa-edit"></i></a>
 							</td>
 							<td class="td-action-1">
-								<a href="#" class="btn btn-xl txt-link txt-grey btn-square" title="DELETE DIRECTORY" v-on:click="deleteDirectory(directory, index)"><i class="fas fa-trash-alt"></i></a>
+								<a href="#" class="btn btn-xl txt-link txt-grey btn-square" title="DELETE ACCESS MANAGER" v-on:click="deleteAccessManager(accessManager, index)"><i class="fas fa-trash-alt"></i></a>
 							</td>
 						</tr>
 					</table>
@@ -80,61 +67,46 @@
 						</h5>
 					</div>
 					<div class="p-3">
-						<div class="form-group" v-bind:class="{ 'has-error': errors.has('directoryname') }">
-							<label for="directoryname">Name:</label>
-							<input type="text" name="directoryname" id="directoryname" v-model="directory.directoryname" v-validate="'required|min:2|alpha_spaces'" class="form-control" placeholder="directoryname">
-							<em v-bind:class="{ 'show': errors.has('directoryname') }">{{ errors.first('directoryname') }}</em>
+						<div class="form-group" v-bind:class="{ 'has-error': errors.has('accessmanagername') }">
+							<label for="accessmanagername">Name:</label>
+							<input type="text" name="accessmanagername" id="accessmanagername" v-model="accessManager.accessmanagername" v-validate="'required|min:2|alpha_spaces'" class="form-control" placeholder="accessmanagername">
+							<em v-bind:class="{ 'show': errors.has('accessmanagername') }">{{ errors.first('accessmanagername') }}</em>
 						</div>
 						<div class="form-group" v-bind:class="{ 'has-error': errors.has('description') }">
 							<label for="description">Decription:</label>
-							<textarea type="text" name="description" id="description" v-model="directory.description" v-validate="'required'" class="form-control" placeholder="Decription"></textarea>
+							<textarea type="text" name="description" id="description" v-model="accessManager.description" v-validate="'required'" class="form-control" placeholder="Decription"></textarea>
 							<em v-bind:class="{ 'show': errors.has('description') }">{{ errors.first('description') }}</em>
 						</div>
-						<div class="form-group" v-bind:class="{ 'has-error': errors.has('order') }">
-							<label for="order">Priority Order:</label>
-							<input type="number" name="order" id="order" v-model.number="directory.directorypriorityorder" class="form-control">
-							<em v-bind:class="{ 'show': errors.has('order') }">{{ errors.first('order') }}</em>
-						</div>
-						<div class="fow">
-							<div class="fol-6 form-group ">
-								<label class="d-block">Enabled</label>
-								<span class="switch switch-primary">
-									<input type="checkbox" name="isactive" id="isactive" v-model="directory.isactive" checked>
-									<label for="isactive"></label>
-								</span>
-							</div>
-							<div class="fol-6 form-group text-right">
-								<label class="d-block">Template</label>
-								<span class="switch switch-primary">
-									<input type="checkbox" name="istemplate" id="istemplate" v-model="directory.istemplate" checked>
-									<label for="istemplate"></label>
-								</span>
-							</div>
+						<div class="form-group form-inline">
+							<label class="d-block">Enabled</label>
+							<span class="switch switch-primary ml-auto">
+								<input type="checkbox" name="isactive" id="isactive" v-model="accessManager.isactive" checked>
+								<label for="isactive"></label>
+							</span>
 						</div>
 						<div class="form-group " v-bind:class="{ 'has-error': errors.has('orgid') }">
 							<label>Organization Id</label>
-							<select class="form-control" name="orgid" id="orgid" v-model="directory.organizationid" v-validate="'required'">
-								<option v-for="(org,index) in orgOptions" :value="org.organizationid">{{org.name}}</option>
+							<select class="form-control" name="orgid" id="orgid" v-model="accessManager.organizationid" v-validate="'required'">
+								<option v-for="(org,index) in orgOptions" :value="org.uuid">{{org.name}}</option>
 							</select>
 							<em v-bind:class="{ 'show': errors.has('orgid') }">{{ errors.first('orgid') }}</em>
 						</div>
 						<div class="form-group " v-bind:class="{ 'has-error': errors.has('type') }">
-							<label>Directory Type</label>
-							<select class="form-control" name="type" id="type" v-model="directory.directorytypeid" v-validate="'required'">
-								<option v-for="(type,index) in directoryTypes" :value="type.uuid">{{type.typename}}</option>
+							<label>Access Manager Type</label>
+							<select class="form-control" name="type" id="type" v-model="accessManager.accessmanagertypeid" v-validate="'required'">
+								<option v-for="(type,index) in accessManagerTypes" :value="type.uuid">{{type.typename}}</option>
 							</select>
 							<em v-bind:class="{ 'show': errors.has('type') }">{{ errors.first('type') }}</em>
 						</div>
 						<div class="form-group d-flex justify-content-between">
-							<button type="button" class="btn btn-secondary btn-rounded" v-on:click="$emit('set-state', 'init'); cancelDirectory()">CANCEL</button>
-							<button type="button" class="btn btn-primary btn-rounded" v-if="rootState == 'add'" v-on:click="directoryAction('add')">ADD</button>
-							<button type="button" class="btn btn-primary btn-rounded" v-if="rootState == 'edit'" v-on:click="directoryAction('edit')">SAVE</button>
+							<button type="button" class="btn btn-secondary btn-rounded" v-on:click="$emit('set-state', 'init'); cancelAccessManager()">CANCEL</button>
+							<button type="button" class="btn btn-primary btn-rounded" v-if="rootState == 'add'" v-on:click="accessManagerAction('add')">ADD</button>
+							<button type="button" class="btn btn-primary btn-rounded" v-if="rootState == 'edit'" v-on:click="accessManagerAction('edit')">SAVE</button>
 						</div>
 					</div>
 				</div>
 			</aside>
-			<!-- <aside class="column column-aside manage-column" v-if="Object.keys(directory.directoryattributes).length > 0"> -->
-			<aside class="column column-aside manage-column" v-if="directory.directorytypeid == '11da556e-7c89-481b-80cf-6df70cb90d9e'">
+			<aside class="column column-aside manage-column" v-if="accessManager.accessmanagertypeid == '11da556e-7c89-481b-80cf-6df70cb90d9e'">
 				<div class="nicescroll-bar">
 					<div class="clearfix brd-b column-header column-min-button">
 						<h5 class="column-header-title">Configure</h5>
@@ -148,7 +120,7 @@
 						<div id="server" class="collapse field-tabs field-acc">
 							<div class="form-group">
 								<label>Name</label>
-								<input class="form-control" v-model="directory.directoryattributes.servers">
+								<input class="form-control" v-model="accessManager.accessmanagerattributes.servers">
 							</div>
 						</div>
 					</article>
@@ -161,18 +133,18 @@
 						<div id="schema" class="collapse field-tabs field-acc">
 							<div class="form-group">
 								<label>Name</label>
-								<input class="form-control" v-model="directory.directoryattributes.schema">
+								<input class="form-control" v-model="accessManager.accessmanagerattributes.schema">
 							</div>
 						</div>
 					</article>
 				</div>
 			</aside>
-			<aside class="column column-aside manage-column">
+			<aside class="column column-aside manage-column column-minimize">
 				<div class="nicescroll-bar">
 					<div class="clearfix brd-b column-header column-min-button">
 						<h5 class="column-header-title">Access Manager Types</h5>
 					</div>
-					<article v-for="(t,index) in directoryTypes" class="field-controls field-color-grey field-level-1">
+					<article v-for="(t,index) in accessManagerTypes" class="field-controls field-color-grey field-level-1">
 						<div class="field-sum">
 							<a href="#" class="field-link nav-caret" data-toggle="collapse" v-bind:data-target="'#t'+index" v-bind:aria-controls="'t'+index">
 								<strong class="font-weight-bold">{{t.typename}}</strong>
@@ -180,37 +152,44 @@
 							<div class="ficon-actions dropdown dropdown-hover">
 								<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
 								<ul class="dropdown-menu dropdown-menu-right" role="menu">
-									<li><a href="#" title="Add Access Manager Type" v-on:click="addType()"><i class="fas fa-lg fa-plus"></i> Add Access Manager Type</a></li>
-									<li><a title="Remove Access Manager Type" v-on:click="deleteType(t, index)"><i class="fa fa-trash-alt"></i> Remove Access Manager Type</a></li>
+									<li><a href="#" title="Add Access Manager Type" v-on:click="addType()"><i class="fas fa-lg fa-plus"></i> Add AM Type</a></li>
+									<li><a title="Remove Access Manager Type" v-on:click="deleteType(t, index)"><i class="fa fa-trash-alt"></i> Remove AM Type</a></li>
 								</ul>
 							</div>
 						</div>
-						<div v-bind:id="'t'+index" class="collapse field-acc">
-							<div class="form-group">
+						<div v-bind:id="'t'+index" class="collapse field-acc field-tabs">
+							<div class="form-group" v-bind:class="{ 'has-error': errors.has('name') }">
 								<label>Name</label>
-								<input class="form-control" placeholder="Required" v-model="t.typename">
+								<input class="form-control" name="name" placeholder="Required" v-model="t.typename">
+								<em v-bind:class="{ 'show': errors.has('name') }">{{ errors.first('name') }}</em>
 							</div>
 							<div class="form-group">
 								<label>Description</label>
 								<textarea class="form-control" v-model="t.description"></textarea>
 							</div>
-							<div class="form-group ">
+							<div class="form-group" v-bind:class="{ 'has-error': errors.has('organization') }">
 								<label>Organization Id</label>
-								<select class="form-control" v-model="t.organizationid">
-									<option v-for="(org,index) in orgOptions" :value="org.organizationid">{{org.name}}</option>
+								<select class="form-control" name="organization" v-model="t.organizationid" v-validate="'required'">
+									<option v-for="(org,index) in orgOptions" :value="org.uuid">{{org.name}}</option>
 								</select>
+								<em v-bind:class="{ 'show': errors.has('organization') }">{{ errors.first('organization') }}</em>
+							</div>
+							<div class="form-group d-flex justify-content-center">
+								<button type="button" class="btn btn-secondary btn-rounded mr-auto" v-if="!t.uuid" v-on:click="cancelAddType(t)">CANCEL</button>
+								<button type="button" class="btn btn-primary btn-rounded" v-if="!t.uuid" v-on:click="saveAddType(t)">ADD</button>
+								<button type="button" class="btn btn-primary btn-rounded" v-if="t.uuid" v-on:click="saveType(t)">SAVE</button>
 							</div>
 						</div>
 					</article>
 				</div>
 			</aside>
 			<div class="btn-float-br btn-float-under">
-				<button class="btn btn-xl btn-green btn-circle" v-on:click="$emit('set-state', 'add', 'init')" title="ADD NEW DIRECTORY "><i class="fas fa-plus"></i></button>
+				<button class="btn btn-xl btn-green btn-circle" v-on:click="$emit('set-state', 'add', 'init')" title="ADD NEW ACCESS MANAGER "><i class="fas fa-plus"></i></button>
 			</div>
 		</div>
-	</user-directories>
+	</access-managers>
 	</main>
 </div>
-<script id="reqVue" data-module="user-directories" data-main="/dist/js/main" src="/dist/js/lib/require.min.js"></script>
+<script id="reqVue" data-module="access-managers" data-main="/dist/js/main" src="/dist/js/lib/require.min.js"></script>
 </body>
 </html>
