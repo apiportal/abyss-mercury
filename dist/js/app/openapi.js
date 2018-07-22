@@ -2634,7 +2634,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 						if (this.api.originaldocument == null) {
 							Vue.set(this.api, 'originaldocument', this.swaggerText.text );
 						}
-
+						if (this.api.extendeddocument == null) {
+							Vue.set(this.api, 'extendeddocument', {} );
+						}
 						var item = _.cloneDeep(this.api);
 						item.openapidocument = postProcessDefinition(item.openapidocument);
 						this.validateOas(item.openapidocument)
