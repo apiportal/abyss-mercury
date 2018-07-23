@@ -1,6 +1,12 @@
 ﻿<!DOCTYPE html>
 <html class="vs-my-apis" lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:include="webroot/frags/layout/head.htm :: header">
+<script src="/dist/js/lib/jquery.min.js"></script>
+<script src="/dist/js/lib/thymus.min.js" id="thymus"
+	data-thx-base-path="." data-thx-frag-extension=".htm"
+	data-thx-head-frag="th:include=webroot/frags/layout/head.htm :: header"
+	data-thx-preload-js="/dist/js/loader.js"
+	data-thx-onfrags="fragsListener();" data-thx-onfrag="fragListener()"></script>
 <link href="/dist/css/obsidian.css" rel="stylesheet">
 <link href="/dist/css/jsoneditor.min.css" rel="stylesheet" type="text/css">
 </head>
@@ -20,7 +26,8 @@
 							<li><a href="#" v-on:click="sortList(sortApi, 'proxies', Array)"><i class="fas fa-code-branch"></i>Sort by Proxies</a></li>
 						</ul>
 					</div>
-					<h5 class="column-header-title">My APIs <small>All</small></h5>
+					<h5 class="column-header-title">My APIs</h5>
+					<span v-if="filterTxt != ''" v-on:click="getPage(1);filterTxt=''" class="badge badge-blue api-clear-filter">{{filterTxt}} <i class="fas fa-times"></i></span>
 				</div>
 				<div class="column-content">
 					<div class="nicescroll-bar">
@@ -48,7 +55,8 @@
 							<li><a href="#" v-on:click="sortList(sortApi, 'created', Date);"><i class="fas fa-calendar-alt"></i>Sort by Date</a></li>
 						</ul>
 					</div>
-					<h5 class="column-header-title">My Proxies <small>All</small></h5>
+					<h5 class="column-header-title">My Proxies</h5>
+					<span v-if="filterTxt != ''" v-on:click="getPage(1);filterTxt=''" class="badge badge-blue api-clear-filter">{{filterTxt}} <i class="fas fa-times"></i></span>
 				</div>
 				<div class="column-content">
 					<div class="nicescroll-bar">
@@ -103,7 +111,7 @@
 								</div>
 							</div>
 						</article>
-						<article class="field-controls field-level-0" data-id="Servers">
+						<article v-if="!api.isproxyapi" class="field-controls field-level-0" data-id="Servers">
 							<div class="field-sum">
 								<a href="#" class="field-link nav-caret" data-toggle="collapse" data-target="#servers" aria-controls="servers" aria-expanded="false">
 									<h6><i class="fa fa-fw fa-server"></i> Servers</h6>
@@ -117,9 +125,9 @@
 									<div class="field-controls field-color-grey field-level-1">
 										<div class="field-sum">
 											<a href="#" class="field-link nav-caret" data-toggle="collapse" v-bind:data-target="'#server'+sindex" v-bind:aria-controls="'server'+sindex">
-												<!-- <span>{{server.url}}</span> -->
-												<small class="d-block text-muted" v-if="$parent.api.isproxyapi">{{xServerUrl}}</small>
-												<strong class="d-block text-truncate">{{serverUrl}}</strong>
+												<span>{{server.url}}</span>
+												<!-- <small class="d-block text-muted" v-if="$parent.api.isproxyapi">{{xServerUrl}}</small> -->
+												<!-- <strong class="d-block txt-break">{{serverUrl}}</strong> -->
 											</a>
 										</div>
 										<div class="ficon-actions dropdown dropdown-hover">
@@ -183,6 +191,25 @@
 										</div>
 									</div>
 								</api-servers>
+							</div>
+						</article>
+						<article v-if="api.isproxyapi" class="field-controls field-level-0" data-id="Servers">
+							<div class="field-sum">
+								<a href="#" class="field-link nav-caret" data-toggle="collapse" data-target="#servers" aria-controls="servers" aria-expanded="false">
+									<h6><i class="fa fa-fw fa-server"></i> Servers</h6>
+								</a>
+							</div>
+							<div id="servers" class="collapse">
+								<div class="field-acc">
+									<a :href="apiGateway" target="_blank" class="form-group mb-2 d-block">
+										<strong class="d-block txt-break">{{apiGateway}}</strong>
+									</a>
+									<api-servers v-for="(server,sindex) in openapi.servers" :server="server" :sindex="sindex" :key="sindex" inline-template>
+										<div class="txt-break">
+											{{xServerUrl}}
+										</div>
+									</api-servers>
+								</div>
 							</div>
 						</article>
 						<article class="field-controls field-level-0" data-id="Info">
@@ -605,7 +632,7 @@
 								</span>
 							</div>
 							<div id="requestBodies" class="collapse field-color-grey field-level-1 field-tabs">
-								<api-requestbody v-for="(request, status, index) in openapi.components.requestBodies" :openapi="openapi" :response="request" :key="status" :status="status" :bindex="index" :method="openapi.components.requestBodies">
+								<api-requestbody v-for="(request, status, index) in openapi.components.requestBodies" :openapi="openapi" :response="request" :key="status" :status="status" :bindex="index" :method="openapi.components.requestBodies" :single="false">
 								</api-requestbody>
 							</div>
 						</article>
@@ -978,7 +1005,7 @@
 					<div class="ficon-act ficon-act-link" v-if="!method.requestBody">
 						<a class="w-100" v-on:click="addRequestBody(method, true)">Create Request Body <i class="fa fa-fw fa-plus"></i></a>
 					</div>
-					<api-requestbody v-if="method.requestBody" :openapi="openapi" :response="method.requestBody" status="requestBody" :bindex="index" :method="method"></api-requestbody>
+					<api-requestbody v-if="method.requestBody" :openapi="openapi" :response="method.requestBody" status="requestBody" :bindex="index" :method="method" :single="true"></api-requestbody>
 				</li>
 			</ul>
 			<ul class="field-controls" data-id="Security">
@@ -1145,7 +1172,7 @@
 					<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
 					<ul class="dropdown-menu dropdown-menu-right" role="menu">
 						<li><a title="Remove RequestBody" v-on:click="removeRequestBody(status)"><i class="fa fa-fw fa-trash-alt"></i> Remove RequestBody</a></li>
-						<li><a href="#" title="Add request body" v-on:click="addRequestBody(method)"><i class="fas fa-lg fa-plus"></i> Add request body</a></li>
+						<li v-if="!single"><a href="#" title="Add request body" v-on:click="addRequestBody(method)"><i class="fas fa-lg fa-plus"></i> Add request body</a></li>
 					</ul>
 				</div>
 			</div>
@@ -1400,9 +1427,41 @@
 						<div v-bind:id="name+'_item'+level+prpindex" class="collapse field-tabs">
 							<div class="field-acc">
 								<div class="form-group">
-									<label>Item Name</label>
+									<label class="d-block">Item Name <a href="#" class="float-right txt-blue bg-transparent" data-toggle="collapse" v-bind:data-target="'#'+name+'_item_anonymize'+level+prpindex" v-bind:aria-controls="name+'_item_anonymize'+level+prpindex">{{anonymize(key)}}</a></label>
 									<input class="form-control" placeholder="Required" v-on:focus="storeSchemaName(key)" v-on:change="renameSchema(key)" v-model.lazy="key">
 								</div>
+								<div class="collapse" v-bind:id="name+'_item_anonymize'+level+prpindex">
+								 	<div class="form-group">
+								 		<label>Anonymization Type</label>
+								 		<select class="form-control" v-model="child.properties[key]['x-abyss-privacy']['attributeClass']" v-on:change="privacyAttributeClass($event.target.value, child.properties[key]['x-abyss-privacy'])">
+								 			<option value="auxiliary" selected>Auxiliary</option>
+								 			<option title="44" value="id">Identifier</option>
+								 			<option title="44" value="sensitive">Sensitive</option>
+								 			<option title="88" value="qid">QuasiIdentifier</option>
+								 		</select>
+								 	</div>
+								 	<div class="form-group" v-if="action">
+								 		<label>Anonymization Action</label>
+								 		<select class="form-control" name="44" v-model="child.properties[key]['x-abyss-privacy']['action']" v-on:change="privacyAction($event.target.value, child.properties[key]['x-abyss-privacy'])">
+								 			<option value="remove">Remove</option>
+								 			<option title="66" value="mask">Mask</option>
+								 			<option title="66" value="generalize">Generalize</option>
+								 			<option title="66" value="passThrough">passThrough</option>
+								 		</select>
+								 	</div>
+								 	<div class="form-group" v-if="matchPattern">
+								 		<label>Anonymization Match Pattern</label>
+								 		<input class="form-control" name="66" type="text" v-model="child.properties[key]['x-abyss-privacy']['matchPattern']">
+								 	</div>
+								 	<div class="form-group" v-if="maskPattern">
+								 		<label>Anonymization Mask Pattern</label>
+								 		<input class="form-control" name="66" type="text" v-model="child.properties[key]['x-abyss-privacy']['maskPattern']">
+								 	</div>
+								 	<div class="form-group" v-if="generalizationLevel">
+								 		<label>Anonymization Generalization Level</label>
+								 		<input class="form-control" name="88" type="text" v-model="child.properties[key]['x-abyss-privacy']['generalizationLevel']">
+								 	</div>
+								 </div> 
 							</div>
 							<div class="field-acc">
 								<api-items :openapi="openapi" :child="child.properties[key]" :name="name+'_item'+level+prpindex" :level="levelPlusOne"></api-items>
@@ -1480,9 +1539,13 @@
 			<li>
 				<div class="px-3 txt-dark brd-t">
 					<div class="small pt-2">
-						<p>
+						<p v-if="!api.isproxyapi">
 							<strong class="d-block text-uppercase">Servers</strong> 
-							<span class="d-block text-truncate" v-for="(sv, index) in api.openapidocument.servers" v-bind:title="sv.url">{{sv.url}}</span>
+							<span class="d-block txt-break" v-for="(sv, index) in api.openapidocument.servers" v-bind:title="sv.url">{{sv.url}}</span>
+						</p>
+						<p v-if="api.isproxyapi">
+							<strong class="d-block text-uppercase">Server</strong> 
+							<span class="d-block txt-break">{{apiGateway}}</span>
 						</p>
 						<div class="fow form-row">
 							<p class="fol-6"><strong class="d-block text-uppercase">Visibility</strong><span class="text-capitalize">{{apiGetVisibilityName(api.apivisibilityid)}}</span></p>

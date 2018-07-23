@@ -19,7 +19,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select'], funct
 			},
 			activeVisibility: {
 				get() {
-					var slcVisibility = this.$root.rootData.myApiVisibilityList.find((el) => el.uuid == this.api.apivisibilityid );
+					var slcVisibility = this.$root.rootData.apiVisibilityList.find((el) => el.uuid == this.api.apivisibilityid );
 					if (slcVisibility) {
 						return slcVisibility.name;
 					}

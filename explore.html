@@ -28,6 +28,7 @@
 					</template>
 				</v-select>
 			</div>
+			<div class="text-center cursor-pointer"><span v-if="filterTxt != ''" v-on:click="getPage(1);filterTxt=''" class="btn btn-purple btn--sm mt-6 px-3">{{filterTxt}} <i class="fas fa-times ml-2"></i></span></div>
 			<div class="fow cards justify-content-center">
 				<api-list v-for="(api, index) in sortByNested(sortApi, apiList)" :api="api" :index="index" :key="api.uuid" inline-template>
 					<div th:replace="webroot/frags/api/api-preview.htm :: apiList"></div>

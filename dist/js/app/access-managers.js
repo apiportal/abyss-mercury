@@ -1,4 +1,39 @@
 define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(abyss, Vue, axios, VeeValidate, _, moment) {
+	Vue.component('access-manager-types', {
+		props: ['t','index', 'orgoptions'],
+		data() {
+			return {};
+		},
+		computed: {
+			stringifyTemplate : {
+				get() {
+					return JSON.stringify(this.t.attributetemplate, null, '\t');
+				},
+				set(newVal) {
+					console.log("newVal: ", newVal);
+					this.t.attributetemplate = JSON.parse(newVal);
+					console.log("this.t.attributetemplate: ", this.t.attributetemplate);
+				}
+			},
+		},
+		methods: {
+			addType() {
+				this.$parent.addType();
+			},
+			cancelAddType(t) {
+				this.$parent.cancelAddType(t);
+			},
+			saveAddType(t) {
+				this.$parent.saveAddType(t);
+			},
+			saveType(item) {
+				this.$parent.saveType(item);
+			},
+			deleteType(item) {
+				this.$parent.deleteType(item);
+			},
+		}
+	});
 	Vue.component('access-managers', {
 		props: {
 			rootState: { type: String }
@@ -50,7 +85,23 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 				end: []
 			};
 		},
+		computed: {
+			stringifyAttribute : {
+				get() {
+					return JSON.stringify(this.accessManager.accessmanagerattributes, null, '\t');
+				},
+				set(newVal) {
+					console.log("newVal: ", newVal);
+					this.accessManager.accessmanagerattributes = JSON.parse(newVal);
+					console.log("this.accessmanagerattributes: ", this.accessManager.accessmanagerattributes);
+				}
+			},
+		},
 		methods: {
+			getTemplate(typ) {
+				var type = this.accessManagerTypes.find((el) => el.uuid == typ );
+				Vue.set(this.accessManager, 'accessmanagerattributes', type.attributetemplate);
+			},
 			addType() {
 				var ttt = _.findIndex(this.accessManagerTypes, function(o) { return o.typename == 'newType'; });
 				if (ttt == -1) {
@@ -73,6 +124,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 				axios.post(abyss.ajax.access_manager_types, itemArr).then(response => {
 					console.log("access_manager_types response: ", response);
 					this.accessManagerTypes.push(response.data[0].response);
+					this.cancelAddType(t);
 					this.$emit('set-state', 'init');
 				}, error => {
 					this.handleError(error);

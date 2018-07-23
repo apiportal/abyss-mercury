@@ -320,7 +320,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 						// value.users = grpusr;
 					});
 					// 2DO append memberOptions.uuid
-					this.paginate = this.makePaginate(response.data);
+					this.paginate = this.makePaginate(this.groupList);
 					this.preload();
 				}, error => {
 					this.handleError(error);

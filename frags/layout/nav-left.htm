@@ -7,19 +7,26 @@
 				<a href="/abyss/index"><i class="fas fa-fw fa-home"></i><span class="right-nav-text">Dashboard</span></a>
 			</li>
 			<li>
+				<a href="/abyss/my-apis" class="js-collapse-open"><i class="fas fa-fw fa-cube"></i><span class="right-nav-text">My APIs</span></a>
+				<button type="button" data-toggle="collapse" data-target="#myApiTax" aria-controls="myApiTax" class="nav-caret" v-if="pageCurrent == 'my-apis'"></button>
+				<api-nav name="myApiTax" mygroups="myApiGroupList" mycategories="myApiCategoryList" mytags="myApiTagList" pagecurrent="pageCurrent" v-if="pageCurrent == 'my-apis'" inline-template>
+					<div th:replace="webroot/frags/api/api-nav.htm :: navTax"></div>
+				</api-nav>
+			</li>
+			<!-- <li>
 				<a href="/abyss/my-apis" class="js-collapse-open"><i class="fas fa-fw fa-cube"></i><span class="right-nav-text">My Business APIs</span></a>
 				<button type="button" data-toggle="collapse" data-target="#myApiTax" aria-controls="myApiTax" class="nav-caret" v-if="pageCurrent == 'my-apis'"></button>
-				<api-nav name="myApiTax" visibilityname="myApiVisibilityList" statename="myApiStateList" groupname="myApiGroupList" categoryname="myApiCategoryList" tagname="myApiTagList" pagecurrent="pageCurrent" v-if="pageCurrent == 'my-apis'" inline-template>
+				<api-nav name="myApiTax" mygroups="myBusinessGroups" mycategories="myBusinessCategories" mytags="myBusinessTags" pagecurrent="pageCurrent" v-if="pageCurrent == 'my-apis'" inline-template>
 					<div th:replace="webroot/frags/api/api-nav.htm :: navTax"></div>
 				</api-nav>
 			</li>
 			<li>
 				<a href="#" class="js-collapse-open"><i class="fas fa-fw fa-code-branch"></i><span class="right-nav-text">My Proxies</span></a>
 				<button type="button" data-toggle="collapse" data-target="#myProxyTax" aria-controls="myProxyTax" class="nav-caret" v-if="pageCurrent == 'my-apis'"></button>
-				<api-nav name="myProxyTax" visibilityname="myApiVisibilityList" statename="myApiStateList" groupname="myApiGroupList" categoryname="myApiCategoryList" tagname="myApiTagList" pagecurrent="pageCurrent" v-if="pageCurrent == 'my-apis'" inline-template>
+				<api-nav name="myProxyTax" mygroups="myProxyGroups" mycategories="myProxyCategories" mytags="myProxyTags" pagecurrent="pageCurrent" v-if="pageCurrent == 'my-apis'" inline-template>
 					<div th:replace="webroot/frags/api/api-nav.htm :: navTax"></div>
 				</api-nav>
-			</li>
+			</li> -->
 			<li>
 				<a href="/abyss/my-apps"><i class="fas fa-fw fa-cubes"></i><span class="right-nav-text">My Apps</span></a>
 			</li>
@@ -32,7 +39,7 @@
 			<li>
 				<a href="/abyss/explore" class="js-collapse-open"><i class="fas fa-fw fa-globe"></i><span class="right-nav-text">Explore</span></a>
 				<button type="button" data-toggle="collapse" data-target="#apiTax" aria-controls="apiTax" class="nav-caret" v-if="pageCurrent == 'explore'"></button>
-				<api-nav name="apiTax" visibilityname="apiVisibilityList" statename="apiStateList" groupname="apiGroupList" categoryname="apiCategoryList" tagname="apiTagList" :pagecurrent="pageCurrent" v-if="pageCurrent == 'explore'" inline-template>
+				<api-nav name="apiTax" mygroups="apiGroupList" mycategories="apiCategoryList" mytags="apiTagList" :pagecurrent="pageCurrent" v-if="pageCurrent == 'explore'" inline-template>
 					<div th:replace="webroot/frags/api/api-nav.htm :: navTax"></div>
 				</api-nav>
 			</li>

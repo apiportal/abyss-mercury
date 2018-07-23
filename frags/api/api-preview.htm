@@ -111,9 +111,13 @@
 							<div class="px-3">
 								<div class="fow small">
 									<div class="fol-sm-4 pt-3 pb-1 column-width preview--scroll">
-										<p class="">
+										<p v-if="!api.isproxyapi">
 											<strong class="lbl">Servers</strong> 
-											<span class="d-block text-truncate" v-for="(sv, index) in api.openapidocument.servers" v-bind:title="sv.url">{{sv.url}}</span>
+											<span class="d-block txt-break" v-for="(sv, index) in api.openapidocument.servers" v-bind:title="sv.url">{{sv.url}}</span>
+										</p>
+										<p v-if="api.isproxyapi">
+											<strong class="lbl">Server</strong> 
+											<span class="d-block txt-break">{{apiGateway}}</span>
 										</p>
 										<p class="" v-if="api.openapidocument.info.license">
 											<strong class="lbl">License</strong>{{api.openapidocument.info.license.name}}

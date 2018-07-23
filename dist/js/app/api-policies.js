@@ -152,12 +152,10 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 				axios.get(this.ajaxUrl, this.ajaxHeaders)
 				.then(response => {
 					this.policyList = response.data;
-
 					this.policyList.forEach((value, key) => {
 						this.getResources(value, 'POLICY', value.name, value.description);
 					});
-
-					this.paginate = this.makePaginate(response.data);
+					this.paginate = this.makePaginate(this.policyList);
 					this.preload();
 				}, error => {
 					this.handleError(error);

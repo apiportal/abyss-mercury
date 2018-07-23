@@ -40,6 +40,13 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 					"resourceid": null,
 					"resourceactionid": null,
 					"accessmanagerid": null,
+					"isactive": true,
+					"resourceAction": {},
+					"accessManager": {},
+					"resource": {
+						"resourceType": {}
+					},
+					"subject": {}
 				},
 				selectedPermission: {},
 				newPermission: {},
@@ -101,12 +108,20 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 				if (item.organizationid == null) {
 					Vue.set(item,'organizationid',this.$root.abyssOrgId);
 				}
+				if (item.effectiveenddate == null) {
+					Vue.set(item, 'effectiveenddate', moment().add(6, 'months').format('YYYY-MM-DD HH:mm:ss'));
+				}
+				if (item.effectivestartdate == null) {
+					Vue.set(item, 'effectivestartdate', moment().format('YYYY-MM-DD HH:mm:ss'));
+				}
 			},
 			selectPermission(item, i) {
 				this.fixProps(item);
 				this.selectedPermission = _.cloneDeep(item);
 				this.permission = item;
 				this.selected = i;
+				// console.log("this.permission: ", JSON.stringify(this.permission, null, '\t'));
+
 			},
 			isSelected(i) {
 				return i === this.selected;
@@ -132,6 +147,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 				Vue.delete(item, 'resource');
 				Vue.delete(item, 'accessManager');
 				Vue.delete(item, 'resourceAction');
+				Vue.delete(item, 'organization');
 				Vue.delete(item, 'subject');
 				item.effectivestartdate = moment(item.effectivestartdate).toISOString();
 				item.effectiveenddate = moment(item.effectiveenddate).toISOString();
@@ -144,6 +160,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 							this.fixProps(this.permission);
 							var itemArr = [];
 							itemArr.push(this.deleteProps());
+							console.log("this.deleteProps(): ", this.deleteProps());
 							axios.post(abyss.ajax.permission_list, itemArr, this.ajaxHeaders).then(response => {
 								console.log("addPermission response: ", response);
 								if (response.data[0].status != 500 ) {
@@ -156,9 +173,10 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 							});
 						}
 						if (act == 'edit') {
+							console.log("this.deleteProps(): ", this.deleteProps());
 							this.updateItem(abyss.ajax.permission_list + '/' + this.permission.uuid, this.deleteProps(), this.ajaxHeaders, this.permissionList).then(response => {
 								console.log("editPermission response: ", response);
-								var item = response.data[0];
+								this.getPage(1);
 								this.$emit('set-state', 'init');
 								this.permission = _.cloneDeep(this.newPermission);
 								this.selected = null;
@@ -207,19 +225,21 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 					Vue.set(value.resourceAction, 'resourceType', rTyp.type );
 					var acMn = _.find(this.accessManagerOptions, { 'uuid': value.accessmanagerid });
 					Vue.set(value, 'accessManager', acMn );
+					var pOrg = _.find(this.orgOptions, { 'uuid': value.organizationid });
+					Vue.set(value, 'organization', pOrg );
 					var aTyp = _.find(this.accessManagerTypes, { 'uuid': acMn.accessmanagertypeid });
 					Vue.set(value.accessManager, 'accessManagerType', aTyp );
 					axios.get(abyss.ajax.resources + value.resourceid).then(response => {
 						Vue.set(value, 'resource', response.data[0] );
 						var rTyp = _.find(this.$root.rootData.resourceTypes, { 'uuid': value.resource.resourcetypeid });
-						Vue.set(value.resource, 'resourceType', rTyp.type );
-					}, error => {
-						this.handleError(error);
-					});
-					axios.get(abyss.ajax.subjects + '/' + value.subjectid).then(response => {
-						Vue.set(value, 'subject', response.data[0] );
-						var sTyp = _.find(this.subjectTypes, { 'uuid': value.subject.subjecttypeid });
-						Vue.set(value.subject, 'subjectType', sTyp.typename );
+						Vue.set(value.resource, 'resourceType', rTyp );
+						axios.get(abyss.ajax.subjects + '/' + value.subjectid).then(response => {
+							Vue.set(value, 'subject', response.data[0] );
+							var sTyp = _.find(this.subjectTypes, { 'uuid': value.subject.subjecttypeid });
+							Vue.set(value.subject, 'subjectType', sTyp.typename );
+						}, error => {
+							this.handleError(error);
+						});
 					}, error => {
 						this.handleError(error);
 					});
@@ -264,7 +284,17 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 					// this.orgOptions = this.$root.rootData.user.organizations;
 					this.orgOptions = organizations_list.data;
 					this.resourceActionOptions = this.$root.rootData.resourceActions;
-					this.getPage(1);
+					this.$root.rootData.resourceTypes.forEach((value, key) => {
+						if (value.type == 'API') {
+							Vue.set(value, 'subjectTypeId', 'ca80dd37-7484-46d3-b4a1-a8af93b2d3c6' ); // APP
+						} else {
+							Vue.set(value, 'subjectTypeId', '21371a15-04f8-445e-a899-006ee11c0e09' ); // USER
+						}
+					});
+					console.log("this.$root.rootData.resourceTypes: ", this.$root.rootData.resourceTypes);
+					// setTimeout(() => {
+						this.getPage(1);
+					// },100);
 				})
 			).catch(error => {
 				this.handleError(error);

@@ -8,6 +8,8 @@ define(['global'], function(abyss){
 	var abyssPort = hostPort;
 	var abyssJsonPort = hostJsonPort;
 	var abyssYamlPort = hostPort;
+	var abyssGatewayPath = gatewayContext;
+	var abyssGatewayPort = gatewayPort;
 	var abyssPath = 'abyss/oapi';
 	var abyssYamlPath = 'abyss/openapi';
 	var abyssJsonPath = 'data';
@@ -15,6 +17,19 @@ define(['global'], function(abyss){
 	var abyssLocation = abyssProtocol + '://' + abyssHost + ':' + abyssPort + '/' + abyssPath;
 	var abyssJsonLocation = abyssProtocol + '://' + abyssHost + ':' + abyssJsonPort + '/' + abyssJsonPath;
 	var abyssYamlLocation = abyssProtocol + '://' + abyssHost + ':' + abyssYamlPort + '/' + abyssYamlPath;
+	var abyssGatewayUrl = abyssProtocol + '://' + abyssHost + ':' + abyssGatewayPort + '/' + abyssGatewayPath;
+	// gateway url = hostProtocol+host+gatewayPort+gatewayContext
+	// if (abyssHost.indexOf(".com") >= 0) {
+	if (hostProtocol == 'https') {
+		abyssLocation = abyssProtocol + '://' + abyssHost + '/' + abyssPath;
+		abyssJsonLocation = abyssProtocol + '://' + abyssHost + '/' + abyssJsonPath;
+		abyssYamlLocation = abyssProtocol + '://' + abyssHost + '/' + abyssYamlPath;
+		abyssGatewayUrl = abyssProtocol + '://' + abyssHost + '/' + abyssGatewayPath;
+	}
+	// console.log("abyssLocation: ", abyssLocation);
+	// console.log("abyssJsonLocation: ", abyssJsonLocation);
+	// console.log("abyssYamlLocation: ", abyssYamlLocation);
+	// console.log("abyssGatewayUrl: ", abyssGatewayUrl);
 	// https://dev2.apiportal.com/abyss/oapi/
 	// https://dev2.apiportal.com/abyss/openapi/xxx.yaml
 	var abyssDataList = {
@@ -24,8 +39,6 @@ define(['global'], function(abyss){
 		api_states_list: '/api-states',
 		// https://dev2.apiportal.com/abyss/openapi/ApiVisibilityType.yaml
 		api_visibility_list: '/api-visibility-types',
-		// https://dev2.apiportal.com/abyss/openapi/ApiGroup.yaml
-		api_group_list: '/api-groups',
 		// https://dev2.apiportal.com/abyss/openapi/Subject.yaml
 		subjects: '/subjects', //uuid
 		user_list: '/subjects/users/', //ABYSSP-205 NOT/NOW /subjects/users/{uuid]
@@ -34,10 +47,6 @@ define(['global'], function(abyss){
 		subject_app_list: '/subject-apps', //uuid N/A
 		subject_app_subject_list: '/subject-apps/subject/', //uuid ABYSSP-183 GET
 		subjects_changepassword: '/subjects/{uuid}/changepassword/', //2DO ABYSSP-76 PUT oldpassword,newpassword,confirmpassword,crudsubjectid
-		// https://dev2.apiportal.com/abyss/openapi/ApiCategory.yaml
-		api_category_list: '/api-categories',
-		// https://dev2.apiportal.com/abyss/openapi/ApiTag.yaml
-		api_tag_list: '/api-tags',
 		// https://dev2.apiportal.com/abyss/openapi/SubjectGroup.yaml
 		user_group_list: '/subject-groups',
 		// https://dev2.apiportal.com/abyss/openapi/SubjectPermission.yaml
@@ -62,17 +71,6 @@ define(['global'], function(abyss){
 		my_proxy_api_list: '/apis/proxies/subject/',
 		proxy_list: '/apis/proxies/',
 		business_list: '/apis/businesses/',
-
-		business_tag_subject: '/apis/businesses/tag/{tag}/subject/', //2DO uuid ABYSSP-85
-		business_category_subject: '/apis/businesses/category/{category}/subject/', //2DO uuid ABYSSP-85
-		business_group_subject: '/apis/businesses/group/{group}/subject/', //2DO uuid ABYSSP-85
-		proxies_tag_subject: '/apis/proxies/group/{group}/subject/', //2DO uuid ABYSSP-85
-		proxies_category_subject: '/apis/proxies/category/{category}/subject/', //2DO uuid ABYSSP-85
-		proxies_group_subject: '/apis/proxies/tag/{tag}/subject/', //2DO uuid ABYSSP-85
-
-		businesses_group_subject_aggregate: '/apis/businesses/subject/{uuid}/tags/aggregate/{aggregation}', //2DO ABYSSP-00
-		businesses_group_subject: '/apis/businesses/subject/{uuid}/tags/', //2DO ABYSSP-00
-
 		// https://dev2.apiportal.com/abyss/openapi/Organization.yaml
 		organizations_list: '/organizations/',
 		subject_organizations_list: '/subject-organizations/subject/',
@@ -86,25 +84,6 @@ define(['global'], function(abyss){
 		// https://dev2.apiportal.com/abyss/openapi/SubjectMembership.yaml
 		subject_memberships: '/subject-memberships',
 		subject_memberships_subject: '/subject-memberships/subject/',
-		// https://dev2.apiportal.com/abyss/openapi/ApiApiTag.yaml
-		api_tag: '/api-api-tags', //uuid
-		api_tag_subject: '/api-api-tags/subject/', //2DO uuid ABYSSP-00 GET
-		api_tag_api: '/api-api-tags/api/', //2DO uuid ABYSSP-14 GET
-		api_tag_proxies_subject: '/api-api-tags/proxies/subject/', //2DO uuid ABYSSP-14 GET
-		api_tag_businesses_subject: '/api-api-tags/businesses/subject/', //2DO uuid ABYSSP-12 GET
-		// https://dev2.apiportal.com/abyss/openapi/ApiApiGroup.yaml
-		api_group: '/api-api-groups', //uuid
-		api_group_subject: '/api-api-groups/subject/', //2DO uuid ABYSSP-18
-		api_group_api: '/api-api-groups/api/', //2DO uuid ABYSSP-16
-		api_group_proxies_subject: '/api-api-groups/proxies/subject/', //2DO uuid ABYSSP-20
-		api_group_businesses_subject: '/api-api-groups/businesses/subject/', //2DO uuid ABYSSP-18
-		// https://dev2.apiportal.com/abyss/openapi/ApiApiCategory.yaml
-		api_category: '/api-api-categories',
-		api_category_subject: '/api-api-categories/subject/', //2DO uuid ABYSSP-22
-		api_category_api: '/api-api-categories/api/', //2DO uuid ABYSSP-00
-		api_category_proxies_subject: '/api-api-categories/proxies/subject/', //2DO uuid ABYSSP-26
-		api_category_businesses_subject: '/api-api-categories/businesses/subject/', //2DO uuid ABYSSP-24
-
 		// https://dev2.apiportal.com/abyss/openapi/Policy.yaml
 		policies_list: '/policies/',
 		subject_policies_list: '/policies/subject/',
@@ -132,6 +111,43 @@ define(['global'], function(abyss){
 		access_managers: '/access-managers',
 		// https://dev2.apiportal.com/abyss/openapi/AccessManagerType.yaml
 		access_manager_types: '/access-manager-types',
+
+		// https://dev2.apiportal.com/abyss/openapi/ApiCategory.yaml
+		api_category_list: '/api-categories', // GPDP
+		// https://dev2.apiportal.com/abyss/openapi/ApiTag.yaml
+		api_tag_list: '/api-tags', // GPDP
+		// https://dev2.apiportal.com/abyss/openapi/ApiGroup.yaml
+		api_group_list: '/api-groups', // GPDP
+
+		// https://dev2.apiportal.com/abyss/openapi/ApiApiTag.yaml
+		api_tag: '/api-api-tags', //uuid GPDP apiid, apitagid
+		api_tag_api: '/api-api-tags/api/', // uuid GET only uuid, name
+		api_tag_subject: '/api-api-tags/subject/', // uuid GET only uuid, name
+		api_tag_proxies_subject: '/api-api-tags/proxies/subject/', //2DO uuid GET only uuid, name
+		api_tag_businesses_subject: '/api-api-tags/businesses/subject/', //2DO uuid GET only uuid, name
+		// https://dev2.apiportal.com/abyss/openapi/ApiApiGroup.yaml
+		api_group: '/api-api-groups', //uuid GPDP apiid, apigroupid
+		api_group_api: '/api-api-groups/api/', // uuid GET only uuid, name
+		api_group_subject: '/api-api-groups/subject/', // uuid GET only uuid, name
+		api_group_proxies_subject: '/api-api-groups/proxies/subject/', //2DO uuid GET only uuid, name
+		api_group_businesses_subject: '/api-api-groups/businesses/subject/', //2DO uuid GET only uuid, name
+		// https://dev2.apiportal.com/abyss/openapi/ApiApiCategory.yaml
+		api_category: '/api-api-categories', //uuid GPDP apiid, apicategoryid
+		api_category_api: '/api-api-categories/api/', // uuid GET only uuid, name
+		api_category_subject: '/api-api-categories/subject/', // uuid GET only uuid, name
+		api_category_proxies_subject: '/api-api-categories/proxies/subject/', //2DO uuid GET only uuid, name
+		api_category_businesses_subject: '/api-api-categories/businesses/subject/', //2DO uuid GET only uuid, name
+
+		business_tag_subject: '/apis/businesses/tag/{tag}/subject/', // GET api list
+		business_category_subject: '/apis/businesses/category/{category}/subject/', // GET api list
+		business_group_subject: '/apis/businesses/group/{group}/subject/', // GET api list
+		proxies_tag_subject: '/apis/proxies/group/{group}/subject/', // GET api list
+		proxies_category_subject: '/apis/proxies/category/{category}/subject/', // GET api list
+		proxies_group_subject: '/apis/proxies/tag/{tag}/subject/', // GET api list
+
+		businesses_group_subject_aggregate: '/apis/businesses/subject/{uuid}/tags/aggregate/{aggregation}', //2DO https://dev2.apiportal.com/abyss/oapi/apis/businesses/subject/9820d2aa-eb02-4a58-8cc5-8b9a89504df9/tags/aggregate/count
+		businesses_group_subject: '/apis/businesses/subject/{uuid}/tags/', //2DO https://dev2.apiportal.com/abyss/oapi/apis/businesses/subject/9820d2aa-eb02-4a58-8cc5-8b9a89504df9/tags/ ?? GETS ALL APIS
+
 	};
 	var abyssJsonList = {
 		index: '/index.json',
@@ -176,6 +192,7 @@ define(['global'], function(abyss){
 		thy: true,
 		abyssVersion: abyssVersion,
 		isAbyssSandbox: isAbyssSandbox,
+		abyssGatewayUrl: abyssGatewayUrl,
 		abyssLocation: abyssLocation,
 		abyssYamlLocation: abyssYamlLocation,
 		abyssCredentials: abyssCredentials,

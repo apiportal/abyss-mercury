@@ -1,4 +1,5 @@
-define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(abyss, Vue, axios, VeeValidate, _, moment) {
+define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-select'], function(abyss, Vue, axios, VeeValidate, _, moment, VueSelect) {
+	Vue.component('v-select', VueSelect.VueSelect);
 	Vue.component('api-list', {
 		props: ['api', 'index'],
 		data() {
@@ -108,6 +109,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 			regenKey() {
 				Vue.set(this.app, 'uuid',this.uuidv4());
 			},
+			filterApp() {
+				
+			},
 			cancelApp() {
 				if (!this.preventCancel) {
 					this.preventCancel = false;
@@ -175,10 +179,10 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 			isSelected(i) {
 				return i === this.selected;
 			},
+			// 2DO
 			deleteApp(item) {
 				var r = confirm('Are you sure to delete?');
 				if (r == true) {
-					// 2ASK NOT DELETING in apps deleting in users this.deleteProps()
 					axios.delete(abyss.ajax.subjects + '/' + item.uuid, item).then(response => {
 						item.isdeleted = true;
 						console.log("DELETE app response: ", response);
@@ -355,10 +359,20 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 				subsArr.push(subscription);
 				console.log("subsArr: ", subsArr);
 				axios.post(abyss.ajax.permission_list, subsArr).then(response => {
-					console.log("POST app to app subscription response: ", response);
+					console.log("POST user to app subscription response: ", response);
 					var subs = response.data[0].response;
 					Vue.set(this.app, 'permission', subs);
 					this.createAccessTokens(this.app, 'APP', subs);
+				}, error => {
+					this.handleError(error);
+				});
+				var consume = _.cloneDeep(subscription);
+				Vue.set(consume, 'resourceactionid', '761c8386-4624-416e-b9e4-b59ea2c597fc');
+				var consumeArr = [];
+				consumeArr.push(subscription);
+				console.log("consumeArr: ", consumeArr);
+				axios.post(abyss.ajax.permission_list, consumeArr).then(response => {
+					console.log("POST user to app consume subscription response: ", response);
 				}, error => {
 					this.handleError(error);
 				});

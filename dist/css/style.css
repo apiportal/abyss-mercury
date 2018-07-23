@@ -11942,10 +11942,12 @@ tbody.collapse .in, tbody.collapse .show {
   .card-title > * {
     margin: 0; }
 
-.cards {
-  padding: 15px; }
-  .cards .card {
-    height: 100%; }
+@media (min-width: 768px) {
+  .cards {
+    padding: 15px; } }
+
+.cards .card {
+  height: 100%; }
 
 .breadcrumbs {
   overflow-x: hidden;
@@ -12817,11 +12819,17 @@ tbody tr.active {
   height: 100%; }
   .page-centered main, .page-auth main, .page-error main {
     padding: 81px 15px 15px 15px; }
-  .page-centered h1, .page-auth h1, .page-error h1, .page-centered h2, .page-auth h2, .page-error h2, .page-centered h3, .page-auth h3, .page-error h3, .page-centered h4, .page-auth h4, .page-error h4, .page-centered h5, .page-auth h5, .page-error h5, .page-centered h6, .page-auth h6, .page-error h6, .page-centered p, .page-auth p, .page-error p {
-    text-align: center; }
+  .page-centered h1, .page-auth h1, .page-error h1, .page-centered h2, .page-auth h2, .page-error h2, .page-centered h3, .page-auth h3, .page-error h3, .page-centered h4, .page-auth h4, .page-error h4, .page-centered h6, .page-auth h6, .page-error h6, .page-centered label, .page-auth label, .page-error label, .page-centered footer, .page-auth footer, .page-error footer {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.65); }
   .page-centered h1, .page-auth h1, .page-error h1 {
     color: #177ec1;
-    font-size: 28px; }
+    font-size: 28px;
+    color: white; }
+  .page-centered .form-group a, .page-auth .form-group a, .page-error .form-group a {
+    color: #fff; }
+    .page-centered .form-group a:hover, .page-auth .form-group a:hover, .page-error .form-group a:hover {
+      color: #00bbbb; }
   .page-centered h6, .page-auth h6, .page-error h6 {
     font-weight: normal; }
   .page-centered .navbar, .page-auth .navbar, .page-error .navbar {
@@ -12861,6 +12869,15 @@ tbody tr.active {
         font-weight: 700; }
     .page-centered .logo-main sup, .page-auth .logo-main sup, .page-error .logo-main sup {
       font-size: 12px; }
+  .page-centered body, .page-auth body, .page-error body {
+    background-image: url("/dist/img/abyss_bg_01.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center; }
+  .page-centered .has-error .form-control, .page-auth .has-error .form-control, .page-error .has-error .form-control {
+    border-color: #ec7700; }
+  .page-centered .has-error em, .page-auth .has-error em, .page-error .has-error em {
+    color: #ec7700; }
 
 @media (min-width: 576px) {
   .page-centered body, .page-auth body, .page-error body {
@@ -13588,7 +13605,7 @@ a#toggle_mobile_nav {
       align-items: center; }
       .navbar .mobile-only-brand .nav-header {
         text-align: center;
-        width: 100%; }
+        width: 120px; }
     .navbar a.toggle-left-nav-btn {
       left: 1px;
       position: absolute;
@@ -14965,8 +14982,17 @@ a#toggle_mobile_nav {
   height: 120px; }
 
 .card-scroll {
-  height: calc(55vh - (66px + 120px + 46px));
+  height: calc(100vh - (66px + 120px + 46px));
   overflow: hidden; }
+  @media (min-width: 768px) {
+    .card-scroll {
+      height: calc(50vh - (66px + 56px)); } }
+  @media (min-width: 992px) {
+    .card-scroll {
+      height: calc(50vh - (66px + 56px)); } }
+  @media (min-width: 1200px) {
+    .card-scroll {
+      height: calc(100vh - (66px + 60px + 46px)); } }
 
 .preview-overlay {
   position: fixed;
@@ -15136,6 +15162,22 @@ a#toggle_mobile_nav {
 .is-sandbox .sandbox-item {
   display: block !important; }
 
+.is-deleted {
+  position: relative; }
+  .is-deleted > * {
+    opacity: 0.5; }
+  .is-deleted:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid #e31e1e;
+    border-bottom: 10px solid transparent;
+    height: 0;
+    width: 0;
+    z-index: 1; }
+
 .api-unsubscribed {
   position: relative; }
   .api-unsubscribed > * {
@@ -15236,14 +15278,20 @@ th.asc, th.desc {
 th.desc:before {
   content: "\f0d8"; }
 
-.ico-visibility-1:before {
+.ico-visibility-e63c2874-aa12-433c-9dcf-65c1e8738a14:before {
   content: "\f06e"; }
 
-.ico-visibility-2:before {
+.ico-visibility-043d4827-cff4-43f9-9d5b-782d1f83b3f0:before {
   content: "\f21b"; }
 
-.ico-visibility-3:before {
+.ico-visibility-dbe39c26-3a5b-4110-ab92-c6db7fa811c8:before {
   content: "\f007"; }
+
+.api-clear-filter {
+  position: absolute;
+  right: 46px;
+  top: 14px;
+  cursor: pointer; }
 
 .stat-Initial {
   color: #8b8e91; }

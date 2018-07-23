@@ -13,7 +13,6 @@
 	<div th:replace="webroot/frags/layout/navs.htm :: navs"></div>
 	<main class="page-wrapper">
 	<index inline-template ref="refPage" v-on:set-state="setState" v-on:set-page="setPage" v-bind:root-state="rootState" v-if="!$root.isLoading">
-		<!-- <section class="xxx" v-if="!isLoading"> -->
 		<section class="xxx" v-if="!isLoading">
 			<transition name="fade">
 			<div th:replace="webroot/frags/api/api-preview.htm :: apiPreview"></div>
@@ -21,32 +20,24 @@
 			<transition name="fade">
 			<div th:replace="webroot/frags/api/app-preview.htm :: appPreview"></div>
 			</transition>
-
 			<div class="fow cards justify-content-center">
-				<div class="fol-sm-6 fol-xlm-4 fol-xll-3 p-3 card-item">
+				<div class="fol-sm-6 fol-lg-3 fol-xll-3 p-3 card-item">
 					<div class="card">
 						<div class="card-scroll">
 							<div class="nicescroll-bar">
-								<div class="fow m-0 pt-3 justify-content-center">
-									<div class="fol">
-										<div class="bg-pink dash-circle d-inline-block txt-white text-center p-3 float-right">
-											My<br>Subscribers
-											<h1 class="m-0">{{mySubscribers}}</h1>
-										</div>
-									</div>
-									<div class="fol">
-										<div class="bg-cyan dash-circle d-inline-block txt-white text-center p-3">
-											My<br>Subscriptions
-											<h1 class="m-0">{{mySubscriptions}}</h1>
-										</div>
-									</div>
+								<div class="bg-pink txt-white text-center p-3 justify-content-center">
+									My<br>Subscribers
+									<h1 class="mb-0 mt-2">{{mySubscribers}}</h1>
+								</div>
+								<div class="bg-cyan txt-white text-center p-3 justify-content-center">
+									My<br>Subscriptions
+									<h1 class="mb-0 mt-2">{{mySubscriptions}}</h1>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-
-				<div class="fol-sm-6 fol-xlm-6 fol-xll-6 p-3 card-item">
+				<div class="fol-sm-6 fol-lg-3 fol-xll-3 p-3 card-item">
 					<div class="card">
 						<div class="card-title"><h6>My APPS</h6></div>
 						<div class="card-scroll">
@@ -76,7 +67,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="fol-sm-6 fol-xlm-4 fol-xll-3 p-3 card-item">
+				<div class="fol-sm-6 fol-lg-3 fol-xll-3 p-3 card-item">
 					<div class="card">
 						<div class="card-title"><h6>My Proxy APIs</h6></div>
 						<div class="card-scroll">
@@ -88,7 +79,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="fol-sm-6 fol-xlm-4 fol-xll-3 p-3 card-item">
+				<div class="fol-sm-6 fol-lg-3 fol-xll-3 p-3 card-item">
 					<div class="card">
 						<div class="card-title"><h6>My Business APIs</h6></div>
 						<div class="card-scroll">
@@ -100,7 +91,6 @@
 						</div>
 					</div>
 				</div>
-
 			</div>
 		</section>
 	</index>

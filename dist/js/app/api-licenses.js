@@ -185,7 +185,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment'], funct
 						this.getResources(value, 'LICENSE', value.name, value.licensedocument.info.description);
 					});
 					// this.licenseList = newLcs;
-					this.paginate = this.makePaginate(response.data);
+					this.paginate = this.makePaginate(this.licenseList);
 					this.preload();
 				}, error => {
 					this.handleError(error);

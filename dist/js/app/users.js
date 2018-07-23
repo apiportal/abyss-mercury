@@ -450,7 +450,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 						this.preload();
 					});
 					// 2DO append memberOptions.uuid
-					this.paginate = this.makePaginate(response.data);
+					this.paginate = this.makePaginate(this.userList);
 				}, error => {
 					this.handleError(error);
 				});

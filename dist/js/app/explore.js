@@ -47,6 +47,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select'], funct
 				},
 				pageState: 'init',
 				paginate: {},
+				filterTxt: '',
 				ajaxUrl: abyss.ajax.proxy_list,
 				ajaxHeaders: {},
 				dashboardList: [],
@@ -87,19 +88,27 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select'], funct
 						if (response.data != null) {
 							this.apiList = [];
 							this.apiList.push(filter);
-							// this.paginate = this.makePaginate(response.data);
+							this.filterTxt = 'Search Result';
 						}
 					}, error => {
 						this.handleError(error);
 					});
 				}
 			},
-			getPage(p, d) {
+			getPage(p, px, nm) {
+				var pxEndpoint = this.ajaxUrl;
+				if (px) {
+					pxEndpoint = px;
+				}
+				if (nm) {
+					this.filterTxt = nm;
+				}
 				axios.all([
-					axios.get(this.ajaxUrl),
+					axios.get(pxEndpoint),
 				]).then(
 					axios.spread((api_list) => {
 						// this.apiList = api_list.data.filter( (item) => item.isdeleted == false && item.apivisibilityid == 'e63c2874-aa12-433c-9dcf-65c1e8738a14' );
+						// this.apiList = api_list.data;
 						this.apiList = api_list.data.filter( (item) => item.apivisibilityid == 'e63c2874-aa12-433c-9dcf-65c1e8738a14' );
 						this.paginate = this.makePaginate(api_list.data);
 						this.preload();
