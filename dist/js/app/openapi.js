@@ -2233,6 +2233,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				Vue.delete(item, 'specs');
 				Vue.delete(item, 'licenses');
 				Vue.delete(item, 'resource');
+				Vue.delete(item, 'apioriginuuid');
 				return item;
 			},
 			apiChangeEnvironment(item, val) {
@@ -2605,8 +2606,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 						}
 						var item = _.cloneDeep(this.api);
 						Vue.delete(item, 'businessapiid');
-						Vue.delete(item, 'apioriginuuid');
-						
 						item.openapidocument = postProcessDefinition(item.openapidocument);
 						this.validateOas(item.openapidocument)
 						.then(response => {
