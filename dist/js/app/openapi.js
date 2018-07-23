@@ -231,31 +231,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 // ■■■■■■■■ MIXINS ■■■■■■■■ //
 	const mixOas = {
 		computed: {
-			/*compCategoriesToList : {
-				get() {
-					if (this.api.categories == null) {
-						this.api.categories = [];
-					}
-					// console.log("this.index: ", this.lindex);
-					return this.api.categories.map(e => e.name).join(', ');
-				},
-			},
-			compTagsToList : {
-				get() {
-					if (this.api.tags == null) {
-						this.api.tags = [];
-					}
-					return this.api.tags.map(e => e.name).join(', ');
-				},
-			},
-			compGroupsToList : {
-				get() {
-					if (this.api.groups == null) {
-						this.api.groups = [];
-					}
-					return this.api.groups.map(e => e.name).join(', ');
-				},
-			},*/
+			
 		},
 		methods: {
 			// ■■ root
@@ -277,16 +253,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					});
 				}
 			},
-			// ■■ my-api-list, api-preview
-			/*apiGetStateName(val) {
-				var slcState = this.$root.rootData.myApiStateList.find((el) => el.uuid == val );
-				return slcState.name;
-			},
-			apiGetVisibilityName(val) {
-				var slcVisibility = this.$root.rootData.myApiVisibilityList.find((el) => el.uuid == val );
-				return slcVisibility.name;
-			},*/
-			
 			// ■■ api-mediatype, api-parameter, api-items, my-apis
 			mixEditSchema(obj, key, openapi) {
 				if (!obj[key]) {
@@ -2638,6 +2604,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 							Vue.set(this.api, 'extendeddocument', {} );
 						}
 						var item = _.cloneDeep(this.api);
+						Vue.delete(item, 'businessapiid');
+						Vue.delete(item, 'apioriginuuid');
+						
 						item.openapidocument = postProcessDefinition(item.openapidocument);
 						this.validateOas(item.openapidocument)
 						.then(response => {
