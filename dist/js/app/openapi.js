@@ -2582,11 +2582,11 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					return Promise.reject(error);
 				});
 			},
-			saveMyApi() {
+			saveMyApiiii() {
 				this.saveTaxonomies();
 			},
 			// 2UNDO
-			saveMyApiiii() {
+			saveMyApi() {
 				// this.extDoc(this.api);
 				var item = _.cloneDeep(this.api);
 				item.openapidocument = postProcessDefinition(item.openapidocument);
