@@ -1533,6 +1533,22 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 					$('.nicescroll-bar').slimscroll({height:'100%',color: '#878787', disableFadeOut : true,borderRadius:0,size:'4px',alwaysVisible:false});
 				});
 			},
+			getTaxData() {
+				axios.all([
+					axios.get(abyss.ajax.api_tag_subject + this.$root.rootData.user.uuid),
+					axios.get(abyss.ajax.api_group_subject + this.$root.rootData.user.uuid),
+					axios.get(abyss.ajax.api_category_subject + this.$root.rootData.user.uuid),
+				]).then(
+					axios.spread(( api_tag_subject, api_group_subject, api_category_subject) => {
+						Vue.set(this.rootData, 'myApiGroupList', api_group_subject.data );
+						Vue.set(this.rootData, 'myApiCategoryList', api_category_subject.data );
+						Vue.set(this.rootData, 'myApiTagList', api_tag_subject.data );
+						console.log("getTaxData: ", this.rootData.myApiGroupList);
+					})
+				).catch(error => {
+					this.handleError(error);
+				});
+			},
 			getRootData(id) {
 				axios.all([
 					axios.get(abyss.ajax.subjects + '/' + id),

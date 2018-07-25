@@ -1566,7 +1566,7 @@
 							<p class="fol-12"><small class="d-block">{{api.openapidocument.info.description}}</small></p>
 						</div>
 					</div>
-					<ul class="row nav flex-column nav-controls mt-2" v-if="api.proxies.length > 0">
+					<ul class="row nav flex-column nav-controls mt-2" v-if="!api.isproxyapi && api.proxies.length > 0">
 						<li class="field-link small">
 							<strong class="d-block text-uppercase">PROXIES</strong>
 						</li>

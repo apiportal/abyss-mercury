@@ -2171,6 +2171,13 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					return this.ajaxBusinessUrl;
 				}
 			},
+			apiType(item) {
+				if (item.isproxyapi) {
+					return this.myProxyList;
+				} else {
+					return this.myApiList;
+				}
+			},
 			dropSpecsSuccess(file, response) {
 				console.log("file, response ", file, response);
 				// this.specData = response.files;
@@ -2192,16 +2199,20 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				// this.api.image = response.files;
 			},
 			fixProps(item) {
-				if (item.proxies == null) {
-					Vue.set(item, 'proxies', []);
-					// console.log("item.proxies: ", item.proxies.length, item.uuid);
-					var papi = this.myProxyList.filter((el) => el.businessapiid == item.uuid );
-					if (papi) {
-						// item.proxies.push(papi);
-						item.proxies = papi;
+				if (!item.isproxyapi) {
+					if (item.proxies == null) {
+						Vue.set(item, 'proxies', []);
+						// console.log("item.proxies: ", item.proxies.length, item.uuid);
+						var papi = this.myProxyList.filter((el) => el.businessapiid == item.uuid );
+						if (papi) {
+							// item.proxies.push(papi);
+							item.proxies = papi;
+						}
+					}
+					if (item.specs == null) {
+						Vue.set(item, 'specs', null);
 					}
 				}
-				this.getTax(item);
 				if (!item.openapidocument.components) {
 					// console.log("no.components: ", item.openapidocument.info.title, item.uuid);
 					Vue.set(item.openapidocument, 'components', {});
@@ -2258,25 +2269,29 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				if (item.organizationid == null) {
 					Vue.set(item,'organizationid',this.$root.abyssOrgId);
 				}
-				if (item.specs == null) {
-					Vue.set(item, 'specs', null);
-				}
 				if (item.isproxyapi) {
 					Vue.set(item.openapidocument, 'servers', [{url: this.$root.abyssGatewayUrl + '/' + item.uuid}]);
-					// item.openapidocument.servers.forEach((value, key) => {
-					// 	value.url = this.$root.abyssGatewayUrl + '/' + item.uuid;
-					// });
 					Vue.set(item.openapidocument, 'security', [{abyssApiKeyAuth: []}]);
 					Vue.set(item.openapidocument.components, 'securitySchemes', { abyssApiKeyAuth: {
 						in: "header",
 						name: "abyss-gateway-api-access-token",
 						type: "apiKey"
 					}} );
+					item.extendeddocument.servers.forEach((value, key) => {
+						value.url = this.$root.abyssGatewayUrl + '/' + item.uuid;
+					});
+					// Vue.set(item.extendeddocument, 'servers', [{url: this.$root.abyssGatewayUrl + '/' + item.uuid}]);
+					// Vue.set(item.extendeddocument, 'security', [{abyssApiKeyAuth: []}]);
+					// Vue.set(item.extendeddocument.components, 'securitySchemes', { abyssApiKeyAuth: {
+					// 	in: "header",
+					// 	name: "abyss-gateway-api-access-token",
+					// 	type: "apiKey"
+					// }} );
 					for (var p in item.openapidocument.paths) {
 						delete item.openapidocument.paths[p]['x-abyss-path'];
 						for (var m in item.openapidocument.paths[p]) {
 							delete item.openapidocument.paths[p][m].security;
-							console.log("m, item.openapidocument.paths[p][m]: ", m, item.openapidocument.paths[p][m]);
+							// console.log("m, item.openapidocument.paths[p][m]: ", m, item.openapidocument.paths[p][m]);
 						}
 					}
 				}
@@ -2494,6 +2509,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				// this.myApiList[index] = this.fixProps(this.selectedApi);
 				// var item = this.myApiList.find((el) => el.uuid == newApi.uuid );
 				this.myApiLicenses = [];
+				this.clearTax();
 				this.api = _.cloneDeep(this.newApi);
 				this.clearSchema();
 				this.selectedApi = _.cloneDeep(this.newApi);
@@ -2503,6 +2519,14 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				this.$refs.dropSpecs.removeAllFiles(true);
 				this.$refs.dropImage.removeAllFiles(true);
 				// $('.list-column').removeClass('column-minimize');
+			},
+			clearTax() {
+				this.tagsAdd = [];
+				this.groupsAdd = [];
+				this.categoriesAdd = [];
+				this.tagsDelete = [];
+				this.groupsDelete = [];
+				this.categoriesDelete = [];
 			},
 			undoApi() {
 				// if (window.localStorage) {
@@ -2538,10 +2562,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				this.validateOas(item.openapidocument).then(response => {
 					if (response.data) {
 						Vue.set(item, 'extendeddocument', _.cloneDeep(item.openapidocument));
-						Vue.set(item.openapidocument, 'servers', [{url: this.$root.abyssGatewayUrl + '/' + item.uuid}]);
 						item.extendeddocument.servers.forEach((value, key) => {
 							value['x-abyss-url'] = value.url;
-							value.url = this.$root.abyssGatewayUrl + '/' + item.uuid;
+							value.url = this.$root.abyssGatewayUrl;
 						});
 						for (var p in item.extendeddocument.paths) {
 							var path = item.extendeddocument.paths[p];
@@ -2559,11 +2582,21 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 										console.log("createProxy response: ", response);
 										var newApi = response.data[0].response;
 										this.fixProps(newApi);
-										this.myProxyList.push(newApi);
-										this.createResource(newApi, 'API', newApi.openapidocument.info.title + ' ' + newApi.openapidocument.info.version, newApi.openapidocument.info.description);
-										setTimeout(() => {
-											this.$toast('info', {message: 'Proxy API created from this business API', title: 'Proxy API created', position: 'topLeft'});
-										},0);	
+										
+										this.createResource(newApi, 'API', newApi.openapidocument.info.title + ' ' + newApi.openapidocument.info.version + ' ' + newApi.uuid, newApi.openapidocument.info.description);
+										///////////
+										this.updateItem(this.ajaxProxyUrl + newApi.uuid, this.deleteProps(newApi), this.ajaxHeaders).then(response => {
+											console.log("SAVE createProxy response: ", response);
+											var putApi = response.data[0];
+											Vue.set(putApi.openapidocument, 'servers', [{url: this.$root.abyssGatewayUrl + '/' + putApi.uuid}]);
+											this.getTax(putApi);
+											this.myProxyList.push(putApi);
+											setTimeout(() => {
+												this.$toast('info', {message: 'Proxy API created from this business API', title: 'Proxy API created', position: 'topLeft'});
+											},0);
+										}, error => {
+											this.handleError(error);
+										});
 									}
 								}, error => {
 									this.handleError(error);
@@ -2629,6 +2662,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 			// 2UNDO
 			saveMyApi() {
 				// this.extDoc(this.api);
+				this.fixProps(this.api);
 				var item = _.cloneDeep(this.api);
 				if (!item.isproxyapi) {
 					Vue.delete(item, 'businessapiid');
@@ -2639,7 +2673,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					console.log("validateOas response: ", response);
 					if (response.data) {
 						console.log("continue: ", this.deleteProps(item));
-						this.updateItem(this.apiEndpoint(this.api) + this.api.uuid, this.deleteProps(item), this.ajaxHeaders, this.myApiList).then(response => {
+						this.updateItem(this.apiEndpoint(this.api) + this.api.uuid, this.deleteProps(item), this.ajaxHeaders, this.apiType(this.api)).then(response => {
 							console.log("SAVE response.data: ", response.data[0]);
 							this.saveTaxonomies();
 							var currApi = response.data[0];
@@ -2652,10 +2686,13 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 								},100);
 							}
 							this.getPage(1);
-							var index = _.findIndex(this.myApiList, { 'uuid': this.selectedApi.uuid });
-							this.myApiList[index] = this.selectedApi;
+							var index = _.findIndex(this.apiType(this.api), { 'uuid': this.selectedApi.uuid });
+							this.apiType(this.api)[index] = this.selectedApi;
+							console.log("this.apiType(this.api)[index]: ", this.apiType(this.api)[index]);
 							this.$toast('success', {message: '<strong>' + this.api.openapidocument.info.title + '</strong> saved', title: 'API SAVED'});
 							this.isChanged = false;
+							this.clearTax();
+							// this.$root.getTaxData();
 						}, error => {
 							this.handleError(error);
 						});
@@ -2692,12 +2729,15 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 										this.saveTaxonomies();
 										var newApi = response.data[0].response;
 										this.fixProps(newApi);
+										this.getTax(newApi);
 										this.myApiList.push(newApi);
 										var found = this.myApiList.find((el) => el.uuid == newApi.uuid );
 										Vue.set(this, 'api', found);
 										// this.updateSchema(found.openapidocument);
 										this.selectedApi = _.cloneDeep(this.api);
 										this.isChanged = false;
+										this.clearTax();
+										// this.$root.getTaxData();
 										// this.api = _.merge(this.openapi, response.data);
 										setTimeout(() => {
 											$('#api'+this.api.uuid).collapse('show');
@@ -2733,6 +2773,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 							this.myApiList.push(filter);
 							this.myApiList.forEach((value, key) => {
 								this.fixProps(value);
+								this.getTax(value);
 							});
 							this.filterTxt = 'Search Result';
 						}
@@ -2754,6 +2795,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 							this.myProxyList.push(filter);
 							this.myProxyList.forEach((value, key) => {
 								this.fixProps(value);
+								this.getTax(value);
 							});
 							this.filterTxt = 'Search Result';
 						}
@@ -2779,6 +2821,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 						this.myProxyList = response.data;
 						this.myProxyList.forEach((value, key) => {
 							this.fixProps(value);
+							this.getTax(value);
 							this.getResources(value, 'API', value.openapidocument.info.title + ' ' + value.openapidocument.info.version, value.openapidocument.info.description);
 						});
 						this.paginate = this.makePaginate(this.myProxyList);
@@ -2787,6 +2830,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 								this.myApiList = response.data;
 								this.myApiList.forEach((value, key) => {
 									this.fixProps(value);
+									this.getTax(value);
 								});
 								this.paginate = this.makePaginate(this.myApiList);
 								this.preload();
@@ -2886,10 +2930,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				});
 			},
 			// 2DO when selectedApi
-			// 2ASK
-			// https://dev2.apiportal.com/abyss/oapi/api-api-tags/api/9e2bd0b4-c671-4fae-a313-4372d7d7b7e9
-			// returns uuid & name only. In ordeer to delete all properties must return like
-			// https://dev2.apiportal.com/abyss/oapi/api-api-tags
 			fixCategory(filter) {
 				if (filter && filter.length != 0) {
 					filter.forEach((value, key) => {
@@ -2944,6 +2984,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 							value.description = "";
 							value.organizationid = this.$root.abyssOrgId;
 							value.crudsubjectid = this.$root.rootData.user.uuid;
+							value.subjectid = this.$root.rootData.user.uuid;
 							console.log("value: ", value);
 						}
 					});
@@ -2954,200 +2995,157 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					console.log("this.groupsAdd: ", JSON.stringify(this.groupsAdd, null, '\t'));
 				}
 			},
-			/*getTaxonomies(tax) {
-				if (Object.keys(this.changes).some(v => v == tax)) {
-					// var taxs = [];
-					// var newTaxs = this.api[tax].filter((item) => item.uuid == null );
-					// console.log("newTaxs: ", newTaxs);
-					// if (newTaxs.length > 0) {
-					// 	newTaxs.forEach((value, key) => {
-					// 		console.log("value: ", value);
-					// 		var newObj = {};
-					// 		newObj.name = value;
-					// 		newObj.description = "";
-					// 		newObj.externalurl = "";
-					// 		newObj.externaldescription = "";
-					// 		newObj.organizationid = this.$root.abyssOrgId;
-					// 		newObj.crudsubjectid = this.$root.rootData.user.uuid;
-					// 		taxs.push(this.deleteProps(newObj));
-					// 	});
-					// }
-					console.log("this.selectedApi[tax] " + tax + ": ", JSON.stringify(this.selectedApi[tax], null, '\t'));
-					console.log("this.api[tax] " + tax + ": ", JSON.stringify(this.api[tax], null, '\t'));
-					var taxDelete = _.reject(this.selectedApi[tax], (v) => _.includes( this.api[tax].map(e => e.uuid), v.uuid));
-					var taxAdd = _.reject(this.api[tax], (v) => _.includes( this.selectedApi[tax].map(e => e.uuid), v.uuid));
-					console.log("taxDelete", JSON.stringify(taxDelete, null, '\t'));
-					console.log("taxAdd", JSON.stringify(taxAdd, null, '\t'));
-				}
-			},*/
 			saveTaxonomies() {
 				this.categoriesDelete.forEach((value, key) => {
 					console.log("categoriesDelete value: ", value);
-					console.log("api_category_api_category: ", abyss.ajax.api_category_api + this.api.uuid + '/category/' + value.uuid);
-					/*axios.delete(abyss.ajax.api_category_api + this.api.uuid + '/category/' + value.uuid, value).then(response => {
-						console.log("DELETE api_category_api_category response: ", response);
+					console.log("api_category: ", abyss.ajax.api_category + '/' + value.uuid);
+					axios.delete(abyss.ajax.api_category + '/' + value.uuid, value).then(response => {
+						console.log("DELETE api_category response: ", response);
 					}, error => {
 						this.handleError(error);
-					});*/
+					});
 				});
 				this.tagsDelete.forEach((value, key) => {
 					console.log("tagsDelete value: ", value);
-					console.log("api_tag_api_tag: ", abyss.ajax.api_tag_api + this.api.uuid + '/tag/' + value.uuid);
-					/*axios.delete(abyss.ajax.api_tag_api + this.api.uuid + '/tag/' + value.uuid, value).then(response => {
-						console.log("DELETE api_tag_api_tag response: ", response);
+					console.log("api_tag: ", abyss.ajax.api_tag + '/' + value.uuid);
+					axios.delete(abyss.ajax.api_tag + '/' + value.uuid, value).then(response => {
+						console.log("DELETE api_tag response: ", response);
 					}, error => {
 						this.handleError(error);
-					});*/
+					});
 				});
 				this.groupsDelete.forEach((value, key) => {
 					console.log("groupsDelete value: ", value);
-					console.log("api_group_api_group: ", abyss.ajax.api_group_api + this.api.uuid + '/group/' + value.uuid);
-					/*axios.delete(abyss.ajax.api_group_api + this.api.uuid + '/group/' + value.uuid, value).then(response => {
-						console.log("DELETE api_group_api_group response: ", response);
+					console.log("api_group: ", abyss.ajax.api_group_api + '/' + value.uuid);
+					axios.delete(abyss.ajax.api_group +  '/' + value.uuid, value).then(response => {
+						console.log("DELETE api_group response: ", response);
 					}, error => {
 						this.handleError(error);
-					});*/
+					});
 				});
 				this.categoriesAdd.forEach((value, key) => {
 					console.log("categoriesAdd value: ", value);
 					if (!value.uuid) {
-						//
-					} else {
-						//
-					}
-				});
-				this.tagsAdd.forEach((value, key) => {
-					console.log("tagsAdd value: ", value);
-					if (!value.uuid) {
-						//
-					} else {
-						//
-					}
-				});
-				this.groupsAdd.forEach((value, key) => {
-					console.log("groupsAdd value: ", value);
-					if (!value.uuid) {
-						//
-					} else {
-						//
-					}
-				});
-				/*this.getTaxonomies('tags');
-				this.getTaxonomies('groups');
-				this.getTaxonomies('categories');*/
-				// this.getTax(this.api);
-			},
-			saveTaxonomiessss() {
-				if (Object.keys(this.changes).some(v => v == 'tags')) {
-					var tags = [];
-					var newTags = this.api.tags.filter((item) => item.uuid == null );
-					if (newTags.length > 0) {
-						newTags.forEach((value, key) => {
-							console.log("value: ", value);
-							var newObj = {};
-							newObj.name = value;
-							newObj.description = "";
-							newObj.externalurl = "";
-							newObj.externaldescription = "";
-							newObj.organizationid = this.$root.abyssOrgId;
-							newObj.crudsubjectid = this.$root.rootData.user.uuid;
-							tags.push(this.deleteProps(newObj));
-						});
-						console.log("newTags tags: ", tags);
-						// console.log("diffffff: ", _.differenceBy(this.$root.rootData.myApiTagList, this.api.tags, 'uuid'));
-						/*axios.post(abyss.ajax.api_tag_list, newTags, this.ajaxHeaders).then(response => {
-							console.log("add tags response: ", response);
+						var itemArr = [];
+						itemArr.push(this.deleteProps(value));
+						console.log("api_category_list itemArr: ", abyss.ajax.api_category_list, itemArr);
+						axios.post(abyss.ajax.api_category_list, itemArr, this.ajaxHeaders).then(response => {
+							console.log("categoriesAdd response: ", response);
 							if (response.data[0].status != 500 ) {
-								var newTag = response.data[0].response;
-								// tags.push(newTag);
-								this.api.tags.forEach((value, key) => {
-									var newObj = {};
-									if (!value.apitagid) {
-										newObj.apiid = newTag.uuid;
-									}
-									newObj.apiid = this.api.uuid;
-									newObj.apitagid = value.uuid;
-									newObj.organizationid = this.$root.abyssOrgId;
-									newObj.crudsubjectid = this.$root.rootData.user.uuid;
-									tags.push(this.deleteProps(newObj));
-								});
-								axios.post(abyss.ajax.api_tag, tags, this.ajaxHeaders).then(response => {
-									console.log("tags response: ", response);
-									if (response.data[0].status != 500 ) {
-										this.$root.rootData.myApiTagList = _.unionBy(this.$root.rootData.myApiTagList, this.api.tags, 'uuid');
-									}
+								var newArr = [];
+								var newObj = {};
+								newObj.apiid = this.api.uuid;
+								newObj.apicategoryid = response.data[0].response.uuid;
+								newObj.organizationid = this.$root.abyssOrgId;
+								newObj.crudsubjectid = this.$root.rootData.user.uuid;
+								newArr.push(this.deleteProps(newObj));
+								axios.post(abyss.ajax.api_category, newArr, this.ajaxHeaders).then(response => {
+									console.log("api_category response: ", response);
 								}, error => {
 									this.handleError(error);
 								});
 							}
 						}, error => {
 							this.handleError(error);
-						});*/
-					} else {
-						this.api.tags.forEach((value, key) => {
-							var newObj = {};
-							newObj.apiid = this.api.uuid;
-							newObj.apitagid = value.uuid;
-							newObj.organizationid = this.$root.abyssOrgId;
-							newObj.crudsubjectid = this.$root.rootData.user.uuid;
-							tags.push(this.deleteProps(newObj));
 						});
-						/*axios.post(abyss.ajax.api_tag, tags, this.ajaxHeaders).then(response => {
-							console.log("tags response: ", response);
-							if (response.data[0].status != 500 ) {
-								this.$root.rootData.myApiTagList = _.unionBy(this.$root.rootData.myApiTagList, this.api.tags, 'uuid');
-							}
-						}, error => {
-							this.handleError(error);
-						});*/
-					}
-					console.log("tags: ", tags);
-					console.log("this.selectedApi.tags: ", JSON.stringify(this.selectedApi.tags, null, '\t'));
-					// this.tagDelete = _.reject(this.selectedApi.tags, (v) => _.includes( this.api.tags.map(e => e.subjectid), v.subjectid));
-					// this.tagAdd = _.reject(this.api.tags, (v) => _.includes( this.selectedApi.tags.map(e => e.subjectid), v.subjectid));
-				}
-				if (Object.keys(this.changes).some(v => v == 'categories')) {
-					console.log("this.selectedApi.categories: ", JSON.stringify(this.selectedApi.categories, null, '\t'));
-					var cats = [];
-					this.api.categories.forEach((value, key) => {
+					} else {
+						var newArr = [];
 						var newObj = {};
 						newObj.apiid = this.api.uuid;
 						newObj.apicategoryid = value.uuid;
 						newObj.organizationid = this.$root.abyssOrgId;
 						newObj.crudsubjectid = this.$root.rootData.user.uuid;
-						cats.push(this.deleteProps(newObj));
-					});
-					console.log("cats: ", cats);
-					/*axios.post(abyss.ajax.api_category, cats, this.ajaxHeaders).then(response => {
-						console.log("categories response: ", response);
-						if (response.data[0].status != 500 ) {
-							this.$root.rootData.myApiCategoryList = _.unionBy(this.$root.rootData.myApiCategoryList, this.api.categories, 'uuid');
-						}
-					}, error => {
-						this.handleError(error);
-					});*/
-				}
-				if (Object.keys(this.changes).some(v => v == 'groups')) {
-					console.log("this.selectedApi.groups: ", JSON.stringify(this.selectedApi.groups, null, '\t'));
-					var grps = [];
-					this.api.groups.forEach((value, key) => {
+						newArr.push(this.deleteProps(newObj));
+						console.log("api_category newArr: ", newArr);
+						axios.post(abyss.ajax.api_category, newArr, this.ajaxHeaders).then(response => {
+							console.log("api_category response: ", response);
+						}, error => {
+							this.handleError(error);
+						});
+					}
+				});
+				this.tagsAdd.forEach((value, key) => {
+					console.log("tagsAdd value: ", value);
+					if (!value.uuid) {
+						var itemArr = [];
+						itemArr.push(this.deleteProps(value));
+						console.log("api_tag_list itemArr: ", abyss.ajax.api_tag_list, itemArr);
+						axios.post(abyss.ajax.api_tag_list, itemArr, this.ajaxHeaders).then(response => {
+							console.log("tagsAdd response: ", response);
+							if (response.data[0].status != 500 ) {
+								var newArr = [];
+								var newObj = {};
+								newObj.apiid = this.api.uuid;
+								newObj.apitagid = response.data[0].response.uuid;
+								newObj.organizationid = this.$root.abyssOrgId;
+								newObj.crudsubjectid = this.$root.rootData.user.uuid;
+								newArr.push(this.deleteProps(newObj));
+								axios.post(abyss.ajax.api_tag, newArr, this.ajaxHeaders).then(response => {
+									console.log("api_tag response: ", response);
+								}, error => {
+									this.handleError(error);
+								});
+							}
+						}, error => {
+							this.handleError(error);
+						});
+					} else {
+						var newArr = [];
+						var newObj = {};
+						newObj.apiid = this.api.uuid;
+						newObj.apitagid = value.uuid;
+						newObj.organizationid = this.$root.abyssOrgId;
+						newObj.crudsubjectid = this.$root.rootData.user.uuid;
+						newArr.push(this.deleteProps(newObj));
+						console.log("api_tag newArr: ", newArr);
+						axios.post(abyss.ajax.api_tag, newArr, this.ajaxHeaders).then(response => {
+							console.log("api_tag response: ", response);
+						}, error => {
+							this.handleError(error);
+						});
+					}
+				});
+				this.groupsAdd.forEach((value, key) => {
+					console.log("groupsAdd value: ", value);
+					if (!value.uuid) {
+						var itemArr = [];
+						itemArr.push(this.deleteProps(value));
+						console.log("api_group_list itemArr: ", abyss.ajax.api_group_list, itemArr);
+						axios.post(abyss.ajax.api_group_list, itemArr, this.ajaxHeaders).then(response => {
+							console.log("groupsAdd response: ", response);
+							if (response.data[0].status != 500 ) {
+								var newArr = [];
+								var newObj = {};
+								newObj.apiid = this.api.uuid;
+								newObj.apigroupid = response.data[0].response.uuid;
+								newObj.organizationid = this.$root.abyssOrgId;
+								newObj.crudsubjectid = this.$root.rootData.user.uuid;
+								newArr.push(this.deleteProps(newObj));
+								axios.post(abyss.ajax.api_group, newArr, this.ajaxHeaders).then(response => {
+									console.log("api_group response: ", response);
+								}, error => {
+									this.handleError(error);
+								});
+							}
+						}, error => {
+							this.handleError(error);
+						});
+					} else {
+						var newArr = [];
 						var newObj = {};
 						newObj.apiid = this.api.uuid;
 						newObj.apigroupid = value.uuid;
 						newObj.organizationid = this.$root.abyssOrgId;
 						newObj.crudsubjectid = this.$root.rootData.user.uuid;
-						grps.push(this.deleteProps(newObj));
-					});
-					console.log("grps: ", grps);
-					/*axios.post(abyss.ajax.api_group, grps, this.ajaxHeaders).then(response => {
-						console.log("groups response: ", response);
-						if (response.data[0].status != 500 ) {
-							this.$root.rootData.myApiGroupList = _.unionBy(this.$root.rootData.myApiGroupList, this.api.groups, 'uuid');
-						}
-					}, error => {
-						this.handleError(error);
-					});*/
-				}
+						newArr.push(this.deleteProps(newObj));
+						console.log("api_group newArr: ", newArr);
+						axios.post(abyss.ajax.api_group, newArr, this.ajaxHeaders).then(response => {
+							console.log("api_group response: ", response);
+						}, error => {
+							this.handleError(error);
+						});
+					}
+				});
 			},
 			loadLicense(item) {
 				axios.get(abyss.ajax.api_licenses_api + item.uuid, this.ajaxHeaders).then(response => {
