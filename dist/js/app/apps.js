@@ -169,9 +169,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 					var ddd = _.find(res, { 'resourceid': this.app.resource.uuid });
 					console.log("ddd: ", ddd);
 					if (!ddd) {
-						this.setAppSubsAndToken();
+						this.setAppPermAndToken(this.app);
 					}
-					// this.createAccessTokens(this.app, 'APP', ddd);
 				}, error => {
 					this.handleError(error);
 				});
@@ -183,19 +182,57 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 			deleteApp(item) {
 				var r = confirm('Are you sure to delete?');
 				if (r == true) {
-					axios.delete(abyss.ajax.subjects + '/' + item.uuid, item).then(response => {
-						item.isdeleted = true;
-						console.log("DELETE app response: ", response);
-						this.deleteResource(item);
-						axios.delete(abyss.ajax.subject_app_list + '/' + item.appUser.uuid, item.appUser).then(response => {
-							item.appUser.isdeleted = true;
-							console.log("DELETE userApp response: ", response);
+					console.log("item: ", item);
+					console.log("item.permission.accessToken.uuid: ", item.permission.accessToken.uuid);
+					console.log("item: ", JSON.stringify(item, null, '\t'));
+					console.log("this: ", this);
+					var contractsDeleted = false;
+					item.contracts.forEach((con, k) => {
+						console.log("con.resource.uuid: ", abyss.ajax.resources + con.resource.uuid);
+						console.log("con.uuid: ", abyss.ajax.contracts + '/' + con.uuid);
+						/*axios.delete(abyss.ajax.resources + con.resource.uuid, con.resource, this.ajaxHeaders).then(response => {
+							console.log("deleteApp DELETE contract resource response: ", response);
+							axios.delete(abyss.ajax.contracts + '/' + con.uuid, con).then(response => {
+								console.log("deleteApp DELETE contract response: ", response);
+							}, error => {
+								this.handleError(error);
+							});
+						}, error => {
+							this.handleError(error);
+						});*/
+					});
+					item.subscriptions.forEach((sub, k) => {
+						console.log("sub.accessToken.uuid: ", sub.accessToken.uuid);
+						console.log("sub.accessToken.subjectpermissionid: ", sub.accessToken.subjectpermissionid);
+						console.log("sub.uuid: ", sub.uuid);
+					});
+					/*axios.delete(abyss.ajax.resource_access_tokens + item.permission.accessToken.uuid, item.permission.accessToken, this.ajaxHeaders).then(response => {
+						console.log("deleteApp DELETE token response: ", response);
+						axios.delete(abyss.ajax.permission_list + '/' + item.permission.uuid, item.permission, this.ajaxHeaders).then(response => {
+							console.log("deleteApp DELETE permission response: ", response);
+							axios.delete(abyss.ajax.resources + item.resource.uuid, item.resource, this.ajaxHeaders).then(response => {
+								console.log("deleteApp DELETE resource response: ", response);
+								axios.delete(abyss.ajax.subject_app_list + '/' + item.appUser.uuid, item.appUser).then(response => {
+									item.appUser.isdeleted = true;
+									console.log("deleteApp DELETE userApp response: ", response);
+									axios.delete(abyss.ajax.subjects + '/' + item.uuid, item).then(response => {
+										item.isdeleted = true;
+										console.log("deleteApp DELETE app response: ", response);
+									}, error => {
+										this.handleError(error);
+									});
+								}, error => {
+									this.handleError(error);
+								});
+							}, error => {
+								this.handleError(error);
+							});
 						}, error => {
 							this.handleError(error);
 						});
 					}, error => {
 						this.handleError(error);
-					});
+					});*/
 				}
 			},
 			deleteProps() {
@@ -295,7 +332,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 										console.log("addUserApp response: ", response);
 										var uApp = response.data[0].response;
 										///////////////////////////
-										this.setAppSubsAndToken();
+										this.setAppPermAndToken(this.app);
 										setTimeout(() => {
 											// this.$root.appList.push(response.data[0].response);
 											// this.app = _.cloneDeep(this.newApp);
@@ -303,7 +340,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 											this.getMyApps();
 											this.$emit('set-state', 'init');
 											//// !! DISABLE KEY CONTROL
-											// Vue.set(this.app, 'appUser', uApp);
 											// this.$emit('set-state', 'edit');
 											// this.preventCancel = true;
 										},100);
@@ -340,43 +376,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 					}
 				});
 			},
-			//Subscription of Test App APP to Swagger Petstore 2 API
-			setAppSubsAndToken() {
-				var subscription = {
-					organizationid: this.$root.abyssOrgId,
-					crudsubjectid: this.$root.rootData.user.uuid,
-					permission: 'Subscription of my own ' + this.app.firstname + ' APP',
-					description: 'Subscription of my own ' + this.app.firstname + ' APP',
-					effectivestartdate: moment().toISOString(),
-					effectiveenddate: moment().add(1, 'years').toISOString(),
-					subjectid: this.$root.rootData.user.uuid,
-					resourceid: this.app.resource.uuid,
-					resourceactionid: 'e085cb50-8a98-4511-bc8a-00edabbae8a9', // OWN_APP
-					accessmanagerid: '6223ebbe-b30f-4976-bcf9-364003142379',
-					isactive: true,
-				};
-				var subsArr = [];
-				subsArr.push(subscription);
-				console.log("subsArr: ", subsArr);
-				axios.post(abyss.ajax.permission_list, subsArr).then(response => {
-					console.log("POST user to app subscription response: ", response);
-					var subs = response.data[0].response;
-					Vue.set(this.app, 'permission', subs);
-					this.createAccessTokens(this.app, 'APP', subs);
-				}, error => {
-					this.handleError(error);
-				});
-				var consume = _.cloneDeep(subscription);
-				Vue.set(consume, 'resourceactionid', '761c8386-4624-416e-b9e4-b59ea2c597fc');
-				var consumeArr = [];
-				consumeArr.push(subscription);
-				console.log("consumeArr: ", consumeArr);
-				axios.post(abyss.ajax.permission_list, consumeArr).then(response => {
-					console.log("POST user to app consume subscription response: ", response);
-				}, error => {
-					this.handleError(error);
-				});
-			},
+			// setAppPermAndToken moved to global mixin
 			resetCtrl(i) {
 				Vue.set(this, 'resetKey', true);
 			},

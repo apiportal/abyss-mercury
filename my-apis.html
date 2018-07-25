@@ -204,9 +204,9 @@
 									<a :href="apiGateway" target="_blank" class="form-group mb-2 d-block">
 										<strong class="d-block txt-break">{{apiGateway}}</strong>
 									</a>
-									<api-servers v-for="(server,sindex) in openapi.servers" :server="server" :sindex="sindex" :key="sindex" inline-template>
+									<api-servers v-for="(server,sindex) in api.extendeddocument.servers" :server="server" :sindex="sindex" :key="sindex" inline-template>
 										<div class="txt-break">
-											{{xServerUrl}}
+											{{server['x-abyss-url']}}
 										</div>
 									</api-servers>
 								</div>
@@ -314,15 +314,15 @@
 								</div>
 								<div class="form-group v-select-color-green v-select-inline" v-if="rootState == 'edit'">
 									<label for="categories">Add to Categories:</label>
-									<v-select label="name" multiple :filterable="true" :options="categoryOptions" @search="getCategoryOptions" v-model="api.categories"></v-select>
+									<v-select label="name" multiple taggable :filterable="true" :options="categoryOptions" @search="getCategoryOptions" v-model="api.categories" :on-change="fixCategory"></v-select>
 								</div>
 								<div class="form-group v-select-color-purple v-select-inline" v-if="rootState == 'edit'">
 									<label for="tags">Add Tags:</label>
-									<v-select label="name" multiple taggable :filterable="false" :options="tagOptions" @search="getTagOptions" v-model="api.tags"></v-select>
+									<v-select label="name" multiple taggable :filterable="true" :options="tagOptions" @search="getTagOptions" v-model="api.tags" :on-change="fixTag"></v-select>
 								</div>
 								<div class="form-group v-select-color-pink v-select-inline" v-if="rootState == 'edit'">
 									<label for="group">Add Group:</label>
-									<v-select label="name" multiple :filterable="false" :options="$root.rootData.myApiGroupList"  v-model="api.groups" ref="refApiGroups"></v-select>
+									<v-select label="name" multiple taggable :filterable="true" :options="$root.rootData.myApiGroupList" v-model="api.groups" :on-change="fixGroup"></v-select>
 								</div>
 							</div>
 						</article>
@@ -1300,14 +1300,49 @@
 				</select>
 			</div>
 			<div v-if="!child.$ref">
-				<div v-for="(evalue,eindex) in child.enum" class="field-acc brd-t-0 p-0">
-					<span class="ficon-act ficon-act-abs">
-						<a title="Delete Enum" v-on:click="removeEnum(eindex)"><i class="fa fa-trash-alt"></i></a>
-						<a title="Add Enum" v-on:click="addEnum()"><i class="fa fa-plus"></i></a>
-					</span>
-					<div class="form-group">
-						<label>Enum Value</label>
-						<input class="form-control" v-model.lazy="child.enum[eindex]">
+				<div v-if="level != '0' && level != '1' && child['x-abyss-privacy']" class="form-group pb-3 brd-b">
+					<a href="#" class="text-center d-block txt-blue bg-transparent" data-toggle="collapse" v-bind:data-target="'#'+name+'_item_anonymize'+level" v-bind:aria-controls="name+'_item_anonymize'+level">{{anonymize(child)}}</a>
+					<div class="collapse" v-bind:id="name+'_item_anonymize'+level">
+					 	<div class="form-group">
+					 		<label>Anonymization Type</label>
+					 		<select class="form-control" v-model="child['x-abyss-privacy']['attributeClass']" v-on:change="privacyAttributeClass($event.target.value, child['x-abyss-privacy'])">
+					 			<option value="auxiliary" selected>Auxiliary</option>
+					 			<option title="44" value="id">Identifier</option>
+					 			<option title="44" value="sensitive">Sensitive</option>
+					 			<option title="88" value="qid">QuasiIdentifier</option>
+					 		</select>
+					 	</div>
+					 	<div class="form-group" v-if="action">
+					 		<label>Anonymization Action</label>
+					 		<select class="form-control" name="44" v-model="child['x-abyss-privacy']['action']" v-on:change="privacyAction($event.target.value, child['x-abyss-privacy'])">
+					 			<option value="remove">Remove</option>
+					 			<option title="66" value="mask">Mask</option>
+					 			<option title="66" value="generalize">Generalize</option>
+					 			<option title="66" value="passThrough">passThrough</option>
+					 		</select>
+					 	</div>
+					 	<div class="form-group" v-if="matchPattern">
+					 		<label>Anonymization Match Pattern</label>
+					 		<input class="form-control" name="66" type="text" v-model="child['x-abyss-privacy']['matchPattern']">
+					 	</div>
+					 	<div class="form-group" v-if="maskPattern">
+					 		<label>Anonymization Mask Pattern</label>
+					 		<input class="form-control" name="66" type="text" v-model="child['x-abyss-privacy']['maskPattern']">
+					 	</div>
+					 	<div class="form-group" v-if="generalizationLevel">
+					 		<label>Anonymization Generalization Level</label>
+					 		<input class="form-control" name="88" type="text" v-model="child['x-abyss-privacy']['generalizationLevel']">
+					 	</div>
+					</div>
+					<div v-for="(evalue,eindex) in child.enum" class="field-acc brd-t-0 p-0">
+						<span class="ficon-act ficon-act-abs">
+							<a title="Delete Enum" v-on:click="removeEnum(eindex)"><i class="fa fa-trash-alt"></i></a>
+							<a title="Add Enum" v-on:click="addEnum()"><i class="fa fa-plus"></i></a>
+						</span>
+						<div class="form-group">
+							<label>Enum Value</label>
+							<input class="form-control" v-model.lazy="child.enum[eindex]">
+						</div>
 					</div>
 				</div>
 				<!-- TODO replace this with style and explode etc -->
@@ -1427,41 +1462,9 @@
 						<div v-bind:id="name+'_item'+level+prpindex" class="collapse field-tabs">
 							<div class="field-acc">
 								<div class="form-group">
-									<label class="d-block">Item Name <a href="#" class="float-right txt-blue bg-transparent" data-toggle="collapse" v-bind:data-target="'#'+name+'_item_anonymize'+level+prpindex" v-bind:aria-controls="name+'_item_anonymize'+level+prpindex">{{anonymize(key)}}</a></label>
+									<label class="d-block">Item Name</label>
 									<input class="form-control" placeholder="Required" v-on:focus="storeSchemaName(key)" v-on:change="renameSchema(key)" v-model.lazy="key">
 								</div>
-								<div class="collapse" v-bind:id="name+'_item_anonymize'+level+prpindex">
-								 	<div class="form-group">
-								 		<label>Anonymization Type</label>
-								 		<select class="form-control" v-model="child.properties[key]['x-abyss-privacy']['attributeClass']" v-on:change="privacyAttributeClass($event.target.value, child.properties[key]['x-abyss-privacy'])">
-								 			<option value="auxiliary" selected>Auxiliary</option>
-								 			<option title="44" value="id">Identifier</option>
-								 			<option title="44" value="sensitive">Sensitive</option>
-								 			<option title="88" value="qid">QuasiIdentifier</option>
-								 		</select>
-								 	</div>
-								 	<div class="form-group" v-if="action">
-								 		<label>Anonymization Action</label>
-								 		<select class="form-control" name="44" v-model="child.properties[key]['x-abyss-privacy']['action']" v-on:change="privacyAction($event.target.value, child.properties[key]['x-abyss-privacy'])">
-								 			<option value="remove">Remove</option>
-								 			<option title="66" value="mask">Mask</option>
-								 			<option title="66" value="generalize">Generalize</option>
-								 			<option title="66" value="passThrough">passThrough</option>
-								 		</select>
-								 	</div>
-								 	<div class="form-group" v-if="matchPattern">
-								 		<label>Anonymization Match Pattern</label>
-								 		<input class="form-control" name="66" type="text" v-model="child.properties[key]['x-abyss-privacy']['matchPattern']">
-								 	</div>
-								 	<div class="form-group" v-if="maskPattern">
-								 		<label>Anonymization Mask Pattern</label>
-								 		<input class="form-control" name="66" type="text" v-model="child.properties[key]['x-abyss-privacy']['maskPattern']">
-								 	</div>
-								 	<div class="form-group" v-if="generalizationLevel">
-								 		<label>Anonymization Generalization Level</label>
-								 		<input class="form-control" name="88" type="text" v-model="child.properties[key]['x-abyss-privacy']['generalizationLevel']">
-								 	</div>
-								 </div> 
 							</div>
 							<div class="field-acc">
 								<api-items :openapi="openapi" :child="child.properties[key]" :name="name+'_item'+level+prpindex" :level="levelPlusOne"></api-items>

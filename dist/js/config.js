@@ -53,6 +53,7 @@ define(['global'], function(abyss){
 		permission_list: '/subject-permissions', //uuid
 		permission_my_apis: '/subject-permissions/my-apis-subscriptions/subject/', //useruuid ABYSSP-182 GET
 		permissions_app: '/subject-permissions/api-subscriptions/subject/', // appuuid ABYSSP-207
+		permissions_subject: '/subject-permissions/subject/', // appuuid ABYSSP-280
 		// https://dev2.apiportal.com/abyss/openapi/Resource.yaml
 		resources: '/resources/', // uuid
 		resources_reference: '/resources/reference/', // uuid
@@ -122,18 +123,21 @@ define(['global'], function(abyss){
 		// https://dev2.apiportal.com/abyss/openapi/ApiApiTag.yaml
 		api_tag: '/api-api-tags', //uuid GPDP apiid, apitagid
 		api_tag_api: '/api-api-tags/api/', // uuid GET only uuid, name
+		api_tag_api_tag: '/api-api-tags/api/{uuid}/tag/{groupuuid}', //2DO uuid GET only 
 		api_tag_subject: '/api-api-tags/subject/', // uuid GET only uuid, name
 		api_tag_proxies_subject: '/api-api-tags/proxies/subject/', //2DO uuid GET only uuid, name
 		api_tag_businesses_subject: '/api-api-tags/businesses/subject/', //2DO uuid GET only uuid, name
 		// https://dev2.apiportal.com/abyss/openapi/ApiApiGroup.yaml
 		api_group: '/api-api-groups', //uuid GPDP apiid, apigroupid
 		api_group_api: '/api-api-groups/api/', // uuid GET only uuid, name
+		api_group_api_group: '/api-api-groups/api/{uuid}/group/{groupuuid}', //2DO uuid GET only 
 		api_group_subject: '/api-api-groups/subject/', // uuid GET only uuid, name
 		api_group_proxies_subject: '/api-api-groups/proxies/subject/', //2DO uuid GET only uuid, name
 		api_group_businesses_subject: '/api-api-groups/businesses/subject/', //2DO uuid GET only uuid, name
 		// https://dev2.apiportal.com/abyss/openapi/ApiApiCategory.yaml
 		api_category: '/api-api-categories', //uuid GPDP apiid, apicategoryid
 		api_category_api: '/api-api-categories/api/', // uuid GET only uuid, name
+		api_category_api_category: '/api-api-categories/api/{uuid}/category/{categoryuuid}', //2DO uuid GET only
 		api_category_subject: '/api-api-categories/subject/', // uuid GET only uuid, name
 		api_category_proxies_subject: '/api-api-categories/proxies/subject/', //2DO uuid GET only uuid, name
 		api_category_businesses_subject: '/api-api-categories/businesses/subject/', //2DO uuid GET only uuid, name
