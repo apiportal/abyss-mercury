@@ -804,6 +804,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 				// console.log("this.$root.rootState: ", this.$root.rootState);
 			},
 			previewApi(item) {
+				// console.log("previewApi item: : ", JSON.stringify(item, null, 2));
 				$('body').addClass('no-scroll');
 				$('.page-wrapper').addClass('no-scroll');
 				// console.log("previewApi: ", item);

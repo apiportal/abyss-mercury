@@ -2266,8 +2266,18 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					// item.openapidocument.servers.forEach((value, key) => {
 					// 	value.url = this.$root.abyssGatewayUrl + '/' + item.uuid;
 					// });
+					Vue.set(item.openapidocument, 'security', [{abyssApiKeyAuth: []}]);
+					Vue.set(item.openapidocument.components, 'securitySchemes', { abyssApiKeyAuth: {
+						in: "header",
+						name: "abyss-gateway-api-access-token",
+						type: "apiKey"
+					}} );
 					for (var p in item.openapidocument.paths) {
 						delete item.openapidocument.paths[p]['x-abyss-path'];
+						for (var m in item.openapidocument.paths[p]) {
+							delete item.openapidocument.paths[p][m].security;
+							console.log("m, item.openapidocument.paths[p][m]: ", m, item.openapidocument.paths[p][m]);
+						}
 					}
 				}
 			},
