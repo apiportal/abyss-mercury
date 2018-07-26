@@ -342,10 +342,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 				// $event
 			},
 			// ■■■■■■■■ resource_access_tokens ■■■■■■■■
-			getAccessTokens(item, typ, subs) {
-				// console.log("subjectpermissionid: ", subs.subscription.uuid);
-				// console.log("resourcetypeid: ", item.resource);
-				// console.log("resourcerefid: ", item.uuid);
+			getAccessTokens(id, typ, subs) {
 				axios.get(abyss.ajax.resource_access_tokens_permission + subs.uuid, this.ajaxHeaders)
 				.then(response => {
 					var res = response.data[0];
@@ -366,7 +363,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 							}
 						}
 					} else {
-						this.createAccessTokens(item.uuid, typ, subs);
+						this.createAccessTokens(id, typ, subs);
 					}
 				}, error => {
 					this.handleError(error);
@@ -583,7 +580,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 											vCon.subscriptions = [];
 											vCon.subscriptions.push(res);
 											if (hasCont) {
-												this.getAccessTokens(item, 'API', res);
+												this.getAccessTokens(item.uuid, 'API', res);
 											}
 										}
 									}, error => {
@@ -593,7 +590,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 									Vue.set(vCon, 'subscriptions', contSubs );
 									Vue.set(vCon, 'subscription', sub );
 									if (hasCont) {
-										this.getAccessTokens(item, 'API', sub);
+										this.getAccessTokens(item.uuid, 'API', sub);
 									}
 								}
 							}, error => {
@@ -630,13 +627,13 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 							this.getResources2(vCon.api, 'API', vCon.api.openapidocument.info.title + ' ' + vCon.api.openapidocument.info.version, vCon.api.openapidocument.info.description)
 							.then(response => {
 								Vue.set(vCon, 'subscription', _.find(app.subscriptions, { resourceid: vCon.api.resource.uuid }) );
-								this.getAccessTokens(vCon.api, 'API', vCon.subscription);
+								this.getAccessTokens(vCon.api.uuid, 'API', vCon.subscription);
 							}, error => {
 								this.handleError(error);
 							});
 							/*setTimeout(() => {
 								Vue.set(vCon, 'subscription', _.find(app.subscriptions, { resourceid: vCon.api.resource.uuid }) );
-								this.getAccessTokens(vCon.api, 'API', vCon.subscription);
+								this.getAccessTokens(vCon.api.uuid, 'API', vCon.subscription);
 							},100);*/
 						}, error => {
 							this.handleError(error);
@@ -743,7 +740,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 											if (appPerm) {
 												Vue.set(res, 'permission', appPerm );
 												// console.log("res.permission: ", res.permission);
-												this.getAccessTokens(res, 'APP', res.permission);
+												this.getAccessTokens(res.uuid, 'APP', res.permission);
 											}
 											if (!appPerm) {
 												console.log("setAppPermAndToken res: ", res);
@@ -1644,7 +1641,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 							console.log("userPerm: ", userPerm);
 							if (userPerm) {
 								Vue.set(this.rootData.user, 'permission', userPerm );
-								this.getAccessTokens(this.rootData.user, 'USER', this.rootData.user.permission);
+								this.getAccessTokens(this.rootData.user.uuid, 'USER', this.rootData.user.permission);
 							}
 						}
 						this.getOrganizations(id);
