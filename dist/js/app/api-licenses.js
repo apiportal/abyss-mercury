@@ -40,15 +40,15 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment'], funct
 							"blackOutHoursPerYear": 36
 						},
 						"info": {
-							"title": "Pet API License",
+							"title": "API License",
 							"version": "1.0.0",
 							"visibility": "Public",
-							"description": "Pet API License Description"
+							"description": "API License Description"
 						},
 						"legal": {
 							"link": "http://example.com/legals/{LegalDocumentID}",
-							"name": "Pet API Legal Aggrement",
-							"description": "Pet API Legal Aggrement",
+							"name": "API Legal Agreement",
+							"description": "API Legal Agreement",
 							"documentText": null,
 							"agreementType": "signup",
 							"documentState": "active",
