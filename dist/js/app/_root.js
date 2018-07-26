@@ -357,9 +357,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 							console.log("subs.accessToken.isdeleted: ", subs.accessToken.isdeleted);
 							if (!subs.accessToken.isdeleted) {
 								console.log("deleted: ", subs.accessToken);
-								this.deleteAccessTokens(subs);
+								// this.deleteAccessTokens(subs);
 								axios.delete(abyss.ajax.resource_access_tokens + subs.accessToken.uuid, subs.accessToken, this.ajaxHeaders).then(response => {
-									console.log("deleteAccessTokens response: ", response);
+									console.log("getAccessTokens deleteAccessTokens response: ", response);
 								}, error => {
 									this.handleError(error);
 								});
@@ -454,6 +454,31 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 					var res = response.data[0];
 					console.log("updateResource response: ", response);
 					Vue.set(item, 'resource', res );
+				});
+			},
+			createResource2(item, typ, name, desc) {
+				var resType = this.$root.rootData.resourceTypes.find((e) => e.type == typ );
+				var descript = desc || '';
+				var resource = {
+					"organizationid": this.$root.abyssOrgId,
+					"crudsubjectid": this.$root.rootData.user.uuid,
+					"resourcetypeid": resType.uuid, //fixed APP
+					"resourcename": name + ' ' + resType.type, //api.info.title + API
+					"description": descript, //api.info.description + api.info.version
+					"resourcerefid": item.uuid, //api.uuid
+					"isactive": true
+				};
+				var itemArr = [];
+				itemArr.push(resource);
+				// console.log("itemArr: ", itemArr);
+				return axios.post(abyss.ajax.resources, itemArr, this.ajaxHeaders).then(response => {
+					console.log("!! POST resources response: ", response);
+					if (response.data[0].status != 500 ) {
+						var res = response.data[0].response;
+						Vue.set(item, 'resource', res );
+					}
+				}, error => {
+					this.handleError(error);
 				});
 			},
 			createResource(item, typ, name, desc) {
@@ -658,7 +683,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 				var consume = _.cloneDeep(subscription);
 				Vue.set(consume, 'resourceactionid', '761c8386-4624-416e-b9e4-b59ea2c597fc');
 				var consumeArr = [];
-				consumeArr.push(subscription);
+				consumeArr.push(consume);
 				console.log("consumeArr: ", consumeArr);
 				axios.post(abyss.ajax.permission_list, consumeArr).then(response => {
 					console.log("POST user to app consume subscription response: ", response);
@@ -714,7 +739,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 										if (this.$root.rootData.myPermissions.length > 0) {
 											// var appPerm = _.find(this.$root.rootData.myPermissions, { 'resourceid': res.resource.uuid, 'isdeleted': false });
 											var appPerm = _.find(this.$root.rootData.myPermissions, { 'resourceid': res.resource.uuid });
-											console.log("appPerm: ", res.firstname, appPerm);
+											// console.log("appPerm: ", res.firstname, appPerm);
 											if (appPerm) {
 												Vue.set(res, 'permission', appPerm );
 												// console.log("res.permission: ", res.permission);
