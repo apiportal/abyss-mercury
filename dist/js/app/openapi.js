@@ -1214,6 +1214,15 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 			}
 		},
 		methods : {
+			applyAllPaths(v) {
+				if (v) {
+					for (var p in this.openapi.paths) {
+						for (var m in this.openapi.paths[p]) {
+							delete this.openapi.paths[p][m].security;
+						}
+					}
+				}
+			},
 			addSecurityDefinition(name) {
 				this.$parent.addSecurityDefinition(name);
 			},

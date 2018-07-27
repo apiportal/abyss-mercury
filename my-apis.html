@@ -111,7 +111,7 @@
 								</div>
 							</div>
 						</article>
-						<article v-if="!api.isproxyapi" class="field-controls field-level-0" data-id="Servers">
+						<article class="field-controls field-level-0" data-id="Servers">
 							<div class="field-sum">
 								<a href="#" class="field-link nav-caret" data-toggle="collapse" data-target="#servers" aria-controls="servers" aria-expanded="false">
 									<h6><i class="fa fa-fw fa-server"></i> Servers</h6>
@@ -142,7 +142,7 @@
 										<div v-bind:id="'server'+sindex" class="collapse field-acc">
 											<div class="form-group" v-bind:class="{'has-error': errors.has('server'+sindex) }">
 												<label>URL</label>
-												<input class="form-control" placeholder="Required" v-model.lazy="serverUrl" :name="'server'+sindex" v-validate="'required'">
+												<input class="form-control" placeholder="Required" v-model.lazy="serverUrl" :name="'server'+sindex" v-validate="'required'" :readonly="$parent.api.isproxyapi">
 											</div>
 											<div class="form-group">
 												<label>Description</label>
@@ -191,25 +191,6 @@
 										</div>
 									</div>
 								</api-servers>
-							</div>
-						</article>
-						<article v-if="api.isproxyapi" class="field-controls field-level-0" data-id="Servers">
-							<div class="field-sum">
-								<a href="#" class="field-link nav-caret" data-toggle="collapse" data-target="#servers" aria-controls="servers" aria-expanded="false">
-									<h6><i class="fa fa-fw fa-server"></i> Servers</h6>
-								</a>
-							</div>
-							<div id="servers" class="collapse">
-								<div class="field-acc">
-									<a :href="apiGateway" target="_blank" class="form-group mb-2 d-block">
-										<strong class="d-block txt-break">{{apiGateway}}</strong>
-									</a>
-									<api-servers v-for="(server,sindex) in api.extendeddocument.servers" :server="server" :sindex="sindex" :key="sindex" inline-template>
-										<div class="txt-break">
-											{{server['x-abyss-url']}}
-										</div>
-									</api-servers>
-								</div>
 							</div>
 						</article>
 						<article class="field-controls field-level-0" data-id="Info">
@@ -436,7 +417,7 @@
 												<div class="fol-4 form-group text-right">
 													<label class="d-block txt-line mb-0">Apply to all paths</label>
 													<span class="switch switch-primary ml-auto">
-														<input type="checkbox" :id="'applyAllPaths'+index" :value="sdname" v-model="appliesToAllPaths">
+														<input type="checkbox" :id="'applyAllPaths'+index" :value="sdname" v-model="appliesToAllPaths" v-on:change="applyAllPaths(appliesToAllPaths)">
 														<label :for="'applyAllPaths'+index"></label>
 													</span>
 												</div>
