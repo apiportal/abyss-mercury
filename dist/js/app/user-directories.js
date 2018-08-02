@@ -1,4 +1,47 @@
 define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(abyss, Vue, axios, VeeValidate, _, moment) {
+	Vue.component('directory-types', {
+		props: ['t','index', 'orgoptions'],
+		data() {
+			return {};
+		},
+		computed: {
+			stringifyTemplate : {
+				get() {
+					return JSON.stringify(this.t.attributetemplate, null, '\t');
+				},
+				set(newVal) {
+					console.log("newVal: ", newVal);
+					this.t.attributetemplate = JSON.parse(newVal);
+					console.log("this.t.attributetemplate: ", this.t.attributetemplate);
+				}
+			},
+		},
+		methods: {
+			addType() {
+				this.$parent.addType();
+			},
+			cancelAddType(t) {
+				this.$parent.cancelAddType(t);
+			},
+			saveAddType(t) {
+				this.$validator.validateAll().then((result) => {
+					if (result) {
+						this.$parent.saveAddType(t);
+					}
+				});
+			},
+			saveType(item) {
+				this.$validator.validateAll().then((result) => {
+					if (result) {
+						this.$parent.saveType(item);
+					}
+				});
+			},
+			deleteType(item) {
+				this.$parent.deleteType(item);
+			},
+		}
+	});
 	Vue.component('user-directories', {
 		props: {
 			rootState: { type: String }
@@ -41,7 +84,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 					"updated": null,
 					"deleted": null,
 					"isdeleted": false,
-					"crudsubjectid": this.$root.rootData.user.uuid,
+					"crudsubjectid": null,
 					"typename": "newType",
 					"description": "",
 				},
@@ -70,9 +113,10 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 				this.directoryTypes.splice(index, 1);
 			},
 			saveAddType(t) {
-				// this.fixProps(t);
+				this.fillProps(t);
 				var itemArr = [];
 				itemArr.push(this.deleteProps(t));
+				// console.log("this.deleteProps(t): ", this.deleteProps(t));
 				axios.post(abyss.ajax.subject_directory_types, itemArr).then(response => {
 					console.log("subject_directory_types response: ", response);
 					this.directoryTypes.push(response.data[0].response);
@@ -113,14 +157,12 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 				this.selected = null;
 			},
 			fixProps(item) {
+				this.fillProps(item);
 				if (item.lastsyncronizedat == null) {
 					Vue.set(item,'lastsyncronizedat', moment().toISOString());
 				}
 				if (item.lastsyncronizationduration == null) {
 					Vue.set(item,'lastsyncronizationduration', 0);
-				}
-				if (item.crudsubjectid == null) {
-					Vue.set(item,'crudsubjectid',this.$root.rootData.user.uuid);
 				}
 			},
 			selectDirectory(item, i) {
@@ -144,12 +186,13 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 				}
 			},
 			deleteProps(obj) {
-				var item = _.cloneDeep(obj);
+				var item = this.cleanProps(obj);
+				/*var item = _.cloneDeep(obj);
 				Vue.delete(item, 'uuid');
 				Vue.delete(item, 'created');
 				Vue.delete(item, 'updated');
 				Vue.delete(item, 'deleted');
-				Vue.delete(item, 'isdeleted');
+				Vue.delete(item, 'isdeleted');*/
 				return item;
 			},
 			directoryAction(act) {
@@ -159,6 +202,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 							this.fixProps(this.directory);
 							var itemArr = [];
 							itemArr.push(this.deleteProps(this.directory));
+							// console.log("this.deleteProps(this.directory): ", this.deleteProps(this.directory));
 							axios.post(abyss.ajax.subject_directories_list, itemArr).then(response => {
 								console.log("addDirectory response: ", response);
 								this.directoryList.push(response.data[0].response);

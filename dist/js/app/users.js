@@ -396,7 +396,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 							this.fixProps(this.user);
 							var itemArr = [];
 							itemArr.push(this.deleteProps());
-							// this.addItem(this.ajaxUrl, itemArr, this.ajaxHeaders, this.userList).then(response => {
 							axios.post(this.ajaxUrl, itemArr, this.ajaxHeaders).then(response => {
 								console.log("addUser response: ", response);
 								if (response.data[0].status != 500 ) {

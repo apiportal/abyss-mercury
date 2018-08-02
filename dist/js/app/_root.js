@@ -1037,7 +1037,15 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 					window.swUi = swUi;
 				});
 			},
-			// ■■■■■■■■ cleanProps ■■■■■■■■ //
+			// ■■■■■■■■ Props ■■■■■■■■ //
+			fillProps(item) {
+				if (item.crudsubjectid == null) {
+					Vue.set(item,'crudsubjectid',this.$root.rootData.user.uuid);
+				}
+				if (item.organizationid == null) {
+					Vue.set(item,'organizationid',this.$root.abyssOrgId);
+				}
+			},
 			cleanProps(obj, typ) {
 				var item = _.cloneDeep(obj);
 				Vue.delete(item, 'uuid');
@@ -1627,11 +1635,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 						if (this.rootData.user.memberships.length > 0) {
 							this.rootData.user.memberships.forEach((value, key) => {
 								var grp = _.find(this.rootData.userGroupList, { 'uuid': value.subjectgroupid });
-								// console.log("grp: ", grp);
 								this.rootData.user.groups.push(grp);
 							});
 							var isAdmin = _.find(this.$root.rootData.user.groups, { uuid: 'd911bf07-7ae8-46dd-9039-295f79575a90'});
-							// console.log("isAdmin: ", isAdmin);
 							if (isAdmin) {
 								Vue.set(this.rootData.user, 'isAdmin', true );
 							}
@@ -1654,6 +1660,18 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 				console.log("cancelRightSidebar: ");
 				this.showOrganizations = false;
 				this.showProfile = false;
+			},
+			getYamls() {
+				// console.log("this.$root.pageCurrent: ", this.$root.pageCurrent);
+				// if (this.$root.pageCurrent == 'my-apis') {
+					axios.get(abyss.ajax.api_yaml_list, this.ajaxHeaders)
+					.then(response => {
+						// this.$root.abyssYamlList = _.sortBy(response.data);
+						Vue.set(this.$root, 'abyssYamlList', _.sortBy(response.data));
+					}, error => {
+						this.handleError(error);
+					});
+				// }
 			},
 		},
 		computed: {
@@ -1680,26 +1698,13 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 			this.abyssOrgId = this.$cookie.get('abyss.login.organization.uuid');
 			var principal = this.$cookie.get('abyss.principal.uuid');
 			var session = this.$cookie.get('abyss.session');
-			// console.log("this.abyssOrgName: ", this.abyssOrgName);
-			// console.log("this.abyssOrgId: ", this.abyssOrgId);
-			// console.log("principal: ", principal);
 			if (!this.abyssOrgName || !this.abyssOrgId || !principal || !session) {
 				alert('COOKIE EXPIRED');
 				window.location.href = '/abyss/logout';
 			}
 			// this.$cookie.delete('abyss.principal.uuid');
-			// this.log(this.$options.name);
 			this.newTax = _.cloneDeep(this.tax);
 			this.getRootData(principal);
-			// if (!this.$root.isLoading) {
-				axios.get(abyss.ajax.api_yaml_list, this.ajaxHeaders)
-				.then(response => {
-					// this.$root.abyssYamlList = _.sortBy(response.data);
-					Vue.set(this.$root, 'abyssYamlList', _.sortBy(response.data));
-				}, error => {
-					this.handleError(error);
-				});
-			// }
 		}
 	});
 });

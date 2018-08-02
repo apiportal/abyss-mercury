@@ -24,10 +24,18 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 				this.$parent.cancelAddType(t);
 			},
 			saveAddType(t) {
-				this.$parent.saveAddType(t);
+				this.$validator.validateAll().then((result) => {
+					if (result) {
+						this.$parent.saveAddType(t);
+					}
+				});
 			},
 			saveType(item) {
-				this.$parent.saveType(item);
+				this.$validator.validateAll().then((result) => {
+					if (result) {
+						this.$parent.saveType(item);
+					}
+				});
 			},
 			deleteType(item) {
 				this.$parent.deleteType(item);
@@ -118,9 +126,10 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 				this.accessManagerTypes.splice(index, 1);
 			},
 			saveAddType(t) {
-				this.fixProps(t);
+				this.fillProps(t);
 				var itemArr = [];
 				itemArr.push(this.deleteProps(t));
+				// console.log("this.deleteProps(t): ", this.deleteProps(t));
 				axios.post(abyss.ajax.access_manager_types, itemArr).then(response => {
 					console.log("access_manager_types response: ", response);
 					this.accessManagerTypes.push(response.data[0].response);
@@ -161,9 +170,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 				this.selected = null;
 			},
 			fixProps(item) {
-				if (item.crudsubjectid == null) {
-					Vue.set(item,'crudsubjectid',this.$root.rootData.user.uuid);
-				}
+				this.fillProps(item);
 			},
 			selectAccessManager(item, i) {
 				this.fixProps(item);
@@ -186,12 +193,13 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 				}
 			},
 			deleteProps(obj) {
-				var item = _.cloneDeep(obj);
+				var item = this.cleanProps(obj);
+				/*var item = _.cloneDeep(obj);
 				Vue.delete(item, 'uuid');
 				Vue.delete(item, 'created');
 				Vue.delete(item, 'updated');
 				Vue.delete(item, 'deleted');
-				Vue.delete(item, 'isdeleted');
+				Vue.delete(item, 'isdeleted');*/
 				return item;
 			},
 			accessManagerAction(act) {
@@ -201,6 +209,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 							this.fixProps(this.accessManager);
 							var itemArr = [];
 							itemArr.push(this.deleteProps(this.accessManager));
+							console.log("this.deleteProps(this.accessManager): ", this.deleteProps(this.accessManager));
 							axios.post(abyss.ajax.access_managers, itemArr).then(response => {
 								console.log("addAccessManager response: ", response);
 								this.accessManagerList.push(response.data[0].response);

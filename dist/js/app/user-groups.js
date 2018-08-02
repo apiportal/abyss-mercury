@@ -275,7 +275,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 							this.fixProps(this.group);
 							var itemArr = [];
 							itemArr.push(this.deleteProps());
-							// this.addItem(this.ajaxUrl, itemArr, this.ajaxHeaders, this.groupList).then(response => {
 							axios.post(this.ajaxUrl, itemArr, this.ajaxHeaders).then(response => {
 								console.log("addGroup response: ", response);
 								if (response.data[0].status != 500 ) {

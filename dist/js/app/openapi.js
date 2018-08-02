@@ -3284,6 +3284,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					this.myLicenseList = newLcs;
 					this.getMyApps();
 					this.getPage(1);
+					this.$root.getYamls();
 				})
 			).catch(error => {
 				this.handleError(error);
