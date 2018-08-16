@@ -98,15 +98,19 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 				this.selectedPermission = _.cloneDeep(this.newPermission);
 				this.selected = null;
 			},
+			selectPermission(item, i) {
+				this.fixProps(item);
+				this.selectedPermission = _.cloneDeep(item);
+				this.permission = item;
+				this.selected = i;
+			},
+			isSelected(i) {
+				return i === this.selected;
+			},
 			fixProps(item) {
+				this.fillProps(item);
 				if (item.subjectid == null) {
 					Vue.set(item,'subjectid',this.$root.rootData.user.uuid);
-				}
-				if (item.crudsubjectid == null) {
-					Vue.set(item,'crudsubjectid',this.$root.rootData.user.uuid);
-				}
-				if (item.organizationid == null) {
-					Vue.set(item,'organizationid',this.$root.abyssOrgId);
 				}
 				if (item.effectiveenddate == null) {
 					Vue.set(item, 'effectiveenddate', moment().add(6, 'months').format('YYYY-MM-DD HH:mm:ss'));
@@ -115,35 +119,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 					Vue.set(item, 'effectivestartdate', moment().format('YYYY-MM-DD HH:mm:ss'));
 				}
 			},
-			selectPermission(item, i) {
-				this.fixProps(item);
-				this.selectedPermission = _.cloneDeep(item);
-				this.permission = item;
-				this.selected = i;
-				// console.log("this.permission: ", JSON.stringify(this.permission, null, '\t'));
-
-			},
-			isSelected(i) {
-				return i === this.selected;
-			},
-			deletePermission(item) {
-				var r = confirm('Are you sure to delete?');
-				if (r == true) {
-					axios.delete(abyss.ajax.permission_list + '/' + item.uuid, item).then(response => {
-						item.isdeleted = true;
-						console.log("DELETE permission response: ", response);
-					}, error => {
-						this.handleError(error);
-					});
-				}
-			},
-			deleteProps() {
-				var item = _.cloneDeep(this.permission);
-				Vue.delete(item, 'uuid');
-				Vue.delete(item, 'created');
-				Vue.delete(item, 'updated');
-				Vue.delete(item, 'deleted');
-				Vue.delete(item, 'isdeleted');
+			deleteProps(obj) {
+				var item = this.cleanProps(obj);
 				Vue.delete(item, 'resource');
 				Vue.delete(item, 'accessManager');
 				Vue.delete(item, 'resourceAction');
@@ -153,15 +130,51 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 				item.effectiveenddate = moment(item.effectiveenddate).toISOString();
 				return item;
 			},
-			permissionAction(act) {
+			async deletePermission(item) {
+				var del = await this.deleteItem(abyss.ajax.permission_list, item, true);
+				console.log("del: ", del);
+				if (del) {
+					this.$toast('success', {title: 'ITEM DELETED', message: 'Item deleted successfully', position: 'topRight'});
+				}
+			},
+			/*deletePermission(item) {
+				var r = confirm('Are you sure to delete?');
+				if (r == true) {
+					axios.delete(abyss.ajax.permission_list + '/' + item.uuid, item).then(response => {
+						item.isdeleted = true;
+						console.log("DELETE permission response: ", response);
+					}, error => {
+						this.handleError(error);
+					});
+				}
+			},*/
+			async permissionAction(act) {
+				var result = await this.$validator.validateAll();
+				if (result) {
+					if (act == 'add') {
+						this.fixProps(this.permission);
+						var item = await this.addItem(abyss.ajax.permission_list, this.deleteProps(this.permission));
+						this.getPage(1);
+						this.$emit('set-state', 'init');
+						this.permission = _.cloneDeep(this.newPermission);
+					}
+					if (act == 'edit') {
+						var item = await this.editItem( abyss.ajax.permission_list, this.permission.uuid, this.deleteProps(this.permission) );
+						this.getPage(1);
+						this.$emit('set-state', 'init');
+						this.permission = _.cloneDeep(this.newPermission);
+						this.selected = null;
+					}
+				}
+			},
+			/*permissionAction(act) {
 				this.$validator.validateAll().then((result) => {
 					if (result) {
 						if (act == 'add') {
 							this.fixProps(this.permission);
 							var itemArr = [];
-							itemArr.push(this.deleteProps());
-							console.log("this.deleteProps(): ", this.deleteProps());
-							axios.post(abyss.ajax.permission_list, itemArr, this.ajaxHeaders).then(response => {
+							itemArr.push(this.deleteProps(this.permission));
+							axios.post(abyss.ajax.permission_list, itemArr).then(response => {
 								console.log("addPermission response: ", response);
 								if (response.data[0].status != 500 ) {
 									this.getPage(1);
@@ -173,8 +186,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 							});
 						}
 						if (act == 'edit') {
-							console.log("this.deleteProps(): ", this.deleteProps());
-							this.updateItem(abyss.ajax.permission_list + '/' + this.permission.uuid, this.deleteProps(), this.ajaxHeaders, this.permissionList).then(response => {
+							this.updateItem(abyss.ajax.permission_list + '/' + this.permission.uuid, this.deleteProps(this.permission), this.permissionList).then(response => {
 								console.log("editPermission response: ", response);
 								this.getPage(1);
 								this.$emit('set-state', 'init');
@@ -185,23 +197,18 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 						return;
 					}
 				});
+			},*/
+			async filterPermission(filter) {
+				if (filter == null) {
+					this.getPage(1);
+				} else {
+					// this.permissionList = await this.getItem(abyss.ajax.permission_list, filter.uuid);
+					this.permissionList = [];
+					this.permissionList.push(filter);
+					this.setPage();
+				}
 			},
-			getPermissionOptions(search, loading) {
-				loading(true);
-				axios.get(this.permissionEndpoint() + '?likename=' + search)
-				.then((response) => {
-					if (response.data != null) {
-						this.permissionOptions = response.data;
-					} else {
-						this.permissionOptions = [];
-					}
-					loading(false);
-				}, error => {
-					this.handleError(error);
-					loading(false);
-				});
-			},
-			filterPermission(filter) {
+			/*filterPermission(filter) {
 				if (filter == null) {
 					this.getPage(1);
 				} else {
@@ -216,8 +223,50 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 						this.handleError(error);
 					});
 				}
+			},*/
+			async getPermissionOptions(search, loading) {
+				loading(true);
+				this.permissionOptions = await this.getList(abyss.ajax.permission_list + '?likename=' + search);
+				loading(false);
 			},
-			setPage() {
+			/*getPermissionOptions(search, loading) {
+				loading(true);
+				axios.get(this.permissionEndpoint() + '?likename=' + search)
+				.then((response) => {
+					if (response.data != null) {
+						this.permissionOptions = response.data;
+					} else {
+						this.permissionOptions = [];
+					}
+					loading(false);
+				}, error => {
+					this.handleError(error);
+					loading(false);
+				});
+			},*/
+			async setPage() {
+				this.permissionList.forEach(async (value, key) => {
+					var rAct = _.find(this.$root.rootData.resourceActions, { 'uuid': value.resourceactionid });
+					Vue.set(value, 'resourceAction', rAct );
+					var rTyp = _.find(this.$root.rootData.resourceTypes, { 'uuid': rAct.resourcetypeid });
+					Vue.set(value.resourceAction, 'resourceType', rTyp.type );
+					var acMn = _.find(this.accessManagerOptions, { 'uuid': value.accessmanagerid });
+					Vue.set(value, 'accessManager', acMn );
+					var pOrg = _.find(this.orgOptions, { 'uuid': value.organizationid });
+					Vue.set(value, 'organization', pOrg );
+					var aTyp = _.find(this.accessManagerTypes, { 'uuid': acMn.accessmanagertypeid });
+					Vue.set(value.accessManager, 'accessManagerType', aTyp );
+					var resource = await this.getItem(abyss.ajax.resources, value.resourceid);
+					Vue.set(value, 'resource', resource );
+					var rTyp = _.find(this.$root.rootData.resourceTypes, { 'uuid': value.resource.resourcetypeid });
+					Vue.set(value.resource, 'resourceType', rTyp );
+					var subject = await this.getItem(abyss.ajax.subjects, value.subjectid);
+					Vue.set(value, 'subject', subject );
+					var sTyp = _.find(this.subjectTypes, { 'uuid': value.subject.subjecttypeid });
+					Vue.set(value.subject, 'subjectType', sTyp.typename );
+				});
+			},
+			/*setPage() {
 				this.permissionList.forEach((value, key) => {
 					var rAct = _.find(this.$root.rootData.resourceActions, { 'uuid': value.resourceactionid });
 					Vue.set(value, 'resourceAction', rAct );
@@ -229,7 +278,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 					Vue.set(value, 'organization', pOrg );
 					var aTyp = _.find(this.accessManagerTypes, { 'uuid': acMn.accessmanagertypeid });
 					Vue.set(value.accessManager, 'accessManagerType', aTyp );
-					axios.get(abyss.ajax.resources + value.resourceid).then(response => {
+					axios.get(abyss.ajax.resources + '/' + value.resourceid).then(response => {
 						Vue.set(value, 'resource', response.data[0] );
 						var rTyp = _.find(this.$root.rootData.resourceTypes, { 'uuid': value.resource.resourcetypeid });
 						Vue.set(value.resource, 'resourceType', rTyp );
@@ -244,8 +293,40 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 						this.handleError(error);
 					});
 				});
+			},*/
+			async getPage(p, d) {
+				var access_managers = this.getList(abyss.ajax.access_managers);
+				var access_manager_types = this.getList(abyss.ajax.access_manager_types);
+				var subject_types = this.getList(abyss.ajax.subject_types);
+				var resource_list = this.getList(this.resourceEndpoint());
+				var subject_list = this.getList(this.subjectEndpoint());
+				var permission_list = this.getList(this.permissionEndpoint());
+				var organizations_list = this.getList(abyss.ajax.organizations_list);
+
+				var [accessManagerOptions, accessManagerTypes, subjectTypes, resourceOptions, subjectOptions, permissionList, orgOptions] = await Promise.all([access_managers, access_manager_types, subject_types, resource_list, subject_list, permission_list, organizations_list]);
+
+				this.accessManagerOptions = accessManagerOptions;
+				this.accessManagerTypes = accessManagerTypes;
+				this.subjectTypes = subjectTypes;
+				this.resourceOptions = resourceOptions;
+				this.subjectOptions = subjectOptions;
+
+				this.resourceActionOptions = this.$root.rootData.resourceActions;
+				this.$root.rootData.resourceTypes.forEach((value, key) => {
+					if (value.type == 'API') {
+						Vue.set(value, 'subjectTypeId', 'ca80dd37-7484-46d3-b4a1-a8af93b2d3c6' ); // APP
+					} else {
+						Vue.set(value, 'subjectTypeId', '21371a15-04f8-445e-a899-006ee11c0e09' ); // USER
+					}
+				});
+
+				this.permissionList = permissionList;
+				this.orgOptions = orgOptions;
+				this.paginate = this.makePaginate(this.permissionList);
+				this.setPage();
+				this.preload();
 			},
-			getPage(p, d) {
+			/*getPage(p, d) {
 				axios.all([
 					axios.get(this.permissionEndpoint()),
 				]).then(
@@ -258,16 +339,13 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 				).catch(error => {
 					this.handleError(error);
 				});
-			},
-		},
-		mounted() {
-			
+			},*/
 		},
 		created() {
-			// this.log(this.$options.name);
 			this.$emit('set-page', 'permissions', 'init');
 			this.newPermission = _.cloneDeep(this.permission);
-			axios.all([
+			this.getPage(1);
+			/*axios.all([
 				axios.get(abyss.ajax.access_managers),
 				axios.get(abyss.ajax.access_manager_types),
 				axios.get(abyss.ajax.subject_types),
@@ -291,14 +369,11 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 							Vue.set(value, 'subjectTypeId', '21371a15-04f8-445e-a899-006ee11c0e09' ); // USER
 						}
 					});
-					console.log("this.$root.rootData.resourceTypes: ", this.$root.rootData.resourceTypes);
-					// setTimeout(() => {
-						this.getPage(1);
-					// },100);
+					this.getPage(1);
 				})
 			).catch(error => {
 				this.handleError(error);
-			});
+			});*/
 		}
 	});
 });

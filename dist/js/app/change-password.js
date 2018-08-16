@@ -15,11 +15,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash'], function(abyss, Vue
 				event.preventDefault();
 				this.$validator.validateAll().then((result) => {
 					if (result) {
-						// alert('Form Submitted!');
 						document.querySelector('#validForm').submit();
 						return;
 					}
-					// alert('Correct them errors!');
 				});
 			}
 		},
@@ -27,7 +25,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash'], function(abyss, Vue
 			this.preload();
 		},
 		created() {
-			this.log(this.$options.name);
 			this.$emit('set-page', 'change-password', 'init');
 		}
 	});

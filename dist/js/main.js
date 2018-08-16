@@ -31,6 +31,7 @@ require.config({
 		"vue": ["lib/require-vuejs.min"],
 		"axios": "lib/axios.min",
 		"ace": "lib/",
+		"swagger-editor": "swagger/swagger-editor-bundle",
 		"swagger-ui": "swagger/swagger-ui-bundle",
 		"swagger-ui-css": "swagger/swagger-ui.css?noext",
 		//// plugins ////
@@ -80,7 +81,7 @@ require.config({
 		"index": "app/index",
 		"api-policies": "app/api-policies",
 		"api-licenses": "app/api-licenses",
-		"my-apis": "app/my-apis",
+		"messages": "app/messages",
 		"explore": "app/explore",
 		"users": "app/users",
 		"apps": "app/apps",

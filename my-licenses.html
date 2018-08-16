@@ -19,8 +19,8 @@
 				<div class="nicescroll--bar">
 					<div class="fow m-0 p-3 justify-content-center">
 						<article v-for="(license, index) in sortByNested(sort, licenseList)" v-bind:key="license.uuid" v-bind:class="{'active': isSelected(index)}" class="fol-sm-6 fol-md-4 fol-lg-4 fol-xl-3 fol-xlm-3 fol-xlg-3 thumb-3x card-item field-controls">
-							<div class="field-sum bg-white shadow-sm">
-								<a href="#" class="field-link" data-toggle="collapse" v-bind:data-target="'#license'+index" v-bind:aria-controls="'license'+index">
+							<div class="field-sum bg-white shadow-sm" v-bind:class="{'is-deleted': license.isdeleted}">
+								<a class="field-link" data-toggle="collapse" v-bind:data-target="'#license'+index" v-bind:aria-controls="'license'+index">
 									<div class="h6">										
 									<i class="fas fa-check-circle txt-green" title="Active" v-if="!license.isdeleted"></i>
 									<i class="fas fa-times-circle txt-red" title="Deleted" v-if="license.isdeleted"></i>
@@ -28,19 +28,19 @@
 										<small>{{license.version}}</small>
 									</div>
 									<div>
-										<small class="text-uppercase" v-bind:class="{'txt-green': license.licensedocument.info.visibility == 'Public', 'txt-orange': license.licensedocument.info.visibility == 'Private'}">{{license.licensedocument.info.visibility}}</small>
-										<div class="d-flex text-uppercase float-right small text-muted">
+										<small class="txt-uppercase" v-bind:class="{'txt-green': license.licensedocument.info.visibility == 'Public', 'txt-orange': license.licensedocument.info.visibility == 'Private'}">{{license.licensedocument.info.visibility}}</small>
+										<div class="d-flex txt-uppercase flt-r small txt-muted">
 											<span v-if="!license.isdeleted" :title="license.updated | formatDateTime">
 												{{license.created | formatDateTime}}
 											</span>
-											<span class="ml-auto text-right" v-if="license.isdeleted">
+											<span class="ml-auto txt-r" v-if="license.isdeleted">
 												{{license.deleted | formatDateTime}}
 											</span>
 										</div>
 									</div>
 									<div class="">{{license.licensedocument.info.title}}</div>
-									<code class="float-right d-block txt-line small txt-blue"><small>{{license.uuid}}</small></code>
-									<small class="d-block txt-line my-1 text-muted">{{license.licensedocument.info.description}}</small>
+									<code class="flt-r d-block txt-line small txt-blue"><small>{{license.uuid}}</small></code>
+									<small class="d-block txt-line my-1 txt-muted">{{license.licensedocument.info.description}}</small>
 								</a>
 								<div class="ficon-actions dropdown dropdown-hover">
 									<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
@@ -53,8 +53,8 @@
 							<div v-bind:id="'license'+index" class="collapse field-acc pb-0 bg-white shadow-sm">
 								<div class="fow">
 									<div class="fol-sm-4 small">
-										<strong class="d-block py-2 brd--b row text-center">Policies</strong>
-										<div v-for="(pol, index) in license.policies" class="brd-t py-2 row px-3" :title="pol.uuid + ' | ' + pol.description">
+										<strong class="d-block py-2 brd--b row txt-c">Policies</strong>
+										<div v-for="(pol, index) in license.policies" class="brd-t py-2 row px-3" :title="pol.uuid + ' | ' + pol.description" v-bind:class="{'is-deleted': pol.isdeleted}">
 											<h6 class="d-block">{{pol.name}}</h6>
 											<span class="d-block">{{pol.policyinstance.info.type}} - {{pol.policyinstance.info.subType}}</span>
 											<div class="d-flex mt-2 mb-1">
@@ -71,22 +71,22 @@
 													<small>Proxy<br>Response</small>
 												</span>
 											</div>
-											<!-- <div class="d-flex text-uppercase smalll text-light my-1">
-												<span class="txt-line font-weight-bold d-flex" v-bind:class="{'txt-purple': pol.policyinstance.openApiLifeCycle.onProxyRequest}">
+											<!-- <div class="d-flex txt-uppercase smalll txt-light my-1">
+												<span class="txt-line fnt-bold d-flex" v-bind:class="{'txt-purple': pol.policyinstance.openApiLifeCycle.onProxyRequest}">
 													<small>Proxy<br>Request</small>
 													<i class="fas fa-arrow-right"></i>
 												</span>
-												<span class="ml-auto text-right txt-line font-weight-bold d-flex" v-bind:class="{'txt-purple': pol.policyinstance.openApiLifeCycle.onProxyResponse}">
+												<span class="ml-auto txt-r txt-line fnt-bold d-flex" v-bind:class="{'txt-purple': pol.policyinstance.openApiLifeCycle.onProxyResponse}">
 													<i class="fas fa-arrow-left"></i>
 													<small>Proxy<br>Response</small>
 												</span>
 											</div>
-											<div class="d-flex text-uppercase smalll text-light">
-												<span class="txt-line font-weight-bold d-flex" v-bind:class="{'txt-cyan': pol.policyinstance.openApiLifeCycle.onBusinessRequest}">
+											<div class="d-flex txt-uppercase smalll txt-light">
+												<span class="txt-line fnt-bold d-flex" v-bind:class="{'txt-cyan': pol.policyinstance.openApiLifeCycle.onBusinessRequest}">
 													<small>Business<br>Request</small>
 													<i class="fas fa-arrow-right"></i>
 												</span>
-												<span class="ml-auto text-right txt-line font-weight-bold d-flex" v-bind:class="{'txt-cyan': pol.policyinstance.openApiLifeCycle.onBusinessResponse}">
+												<span class="ml-auto txt-r txt-line fnt-bold d-flex" v-bind:class="{'txt-cyan': pol.policyinstance.openApiLifeCycle.onBusinessResponse}">
 													<i class="fas fa-arrow-left"></i>
 													<small>Business<br>Response</small>
 												</span>
@@ -94,19 +94,19 @@
 										</div>
 									</div>
 									<div class="fol-sm-4 small brd-sm-l brd-sm-r">
-										<strong class="d-block py-2 brd-b row text-center">SLA</strong>
+										<strong class="d-block py-2 brd-b row txt-c">SLA</strong>
 										<h6 class="mt-2">
 											{{license.licensedocument.sla.tierName}}
 										</h6>
 										<p class="mb-4">
 											{{license.licensedocument.sla.description}}
 										</p>
-										<p class="d-flex text-uppercase">
+										<p class="d-flex txt-uppercase">
 											<span class="">
 												<strong class="lbl">support Hours</strong>
 												{{license.licensedocument.sla.supportHours}}
 											</span>
-											<span class="ml-auto text-right">
+											<span class="ml-auto txt-r">
 												<strong class="lbl">availability</strong>
 												{{license.licensedocument.sla.availability}}
 											</span>
@@ -121,32 +121,32 @@
 										</p>
 									</div>
 									<div class="fol-sm-4 small">
-										<strong class="d-block py-2 brd-b row text-center">Legal Aggreement</strong>
+										<strong class="d-block py-2 brd-b row txt-c">Legal Aggreement</strong>
 										<h6 class="mt-2">
 											{{license.licensedocument.legal.name}}
 										</h6>
 										<p class="mb-4">
 											{{license.licensedocument.legal.description}}
 										</p>
-										<p class="d-flex text-uppercase">
+										<p class="d-flex txt-uppercase">
 											<span class="">
 												<strong class="lbl">Agreement Type</strong>
 												{{license.licensedocument.legal.agreementType}}
 											</span>
-											<span class="ml-auto text-right">
+											<span class="ml-auto txt-r">
 												<strong class="lbl">Document State</strong>
 												{{license.licensedocument.legal.documentState}}
 											</span>
 										</p>
 										<p v-if="license.licensedocument.legal.link">
 											<strong class="lbl">link</strong>
-											<span class="d-block text-truncate">
+											<span class="d-block txt-truncate">
 												<a :href="license.licensedocument.legal.link" target="_blank">{{license.licensedocument.legal.link}}</a>
 											</span>
 										</p>
 										<p v-if="license.licensedocument.legal.documentText">
 											<strong class="lbl">document Text</strong>
-											<span class="d-block text-truncate">
+											<span class="d-block txt-truncate">
 												{{license.licensedocument.legal.documentText}}
 											</span>
 										</p>

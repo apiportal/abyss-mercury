@@ -38,8 +38,8 @@
 							<th class="td-action-1"></th>
 							<th class="td-action-1"></th>
 						</tr>
-						<tr v-for="(permission, index) in sortByNested(sort, permissionList)" v-bind:key="permission.uuid" v-bind:class="{'active': isSelected(index)}">
-							<td class="text-center">
+						<tr v-for="(permission, index) in sortByNested(sort, permissionList)" v-bind:key="permission.uuid" v-bind:class="{'active': isSelected(index), 'tr-deleted': permission.isdeleted}">
+							<td class="txt-c">
 								<i class="fas fa-check-circle txt-green" title="Active" v-if="!permission.isdeleted"></i>
 								<i class="fas fa-times-circle txt-red" title="Deleted" v-if="permission.isdeleted"></i>
 							</td>
@@ -52,7 +52,7 @@
 									<code class="d-block txt-line small txt-cyan"><small>REF: {{permission.resource.resourcerefid}}</small></code>
 								</div>
 							</td>
-							<td class="text-center" v-if="permission.resource" :title="permission.resource.resourcetypeid">
+							<td class="txt-c" v-if="permission.resource" :title="permission.resource.resourcetypeid">
 								{{permission.resource.resourceType.type}}
 							</td>
 							<td v-if="permission.subject">
@@ -61,7 +61,7 @@
 								<small class="d-block"><strong>URL:</strong> {{permission.subject.url}}</small>
 								<code class="d-block txt-line small txt-blue"><small>{{permission.subjectid}}</small></code>
 							</td>
-							<td class="text-center" v-if="permission.subject">
+							<td class="txt-c" v-if="permission.subject">
 								{{permission.subject.subjectType}}
 							</td>
 							<td :title="permission.resourceAction.resourcetypeid">
@@ -99,10 +99,10 @@
 								</div>
 							</td>
 							<td class="td-action-1">
-								<a href="#" class="btn btn-xl txt-link btn-square" title="EDIT PERMISSION" v-on:click="$emit('set-state', 'edit'); selectPermission(permission, index);"><i class="fas fa-edit"></i></a>
+								<a class="btn btn-xl txt-link btn-square" title="EDIT PERMISSION" v-on:click="$emit('set-state', 'edit'); selectPermission(permission, index);"><i class="fas fa-edit"></i></a>
 							</td>
 							<td class="td-action-1">
-								<a href="#" class="btn btn-xl txt-link txt-grey btn-square" title="DELETE PERMISSION" v-on:click="deletePermission(permission, index)"><i class="fas fa-trash-alt"></i></a>
+								<a class="btn btn-xl txt-link txt-grey btn-square" title="DELETE PERMISSION" v-on:click="deletePermission(permission, index)"><i class="fas fa-trash-alt"></i></a>
 							</td>
 						</tr>
 					</table>

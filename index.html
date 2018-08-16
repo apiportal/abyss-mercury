@@ -25,11 +25,11 @@
 					<div class="card">
 						<div class="card-scroll">
 							<div class="nicescroll-bar">
-								<div class="bg-pink txt-white text-center p-3 justify-content-center">
+								<div class="bg-pink txt-white txt-c p-3 justify-content-center">
 									My<br>Subscribers
 									<h1 class="mb-0 mt-2">{{mySubscribers}}</h1>
 								</div>
-								<div class="bg-cyan txt-white text-center p-3 justify-content-center">
+								<div class="bg-cyan txt-white txt-c p-3 justify-content-center">
 									My<br>Subscriptions
 									<h1 class="mb-0 mt-2">{{mySubscriptions}}</h1>
 								</div>
@@ -43,23 +43,23 @@
 						<div class="card-scroll">
 							<div class="nicescroll-bar">
 								<div v-for="(app, index) in sortByNested(sortApp, $root.appList)" v-if="app.subscriptions" class="brd-b brd-0-last field-controls">
-									<a href="#" class="nav-link d-block" v-on:click="getMyAppDetail(app,index,true);">
+									<a class="nav-link d-block" v-on:click="getMyAppDetail(app,index,true);" :class="{'is-deleted': app.isdeleted}">
 										<div class="">										
 											<i class="fas fa-check-circle txt-green" title="Active" v-if="!app.isdeleted"></i>
 											<i class="fas fa-times-circle txt-red" title="Deleted" v-if="app.isdeleted"></i>
 											<strong>{{app.firstname}}</strong>
 										</div>
 										<div>
-											<div class="d-flex text-uppercase float-right small text-muted">
+											<div class="d-flex txt-uppercase flt-r small txt-muted">
 												<span v-if="!app.isdeleted" :title="app.updated | formatDateTime">
 													{{app.created | formatDateTime}}
 												</span>
-												<span class="ml-auto text-right" v-if="app.isdeleted">
+												<span class="ml-auto txt-r" v-if="app.isdeleted">
 													{{app.deleted | formatDateTime}}
 												</span>
 											</div>
 										</div>
-										<div v-if="app.contracts"><small class="text-uppercase">Subscriptions:</small> <strong class="txt-black">{{app.contracts.length}}</strong></div>
+										<div v-if="app.contracts"><small class="txt-uppercase">Subscriptions:</small> <strong class="txt-black">{{app.contracts.length}}</strong></div>
 										<code class="d-block txt-line small txt-blue"><small>{{app.uuid}}</small></code>
 									</a>
 								</div>

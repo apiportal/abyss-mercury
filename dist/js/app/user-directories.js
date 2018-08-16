@@ -56,8 +56,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 				},
 				pageState: 'init',
 				paginate: {},
-				ajaxUrl: abyss.ajax.subject_directories_list,
-				ajaxHeaders: {},
 				selected: null,
 				directory: {
 					"uuid": null,
@@ -112,7 +110,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 				var index = this.directoryTypes.indexOf(t);
 				this.directoryTypes.splice(index, 1);
 			},
-			saveAddType(t) {
+			/*saveAddType(t) {
 				this.fillProps(t);
 				var itemArr = [];
 				itemArr.push(this.deleteProps(t));
@@ -125,22 +123,39 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 				}, error => {
 					this.handleError(error);
 				});
+			},*/
+			async saveAddType(item) {
+				this.fixProps(item);
+				await this.addItem( abyss.ajax.subject_directory_types, this.deleteProps(item), this.directoryTypes );
+				this.cancelAddType(item);
+				this.$emit('set-state', 'init');
 			},
-			saveType(item) {
+			/*saveType(item) {
 				this.updateItem(abyss.ajax.subject_directory_types + '/' + item.uuid, this.deleteProps(item)).then(response => {
 					console.log("save subject_directory_types response: ", response);
 					this.$emit('set-state', 'init');
 				});
+			},*/
+			async saveType(item) {
+				await this.editItem( abyss.ajax.subject_directory_types, item.uuid, this.deleteProps(item), this.directoryTypes );
+				this.$emit('set-state', 'init');
 			},
-			deleteType(item) {
+			/*deleteType(item) {
 				var r = confirm('Are you sure to delete?');
 				if (r == true) {
-					axios.delete(abyss.ajax.subject_directories_list + '/' + item.uuid, item).then(response => {
+					axios.delete(abyss.ajax.subject_directory_types + '/' + item.uuid, item).then(response => {
 						item.isdeleted = true;
 						console.log("deleteUser response: ", response);
 					}, error => {
 						this.handleError(error);
 					});
+				}
+			},*/
+			async deleteType(item) {
+				var del = await this.deleteItem(abyss.ajax.subject_directory_types, item, true);
+				console.log("del: ", del);
+				if (del) {
+					this.$toast('success', {title: 'ITEM DELETED', message: 'Item deleted successfully', position: 'topRight'});
 				}
 			},
 			getTypeName(typ) {
@@ -156,15 +171,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 				this.selectedDirectory = _.cloneDeep(this.newDirectory);
 				this.selected = null;
 			},
-			fixProps(item) {
-				this.fillProps(item);
-				if (item.lastsyncronizedat == null) {
-					Vue.set(item,'lastsyncronizedat', moment().toISOString());
-				}
-				if (item.lastsyncronizationduration == null) {
-					Vue.set(item,'lastsyncronizationduration', 0);
-				}
-			},
 			selectDirectory(item, i) {
 				this.fixProps(item);
 				this.selectedDirectory = _.cloneDeep(item);
@@ -174,7 +180,27 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 			isSelected(i) {
 				return i === this.selected;
 			},
-			deleteDirectory(item) {
+			fixProps(item) {
+				this.fillProps(item);
+				if (item.lastsyncronizedat == null) {
+					Vue.set(item,'lastsyncronizedat', moment().toISOString());
+				}
+				if (item.lastsyncronizationduration == null) {
+					Vue.set(item,'lastsyncronizationduration', 0);
+				}
+			},
+			deleteProps(obj) {
+				var item = this.cleanProps(obj);
+				return item;
+			},
+			async deleteDirectory(item) {
+				var del = await this.deleteItem(abyss.ajax.subject_directories_list, item, true);
+				console.log("del: ", del);
+				if (del) {
+					this.$toast('success', {title: 'ITEM DELETED', message: 'Item deleted successfully', position: 'topRight'});
+				}
+			},
+			/*deleteDirectory(item) {
 				var r = confirm('Are you sure to delete?');
 				if (r == true) {
 					axios.delete(abyss.ajax.subject_directories_list + '/' + item.uuid, item).then(response => {
@@ -184,47 +210,47 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 						this.handleError(error);
 					});
 				}
-			},
-			deleteProps(obj) {
-				var item = this.cleanProps(obj);
-				/*var item = _.cloneDeep(obj);
-				Vue.delete(item, 'uuid');
-				Vue.delete(item, 'created');
-				Vue.delete(item, 'updated');
-				Vue.delete(item, 'deleted');
-				Vue.delete(item, 'isdeleted');*/
-				return item;
-			},
-			directoryAction(act) {
-				this.$validator.validateAll().then((result) => {
-					if (result) {
-						if (act == 'add') {
-							this.fixProps(this.directory);
-							var itemArr = [];
-							itemArr.push(this.deleteProps(this.directory));
-							// console.log("this.deleteProps(this.directory): ", this.deleteProps(this.directory));
-							axios.post(abyss.ajax.subject_directories_list, itemArr).then(response => {
-								console.log("addDirectory response: ", response);
-								this.directoryList.push(response.data[0].response);
-								this.$emit('set-state', 'init');
-								this.directory = _.cloneDeep(this.newDirectory);
-							}, error => {
-								this.handleError(error);
-							});
-						}
-						if (act == 'edit') {
-							this.updateItem(abyss.ajax.subject_directories_list + '/' + this.directory.uuid, this.deleteProps(this.directory), this.directoryList).then(response => {
-								console.log("editDirectory response: ", response);
-								this.$emit('set-state', 'init');
-								this.directory = _.cloneDeep(this.newDirectory);
-								this.selected = null;
-							});
-						}
-						return;
+			},*/
+			async directoryAction(act) {
+				var result = await this.$validator.validateAll();
+				if (result) {
+					/*if (act == 'add') {
+						this.fixProps(this.directory);
+						var itemArr = [];
+						itemArr.push(this.deleteProps(this.directory));
+						// console.log("this.deleteProps(this.directory): ", this.deleteProps(this.directory));
+						axios.post(abyss.ajax.subject_directories_list, itemArr).then(response => {
+							console.log("addDirectory response: ", response);
+							this.directoryList.push(response.data[0].response);
+							this.$emit('set-state', 'init');
+							this.directory = _.cloneDeep(this.newDirectory);
+						}, error => {
+							this.handleError(error);
+						});
+					}*/
+					if (act == 'add') {
+						this.fixProps(this.directory);
+						var item = await this.addItem(abyss.ajax.subject_directories_list, this.deleteProps(this.directory), this.directoryList);
+						this.$emit('set-state', 'init');
+						this.directory = _.cloneDeep(this.newDirectory);
 					}
-				});
+					if (act == 'edit') {
+						var item = await this.editItem( abyss.ajax.subject_directories_list, this.directory.uuid, this.deleteProps(this.directory), this.directoryList );
+						this.$emit('set-state', 'init');
+						this.directory = _.cloneDeep(this.newDirectory);
+						this.selected = null;
+					}
+					/*if (act == 'edit') {
+						this.updateItem(abyss.ajax.subject_directories_list + '/' + this.directory.uuid, this.deleteProps(this.directory), this.directoryList).then(response => {
+							console.log("editDirectory response: ", response);
+							this.$emit('set-state', 'init');
+							this.directory = _.cloneDeep(this.newDirectory);
+							this.selected = null;
+						});
+					}*/
+				}
 			},
-			getPage(p, d) {
+			/*getPage(p, d) {
 				axios.all([
 					axios.get(abyss.ajax.subject_directory_types),
 					axios.get(abyss.ajax.organizations_list),
@@ -241,15 +267,24 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 				).catch(error => {
 					this.handleError(error);
 				});
+			},*/
+			async getPage(p, d) {
+				var subject_directories_list = this.getList(abyss.ajax.subject_directories_list);
+				var subject_directory_types = this.getList(abyss.ajax.subject_directory_types);
+				var organizations_list = this.getList(abyss.ajax.organizations_list);
+				var [directoryList, directoryTypes, orgOptions] = await Promise.all([subject_directories_list, subject_directory_types, organizations_list]);
+				Vue.set( this, 'directoryList', directoryList );
+				Vue.set( this, 'directoryTypes', directoryTypes );
+				Vue.set( this, 'orgOptions', orgOptions );
+				this.paginate = this.makePaginate(this.directoryList);
+				this.preload();
+				console.timeEnd();
 			},
 		},
-		mounted() {
-			// this.preload();
-		},
 		created() {
-			this.log(this.$options.name);
 			this.$emit('set-page', 'user-directories', 'init');
 			this.newDirectory = _.cloneDeep(this.directory);
+			console.time();
 			this.getPage(1);
 		}
 	});

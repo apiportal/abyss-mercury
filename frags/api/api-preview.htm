@@ -2,8 +2,8 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <body>
 <div class="brd-b brd-0-last" th:fragment="apiDash" v-bind:title="api.openapidocument.info.description">
-	<a href="#" class="nav-link d-block" v-on:click="$parent.previewApi(api, 'preview')">
-		<span class="float-right text-uppercase">
+	<a class="nav-link d-block" v-on:click="$parent.previewApi(api, 'preview')" :class="{'is-deleted': api.isdeleted}">
+		<span class="flt-r txt-uppercase">
 			<span class="small">{{apiGetStateName(api.apistateid)}}</span>
 			<i class="fas fa-circle ml-1" v-bind:class="'stat-' + apiGetStateName(api.apistateid)"></i>
 		</span>
@@ -11,13 +11,13 @@
 			<strong class="txt-black">{{api.openapidocument.info.title}}</strong>
 			<small class="">{{api.openapidocument.info.version}}</small>
 		</div>
-		<small class="float-right">{{activeVisibility}} {{apiEnvironment}}</small>
+		<small class="flt-r">{{activeVisibility}} {{apiEnvironment}}</small>
 		<span v-if="!api.isproxyapi">
 			<small>Proxies: <strong v-if="api.proxies">{{api.proxies.length}}</strong></small>
 		</span>
 		<div v-if="api.isproxyapi">
-			<div v-if="api.subscriptions">
-				<small class="text-uppercase">Subscriptions:</small> <strong class="txt-black">{{api.subscriptions.length}}</strong>
+			<div v-if="api.subscriptions.length">
+				<small class="txt-uppercase">Subscriptions:</small> <strong class="txt-black">{{api.subscriptions.length}}</strong>
 			</div>
 			<small class="d-block">Business API: <strong>{{businessapi}}</strong></small>
 		</div>
@@ -26,13 +26,13 @@
 </div>
 
 <div class="fol-sm-6 fol-md-4 fol-lg-4 fol-xl-3 fol-xlm-3 fol-xlg-3 thumb card-item" th:fragment="apiList">
-	<div class="card">
+	<div class="card" :class="{'is-deleted': api.isdeleted}">
 		<div class="thumb-image cursor-pointer" v-on:click="$parent.previewApi(api)" v-if="api.image" :style="{ 'background-image': 'url(' + api.image + ')' }"></div>
 		<div class="thumb-image cursor-pointer" v-on:click="$parent.previewApi(api)" v-if="!api.image" :style="{ 'background-color': api.color }">{{api.openapidocument.info.title.substring(0, 3)}}</div>
 		<div class="card-body">
-			<span class="float-right text-uppercase py-1"><span class="small">{{apiGetStateName(api.apistateid)}}</span><i class="fas fa-circle ml-1" v-bind:class="'stat-' + apiGetStateName(api.apistateid)"></i></span>
+			<span class="flt-r txt-uppercase py-1"><span class="small">{{apiGetStateName(api.apistateid)}}</span><i class="fas fa-circle ml-1" v-bind:class="'stat-' + apiGetStateName(api.apistateid)"></i></span>
 			<h5 class="mb-0 cursor-pointer" v-on:click="$parent.previewApi(api, 'preview')"><strong>{{api.openapidocument.info.title}}</strong></h5>
-			<p class="small">{{api.openapidocument.info.version}} <span class="text-uppercase">{{apiEnvironment}}</span></p>
+			<p class="small">{{api.openapidocument.info.version}} <span class="txt-uppercase">{{apiEnvironment}}</span></p>
 			<p>{{api.apiOwnerName}}</p>
 			<p class="sandbox-item">
 				<code class="d-block small txt-purple"><small>{{api.uuid}}</small></code>
@@ -54,9 +54,9 @@
 					<div class="preview-item-thumb-inner">
 						<div class="nicescroll-bar">
 							<div class="p-3">
-								<span class="float-right text-uppercase py-1"><span class="small">{{apiGetStateName(api.apistateid)}}</span><i class="fas fa-circle ml-1" v-bind:class="'stat-' + apiGetStateName(api.apistateid)"></i></span>
+								<span class="flt-r txt-uppercase py-1"><span class="small">{{apiGetStateName(api.apistateid)}}</span><i class="fas fa-circle ml-1" v-bind:class="'stat-' + apiGetStateName(api.apistateid)"></i></span>
 								<h5 class="mb-0"><strong>{{api.openapidocument.info.title}}</strong></h5>
-								<p class="small">{{api.openapidocument.info.version}} <span class="text-uppercase">{{apiEnvironment}}</span></p>
+								<p class="small">{{api.openapidocument.info.version}} <span class="txt-uppercase">{{apiEnvironment}}</span></p>
 								<p>{{api.apiOwnerName}}</p>
 								<p class="sandbox-item">
 									<code class="d-block small txt-purple"><small>{{api.uuid}}</small></code>
@@ -75,23 +75,47 @@
 											</select>
 											<em v-bind:class="{ 'show': errors.has('appid') }">{{ errors.first('appid') }}</em>
 										</div>
-										<button class="btn btn-green btn-block" v-on:click="subscribeToApi()">Subscribe</button>
+										<button class="btn btn-green btn-block btn-rounded" v-on:click="subscribeToApi()">Subscribe</button>
 									</div>
 									<a href="/abyss/my-apps" v-if="$root.appList.length == 0" class="btn btn-purple mt-2 btn-block">Create APP to subscribe</a>
 									<!-- Share readonly checkbox -->
+									<div v-if="$root.shareApi.isMine">
+										<h5 class="row mb-0 mt-3 py-2 px-3 brd-b brd-t">Share This API</h5>
+										<div class="form-group pt-3">
+											<label>Select user to share this app</label>
+											<v-select label="subjectname" :filterable="true" :options="$root.userOptions" @search="$root.getUserOptions" v-model="$root.shareApi.selectedUser" placeholder="Search Users">
+												<span slot="no-options"></span>
+												<template slot="option" slot-scope="option">
+													<strong>{{ option.firstname }} {{ option.lastname }}</strong>
+													<div>{{ option.subjectname }}</div>
+												</template>
+												<template slot="selected-option" slot-scope="option">
+													<strong>{{ option.firstname }} {{ option.lastname }}</strong> <em>{{ option.subjectname }}</em>
+												</template>
+											</v-select>
+										</div>
+										<div class="form-group form-inline">
+											<label class="d-block">Read-only</label>
+											<span class="switch switch-primary ml-auto">
+												<input type="checkbox" name="readonly" id="readonly" v-model="$root.shareApi.readonly" checked>
+												<label for="readonly"></label>
+											</span>
+										</div>
+										<button class="btn btn-sm btn-outline-pink btn-block" v-on:click="$root.shareMyApi()">Share</button>
+									</div>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-				<div class="fol-12 fol-sm p-0 brd-b brd-sm-b-0 brd-sm-r thumb" v-if="api.isproxyapi && api.contracts.length > 0">
+				<div class="fol-12 fol-sm p-0 brd-b brd-sm-b-0 brd-sm-r thumb" v-if="api.isproxyapi && api.contracts && api.contracts.length">
 					<h5 class="mb-0 py-2 px-3 brd-b">Contracts</h5>
 					<div class="preview-item-inner">
 						<div class="nicescroll-bar">
 							<div class="px-3 pt-2 pb-1 brd-t brd-0-first field-controls" v-for="(con,index) in api.contracts" v-bind:class="{'api-unsubscribed': con.isdeleted}">
-								<a href="#" class="d-block" data-toggle="collapse" v-bind:data-target="'#con'+index" v-bind:aria-controls="'con'+index">
-									<small class="float-right text-uppercase mt-1 txt-green">{{con.contractStateName}}</small>
-									<h5 class="">{{con.contractApp}}</h5>
+								<a class="d-block" data-toggle="collapse" v-bind:data-target="'#con'+index" v-bind:aria-controls="'con'+index">
+									<small class="flt-r txt-uppercase mt-1 txt-green">{{con.contractStateName}}</small>
+									<h5 class=""><i class="fas fa-fw fa-cubes"></i> {{con.contractApp}}</h5>
 									<p class="sandbox-item"><code class="d-block small txt-cyan"><small>{{con.contractAppId}}</small></code></p>
 									<p><strong class="lbl">license</strong> {{con.contractLicenseName}}</p>
 									<p class="sandbox-item small"><strong class="lbl">Subscriber</strong> {{con.contractPerson}}</p>
@@ -125,18 +149,18 @@
 										<div class="fow form-row">
 											<p class="fol-6">
 												<strong class="lbl">Version</strong>
-												<span class="text-uppercase">{{api.openapidocument.info.version}}</span>
+												<span class="txt-uppercase">{{api.openapidocument.info.version}}</span>
 											</p>
 											<p class="fol-6">
 												<strong class="lbl">Environment</strong>
-												<span class="text-uppercase">{{apiEnvironment}}</span>
+												<span class="txt-uppercase">{{apiEnvironment}}</span>
 											</p>
 											<p class="fol-6">
 												<strong class="lbl">Visibility</strong>
-												<span class="text-capitalize">{{apiGetVisibilityName(api.apivisibilityid)}}</span></p>
+												<span class="txt-capitalize">{{apiGetVisibilityName(api.apivisibilityid)}}</span></p>
 											<p class="fol-6">
 												<strong class="lbl">State</strong>
-												<span class="text-capitalize">{{apiGetStateName(api.apistateid)}}</span>
+												<span class="txt-capitalize">{{apiGetStateName(api.apistateid)}}</span>
 											</p>
 											<p class="fol-6">
 												<strong class="lbl">Created</strong>
@@ -160,7 +184,7 @@
 										<!-- <div class="ficon-actions dropdown dropdown-hover" v-if="$root.pageCurrent != 'my-apps'"> -->
 										<div class="ficon-actions dropdown dropdown-hover" v-if="$root.appList.length > 0 && api.filteredApps.length > 0">
 											<span class="switch switch-primary">
-												<input type="radio" :id="'isactive'+index" v-model="api.selectedLicense" :value="license.uuid" v-on:change="setProxyLicense(license)">
+												<input type="radio" :id="'isactive'+index" v-model="api.selectedLicense" :value="license.uuid">
 												<label :for="'isactive'+index"></label>
 											</span>
 										</div>

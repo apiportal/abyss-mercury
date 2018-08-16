@@ -41,11 +41,11 @@
 		<div class="form-group" v-bind:class="{ 'has-error': errors.has('isAgreedToTerms') }">
 			<div class="checkbox checkbox-primary">
 				<input type="checkbox" name="isAgreedToTerms" id="isAgreedToTerms" v-validate="'required'" v-bind:checked="terms" v-on:keyup.enter="terms = !terms">
-				<label for="isAgreedToTerms"> I agree to all</label> <a href="#" data-toggle="modal" data-target="#termsModal">Terms</a>
+				<label for="isAgreedToTerms"> I agree to all</label> <a data-toggle="modal" data-target="#termsModal">Terms</a>
 			</div>
 			<em v-bind:class="{ 'show': errors.has('isAgreedToTerms') }">{{ errors.first('isAgreedToTerms') }}</em>
 		</div>
-		<div class="form-group text-center">
+		<div class="form-group txt-c">
 			<button type="submit" class="btn btn-primary btn-rounded btn-lg">Sign up</button>
 		</div>
 	</form>

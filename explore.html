@@ -21,14 +21,14 @@
 				<v-select label="name" :filterable="true" :options="apiOptions" @search="getApiOptions" :on-change="filterApi" placeholder="Search API">
 					<span slot="no-options"></span>
 					<template slot="option" slot-scope="option">
-						<div>{{ option.openapidocument.info.title }} <small class="text-muted">{{ option.openapidocument.info.version }}</small></div>
+						<div>{{ option.openapidocument.info.title }} <small class="txt-muted">{{ option.openapidocument.info.version }}</small></div>
 					</template>
 					<template slot="selected-option" slot-scope="option">
-						<div>{{ option.openapidocument.info.title }} <small class="text-muted">{{ option.openapidocument.info.version }}</small></div>
+						<div>{{ option.openapidocument.info.title }} <small class="txt-muted">{{ option.openapidocument.info.version }}</small></div>
 					</template>
 				</v-select>
 			</div>
-			<div class="text-center cursor-pointer"><span v-if="filterTxt != ''" v-on:click="getPage(1);filterTxt=''" class="btn btn-purple btn--sm mt-6 px-3">{{filterTxt}} <i class="fas fa-times ml-2"></i></span></div>
+			<div class="txt-c cursor-pointer"><span v-if="filterTxt != ''" v-on:click="getPage(1);filterTxt=''" class="btn btn-purple btn--sm mt-6 px-3">{{filterTxt}} <i class="fas fa-times ml-2"></i></span></div>
 			<div class="fow cards justify-content-center">
 				<api-list v-for="(api, index) in sortByNested(sortApi, apiList)" :api="api" :index="index" :key="api.uuid" inline-template>
 					<div th:replace="webroot/frags/api/api-preview.htm :: apiList"></div>

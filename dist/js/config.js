@@ -41,8 +41,8 @@ define(['global'], function(abyss){
 		api_visibility_list: '/api-visibility-types',
 		// https://dev2.apiportal.com/abyss/openapi/Subject.yaml
 		subjects: '/subjects', //uuid
-		user_list: '/subjects/users/', //ABYSSP-205 NOT/NOW /subjects/users/{uuid]
-		app_list: '/subjects/apps/', //useruuid
+		user_list: '/subjects/users/', // must /
+		app_list: '/subjects/apps/', //  must /
 		// https://dev2.apiportal.com/abyss/openapi/SubjectApp.yaml
 		subject_app_list: '/subject-apps', //uuid N/A
 		subject_app_subject_list: '/subject-apps/subject/', //uuid ABYSSP-183 GET
@@ -55,8 +55,8 @@ define(['global'], function(abyss){
 		permissions_app: '/subject-permissions/api-subscriptions/subject/', // appuuid ABYSSP-207
 		permissions_subject: '/subject-permissions/subject/', // appuuid ABYSSP-280
 		// https://dev2.apiportal.com/abyss/openapi/Resource.yaml
-		resources: '/resources/', // uuid
-		resources_reference: '/resources/reference/', // uuid
+		resources: '/resources', // uuid
+		resources_reference: '/resources/reference', // uuid
 		resources_subject: '/resources/subject/', // uuid ABYSSP-244
 		resources_type: '/resources/type/', // uuid ABYSSP-244
 		resources_organization: '/resources/organization/', // uuid ABYSSP-244
@@ -70,12 +70,12 @@ define(['global'], function(abyss){
 		my_api_list: '/apis/subject/',
 		my_business_api_list: '/apis/businesses/subject/',
 		my_proxy_api_list: '/apis/proxies/subject/',
-		proxy_list: '/apis/proxies/',
-		business_list: '/apis/businesses/',
+		proxy_list: '/apis/proxies', // must /, ! inline
+		business_list: '/apis/businesses', // must /, ! inline
 		// https://dev2.apiportal.com/abyss/openapi/Organization.yaml
-		organizations_list: '/organizations/',
-		subject_organizations_list: '/subject-organizations/subject/',
-		subject_organizations: '/subject-organizations/',
+		organizations_list: '/organizations',
+		subject_organizations_list: '/subject-organizations/subject',
+		subject_organizations: '/subject-organizations',
 		// https://dev2.apiportal.com/abyss/openapi/SubjectDirectoryType.yaml
 		subject_directory_types: '/subject-directory-types',
 		// https://dev2.apiportal.com/abyss/openapi/SubjectDirectory.yaml
@@ -86,15 +86,15 @@ define(['global'], function(abyss){
 		subject_memberships: '/subject-memberships',
 		subject_memberships_subject: '/subject-memberships/subject/',
 		// https://dev2.apiportal.com/abyss/openapi/Policy.yaml
-		policies_list: '/policies/',
+		policies: '/policies',
 		subject_policies_list: '/policies/subject/',
 		// https://dev2.apiportal.com/abyss/openapi/PolicyType.yaml
 		policy_types: '/policy-types',
 		// https://dev2.apiportal.com/abyss/openapi/License.yaml
-		licenses_list: '/licenses/',
+		licenses: '/licenses',
 		subject_licenses_list: '/licenses/subject/',
 		// https://dev2.apiportal.com/abyss/openapi/ApiLicense.yaml
-		api_licenses: '/api-licenses/',
+		api_licenses: '/api-licenses',
 		api_licenses_api: '/api-licenses/api/',
 		api_licenses_license: '/api-licenses/license/',
 		// https://dev2.apiportal.com/abyss/openapi/Contract.yaml
@@ -105,13 +105,17 @@ define(['global'], function(abyss){
 		// https://dev2.apiportal.com/abyss/openapi/ContractState.yaml
 		contract_states: '/contract-states',
 		// https://dev2.apiportal.com/abyss/openapi/ResourceAccessToken.yaml
-		resource_access_tokens: '/resource-access-tokens/',
-		resource_access_tokens_permission: '/resource-access-tokens/subject-permission/', //uuid
+		resource_access_tokens: '/resource-access-tokens',
+		resource_access_tokens_permission: '/resource-access-tokens/subject-permission', //uuid
 		validate_oas: '/validate-oas',
 		// https://dev2.apiportal.com/abyss/openapi/AccessManager.yaml
 		access_managers: '/access-managers',
 		// https://dev2.apiportal.com/abyss/openapi/AccessManagerType.yaml
 		access_manager_types: '/access-manager-types',
+		// https://dev2.apiportal.com/abyss/openapi/Message.yaml
+		messages: '/messages',
+		// https://dev2.apiportal.com/abyss/openapi/MessageType.yaml
+		message_types: '/message-types',
 
 		// https://dev2.apiportal.com/abyss/openapi/ApiCategory.yaml
 		api_category_list: '/api-categories', // GPDP
@@ -186,7 +190,6 @@ define(['global'], function(abyss){
 	if (isAbyssSandbox === true) {
 		// abyssDataList.policy_types = '/data/POLICYTYPES.json';
 		// abyssDataList.policies = '/data/POLICIES.json';
-		// abyssDataList.subject_licenses_list = '/data/LICENSES.json';
 	}
 	var abyssAllDataList = Object.assign(abyssJsonList, abyssDataList);
 	// console.log("abyssAllDataList: ", abyssAllDataList);

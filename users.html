@@ -56,8 +56,8 @@
 							<th class="td-action-1"></th>
 							<th class="td-action-1"></th>
 						</tr>
-						<tr v-for="(user, index) in sortBy(sort, userList)" v-bind:key="user.uuid" v-bind:class="{'active': isSelected(index)}" v-if="user.groupfilter && user.permissionfilter">
-							<td class="text-center">
+						<tr v-for="(user, index) in sortBy(sort, userList)" v-bind:key="user.uuid" v-bind:class="{'active': isSelected(index), 'tr-deleted': user.isdeleted}" v-if="user.groupfilter && user.permissionfilter">
+							<td class="txt-c">
 								<i class="fas fa-circle" title="Not Activated" v-if="!user.isactivated"></i>
 								<i class="fas fa-check-circle txt-green" title="Activated" v-if="user.isactivated"></i>
 								<i class="fas fa-times-circle txt-red" title="Deleted" v-if="user.isdeleted"></i>
@@ -123,10 +123,10 @@
 								</div>
 							</td>
 							<td class="td-action-1">
-								<a href="#" class="btn btn-xl txt-link btn-square" title="EDIT USER" v-on:click="$emit('set-state', 'edit'); selectUser(user, index);"><i class="fas fa-edit"></i></a>
+								<a class="btn btn-xl txt-link btn-square" title="EDIT USER" v-on:click="$emit('set-state', 'edit'); selectUser(user, index);"><i class="fas fa-edit"></i></a>
 							</td>
 							<td class="td-action-1">
-								<a href="#" class="btn btn-xl txt-link txt-grey btn-square" title="DELETE USER" v-on:click="deleteUser(user, index)"><i class="fas fa-trash-alt"></i></a>
+								<a class="btn btn-xl txt-link txt-grey btn-square" title="DELETE USER" v-on:click="deleteUser(user, index)"><i class="fas fa-trash-alt"></i></a>
 							</td>
 						</tr>
 					</table>
@@ -169,13 +169,13 @@
 							<label for="url">Url:</label>
 							<input type="text" name="url" id="url" v-model="user.url" class="form-control">
 						</div>
-						<p v-if="rootState == 'edit'"><a href="#" class="txt-link" v-on:click="resetPassword = !resetPassword">Reset Password</a></p>
+						<p v-if="rootState == 'edit'"><a class="txt-link" v-on:click="resetPassword = !resetPassword">Reset Password</a></p>
 						<div v-show="rootState == 'add' || resetPassword">
 							<div class="form-group js-showpass" v-bind:class="{ 'has-error': errors.has('password') }">
-								<label class="clearfix d-block" for="password">Password: <a href="#" class="float-right txt-link" v-on:click="regenPass()">Regenerate Password</a></label>
+								<label class="clearfix d-block" for="password">Password: <a class="flt-r txt-link" v-on:click="regenPass()">Regenerate Password</a></label>
 								<div class="input-group">
 									<input type="password" name="password" id="password" v-model="user.password" v-validate="rootState == 'add' ? 'required|min:8|password_strength' : ''" class="form-control">
-									<a href="#" class="txt-link js-eye input-group-addon"><i class="fas fa-eye"></i></a>
+									<a class="txt-link js-eye input-group-addon"><i class="fas fa-eye"></i></a>
 								</div>
 								<em v-bind:class="{ 'show': errors.has('password') }">{{ errors.first('password') }}</em>
 							</div>

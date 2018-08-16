@@ -17,12 +17,10 @@ define(['config', 'jquery', 'bootstrap', 'domready'], function(config, $){
 			// console.log("UI.layout.init: ", isthy, event);
 			// $('.preloader-it > .la-anim-1').addClass('la-animate');
 			this.preload();
-			this.makeCarousel();
 			this.navLeft();
 			doodle();
 			dropdownAnims();
 			UI.chatApp.evnt();
-			// UI.formPicker();
 			// console.log("config.test: ", config.test);
 			this.settings();
 			this.prevent();
@@ -118,35 +116,6 @@ define(['config', 'jquery', 'bootstrap', 'domready'], function(config, $){
 				}
 			}
 			// ■■ Vertical Tab Height Cal End
-		},
-		makeCarousel: function() {
-			if( $('.product-carousel').length > 0 ){
-				require(['owlcarousel'],function(){
-					console.log("owl: ");
-					$('.product-carousel').owlCarousel({
-						loop:true,
-						margin:15,
-						nav:true,
-						navText: ["<i class='fas fa-chevron-left'></i>","<i class='fas fa-chevron-right'></i>"],
-						dots:false,
-						autoplay:true,
-						responsive:{
-							0:{
-								items:1
-							},
-							400:{
-								items:2
-							},
-							767:{
-								items:3
-								},
-							1399:{
-								items:4
-							}
-						}
-					});
-				});
-			}
 		},
 		zzz: function() {
 			//zzz
@@ -582,7 +551,6 @@ define(['config', 'jquery', 'bootstrap', 'domready'], function(config, $){
 		});
 		// ■■ Slimscroll
 		require(['slimscroll'],function(){
-			// setTimeout(function(){
 			// $('.nicescroll-bar').slimscroll({height:'100%',color: '#878787', disableFadeOut : true,borderRadius:0,size:'4px',alwaysVisible:false});
 			$('.message-nicescroll-bar').slimscroll({height:'229px',size: '4px',color: '#878787',disableFadeOut : true,borderRadius:0});
 			$('.message-box-nicescroll-bar').slimscroll({height:'350px',size: '4px',color: '#878787',disableFadeOut : true,borderRadius:0});
@@ -593,7 +561,6 @@ define(['config', 'jquery', 'bootstrap', 'domready'], function(config, $){
 			$('.users-chat-nicescroll-bar').slimscroll({height:'257px',size: '4px',color: '#878787',disableFadeOut : true,borderRadius:0});
 			$('.chatapp-nicescroll-bar').slimscroll({height:'543px',size: '4px',color: '#878787',disableFadeOut : true,borderRadius:0});
 			$('.chatapp-chat-nicescroll-bar').slimscroll({height:'483px',size: '4px',color: '#878787',disableFadeOut : true,borderRadius:0});
-			// },800);
 		});
 		// ■■ Refresh Init Js
 		var refreshMe = '.refresh';
@@ -642,108 +609,6 @@ define(['config', 'jquery', 'bootstrap', 'domready'], function(config, $){
 			return;
 		});
 	};
-	UI.formPicker = function() {
-		if ($('.input-color').length) { 
-			require(['css!colorpicker-css', 'colorpicker'],function(){
-				$('.input-color').initz_inputcolor();
-			});
-		}
-		// console.log("formPicker: ");
-		if ($('.colorpicker').length) { 
-			require(['css!colorpicker-css', 'colorpicker'],function(css1){
-				$('.colorpicker').colorpicker();
-				$('.colorpicker-rgb').colorpicker({
-					color: '#AA3399',
-					format: 'rgba'
-				});
-				$('.colorpicker-inline').colorpicker({
-					color: '#ffaa00',
-					container: true,
-					inline: true
-				});
-			});
-		}
-		if ($('#datetimepicker1').length) { 
-			require(['datetimepicker'],function(){
-				// console.log("datetimepicker: ", this);
-				// console.log(moment().format('LLLL'));
-				$('#datetimepicker1').datetimepicker({
-					useCurrent: false,
-					icons: {
-						time: "fa fa-clock-o",
-						date: "fa fa-calendar",
-						up: "fa fa-arrow-up",
-						down: "fa fa-arrow-down"
-					},
-				}).on('dp.show', function() {
-					if ($(this).data("DateTimePicker").date() === null)
-						$(this).data("DateTimePicker").date(moment());
-				});
-				$('#datetimepicker2').datetimepicker({
-					format: 'LT',
-					useCurrent: false,
-					icons: {
-						time: "fa fa-clock-o",
-						date: "fa fa-calendar",
-						up: "fa fa-arrow-up",
-						down: "fa fa-arrow-down"
-					},
-				}).data("DateTimePicker").date(moment());
-				$('#datetimepicker4').datetimepicker({
-					inline: true,
-					sideBySide: true,
-					useCurrent: false,
-					icons: {
-						time: "fa fa-clock-o",
-						date: "fa fa-calendar",
-						up: "fa fa-arrow-up",
-						down: "fa fa-arrow-down"
-					},
-				}).data("DateTimePicker").date(moment());
-				$('#datetimepicker3').datetimepicker({
-					format: 'DD-MM-YYYY',
-					inline: true,
-					sideBySide: true,
-					icons: {
-						time: "fa fa-clock-o",
-						date: "fa fa-calendar",
-						up: "fa fa-arrow-up",
-						down: "fa fa-arrow-down"
-					},
-				});
-			});
-		}
-		if ($('.input-daterange-datepicker').length) { 
-			require(['daterangepicker'],function(){
-				$('.input-daterange-datepicker').daterangepicker({
-					buttonClasses: ['btn', 'btn-sm'],
-					applyClass: 'btn-info',
-					cancelClass: 'btn-default'
-				});
-				$('.input-daterange-timepicker').daterangepicker({
-					timePicker: true,
-					format: 'MM/DD/YYYY h:mm A',
-					timePickerIncrement: 30,
-					timePicker12Hour: true,
-					timePickerSeconds: false,
-					buttonClasses: ['btn', 'btn-sm'],
-					applyClass: 'btn-info',
-					cancelClass: 'btn-default'
-				});
-				$('.input-limit-datepicker').daterangepicker({
-					format: 'MM/DD/YYYY',
-					minDate: '06/01/2015',
-					maxDate: '06/30/2015',
-					buttonClasses: ['btn', 'btn-sm'],
-					applyClass: 'btn-info',
-					cancelClass: 'btn-default',
-					dateLimit: {
-						days: 6
-					}
-				});
-			});
-		}
-	}
 	$.fn.initz_loadz = function() {
 		return this.each(function(i,e) {
 			var $thiz = $(this);
@@ -849,102 +714,6 @@ define(['config', 'jquery', 'bootstrap', 'domready'], function(config, $){
 				$exp.prop('checked', false).change();
 			}
 		});
-	};
-	$.fn.initz_inputcolor = function() { 
-		$(this).each(function(i, el) {
-			var $thiz = $(this);
-			var zbg = $thiz.data('targetbg')||'body';
-			var ztxt = $thiz.data('targettxt')||'h1,h2,h3';
-			var zformat = $thiz.data('format')||'rgba';
-			// var bodyStyle = $(zbg)[0].style;
-			$thiz.colorpicker({
-				format: zformat, 
-				// component: '.add-on', 
-				sliders: {
-					saturation: {
-						maxLeft: 200,
-						maxTop: 200
-					},
-					hue: {
-						maxTop: 200
-					},
-					alpha: {
-						maxTop: 200
-					}
-				},
-				// color: bodyStyle.backgroundColor
-			}).on('changeColor', function(ev) {
-				$(zbg).attr('style', 'background-color: ' + ev.color + ' !important');
-				$(ztxt).attr('style', 'color: ' + ev.color + ' !important');
-			}).on('hidePicker', function(ev) {
-			});
-		});
-	};
-	UI.datez = {
-		now : new Date(),
-		daystime : 24 * 60 * 60 * 1000,
-		hourstime : 60 * 60 * 1000,
-		today: function() {
-			return this.cleartime(this.now);
-		},
-		nowhour: function() {
-			return new Date().getHours();
-		},
-		nowday: function() {
-			return new Date().getDay();
-		},
-		monthdate: function(mm) {
-			var d = UI.datez.today();
-			d.setMonth(d.getMonth() + mm);
-			var date = d.getTime();
-			return date;
-		},
-		shortdate: function(value) {
-			var dVal = new Date(value);
-			var month = dVal.getMonth() + 1;
-			var day = dVal.getDate();
-			var dValFull = (day < 10 ? "0" + day : day) + "." + (month < 10 ? "0" + month : month) + "." + dVal.getFullYear();
-			return dValFull;
-		},
-		longdate: function(value) {
-			var dVal = new Date(value);
-			var month = dVal.getMonth();
-			var day = dVal.getDate();
-			var dValFull = (day < 10 ? "0" + day : day) + "." + UI.lngz.monthnames()[month] + "." + dVal.getFullYear();
-			return dValFull;
-		},
-		trdate: function(val, spl, typ) {
-			var arr = val.split(spl);
-			var str = arr[2] + '-' + arr[1] + '-' +arr[0];
-			var dvl = new Date(str);
-			var fmt = dvl.getTime();
-			if (typ == 'long') {
-				fmt = UI.datez.longdate(dvl);
-			} else if (typ == 'iso') {
-				fmt = UI.datez.isodate(dvl);
-			}
-			return fmt;
-		},
-		cleartime: function(d) {
-			nd = new Date(d);
-			nd.setMilliseconds(0);
-			nd.setSeconds(0);
-			nd.setMinutes(0);
-			nd.setHours(0);
-			return nd;
-		},
-		isodate: function(d, o) {
-			nd = new Date(d);
-			if (o) {
-				return new Date(nd - (nd.getTimezoneOffset() * 60000)).toISOString().slice(0,-5);
-			} else {
-				return new Date(nd).toISOString().slice(0,-5);
-			}
-		},
-		time: function(d) {
-			nd = new Date(d);
-			return nd.getTime();
-		},
 	};
 	$(window).on("resize", function () {
 		UI.layout.resize();

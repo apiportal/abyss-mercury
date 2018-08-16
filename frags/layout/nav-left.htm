@@ -21,7 +21,7 @@
 				</api-nav>
 			</li>
 			<li>
-				<a href="#" class="js-collapse-open"><i class="fas fa-fw fa-code-branch"></i><span class="right-nav-text">My Proxies</span></a>
+				<a class="js-collapse-open"><i class="fas fa-fw fa-code-branch"></i><span class="right-nav-text">My Proxies</span></a>
 				<button type="button" data-toggle="collapse" data-target="#myProxyTax" aria-controls="myProxyTax" class="nav-caret" v-if="pageCurrent == 'my-apis'"></button>
 				<api-nav name="myProxyTax" mygroups="myProxyGroups" mycategories="myProxyCategories" mytags="myProxyTags" pagecurrent="pageCurrent" v-if="pageCurrent == 'my-apis'" inline-template>
 					<div th:replace="webroot/frags/api/api-nav.htm :: navTax"></div>
@@ -47,13 +47,13 @@
 				<span>ADMIN</span><i class="fas fa-fw fa-ellipsis-h"></i>
 			</li>
 			<li>
-				<a href="#" class="nav-caret" data-toggle="collapse" data-target="#id_mng"><i class="fas fa-fw fa-address-card"></i><span class="right-nav-text">Identity Management</span></a>
+				<a class="nav-caret" data-toggle="collapse" data-target="#id_mng"><i class="fas fa-fw fa-address-card"></i><span class="right-nav-text">Identity Management</span></a>
 				<ul id="id_mng" class="collapse collapse-level-2">
 					<li>
 						<a href="/abyss/identity-managers">Administer Identity Managers</a>
 					</li>
 					<li>
-						<a href="#" class="nav-caret" data-toggle="collapse" data-target="#adm_id">Administer Identities</a>
+						<a class="nav-caret" data-toggle="collapse" data-target="#adm_id">Administer Identities</a>
 						<ul id="adm_id" class="collapse collapse-level-3">
 							<li>
 								<a href="/abyss/users">Administer Users</a>
@@ -66,7 +66,7 @@
 				</ul>
 			</li>
 			<li>
-				<a href="#" class="nav-caret" data-toggle="collapse" data-target="#ac_mng"><i class="fas fa-fw fa-archway"></i><span class="right-nav-text">Access Management</span></a>
+				<a class="nav-caret" data-toggle="collapse" data-target="#ac_mng"><i class="fas fa-fw fa-archway"></i><span class="right-nav-text">Access Management</span></a>
 				<ul id="ac_mng" class="collapse collapse-level-2">
 					<li>
 						<a href="/abyss/access-managers">Administer Access Managers</a>
@@ -77,17 +77,17 @@
 				</ul>
 			</li>
 			<li v-if="pageCurrent == 'my-apis'">
-				<a href="#" class="nav-caret" data-toggle="collapse" data-target="#platform_dr" aria-controls="platform_dr"><i class="fas fa-fw fa-file"></i><span class="right-nav-text">Platform APIs</span></a>
+				<a class="nav-caret" data-toggle="collapse" data-target="#platform_dr" aria-controls="platform_dr"><i class="fas fa-fw fa-file"></i><span class="right-nav-text">Platform APIs</span></a>
 				<ul id="platform_dr" class="collapse">
-					<li v-for="(y, index) in abyssYamlList"><a href="#" v-on:click="$refs.refMyApis.loadFromUrlSchema(abyssYamlLocation + '/' + y, true)">{{y}}</a>
+					<li v-for="(y, index) in abyssYamlList"><a v-on:click="$root.$refs.refMyApis.loadFromUrlSchema(abyssYamlLocation + '/' + y, true)">{{y}}</a>
 					</li>
 				</ul>
 			</li>
 			<li v-if="$root.abyssSandbox">
-				<a href="#" class="nav-caret" data-toggle="collapse" data-target="#pages_dr" aria-controls="pages_dr"><i class="fas fa-fw fa-file"></i><span class="right-nav-text">Special Pages</span></a>
+				<a class="nav-caret" data-toggle="collapse" data-target="#pages_dr" aria-controls="pages_dr"><i class="fas fa-fw fa-file"></i><span class="right-nav-text">Special Pages</span></a>
 				<ul id="pages_dr" class="collapse">
 					<li>
-						<a href="#" class="nav-caret" data-toggle="collapse" data-target="#auth_dr">Authantication pages</a>
+						<a class="nav-caret" data-toggle="collapse" data-target="#auth_dr">Authantication pages</a>
 						<ul id="auth_dr" class="collapse collapse-level-2">
 							<li>
 								<a target="_blank" href="/abyss/login">Login</a>
@@ -112,21 +112,21 @@
 				</ul>
 			</li>
 			<li v-if="$root.abyssSandbox">
-				<a href="#" class="nav-caret" data-toggle="collapse" data-target="#dropdown_dr_lv1"><i class="fas fa-fw fa-info"></i><span class="right-nav-text">Helpers</span></a>
+				<a class="nav-caret" data-toggle="collapse" data-target="#dropdown_dr_lv1"><i class="fas fa-fw fa-info"></i><span class="right-nav-text">Helpers</span></a>
 				<ul id="dropdown_dr_lv1" class="collapse">
 					<li>
-						<a href="#" class="nav-caret" data-toggle="collapse" data-target="#dropdown_dr_lv2">Colors</a>
+						<a class="nav-caret" data-toggle="collapse" data-target="#dropdown_dr_lv2">Colors</a>
 						<ul id="dropdown_dr_lv2" class="collapse collapse-level-2">
-							<li><a href="#" class="bg-blue txt-white">blue</a></li>
-							<li><a href="#" class="bg-indigo txt-white">indigo</a></li>
-							<li><a href="#" class="bg-purple txt-white">purple</a></li>
-							<li><a href="#" class="bg-pink txt-white">pink</a></li>
-							<li><a href="#" class="bg-red txt-white">red</a></li>
-							<li><a href="#" class="bg-orange txt-white">orange</a></li>
-							<li><a href="#" class="bg-yellow txt-white">yellow</a></li>
-							<li><a href="#" class="bg-green txt-white">green</a></li>
-							<li><a href="#" class="bg-teal txt-white">teal</a></li>
-							<li><a href="#" class="bg-cyan txt-white">cyan</a></li>
+							<li><a class="bg-blue txt-white">blue</a></li>
+							<li><a class="bg-indigo txt-white">indigo</a></li>
+							<li><a class="bg-purple txt-white">purple</a></li>
+							<li><a class="bg-pink txt-white">pink</a></li>
+							<li><a class="bg-red txt-white">red</a></li>
+							<li><a class="bg-orange txt-white">orange</a></li>
+							<li><a class="bg-yellow txt-white">yellow</a></li>
+							<li><a class="bg-green txt-white">green</a></li>
+							<li><a class="bg-teal txt-white">teal</a></li>
+							<li><a class="bg-cyan txt-white">cyan</a></li>
 						</ul>
 					</li>
 				</ul>

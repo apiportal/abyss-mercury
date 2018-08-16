@@ -29,8 +29,8 @@
 							<th class="td-action-1"></th>
 							<th class="td-action-1"></th>
 						</tr>
-						<tr v-for="(directory, index) in sortBy(sort, directoryList)" v-bind:key="directory.uuid" v-bind:class="{'active': isSelected(index)}">
-							<td class="text-center">
+						<tr v-for="(directory, index) in sortBy(sort, directoryList)" v-bind:key="directory.uuid" v-bind:class="{'active': isSelected(index), 'tr-deleted': directory.isdeleted}">
+							<td class="txt-c">
 								<i class="fas fa-circle" title="Active" v-if="!directory.isactive"></i>
 								<i class="fas fa-check-circle txt-green" title="Active" v-if="directory.isactive"></i>
 								<i class="fas fa-times-circle txt-red" title="Deleted" v-if="directory.isdeleted"></i>
@@ -62,10 +62,10 @@
 								</div>
 							</td>
 							<td class="td-action-1">
-								<a href="#" class="btn btn-xl txt-link btn-square" title="EDIT DIRECTORY" v-on:click="$emit('set-state', 'edit'); selectDirectory(directory, index);"><i class="fas fa-edit"></i></a>
+								<a class="btn btn-xl txt-link btn-square" title="EDIT DIRECTORY" v-on:click="$emit('set-state', 'edit'); selectDirectory(directory, index);"><i class="fas fa-edit"></i></a>
 							</td>
 							<td class="td-action-1">
-								<a href="#" class="btn btn-xl txt-link txt-grey btn-square" title="DELETE DIRECTORY" v-on:click="deleteDirectory(directory, index)"><i class="fas fa-trash-alt"></i></a>
+								<a class="btn btn-xl txt-link txt-grey btn-square" title="DELETE DIRECTORY" v-on:click="deleteDirectory(directory, index)"><i class="fas fa-trash-alt"></i></a>
 							</td>
 						</tr>
 					</table>
@@ -103,7 +103,7 @@
 									<label for="isactive"></label>
 								</span>
 							</div>
-							<div class="fol-6 form-group text-right">
+							<div class="fol-6 form-group txt-r">
 								<label class="d-block">Template</label>
 								<span class="switch switch-primary">
 									<input type="checkbox" name="istemplate" id="istemplate" v-model="directory.istemplate" checked>
@@ -140,7 +140,7 @@
 					</div>
 					<article class="field-controls field-level-0" data-id="Servers">
 						<div class="field-sum">
-							<a href="#" class="field-link nav-caret" data-toggle="collapse" data-target="#server" aria-controls="server">
+							<a class="field-link nav-caret" data-toggle="collapse" data-target="#server" aria-controls="server">
 								<h6 class="d-block">Server Settings</h6>
 							</a>
 						</div>
@@ -153,7 +153,7 @@
 					</article>
 					<article class="field-controls field-level-0" data-id="Schema">
 						<div class="field-sum">
-							<a href="#" class="field-link nav-caret" data-toggle="collapse" data-target="#schema" aria-controls="schema">
+							<a class="field-link nav-caret" data-toggle="collapse" data-target="#schema" aria-controls="schema">
 								<h6 class="d-block">LDAP Schema</h6>
 							</a>
 						</div>
@@ -174,13 +174,13 @@
 					<directory-types v-for="(t,index) in directoryTypes" :key="t.uuid" :t="t" :index="index" :orgoptions="orgOptions" inline-template>
 						<article class="field-controls field-color-grey field-level-1" :class="{'is-deleted': t.isdeleted}">
 							<div class="field-sum">
-								<a href="#" class="field-link nav-caret" data-toggle="collapse" v-bind:data-target="'#t'+index" v-bind:aria-controls="'t'+index">
-									<strong class="font-weight-bold">{{t.typename}}</strong>
+								<a class="field-link nav-caret" data-toggle="collapse" v-bind:data-target="'#t'+index" v-bind:aria-controls="'t'+index">
+									<strong class="fnt-bold">{{t.typename}}</strong>
 								</a>
 								<div class="ficon-actions dropdown dropdown-hover">
 									<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
 									<ul class="dropdown-menu dropdown-menu-right" role="menu">
-										<li><a href="#" title="Add Identity Manager Type" v-on:click="addType()"><i class="fas fa-lg fa-plus"></i> Add IM Type</a></li>
+										<li><a title="Add Identity Manager Type" v-on:click="addType()"><i class="fas fa-lg fa-plus"></i> Add IM Type</a></li>
 										<li><a title="Remove Identity Manager Type" v-on:click="deleteType(t, index)"><i class="fa fa-trash-alt"></i> Remove IM Type</a></li>
 									</ul>
 								</div>

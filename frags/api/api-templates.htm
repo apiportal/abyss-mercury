@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+	<div th:fragment="method" id="template-method">
+		<article class="field-controls field-method" :class="'field-color-'+httpMethod" :data-deprecated="method.deprecated">
+			<div class="field-sum">
+				<a class="field-link pb-2" data-toggle="collapse" title="Toggle operation" v-bind:data-target="'#method_main_'+_uid" v-bind:aria-controls="'method_main_'+_uid">
+					<strong class="fnt-bold"><span class="badge badge-method badge-primary txt-uppercase">{{httpMethod}}</span> {{path}}</strong>
+					<span class="d-block txt-r">{{method.operationId}}</span>
+					<small :title="method.description" class="d-block fnt-italic txt-r">{{method.summary}}</small>
+				</a>
+				<div class="ficon-actions dropdown dropdown-hover">
+					<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
+					<ul class="dropdown-menu dropdown-menu-right" role="menu">
+						<li><a v-on:click="addOperation()"><i class="fa fa-fw fa-plus"></i> Add operation</a></li>
+						<li><a v-on:click="duplicateOperation(method)"><i class="fa fa-fw fa-copy"></i> Duplicate operation</a></li>
+						<li><a v-on:click="removeOperation(index)"><i class="fa fa-fw fa-trash-alt"></i> Remove operation</a></li>
+					</ul>
+				</div>
+				<div class="fow form--row m-0 brd-t txt-c field-tabs-btn">
+					<a class="fol-4" data-toggle="collapse" v-bind:data-target="'#method_security_'+_uid" v-bind:aria-controls="'method_security_'+_uid">
+						<span class="txt-muted small d-block">Security</span>
+						<strong class="fnt-bolder">{{secType}}</strong>
+					</a>
+					<a class="fol-4 brd-l brd-r" data-toggle="collapse" v-bind:data-target="'#method_parameters_'+_uid" v-bind:aria-controls="'method_parameters_'+_uid">
+						<span class="txt-muted small d-block">Parameters</span>
+						<strong class="fnt-bolder" v-if="method.parameters">{{method.parameters.length}}</strong>
+					</a>
+					<a class="fol-4" data-toggle="collapse" v-bind:data-target="'#method_responses_'+_uid" v-bind:aria-controls="'method_responses_'+_uid">
+						<span class="txt-muted small d-block">Responses</span>
+						<strong class="fnt-bolder">{{getObjCount(method.responses)}}</strong>
+					</a>
+				</div>
+				<div class="fow form--row m-0 brd-t txt-c field-tabs-btn">
+					<a class="fol-4" data-toggle="collapse" v-bind:data-target="'#method_requestbodies_'+_uid" v-bind:aria-controls="'method_requestbodies_'+_uid" v-if="httpMethod != 'GET' && httpMethod != 'DELETE'">
+						<span class="txt-muted small d-block">RequestBody</span>
+						<strong class="fnt-bolder" v-if="method.requestBody">1</strong>
+						<strong class="fnt-bolder" v-if="!method.requestBody">0</strong>
+					</a>
+					<a class="fol-4 brd-l brd-r" data-toggle="collapse" v-bind:data-target="'#method_callbacks_'+_uid" v-bind:aria-controls="'method_callbacks_'+_uid">
+						<span class="txt-muted small d-block">Callbacks</span>
+						<strong class="fnt-bolder">{{getObjCount(method.callbacks)}}</strong>
+					</a>
+					<a class="fol-4" data-toggle="collapse" v-bind:data-target="'#method_links_'+_uid" v-bind:aria-controls="'method_links_'+_uid">
+						<span class="txt-muted small d-block">Links</span>
+						<strong class="fnt-bolder">{{getObjCount(method.links)}}</strong>
+					</a>
+				</div>
+			</div>
+			<ul class="field-controls" data-id="Main">
+				<li v-bind:id="'method_main_'+_uid" class="collapse field-tabs">
+					<h6 class="field-header row">Main</h6>
+					<div class="field-acc">
+						<div class="fow form-row">
+							<div class="fol-8 form-group">
+								<label>Method</label>
+								<select class="form-control" v-model="httpMethod">
+									<option value="GET">GET</option>
+									<option value="POST">POST</option>
+									<option value="PUT">PUT</option>
+									<option value="DELETE">DELETE</option>
+									<option value="HEAD">HEAD</option>
+									<option value="PATCH">PATCH</option>
+									<option value="OPTIONS">OPTIONS</option>
+									<option value="TRACE">TRACE</option>
+								</select>
+							</div>
+							<div class="fol-4 form-group txt-r">
+								<label class="d-block">Deprecated</label>
+								<span class="switch switch-primary ml-auto">
+								<input type="checkbox" v-model="method.deprecated" :id="'deprecated'+_uid">
+								<label :for="'deprecated'+_uid"></label>
+								</span>
+							</div>
+						</div>
+						<div class="form-group">
+							<label>OperationId</label>
+							<input class="form-control" v-model.lazy="method.operationId" v-validate="'required'">
+						</div>
+						<div class="form-group">
+							<label>Summary</label>
+							<input class="form-control" v-model.lazy="method.summary">
+						</div>
+						<div class="form-group">
+							<label>Description</label>
+							<a class="flt-r" title="Preview markdown" v-on:click="markdownPreview()"><i class="fa fa-check-circle"></i></a>
+							<textarea class="form-control" :id="descId" v-model.lazy="method.description"></textarea>
+						</div>
+						<div class="form-group">
+							<label>Tags</label>
+							<v-select label="name" multiple taggable :filterable="false" :options="mtags" v-model="vtags"></v-select>
+						</div>
+						<div class="form-group">
+							<label>Docs Description</label>
+							<textarea class="form-control" v-model.lazy="method.externalDocs.description"></textarea>
+						</div>
+						<div class="form-group">
+							<label>Docs URL</label>
+							<input type="url" class="form-control" v-model.lazy="method.externalDocs.url">
+						</div>
+					</div>
+				</li>
+			</ul>
+			<ul class="field-controls" data-id="Parameter">
+				<li v-bind:id="'method_parameters_'+_uid" class="collapse field-tabs">
+					<h6 class="field-header">Parameters</h6>
+					<div class="ficon-act ficon-act-link" v-if="method.parameters.length==0">
+						<a class="w-100" v-on:click="addParameter()">Create Parameter <i class="fa fa-fw fa-plus"></i></a>
+					</div>
+					<api-parameter :parameter="parameter" :index="index" :openapi="openapi" v-for="(parameter,index) in method.parameters" :key="index"></api-parameter>
+				</li>
+			</ul>
+			<ul class="field-controls" data-id="Responses">
+				<li v-bind:id="'method_responses_'+_uid" class="collapse field-tabs pt-0">
+					<h6 class="field-header">Responses</h6>
+					<api-response v-for="(response, status, index) in method.responses" :openapi="openapi"
+						:response="response" :key="status" :status="status" :method="method" :rindex="index"></api-response>
+				</li>
+			</ul>
+			<ul class="field-controls" data-id="RequestBody">
+				<li v-bind:id="'method_requestbodies_'+_uid" class="collapse field-tabs pt-0">
+					<h6 class="field-header">Request Body</h6>
+					<div class="ficon-act ficon-act-link" v-if="!method.requestBody">
+						<a class="w-100" v-on:click="addRequestBody(method, true)">Create Request Body <i class="fa fa-fw fa-plus"></i></a>
+					</div>
+					<api-requestbody v-if="method.requestBody" :openapi="openapi" :response="method.requestBody" status="requestBody" :bindex="index" :method="method" :single="true"></api-requestbody>
+				</li>
+			</ul>
+			<ul class="field-controls" data-id="Security">
+				<li v-bind:id="'method_security_'+_uid" class="collapse field-tabs pb-0">
+					<h6 class="field-header">Security</h6>
+					<div class="field-acc pb-0">
+						<div class="form-group pt-1 mb-2">
+							<!-- if (!openapi.security) openapi.security = []; -->
+							<span class="radio radio-primary d-inline-block">
+								<input :id="'chkDefault_'+_uid" class="radio" type="radio" value="default" v-model.lazy="secType"/>
+								<label :for="'chkDefault_'+_uid">Use default security</label>
+							</span>
+							<span class="radio radio-primary d-inline-block">
+								<input :id="'chkNone_'+_uid" class="radio" type="radio" value="none" v-model.lazy="secType"/>
+								<label :for="'chkNone_'+_uid">Disable security</label>
+							</span>
+							<span class="radio radio-primary d-inline-block">
+								<input :id="'chkCustom_'+_uid" class="radio" type="radio" value="custom" v-model.lazy="secType"/>
+								<label :for="'chkCustom_'+_uid">Use custom security</label>
+							</span>
+						</div>
+						<div v-if="secType === 'custom'" class="field-controls txt-black">
+							<div class="pb-2"><strong>Selected security schemes</strong></div>
+							<div class="field-link row" v-for="(scheme,index) in method.security">
+								<span class="ficon-act ficon-act-abs">
+									<a title="Remove security scheme from operation" v-on:click="removeSecScheme(index)"><i class="fa fa-trash-alt"></i></a>
+								</span>
+								<strong class="d-block">{{Object.keys(scheme)[0]}}</strong>
+								<span>{{Object.values(scheme)[0]}}</span>
+							</div>
+						</div>
+					</div>
+				</li>
+			</ul>
+			<ul class="field-controls" data-id="Callbacks">
+				<li v-bind:id="'method_callbacks_'+_uid" class="collapse field-tabs">
+					<h6 class="field-header">Callbacks</h6>
+					<div class="ficon-act ficon-act-link" v-if="!method.callbacks || Object.keys(method.callbacks).length == 0">
+						<a class="w-100" v-on:click="addCallback()">Create Callback <i class="fa fa-fw fa-plus"></i></a>
+					</div>
+					<!-- todo callbacks -->
+					<div v-for="(callback, cbname) in method.callbacks" v-if="method.callbacks && Object.keys(method.callbacks).length>0" class="position-relative">
+						<div class="field-acc">
+							<span class="ficon-act ficon-act-abs">
+								<a title="Add callback" v-on:click="addCallback()"><i class="fa fa-fw fa-plus"></i></a>
+								<a title="Duplicate callback" v-on:click="duplicateCallback(cbname)"><i class="fa fa-fw fa-copy"></i></a>
+								<a title="Remove callback" v-on:click="removeCallback(cbname)"><i class="fa fa-fw fa-trash-alt"></i></a>
+							</span>
+							<div class="form-group">
+								<label>Name</label>
+								<input class="form-control" v-on:focus="storeCallbackName(cbname)" v-on:change="renameCallback(cbname)" v-model.lazy="cbname">
+							</div>
+						</div>
+						<div class="ficon-act justify-content-end" v-if="Object.keys(callback).length==0">
+							<a v-on:click="addCallbackURL(cbname)">Add URL Expression <i class="fa fa-fw fa-plus"></i> </a>
+						</div>
+						<div v-for="(expression, expname) in callback" class="position-relative">
+							<div class="field-acc">
+								<span class="ficon-act ficon-act-abs">
+									<a title="Add expression" v-on:click="addCallbackURL(cbname)"><i class="fa fa-fw fa-plus"></i></a>
+									<a title="Duplicate expression" v-on:click="duplicateExpression(cbname,expname)"><i class="fa fa-fw fa-copy"></i></a>
+									<a title="Remove expession" v-on:click="removeExpression(cbname,expname)"><i class="fa fa-fw fa-trash-alt"></i></a>
+								</span>
+								<div class="form-group">
+									<label>URL Expression</label>
+									<input class="form-control" v-on:focus="storeExpressionName(expname)" v-on:change="renameExpression(cbname,expname)" v-model.lazy="expname">
+								</div>
+							</div>
+							<div class="ficon-act justify-content-end" v-if="Object.keys(expression).length == 0">
+								<a v-on:click="addExpressionOperation(expression)">Add Operation <i class="fa fa-fw fa-plus"></i></a>
+							</div>
+							<api-method :openapi="openapi" :method="method" :index="key" :maintags="maintags" v-for="(method,key,index) in expression" :key="index" :path="index"></api-method>
+						</div>
+					</div>
+				</li>
+			</ul>
+			<ul class="field-controls" data-id="Links">
+				<li v-bind:id="'method_links_'+_uid" class="collapse field-tabs">
+					<!-- todo -->
+					<h6 class="field-header">Links</h6>
+					<div class="ficon-act ficon-act-link" v-if="!method.links || Object.keys(method.links).length == 0">
+						<a class="w-100" v-on:click="addLink()">Create Link <i class="fa fa-fw fa-plus"></i></a>
+					</div>
+					<api-parameter :parameter="parameter" :index="index" :openapi="openapi" v-for="(parameter,index) in method.links" :key="index"></api-parameter>
+				</li>
+			</ul>
+		</article>
+	</div>
+	<div th:fragment="parameter" id="template-parameter">
+		<article class="field-controls">
+			<div class="field-sum">
+				<a class="field-link" data-toggle="collapse" title="Toggle parameter" :data-target="hashUid">
+					<strong class="fnt-black">{{parameter.name}}</strong>
+				</a>
+				<div class="ficon-actions dropdown dropdown-hover">
+					<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
+					<ul class="dropdown-menu dropdown-menu-right" role="menu">
+						<li><a v-on:click="addParameter()"><i class="fa fa-fw fa-plus"></i> Add parameter</a></li>
+						<li><a v-on:click="duplicateParameter(parameter)"><i class="fa fa-fw fa-copy"></i> Duplicate parameter</a></li>
+						<li><a :title="schemaTooltip" v-on:click="mixEditSchema(parameter, 'schema', openapi)"><i class="fa fa-fw fa-edit"></i> {{schemaTooltip}}</a></li>
+						<li><a v-on:click="removeParameter()"><i class="fa fa-fw fa-trash-alt"></i> Remove parameter</a></li>
+					</ul>
+				</div>
+			</div>
+			<div class="collapse field-controls" v-bind:id="_uid">
+				<div class="field-acc">
+					<div class="form-group">
+						<label>Parameter Name</label>
+						<input class="form-control" placeholder="Required" v-model.lazy="parameter.name" required>
+					</div>
+					<div class="form-group">
+						<label>Description</label>
+						<a class="flt-r" title="Preview markdown" v-on:click="markdownPreview()"><i class="fa fa-check-circle"></i></a>
+						<textarea v-model.lazy="parameter.description" :id="descId" class="form-control"></textarea>
+					</div>
+					<div class="form-group">
+						<label>Location</label>
+						<select class="form-control" v-model="effectiveIn" required>
+							<option value="path">Path</option>
+							<option value="query">Query</option>
+							<option value="header">Header</option>
+							<option value="cookie">Cookie</option>
+						</select>
+					</div>
+					<div class="fow form-row">
+						<div class="fol-3 form-group">
+							<label>Required</label>
+							<span class="switch switch-primary ml-auto">
+								<input type="checkbox" :id="'paramRequired_'+_uid" v-model="effectiveRequired" :disabled="effectiveIn == 'path' ? true : false">
+								<label :for="'paramRequired_'+_uid"></label>
+							</span>
+						</div>
+						<div class="fol-6 form-group txt-c" v-if="parameter.in == 'query'">
+							<label>Allow Empty Value</label>
+							<span class="switch switch-primary ml-auto">
+								<input type="checkbox" :id="'paramEmpty_'+_uid" v-model="parameter.allowEmptyValue">
+								<label :for="'paramEmpty_'+_uid"></label>
+							</span>
+						</div>
+						<div class="fol-3 txt-r form-group">
+							<label>Deprecated</label>
+							<span class="switch switch-primary ml-auto">
+								<input type="checkbox" :id="'paramDeprecated_'+_uid" v-model="parameter.deprecated">
+								<label :for="'paramDeprecated_'+_uid"></label>
+							</span>
+						</div>
+					</div>
+					<div class="form-group pt-0" v-if="!isComplex()">
+						<label>Example</label>
+						<input class="form-control" v-model.lazy="parameter.example">
+					</div>
+					<api-items :openapi="openapi" :child="parameter.schema" :name="'parameter'+_uid" :level="0"></api-items>
+				</div>
+			</div>
+		</article>
+	</div>
+	<div th:fragment="requestbody" id="template-requestbody">
+		<div class="field-controls">
+			<div class="field-sum">
+				<a class="field-link" data-toggle="collapse" v-bind:data-target="'#components_requestBodies_'+requestName+'_'+bindex+'_'+_uid" v-bind:aria-controls="'components_requestBodies_'+requestName+'_'+bindex+'_'+_uid">
+					<strong class="fnt-bold">{{requestName}}</strong>
+				</a>
+				<div class="ficon-actions dropdown dropdown-hover">
+					<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
+					<ul class="dropdown-menu dropdown-menu-right" role="menu">
+						<li><a title="Remove RequestBody" v-on:click="removeRequestBody(status)"><i class="fa fa-fw fa-trash-alt"></i> Remove RequestBody</a></li>
+						<li v-if="!single"><a title="Add request body" v-on:click="addRequestBody(method)"><i class="fas fa-lg fa-plus"></i> Add request body</a></li>
+					</ul>
+				</div>
+			</div>
+			<div v-bind:id="'components_requestBodies_'+requestName+'_'+bindex+'_'+_uid" class="collapse field-acc">
+				<div class="form-group" v-if="!response.$ref">
+					<label>Name</label>
+					<input class="form-control" v-model.lazy="requestName">
+				</div>
+				<div class="form-group">
+					<label v-on:click="openRef(response.$ref)">$ref: {{response.$ref}}</label>
+					<select class="form-control" v-model="response.$ref" v-on:change="selectRefResponse($event.target.value, response)">
+						<option value="None">None</option>
+						<optgroup label="$Ref: requestBodies">
+							<option v-for="(schema,key,index) in openapi.components.requestBodies" :value="'#/components/requestBodies/'+key">#/components/requestBodies/{{key}}</option>
+						</optgroup>
+					</select>
+				</div>
+				<div class="form-group" v-if="!response.$ref">
+					<label>Description</label>
+					<textarea class="form-control" v-model.lazy="response.description"></textarea>
+				</div>
+				<div class="form-group form-inline" v-if="!response.$ref">
+					<label class="">Required</label>
+					<span class="switch switch-primary ml-auto">
+						<input type="checkbox" :id="'response'+_uid" v-model="response.required">
+						<label :for="'response'+_uid"></label>
+					</span>
+				</div>
+				<api-mediatype :openapi="openapi" v-for="(content, mediatype) in response.content" :content="content" :key="mediatype" :mediatype="mediatype" :container="response"></api-mediatype>
+			</div>
+		</div>
+	</div>
+	<div th:fragment="responses" id="template-responses">
+		<div class="field-controls">
+			<div class="field-sum">
+				<a class="field-link" data-toggle="collapse" v-bind:data-target="'#responses'+_uid" v-bind:aria-controls="'responses'+_uid">
+					<strong class="fnt-bold d-block">{{statusCode}}</strong>
+					<small v-if="response.$ref">{{response.$ref}}</small>
+				</a>
+				<div class="ficon-actions dropdown dropdown-hover">
+					<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
+					<ul class="dropdown-menu dropdown-menu-right" role="menu">
+						<li><a title="Add Response" v-on:click="addResponse(method)"><i class="fa fa-fw fa-plus"></i> Add Response</a></li>
+						<li v-if="!response.$ref"><a title="Add Media-Type" v-on:click="addMediaType(response)"><i class="fa fa-fw fa-plus"></i> Add Media-Type</a></li>
+						<li><a title="Remove Response" v-on:click="removeResponse()"><i class="fa fa-fw fa-trash-alt"></i> Remove Response</a></li>
+					</ul>
+				</div>
+			</div>
+			<div v-bind:id="'responses'+_uid" class="collapse field-acc">
+				<div class="form-group">
+					<label>Status Code</label>
+					<input class="form-control" size="3" v-model.lazy="statusCode">
+				</div>
+				<div class="form-group">
+					<label>$ref</label>
+					<select class="form-control" v-model="response.$ref" v-on:change="selectRefResponse($event.target.value, response)">
+						<option value="None">None</option>
+						<optgroup label="$Ref: schemas">
+							<option v-for="(schema,key,index) in openapi.components.schemas" :value="'#/components/schemas/'+key">#/components/schemas/{{key}}</option>
+						</optgroup>
+						<optgroup label="$Ref: responses">
+							<option v-for="(schema,key,index) in openapi.components.responses" :value="'#/components/responses/'+key">#/components/responses/{{key}}</option>
+						</optgroup>
+						<optgroup label="$Ref: requestBodies">
+							<option v-for="(schema,key,index) in openapi.components.requestBodies" :value="'#/components/requestBodies/'+key">#/components/requestBodies/{{key}}</option>
+						</optgroup>
+						<optgroup label="$Ref: securitySchemes">
+							<option v-for="(schema,key,index) in openapi.components.securitySchemes" :value="'#/components/securitySchemes/'+key">#/components/securitySchemes/{{key}}</option>
+						</optgroup>
+					</select>
+				</div>
+				<div class="form-group" v-if="!response.$ref">
+					<label>Description</label>
+					<input class="form-control" placeholder="Required" v-model.lazy="response.description">
+				</div>
+				<api-mediatype :openapi="openapi" v-for="(content, mediatype) in response.content"
+					:content="content" :key="mediatype" :mediatype="mediatype" :container="response"></api-mediatype>
+			</div>
+		</div>
+	</div>
+	<div th:fragment="items" id="template-items">
+		<div class="field-acc pb-0 brd-0" :class="'field-l field-l-'+level">
+			<span class="ficon-act ficon-act-abs" v-if="!child.$ref">
+				<a v-on:click="addEnum()" title="Add Enum"><i class="">E</i> </a>
+				<a v-on:click="addSchema('item_0'+level)" title="Create item" v-if="child.type == 'object'"><i class="fa fa-fw fa-plus"></i></a>
+			</span>
+			<div class="form-group">
+				<label>Item Type</label>
+				<select class="form-control" v-model="effectiveType">
+					<optgroup label="Type">
+						<option value="string">String</option>
+						<option value="integer">Integer</option>
+						<option value="number">Number</option>
+						<option value="boolean">Boolean</option>
+						<option value="array">Array</option>
+						<option value="object">Object</option>
+					</optgroup>
+					<optgroup label="$Ref: schemas">
+						<option v-for="(schema,key,index) in openapi.components.schemas" :value="'#/components/schemas/'+key">#/components/schemas/{{key}}</option>
+					</optgroup>
+					<optgroup label="$Ref: responses">
+						<option v-for="(schema,key,index) in openapi.components.responses" :value="'#/components/responses/'+key">#/components/responses/{{key}}</option>
+					</optgroup>
+					<optgroup label="$Ref: requestBodies">
+						<option v-for="(schema,key,index) in openapi.components.requestBodies" :value="'#/components/requestBodies/'+key">#/components/requestBodies/{{key}}</option>
+					</optgroup>
+					<optgroup label="$Ref: securitySchemes">
+						<option v-for="(schema,key,index) in openapi.components.securitySchemes" :value="'#/components/securitySchemes/'+key">#/components/securitySchemes/{{key}}</option>
+					</optgroup>
+					<!-- <optgroup label="$Ref: headers">
+					
+					</optgroup>
+					<optgroup label="$Ref: examples">
+					
+					</optgroup>
+					<optgroup label="$Ref: parameters">
+					
+					</optgroup>
+					<optgroup label="$Ref: links">
+					
+					</optgroup>
+					<optgroup label="$Ref: callbacks">
+					
+					</optgroup> -->
+				</select>
+			</div>
+			<div v-if="!child.$ref">
+				<div v-if="level != '0' && level != '1'" class="">
+					<div class="form-group form-inline">
+						<label class="d-block">Anonymize</label>
+						<span class="switch switch-primary ml-auto">
+							<input type="checkbox" :name="name+'_check_anonymize'+level" :id="name+'_check_anonymize'+level" v-model="isAnonymized">
+							<label :for="name+'_check_anonymize'+level"></label>
+						</span>
+					</div>
+					<div v-if="child['x-abyss-privacy']">
+						<div class="form-group">
+							<label>Anonymization Type</label>
+							<select class="form-control" v-model="child['x-abyss-privacy']['attributeClass']" v-on:change="privacyAttributeClass($event.target.value, child['x-abyss-privacy'])">
+								<option value="auxiliary" selected>Auxiliary</option>
+								<option value="id">Identifier</option>
+								<option value="sensitive">Sensitive</option>
+								<option value="qid">QuasiIdentifier</option>
+							</select>
+						</div>
+						<div class="form-group" v-if="action">
+							<label>Anonymization Action</label>
+							<select class="form-control" name="44" v-model="child['x-abyss-privacy']['action']" v-on:change="privacyAction($event.target.value, child['x-abyss-privacy'])">
+								<option value="remove">Remove</option>
+								<option value="mask">Mask</option>
+								<option value="generalize">Generalize</option>
+								<option value="passThrough">passThrough</option>
+							</select>
+						</div>
+						<div class="form-group" v-if="matchPattern">
+							<label>Anonymization Match Pattern</label>
+							<input class="form-control" type="text" v-model="child['x-abyss-privacy']['matchPattern']">
+						</div>
+						<div class="form-group" v-if="maskPattern">
+							<label>Anonymization Mask Pattern</label>
+							<input class="form-control" type="text" v-model="child['x-abyss-privacy']['maskPattern']">
+						</div>
+						<div class="form-group" v-if="generalizationLevel">
+							<label>Anonymization Generalization Level</label>
+							<input class="form-control" type="text" v-model="child['x-abyss-privacy']['generalizationLevel']">
+						</div>
+				 	</div>
+				</div>
+				<div v-for="(evalue,eindex) in child.enum" class="field-acc brd-t-0 p-0">
+					<span class="ficon-act ficon-act-abs">
+						<a title="Delete Enum" v-on:click="removeEnum(eindex)"><i class="fa fa-trash-alt"></i></a>
+						<a title="Add Enum" v-on:click="addEnum()"><i class="fa fa-plus"></i></a>
+					</span>
+					<div class="form-group">
+						<label>Enum Value</label>
+						<input class="form-control" v-model.lazy="child.enum[eindex]">
+					</div>
+				</div>
+				<!-- TODO replace this with style and explode etc -->
+				<!-- <div class="form-group">
+					<label>Collection Delimiter</label>
+					<select class="form-control" v-model="parent.collectionFormat" required size="2">
+						<option value="csv">Comma</option>
+						<option value="tsv">Tab</option>
+						<option value="ssv">Space</option>
+						<option value="pipes">Pipe</option>
+						<option value="multi" v-if="level==1">Multiple</option>
+					</select>
+				</div>
+				-->
+				<div class="form-group" v-if="effectiveFormats.length">
+					<label>Format</label>
+					<select class="form-control" v-model="child.format">
+						<option v-for="option in effectiveFormats">{{option}}</option>
+					</select>
+				</div>
+				<div class="form-group" v-if="child.type == 'integer' || child.type == 'number' || child.type == 'string'">
+					<label>Default Value</label>
+					<input class="form-control" v-model.lazy="child.default">
+				</div>
+				<!-- parent > child -->
+				<div class="fow form-row" v-if="child.type == 'integer' || child.type == 'number' || child.type == 'string'">
+					<div class="fol-6 form-group">
+						<label>Min. Items</label>
+						<input class="form-control" type="number" min="0" step="1" v-model.number="child.minItems">
+					</div>
+					<div class="fol-6 form-group">
+						<label>Max. Items</label>
+						<input class="form-control" type="number" min="0" step="1" v-model.number="child.maxItems">
+					</div>
+				</div>
+				<div class="fow form-row">
+					<div class="fol-6 form-group">
+						<label class="d-block">Read Only</label>
+						<span class="switch switch-primary ml-auto">
+							<input type="checkbox" :id="'readOnly_'+_uid+level" v-model="child.readOnly">
+							<label :for="'readOnly_'+_uid+level"></label>
+						</span>
+					</div>
+					<div class="fol-6 txt-r form-group" v-if="child.type == 'integer' || child.type == 'number' || child.type == 'string'">
+						<label class="d-block">Unique Items</label>
+						<span class="switch switch-primary ml-auto">
+							<input type="checkbox" :id="'uniqueItems_'+_uid+level" v-model="child.uniqueItems">
+							<label :for="'uniqueItems_'+_uid+level"></label>
+						</span>
+					</div>
+				</div>
+				<div v-if="child.type == 'string'">
+					<div class="fow form-row">
+						<div class="fol-6 form-group">
+							<label>Min. Length</label>
+							<input class="form-control" type="number" min="0" step="1" v-model.number="child.minLength">
+						</div>
+						<div class="fol-6 form-group">
+							<label>Max. Length</label>
+							<input class="form-control" type="number" min="0" step="1" v-model.number="child.maxLength">
+						</div>
+					</div>
+					<div class="form-group">
+						<label>Pattern</label>
+						<input class="form-control" v-model.lazy="child.pattern">
+					</div>
+				</div>
+				<div v-if="child.type == 'integer' || child.type == 'number'">
+					<div class="fow form-row">
+						<div class="fol-6 form-group">
+							<label>Min. Exclusive</label>
+							<span class="switch switch-primary ml-auto">
+								<input type="checkbox" :id="'childMinExc'+_uid+level" v-model="child.exclusiveMinimum">
+								<label :for="'childMinExc'+_uid+level"></label>
+							</span>
+						</div>
+						<div class="fol-6 form-group">
+							<label>Max. Exclusive</label>
+							<span class="switch switch-primary ml-auto">
+								<input class="form-control" type="checkbox" :id="'childMaxExc'+_uid+level" v-model="child.exclusiveMaximum">
+								<label :for="'childMaxExc'+_uid+level"></label>
+							</span>
+						</div>
+					</div>
+					<div class="fow form-row">
+						<div class="fol-4 form-group">
+							<label>Minimum</label>
+							<input class="form-control" type="number" v-model.number="child.minimum">
+						</div>
+						<div class="fol-4 form-group">
+							<label>Maximum</label>
+							<input class="form-control" type="number" v-model.number="child.maximum">
+						</div>
+						<div class="fol-4 form-group">
+							<label>Multiple Of</label>
+							<input class="form-control" type="number" v-model.number="child.multipleOf">
+						</div>
+					</div>
+				</div>
+				<api-items v-if="child.type == 'array'" :openapi="openapi" :child="child.items" :name="name+'array'" :level="levelPlusOne"></api-items>
+				<div class="mt-3 brd-l brd-r brd-b" v-if="child.properties">
+					<div v-for="(prp,key,prpindex) in child.properties" :key="prpindex" class="field-controls field-color-grey field-level-2">
+						<div class="field-sum">
+							<a class="field-link" data-toggle="collapse" v-bind:data-target="'#'+name+'_item'+level+prpindex" v-bind:aria-controls="name+'_item'+level+prpindex">
+								<span>{{key}}</span>
+							</a>
+							<div class="ficon-actions dropdown dropdown-hover">
+								<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
+								<ul class="dropdown-menu dropdown-menu-right" role="menu">
+									<li><a v-on:click="mixEditSchema(child.properties, key, openapi)"><i class="fa fa-fw fa-edit"></i> Edit shared item</a></li>
+									<li><a v-on:click="addSchema('item_'+level)"><i class="fa fa-fw fa-plus"></i> Create item</a></li>
+									<li><a v-on:click="duplicateSchema(key)"><i class="fa fa-fw fa-copy"></i> Duplicate item</a></li>
+									<li><a v-on:click="removeSchema(key)"><i class="fa fa-fw fa-trash-alt"></i> Remove item</a></li>
+								</ul>
+							</div>
+						</div>
+						<div v-bind:id="name+'_item'+level+prpindex" class="collapse field-tabs">
+							<div class="field-acc">
+								<div class="form-group">
+									<label class="d-block">Item Name</label>
+									<input class="form-control" placeholder="Required" v-on:focus="storeSchemaName(key)" v-on:change="renameSchema(key)" v-model.lazy="key">
+								</div>
+							</div>
+							<div class="field-acc">
+								<api-items :openapi="openapi" :child="child.properties[key]" :name="name+'_item'+level+prpindex" :level="levelPlusOne"></api-items>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div th:fragment="mediatype" id="template-mediatype">
+		<div class="position-relative">
+			<div class="ficon-actions dropdown dropdown-hover">
+				<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
+				<ul class="dropdown-menu dropdown-menu-right" role="menu">
+					<li><a title="Add media-type" v-on:click="addMediaType(container)"><i class="fa fa-fw fa-plus"></i> Add media-type</a></li>
+					<li><a title="Duplicate media-type" v-on:click="duplicateMediaType()"><i class="fa fa-fw fa-copy"></i> Duplicate media-type</a></li>
+					<li><a :title="schemaTooltip" v-on:click="mixEditSchema(container.content[mediatype], 'schema', openapi)"><i class="fa fa-fw fa-edit"></i> {{schemaTooltip}}</a></li>
+					<li><a title="Remove media-type" v-on:click="removeMediaType()"><i class="fa fa-fw fa-trash-alt"></i> Remove media-type</a></li>
+				</ul>
+			</div>
+			<div class="form-group">
+				<label>Media-Type</label>
+				<input class="form-control" placeholder="Required" v-model.lazy="mediaTypeName">
+			</div>
+			<api-items v-if="mediatype" :openapi="openapi" :child="content.schema" :name="_uid+'responses'" :level="0"></api-items>
+		</div>
+	</div>
+	<div th:fragment="list" id="template-list">
+		<li>
+		<div class="nav-actions dropdown dropdown-hover">
+			<button type="button"><i class="fas fa-ellipsis-h"></i></button>
+			<ul class="dropdown-menu dropdown-menu-right" role="menu" data-dropdown-in="slideInRight" data-dropdown-out="slideOutRight">
+				<li><a v-on:click="$parent.selectApi(api, 'edit')"><i class="fas fa-edit"></i>Edit</a></li>
+				<li><a v-on:click="previewApi(api)"><i class="fas fa-search-plus"></i>Preview</a></li>
+				<li v-if="!api.isproxyapi"><a v-on:click="$parent.createProxy(api)"><i class="fas fa-code-branch"></i>Create Proxy</a></li>
+				<li class="dropdown-header brd-b txt-c brd-t">ENVIRONMENT</li>
+				<li class="fow txt-c">
+					<!-- <a class="fol-6" v-bind:class="{'active': api.islive}" v-on:click="$parent.apiChangeEnvironment(api, 'islive')">Live</a> -->
+					<a class="fol-6" v-bind:class="{'active': !api.issandbox}" v-on:click="$parent.apiChangeEnvironment(api, 'islive')">Live</a>
+					<a class="fol-6" v-bind:class="{'active': api.issandbox}" v-on:click="$parent.apiChangeEnvironment(api, 'issandbox')">Sandbox</a>
+				</li>
+				<li class="dropdown-header brd-b txt-c">VERSION</li>
+				<li class="fow txt-c">
+					<a class="fol-6" v-bind:class="{'active': api.isdefaultversion}" v-on:click="$parent.apiChangeVersion(api, 'isdefaultversion')">Default</a>
+					<a class="fol-6" v-bind:class="{'active': api.islatestversion}" v-on:click="$parent.apiChangeVersion(api, 'islatestversion')">Latest</a>
+				</li>
+				<li class="dropdown-header brd-b txt-c">VISIBILITY</li>
+				<li class="fow vert">
+					<a class="fol-4" v-bind:class="{'active': activeVisibility == 'Public'}" v-on:click="$parent.apiChangeVisibility(api, 'Public')"><i class="fas fa-eye"></i><span>Public</span></a>
+					<a class="fol-4" v-bind:class="{'active': activeVisibility == 'Private'}" v-on:click="$parent.apiChangeVisibility(api, 'Private')"><i class="fas fa-user-secret"></i><span>Private</span></a>
+					<a class="fol-4" v-bind:class="{'active': activeVisibility == 'Closed-Group'}" v-on:click="$parent.apiChangeVisibility(api, 'Closed-Group')"><i class="fas fa-user"></i><span>Closed Group</span></a>
+				</li>
+				<li class="dropdown-header brd-b txt-c">CHANGE STATE</li>
+				<li class="fow">
+					<a class="fol-6" v-bind:class="{'active': activeState == 'Draft'}" v-on:click="$parent.apiChangeState(api, 'Draft')"><i class="fas fa-circle stat-Draft"></i>Draft</a>
+					<a class="fol-6" v-bind:class="{'active': activeState == 'Staged'}" v-on:click="$parent.apiChangeState(api, 'Staged')"><i class="fas fa-circle stat-Staged"></i>Stage</a>
+					<a class="fol-6" v-bind:class="{'active': activeState == 'Published'}" v-on:click="$parent.apiChangeState(api, 'Published')"><i class="fas fa-circle stat-Published"></i>Publish</a>
+					<a class="fol-6" v-bind:class="{'active': activeState == 'Promoted'}" v-on:click="$parent.apiChangeState(api, 'Promoted')"><i class="fas fa-circle stat-Promoted"></i>Promote</a>
+					<a class="fol-6" v-bind:class="{'active': activeState == 'Demoted'}" v-on:click="$parent.apiChangeState(api, 'Demoted')"><i class="fas fa-circle stat-Demoted"></i>Demote</a>
+					<a class="fol-6" v-bind:class="{'active': activeState == 'Retired'}" v-on:click="$parent.apiChangeState(api, 'Retired')"><i class="fas fa-circle stat-Retired"></i>Retire</a>
+				</li>
+				<li v-bind:class="{'active': activeState == 'Removed'}"><a v-on:click="$parent.apiChangeState(api, 'Removed')"><i class="fas fa-trash-alt"></i>Delete</a></li>
+				<li class="fow" v-if="$root.abyssSandbox">
+					<a class="fol-6" v-on:click="$parent.validateOas(api.openapidocument, true)"><i class="fas fa-check"></i>Validopen</a>
+					<a class="fol-6" v-on:click="$parent.validateOas(api.extendeddocument, true)"><i class="fas fa-check"></i>Validext</a>
+				</li>
+			</ul>
+		</div>
+		<a data-toggle="collapse" v-bind:data-target="'#api'+api.uuid" v-bind:aria-controls="'api'+api.uuid" v-bind:class="{'active': $parent.isSelectedApi(api.uuid), 'is-deleted': api.isdeleted}">
+			<div class="">
+				<i v-bind:title="apiGetStateName(api.apistateid)" class="fas fa-circle" v-bind:class="'stat-' + apiGetStateName(api.apistateid)"></i>
+				<strong>{{api.openapidocument.info.title}}</strong> <small class="txt-muted">{{api.openapidocument.info.version}} {{apiDefaultVersion}} {{apiLatestVersion}}</small>
+			</div>
+			<span v-if="!api.isproxyapi">
+				<small>Proxies: <strong v-if="api.proxies">{{api.proxies.length}}</strong></small>
+			</span>
+			<span v-if="api.isproxyapi">
+				<small>Business API: <strong>{{businessapi}}</strong></small>
+			</span>
+			<small class="txt-muted flt-r">{{api.created | formatDate}}</small>
+			<code class="d-block small" :style="{ 'color': api.color }"><small>{{api.uuid}}</small></code>
+		</a>
+		<ul v-bind:id="'api'+api.uuid" class="collapse clearfix">
+			<li>
+				<div class="px-3 txt-dark brd-t">
+					<div class="small pt-2">
+						<p v-if="!api.isproxyapi">
+							<strong class="d-block txt-uppercase">Servers</strong> 
+							<span class="d-block txt-break" v-for="(sv, index) in api.openapidocument.servers" v-bind:title="sv.url">{{sv.url}}</span>
+						</p>
+						<p v-if="api.isproxyapi">
+							<strong class="d-block txt-uppercase">Server</strong> 
+							<span class="d-block txt-break">{{apiGateway}}</span>
+						</p>
+						<div class="fow form-row">
+							<p class="fol-6"><strong class="d-block txt-uppercase">Visibility</strong><span class="txt-capitalize">{{apiGetVisibilityName(api.apivisibilityid)}}</span></p>
+							<p class="fol-6"><strong class="d-block txt-uppercase">State</strong><span class="txt-capitalize">{{apiGetStateName(api.apistateid)}}</span></p>
+						</div>
+						<div class="fow form-row">
+							<p class="fol-6"><strong class="d-block txt-uppercase">Security</strong> {{numSecuritySchemes}}</p>
+							<p class="fol-6"><strong class="d-block txt-uppercase">Environment</strong> {{apiEnvironment}}</p>
+						</div>
+						<div class="fow form-row">
+							<p class="fol-12" v-if="api.openapidocument.info.license"><strong class="d-block txt-uppercase">License</strong>{{api.openapidocument.info.license.name}}</p>
+							<p class="fol-12"><strong class="d-block txt-uppercase">Categories</strong>{{compCategoriesToList}}</p>
+							<p class="fol-12"><strong class="d-block txt-uppercase">Groups</strong>{{compGroupsToList}}</p>
+							<p class="fol-12"><strong class="d-block txt-uppercase">Tags</strong>{{compTagsToList}}</p>
+							<p class="fol-12"><small class="d-block">{{api.openapidocument.info.description}}</small></p>
+						</div>
+					</div>
+					<ul class="row nav flex-column nav-controls mt-2" v-if="!api.isproxyapi && api.proxies.length > 0">
+						<li class="field-link small">
+							<strong class="d-block txt-uppercase">PROXIES</strong>
+						</li>
+						<li class="field-link" v-for="(proxy, index) in api.proxies" v-if="api.proxies.length > 0">
+							<div class="nav-actions dropdown dropdown-hover">
+								<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
+								<ul class="dropdown-menu dropdown-menu-right" role="menu" data-dropdown-in="slideInRight" data-dropdown-out="slideOutRight">
+									<li><a v-on:click="$parent.selectApi(proxy, 'edit')"><i class="fas fa-edit"></i>Edit</a></li>
+									<li><a href="$parent.selectApi(proxy, 'preview')"><i class="fas fa-file-alt"></i>Preview</a></li>
+								</ul>
+							</div>
+							{{proxy.openapidocument.info.title}}
+						</li>
+					</ul>
+				</div>
+			</li>
+		</ul>
+		</li>
+	</div>
+</body>
+</html>

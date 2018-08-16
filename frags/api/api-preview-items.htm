@@ -56,21 +56,21 @@
 	<p class="sandbox-item" v-if="$root.abyssSandbox">
 		<code class="d-block txt-line small txt-blue"><small>{{license.uuid}}</small></code>
 	</p>
-	<p class="d-block txt-line mt-1 text-muted small">{{license.licensedocument.info.description}}</p>
+	<p class="d-block txt-line mt-1 txt-muted small">{{license.licensedocument.info.description}}</p>
 	<div class="small">
-		<h6 class="field-header text-body row brd-b">SLA</h6>
+		<h6 class="field-header txt-body row brd-b">SLA</h6>
 		<h6 class="m-0">
 			{{license.licensedocument.sla.tierName}}
 		</h6>
 		<p class="mb-4">
 			{{license.licensedocument.sla.description}}
 		</p>
-		<p class="d-flex text-uppercase">
+		<p class="d-flex txt-uppercase">
 			<span class="">
 				<strong class="lbl">support Hours</strong>
 				{{license.licensedocument.sla.supportHours}}
 			</span>
-			<span class="ml-auto text-right">
+			<span class="ml-auto txt-r">
 				<strong class="lbl">availability</strong>
 				{{license.licensedocument.sla.availability}}
 			</span>
@@ -89,12 +89,12 @@
 		</p>
 		<p v-if="license.licensedocument.legal.link">
 			<strong class="lbl">Legal Aggreement Link</strong>
-			<span class="d-block text-truncate">
+			<span class="d-block txt-truncate">
 				<a :href="license.licensedocument.legal.link" target="_blank">{{license.licensedocument.legal.link}}</a>
 			</span>
 		</p>
 		<p v-if="license.licensedocument.legal.documentText">
-			<a href="#" class="txt-link" v-on:click="showLegalText(license.licensedocument.legal)">Show Legal Agreement</a>
+			<a class="txt-link" v-on:click="showLegalText(license.licensedocument.legal)">Show Legal Agreement</a>
 		</p>
 	</div>
 </div>

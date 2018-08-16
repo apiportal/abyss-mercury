@@ -26,8 +26,8 @@
 							<th class="td-action-1"></th>
 							<th class="td-action-1"></th>
 						</tr>
-						<tr v-for="(accessManager, index) in sortBy(sort, accessManagerList)" v-bind:key="accessManager.uuid" v-bind:class="{'active': isSelected(index)}">
-							<td class="text-center">
+						<tr v-for="(accessManager, index) in sortBy(sort, accessManagerList)" v-bind:key="accessManager.uuid" v-bind:class="{'active': isSelected(index), 'tr-deleted': accessManager.isdeleted}">
+							<td class="txt-c">
 								<i class="fas fa-circle" title="Active" v-if="!accessManager.isactive"></i>
 								<i class="fas fa-check-circle txt-green" title="Active" v-if="accessManager.isactive"></i>
 								<i class="fas fa-times-circle txt-red" title="Deleted" v-if="accessManager.isdeleted"></i>
@@ -49,10 +49,10 @@
 								</div>
 							</td>
 							<td class="td-action-1">
-								<a href="#" class="btn btn-xl txt-link btn-square" title="EDIT ACCESS MANAGER" v-on:click="$emit('set-state', 'edit'); selectAccessManager(accessManager, index);"><i class="fas fa-edit"></i></a>
+								<a class="btn btn-xl txt-link btn-square" title="EDIT ACCESS MANAGER" v-on:click="$emit('set-state', 'edit'); selectAccessManager(accessManager, index);"><i class="fas fa-edit"></i></a>
 							</td>
 							<td class="td-action-1">
-								<a href="#" class="btn btn-xl txt-link txt-grey btn-square" title="DELETE ACCESS MANAGER" v-on:click="deleteAccessManager(accessManager, index)"><i class="fas fa-trash-alt"></i></a>
+								<a class="btn btn-xl txt-link txt-grey btn-square" title="DELETE ACCESS MANAGER" v-on:click="deleteAccessManager(accessManager, index)"><i class="fas fa-trash-alt"></i></a>
 							</td>
 						</tr>
 					</table>
@@ -119,13 +119,13 @@
 					<access-manager-types v-for="(t,index) in accessManagerTypes" :key="t.uuid" :t="t" :index="index" :orgoptions="orgOptions" inline-template>
 						<article class="field-controls field-color-grey field-level-1" :class="{'is-deleted': t.isdeleted}">
 							<div class="field-sum">
-								<a href="#" class="field-link nav-caret" data-toggle="collapse" v-bind:data-target="'#t'+index" v-bind:aria-controls="'t'+index">
-									<strong class="font-weight-bold">{{t.typename}}</strong>
+								<a class="field-link nav-caret" data-toggle="collapse" v-bind:data-target="'#t'+index" v-bind:aria-controls="'t'+index">
+									<strong class="fnt-bold">{{t.typename}}</strong>
 								</a>
 								<div class="ficon-actions dropdown dropdown-hover">
 									<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
 									<ul class="dropdown-menu dropdown-menu-right" role="menu">
-										<li><a href="#" title="Add Access Manager Type" v-on:click="addType()"><i class="fas fa-lg fa-plus"></i> Add AM Type</a></li>
+										<li><a title="Add Access Manager Type" v-on:click="addType()"><i class="fas fa-lg fa-plus"></i> Add AM Type</a></li>
 										<li><a title="Remove Access Manager Type" v-on:click="deleteType(t, index)"><i class="fa fa-trash-alt"></i> Remove AM Type</a></li>
 									</ul>
 								</div>

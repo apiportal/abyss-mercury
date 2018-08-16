@@ -56,8 +56,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 				},
 				pageState: 'init',
 				paginate: {},
-				ajaxUrl: abyss.ajax.subject_directories_list,
-				ajaxHeaders: {},
 				selected: null,
 				accessManager: {
 					"uuid": null,
@@ -125,7 +123,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 				var index = this.accessManagerTypes.indexOf(t);
 				this.accessManagerTypes.splice(index, 1);
 			},
-			saveAddType(t) {
+			/*saveAddType(t) {
 				this.fillProps(t);
 				var itemArr = [];
 				itemArr.push(this.deleteProps(t));
@@ -138,14 +136,24 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 				}, error => {
 					this.handleError(error);
 				});
+			},*/
+			async saveAddType(item) {
+				this.fixProps(item);
+				await this.addItem( abyss.ajax.access_manager_types, this.deleteProps(item), this.accessManagerTypes );
+				this.cancelAddType(item);
+				this.$emit('set-state', 'init');
 			},
-			saveType(item) {
+			/*saveType(item) {
 				this.updateItem(abyss.ajax.access_manager_types + '/' + item.uuid, this.deleteProps(item)).then(response => {
 					console.log("save access_manager_types response: ", response);
 					this.$emit('set-state', 'init');
 				});
+			},*/
+			async saveType(item) {
+				await this.editItem( abyss.ajax.access_manager_types, item.uuid, this.deleteProps(item), this.accessManagerTypes );
+				this.$emit('set-state', 'init');
 			},
-			deleteType(item) {
+			/*deleteType(item) {
 				var r = confirm('Are you sure to delete?');
 				if (r == true) {
 					axios.delete(abyss.ajax.access_manager_types + '/' + item.uuid, item).then(response => {
@@ -154,6 +162,13 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 					}, error => {
 						this.handleError(error);
 					});
+				}
+			},*/
+			async deleteAccessManager(item) {
+				var del = await this.deleteItem(abyss.ajax.access_manager_types, item, true);
+				console.log("del: ", del);
+				if (del) {
+					this.$toast('success', {title: 'ITEM DELETED', message: 'Item deleted successfully', position: 'topRight'});
 				}
 			},
 			getTypeName(typ) {
@@ -169,9 +184,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 				this.selectedAccessManager = _.cloneDeep(this.newAccessManager);
 				this.selected = null;
 			},
-			fixProps(item) {
-				this.fillProps(item);
-			},
 			selectAccessManager(item, i) {
 				this.fixProps(item);
 				this.selectedAccessManager = _.cloneDeep(item);
@@ -181,7 +193,21 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 			isSelected(i) {
 				return i === this.selected;
 			},
-			deleteAccessManager(item) {
+			fixProps(item) {
+				this.fillProps(item);
+			},
+			deleteProps(obj) {
+				var item = this.cleanProps(obj);
+				return item;
+			},
+			async deleteAccessManager(item) {
+				var del = await this.deleteItem(abyss.ajax.access_managers, item, true);
+				console.log("del: ", del);
+				if (del) {
+					this.$toast('success', {title: 'ITEM DELETED', message: 'Item deleted successfully', position: 'topRight'});
+				}
+			},
+			/*deleteAccessManager(item) {
 				var r = confirm('Are you sure to delete?');
 				if (r == true) {
 					axios.delete(abyss.ajax.access_managers + '/' + item.uuid, item).then(response => {
@@ -191,47 +217,46 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 						this.handleError(error);
 					});
 				}
-			},
-			deleteProps(obj) {
-				var item = this.cleanProps(obj);
-				/*var item = _.cloneDeep(obj);
-				Vue.delete(item, 'uuid');
-				Vue.delete(item, 'created');
-				Vue.delete(item, 'updated');
-				Vue.delete(item, 'deleted');
-				Vue.delete(item, 'isdeleted');*/
-				return item;
-			},
-			accessManagerAction(act) {
-				this.$validator.validateAll().then((result) => {
-					if (result) {
-						if (act == 'add') {
-							this.fixProps(this.accessManager);
-							var itemArr = [];
-							itemArr.push(this.deleteProps(this.accessManager));
-							console.log("this.deleteProps(this.accessManager): ", this.deleteProps(this.accessManager));
-							axios.post(abyss.ajax.access_managers, itemArr).then(response => {
-								console.log("addAccessManager response: ", response);
-								this.accessManagerList.push(response.data[0].response);
-								this.$emit('set-state', 'init');
-								this.accessManager = _.cloneDeep(this.newAccessManager);
-							}, error => {
-								this.handleError(error);
-							});
-						}
-						if (act == 'edit') {
-							this.updateItem(abyss.ajax.access_managers + '/' + this.accessManager.uuid, this.deleteProps(this.accessManager), this.accessManagerList).then(response => {
-								console.log("editAccessManager response: ", response);
-								this.$emit('set-state', 'init');
-								this.accessManager = _.cloneDeep(this.newAccessManager);
-								this.selected = null;
-							});
-						}
-						return;
+			},*/
+			async accessManagerAction(act) {
+				var result = await this.$validator.validateAll();
+				if (result) {
+					/*if (act == 'add') {
+						this.fixProps(this.accessManager);
+						var itemArr = [];
+						itemArr.push(this.deleteProps(this.accessManager));
+						axios.post(abyss.ajax.access_managers, itemArr).then(response => {
+							console.log("addAccessManager response: ", response);
+							this.accessManagerList.push(response.data[0].response);
+							this.$emit('set-state', 'init');
+							this.accessManager = _.cloneDeep(this.newAccessManager);
+						}, error => {
+							this.handleError(error);
+						});
+					}*/
+					if (act == 'add') {
+						this.fixProps(this.accessManager);
+						var item = await this.addItem(abyss.ajax.access_managers, this.deleteProps(this.accessManager), this.accessManagerList);
+						this.$emit('set-state', 'init');
+						this.accessManager = _.cloneDeep(this.newAccessManager);
 					}
-				});
+					if (act == 'edit') {
+						var item = await this.editItem( abyss.ajax.access_managers, this.accessManager.uuid, this.deleteProps(this.accessManager), this.accessManagerList );
+						this.$emit('set-state', 'init');
+						this.accessManager = _.cloneDeep(this.newAccessManager);
+						this.selected = null;
+					}
+					/*if (act == 'edit') {
+						this.updateItem(abyss.ajax.access_managers + '/' + this.accessManager.uuid, this.deleteProps(this.accessManager), this.accessManagerList).then(response => {
+							console.log("editAccessManager response: ", response);
+							this.$emit('set-state', 'init');
+							this.accessManager = _.cloneDeep(this.newAccessManager);
+							this.selected = null;
+						});
+					}*/
+				}
 			},
-			getPage(p, d) {
+			/*getPage(p, d) {
 				axios.all([
 					axios.get(abyss.ajax.access_manager_types),
 					axios.get(abyss.ajax.organizations_list),
@@ -248,15 +273,24 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 				).catch(error => {
 					this.handleError(error);
 				});
+			},*/
+			async getPage(p, d) {
+				var access_managers = this.getList(abyss.ajax.access_managers);
+				var access_manager_types = this.getList(abyss.ajax.access_manager_types);
+				var organizations_list = this.getList(abyss.ajax.organizations_list);
+				var [accessManagerList, accessManagerTypes, orgOptions] = await Promise.all([access_managers, access_manager_types, organizations_list]);
+				Vue.set( this, 'accessManagerList', accessManagerList );
+				Vue.set( this, 'accessManagerTypes', accessManagerTypes );
+				Vue.set( this, 'orgOptions', orgOptions );
+				this.paginate = this.makePaginate(this.accessManagerList);
+				this.preload();
+				console.timeEnd();
 			},
 		},
-		mounted() {
-			// this.preload();
-		},
 		created() {
-			this.log(this.$options.name);
 			this.$emit('set-page', 'access-managers', 'init');
 			this.newAccessManager = _.cloneDeep(this.accessManager);
+			console.time();
 			this.getPage(1);
 		}
 	});

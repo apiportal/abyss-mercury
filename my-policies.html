@@ -31,18 +31,18 @@
 							<th class="td-action-1"></th>
 							<th class="td-action-1"></th>
 						</tr>
-						<tr v-for="(policy, index) in sortByNested(sort, policyList)" v-bind:key="policy.uuid" v-bind:class="{'active': isSelected(index)}">
-							<td class="text-center">
+						<tr v-for="(policy, index) in sortByNested(sort, policyList)" v-bind:key="policy.uuid" v-bind:class="{'active': isSelected(index), 'tr-deleted': policy.isdeleted}">
+							<td class="txt-c">
 								<i class="fas fa-check-circle txt-green" title="Active" v-if="!policy.isdeleted"></i>
 								<i class="fas fa-times-circle txt-red" title="Deleted" v-if="policy.isdeleted"></i>
 							</td>
 							<td>{{policy.name}} <small class="d-block">{{policy.description}}</small></td>
 							<td>{{policy.policyinstance.info.type}}</td>
 							<td>{{policy.policyinstance.info.subType}}</td>
-							<td class="text-center"><i class="fas fa-circle" title="Active" v-bind:class="{'txt-cyan': policy.policyinstance.openApiLifeCycle.onBusinessRequest}"></i></td>
-							<td class="text-center"><i class="fas fa-circle" title="Active" v-bind:class="{'txt-cyan': policy.policyinstance.openApiLifeCycle.onBusinessResponse}"></i></td>
-							<td class="text-center"><i class="fas fa-circle" title="Active" v-bind:class="{'txt-purple': policy.policyinstance.openApiLifeCycle.onProxyRequest}"></i></td>
-							<td class="text-center"><i class="fas fa-circle" title="Active" v-bind:class="{'txt-purple': policy.policyinstance.openApiLifeCycle.onProxyResponse}"></i></td>
+							<td class="txt-c"><i class="fas fa-circle" title="Active" v-bind:class="{'txt-cyan': policy.policyinstance.openApiLifeCycle.onBusinessRequest}"></i></td>
+							<td class="txt-c"><i class="fas fa-circle" title="Active" v-bind:class="{'txt-cyan': policy.policyinstance.openApiLifeCycle.onBusinessResponse}"></i></td>
+							<td class="txt-c"><i class="fas fa-circle" title="Active" v-bind:class="{'txt-purple': policy.policyinstance.openApiLifeCycle.onProxyRequest}"></i></td>
+							<td class="txt-c"><i class="fas fa-circle" title="Active" v-bind:class="{'txt-purple': policy.policyinstance.openApiLifeCycle.onProxyResponse}"></i></td>
 							<td>
 								<div>
 									<strong class="small">CREATED:</strong>
@@ -58,10 +58,10 @@
 								</div>
 							</td>
 							<td class="td-action-1">
-								<a href="#" class="btn btn-xl txt-link btn-square" title="EDIT POLICY" v-on:click="$emit('set-state', 'edit'); selectPolicy(policy, index);"><i class="fas fa-edit"></i></a>
+								<a class="btn btn-xl txt-link btn-square" title="EDIT POLICY" v-on:click="$emit('set-state', 'edit'); selectPolicy(policy, index);"><i class="fas fa-edit"></i></a>
 							</td>
 							<td class="td-action-1">
-								<a href="#" class="btn btn-xl txt-link txt-grey btn-square" title="DELETE POLICY" v-on:click="deletePolicy(policy, index)"><i class="fas fa-trash-alt"></i></a>
+								<a class="btn btn-xl txt-link txt-grey btn-square" title="DELETE POLICY" v-on:click="deletePolicy(policy, index)"><i class="fas fa-trash-alt"></i></a>
 							</td>
 						</tr>
 					</table>
@@ -123,7 +123,7 @@
 										<label for="onProxyRequest"></label>
 									</span>
 								</div>
-								<div class="fol-6 form-group text-right">
+								<div class="fol-6 form-group txt-r">
 									<label class="d-block">onProxyResponse</label>
 									<span class="switch switch-purple">
 										<input type="checkbox" name="onProxyResponse" id="onProxyResponse" v-model="policy.policyinstance.openApiLifeCycle.onProxyResponse" checked>
@@ -137,7 +137,7 @@
 										<label for="onBusinessRequest"></label>
 									</span>
 								</div>
-								<div class="fol-6 form-group text-right">
+								<div class="fol-6 form-group txt-r">
 									<label class="d-block">onBusinessResponse</label>
 									<span class="switch switch-cyan">
 										<input type="checkbox" name="onBusinessResponse" id="onBusinessResponse" v-model="policy.policyinstance.openApiLifeCycle.onBusinessResponse" checked>

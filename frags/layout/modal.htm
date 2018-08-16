@@ -1,7 +1,64 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <body>
-	<div th:fragment="modal" id="taxModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div th:fragment="schema" id="schemaModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="schemaModal" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" onclick="schemaEditorClose()" aria-hidden="true">×</button>
+					<h5 class="modal-title" id="schemaModalTitle">Schema Editor</h5>
+				</div>
+				<div class="modal-body p-0">
+					<div id="schemaContainer"></div>
+				</div>
+				<div class="modal-footer d-flex justify-content-between">
+					<button type="button" class="btn btn-secondary btn-rounded" onclick="schemaEditorClose()">Close</button>
+					<button type="button" class="btn btn-primary btn-rounded" onclick="schemaEditorSave()">Save Changes</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div th:fragment="markdown" id="mdPreview" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mdPreview" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+					<h5 class="modal-title">Markdown Preview</h5>
+				</div>
+				<div class="modal-body p-3">
+					<span id="mdPreviewText"></span>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div th:fragment="alert" id="alert" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="alert" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-body p-6">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+					<span id="alertText"></span>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div th:fragment="confirm" id="confirm" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="confirm" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+					<h5 class="modal-title" id="confirmTitle">Alert</h5>
+				</div>
+				<div class="modal-body p-6">
+					<span id="confirmSubtitle"></span>
+				</div>
+				<div class="modal-footer d-flex justify-content-between">
+					<a data-dismiss="modal"><span class="btn btn-secondary btn-rounded">Cancel</span></a>
+					<a data-dismiss="modal" id="confirmOk"><span class="btn btn-primary btn-rounded">Confirm</span></a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div th:fragment="taxonomy" id="taxModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="taxModal" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content" v-if="taxAction == 'add'">
 				<div class="modal-header">
@@ -20,8 +77,8 @@
 					</div>
 				</div>
 				<div class="modal-footer d-flex justify-content-between">
-					<button type="button" class="btn btn-secondary btn-rounded text-uppercase" data-dismiss="modal" v-on:click="cancelTax(tax)">Close</button>
-					<button type="button" class="btn btn-primary btn-rounded text-uppercase" v-on:click="addTax()">Add {{taxTitle}}</button>
+					<button type="button" class="btn btn-secondary btn-rounded txt-uppercase" data-dismiss="modal" v-on:click="cancelTax(tax)">Close</button>
+					<button type="button" class="btn btn-primary btn-rounded txt-uppercase" v-on:click="addTax()">Add {{taxTitle}}</button>
 				</div>
 			</div>
 			<div class="modal-content" v-if="taxAction == 'edit'">
@@ -41,15 +98,15 @@
 					</div>
 				</div>
 				<div class="modal-footer d-flex justify-content-between">
-					<button type="button" class="btn btn-secondary btn-rounded text-uppercase" data-dismiss="modal" v-on:click="restoreTax(tax)">Close</button>
-					<button type="button" class="btn btn-primary btn-rounded text-uppercase" v-on:click="editTax(tax)">Save {{taxTitle}}</button>
+					<button type="button" class="btn btn-secondary btn-rounded txt-uppercase" data-dismiss="modal" v-on:click="restoreTax(tax)">Close</button>
+					<button type="button" class="btn btn-primary btn-rounded txt-uppercase" v-on:click="editTax(tax)">Save {{taxTitle}}</button>
 				</div>
 			</div>
 		</div>
 	</div>
 	<div class="field--controls field-controls-hover" th:fragment="organizations">
-		<a href="#" class="field-link nav--caret" data-toggle="collapse" v-bind:data-target="'#org'+col+index" v-bind:aria-controls="'org'+col+index">
-			<strong class="m-0 txt-blue text-uppercase d-block text-right" v-if="title == 'add'">Add Organization <i class="fas fa-fw fa-plus"></i></strong>
+		<a class="field-link nav--caret" data-toggle="collapse" v-bind:data-target="'#org'+col+index" v-bind:aria-controls="'org'+col+index">
+			<strong class="m-0 txt-blue txt-uppercase d-block txt-r" v-if="title == 'add'">Add Organization <i class="fas fa-fw fa-plus"></i></strong>
 			<strong class="m-0" v-if="title == 'edit'">{{org.name}}</strong>
 		</a>
 		<div class="ficon-actions dropdown dropdown-hover" v-if="title == 'edit'">
