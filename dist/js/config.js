@@ -48,7 +48,7 @@ define(['global'], function(abyss){
 		subject_app_subject_list: '/subject-apps/subject/', //uuid ABYSSP-183 GET
 		subjects_changepassword: '/subjects/{uuid}/changepassword/', //2DO ABYSSP-76 PUT oldpassword,newpassword,confirmpassword,crudsubjectid
 		// https://dev2.apiportal.com/abyss/openapi/SubjectGroup.yaml
-		user_group_list: '/subject-groups',
+		user_group_list: '/subjects/groups/', // must /
 		// https://dev2.apiportal.com/abyss/openapi/SubjectPermission.yaml
 		permission_list: '/subject-permissions', //uuid
 		permission_my_apis: '/subject-permissions/my-apis-subscriptions/subject/', //useruuid ABYSSP-182 GET
