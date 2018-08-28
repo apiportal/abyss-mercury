@@ -1671,7 +1671,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				stateOptions: [],
 
 				dropSpecsOptions: {
-					url: 'https://httpbin.org/post',
+					url: 'http://192.168.10.38:11080/post',
 					method: 'post',
 					uploadMultiple: false,
 					maxFiles: 1,
@@ -1686,7 +1686,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					}
 				},
 				dropImageOptions: {
-					url: 'https://httpbin.org/post',
+					url: 'http://192.168.10.38:11080/post',
 					method: 'post',
 					uploadMultiple: false,
 					maxFiles: 1,

@@ -9,7 +9,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 			return {
 				isLoading: true,
 				sort: {
-					key: 'groupname',
+					key: 'firstname',
 					type: String,
 					order: 'asc'
 				},
@@ -17,7 +17,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 				paginate: {},
 				selected: null,
 				resetPassword: false,
-				group: {
+				groupOld: {
 					"uuid": null,
 					"created": null,
 					"updated": null,
@@ -36,6 +36,52 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 					"permissions": [],
 					"userList": [],
 					"users": []
+				},
+				group: {
+					"uuid": null,
+					"organizationid": null,
+					"created": null,
+					"updated": null,
+					"deleted": null,
+					"isdeleted": false,
+					"crudsubjectid": null,
+					"isactivated": false,
+					"subjecttypeid": "c5ef2da7-b55e-4dec-8be3-96bf30255781",
+					"subjectname": null,
+					"firstname": null,
+					"lastname": null,
+					"displayname": null,
+					"url": null,
+					"email": null,
+					"secondaryemail": null,
+					"effectivestartdate": moment().format('YYYY-MM-DD HH:mm:ss'),
+					"effectiveenddate": moment().add(50, 'years').format('YYYY-MM-DD HH:mm:ss'),
+					"password": null,
+					"picture": null,
+					"totallogincount": null,
+					"failedlogincount": null,
+					"invalidpasswordattemptcount": null,
+					"ispasswordchangerequired": true,
+					"passwordexpiresat": null,
+					"lastloginat": "",
+					"lastpasswordchangeat": "",
+					"lastauthenticatedat": "",
+					"lastfailedloginat": "",
+					"subjectdirectoryid": null,
+					"islocked": false,
+					"issandbox": false,
+					"isrestrictedtoprocessing": false,
+					"description": null,
+
+					"users": [],
+					"membershiplist": [],
+					"userList": [],
+					"permissions": [],
+					"permissionslist": [],
+					"permissionfilter": true,
+					"groupfilter": true,
+					"userfilter": true,
+					"userCount": 0,
 				},
 				selectedGroup: {},
 				newGroup: {},
@@ -62,32 +108,31 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 			};
 		},
 		methods: {
-			/*filterGroup(filter) {
+			/*async getPermissionOptions(search, loading) {
+				loading(true);
+				var permissionOptions = await this.getList(abyss.ajax.permission_list + '?likename=' + search);
+				this.permissionOptions = permissionOptions.filter( (item) => item.isdeleted == false );
+				loading(false);
+			},*/
+			filterUser(filter) {
 				if (filter == null) {
-					this.getPage(1);
+					// this.getPage(1);
+					// var sss = _.filter(this.groupList, (item) => _.find(flt, { filtered: 'group' }));
+					var sss = this.groupList.filter((item) => item.userfilter == false );
+					console.log("sss: ", sss);
+					sss.forEach((value, key) => {
+						value.userfilter = true;
+					});
 				} else {
 					// this.getPage(1, '&group='+filter.uuid);
-					axios.get(abyss.ajax.user_group_list + '/' +filter.uuid)
-					.then(response => {
-						this.groupList = response.data;
-					}, error => {
-						this.handleError(error);
+					var flt = this.memberOptions.filter((item) => item.subjectid == filter.uuid );
+					console.log("flt: ", flt);
+					var xxx = _.reject(this.groupList, (item) => _.find(flt, { subjectgroupid: item.uuid }));
+					console.log("xxx: ", xxx);
+					xxx.forEach((value, key) => {
+						value.userfilter = false;
 					});
 				}
-			},*/
-			async filterGroup(filter) {
-				if (filter == null) {
-					this.getPage(1);
-				} else {
-					// this.groupList = await this.getItem(abyss.ajax.user_group_list, filter.uuid);
-					this.groupList = [];
-					this.groupList.push(filter);
-				}
-			},
-			async getGroupOptions(search, loading) {
-				loading(true);
-				this.groupOptions = await this.getList(abyss.ajax.user_group_list + '?likename=' + search);
-				loading(false);
 			},
 			async getUserOptions(search, loading) {
 				loading(true);
@@ -95,62 +140,57 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 				this.userOptions = userOptions.filter( (item) => item.isdeleted == false );
 				loading(false);
 			},
-			async getPermissionOptions(search, loading) {
+			getDirName(dir) {
+				var subDir = this.directoryOptions.find((el) => el.uuid == dir );
+				if (subDir) {
+					return subDir.directoryname;
+				}
+			},
+			getPermissionName(dir) {
+				var subPrm = this.permissionOptions.filter((el) => el.subjectid == dir );
+				if (subPrm) {
+					return subPrm.map(e => e.permission).join(', ');
+				}
+			},
+			filterPermission(filter) {
+				if (filter == null) {
+					// this.getPage(1);
+					var sss = this.groupList.filter((item) => item.permissionfilter == false );
+					sss.forEach((value, key) => {
+						value.permissionfilter = true;
+					});
+				} else {
+					// this.getPage(1, '&permission='+filter.uuid);
+					var flt = this.permissionOptions.filter((item) => item.uuid == filter.uuid );
+					var xxx = _.reject(this.groupList, (item) => _.find(flt, { subjectid: item.uuid }));
+					xxx.forEach((value, key) => {
+						value.permissionfilter = false;
+					});
+				}
+			},
+			async filterGroup(filter) {
+				if (filter == null) {
+					this.getPage(1);
+				} else {
+					// this.groupList = await this.getItem(abyss.ajax.subjects, filter.uuid);
+					this.groupList = [];
+					this.groupList.push(filter);
+					this.groupList = _.map(this.groupList, o => _.extend({permissionfilter: true, groupfilter: true, userfilter: true}, o));
+				}
+			},
+			async getGroupOptions(search, loading) {
 				loading(true);
-				var permissionOptions = await this.getList(abyss.ajax.user_list + '?likename=' + search);
-				this.permissionOptions = permissionOptions.filter( (item) => item.isdeleted == false );
+				this.groupOptions = await this.getList(abyss.ajax.user_group_list + '?likename=' + search);
 				loading(false);
 			},
-			/*getGroupOptions(search, loading) {
-				loading(true);
-				axios.get(abyss.ajax.user_group_list + '?likename=' + search)
-				.then(response => {
-					console.log(response);
-					if (response.data != null) {
-						this.groupOptions = response.data;
-					} else {
-						this.groupOptions = [];
-					}
-					loading(false);
-				}, error => {
-					this.handleError(error);
-					loading(false);
-				});
-			},*/
-			/*getUserOptions(search, loading) {
-				loading(true);
-				axios.get(abyss.ajax.user_list + '?likename=' + search)
-				.then(response => {
-					console.log(response);
-					if (response.data != null) {
-						this.userOptions = response.data.filter( (item) => item.isdeleted == false );
-					} else {
-						this.userOptions = [];
-					}
-					loading(false);
-				}, error => {
-					loading(false);
-					this.handleError(error);
-				});
-			},*/
-			/*getPermissionOptions(search, loading) {
-				loading(true);
-				axios.get(abyss.ajax.permission_list + '?likename=' + search)
-				.then(response => {
-					console.log(response);
-					if (response.data != null) {
-						this.permissionOptions = response.data.filter( (item) => item.isdeleted == false );
-					} else {
-						this.permissionOptions = [];
-					}
-					loading(false);
-				}, error => {
-					loading(false);
-					this.handleError(error);
-				});
-			},*/
+			// 2DO
+			setGroupPermissions(filter) {
+				console.log("filter: ", filter);
+				console.log("this.group.uuid: ", this.group.uuid);
+			},
 			setGroupUsers(filter) {
 				console.log("this.group.users: ", this.group.users);
+				console.log("this.group.membershiplist: ", this.group.membershiplist);
 				if (filter && filter.length != 0) {
 					var itemArr = [];
 					filter.forEach((value, key) => {
@@ -164,7 +204,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 						itemArr.push(newObj);
 					});
 					console.log("itemArr: ", itemArr);
-					console.log("this.group.membershiplist: ", this.group.membershiplist);
 					this.memberDelete = _.reject(this.group.membershiplist, (v) => _.includes( itemArr.map(e => e.subjectid), v.subjectid));
 					console.log("this.memberDelete: ", this.memberDelete);
 					this.memberAdd = _.reject(itemArr, (v) => _.includes( this.group.membershiplist.map(e => e.subjectid), v.subjectid));
@@ -190,21 +229,64 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 				return i === this.selected;
 			},
 			fixProps(item) {
+				this.fillProps(item);
 				if (item.effectiveenddate == null) {
-					Vue.set(item, 'effectiveenddate', moment().add(6, 'months').format('YYYY-MM-DD HH:mm:ss'));
+					Vue.set(item, 'effectiveenddate', moment().add(50, 'years').format('YYYY-MM-DD HH:mm:ss'));
 				}
 				if (item.effectivestartdate == null) {
 					Vue.set(item, 'effectivestartdate', moment().format('YYYY-MM-DD HH:mm:ss'));
 				}
-				if (item.crudsubjectid == null) {
-					Vue.set(item,'crudsubjectid',this.$root.rootData.user.uuid);
+				if (item.email == null) {
+					Vue.set(item, 'email', item.displayname + '@verapi.com');
+				}
+				if (item.secondaryemail == null) {
+					Vue.set(item, 'secondaryemail', item.email);
+				}
+				if (item.picture == null) {
+					Vue.set(item, 'picture', '');
+				}
+				if (item.islocked == null) {
+					Vue.set(item, 'islocked', false);
+				}
+				if (item.url == null) {
+					Vue.set(item, 'url', '');
+				}
+				if (item.description == null) {
+					Vue.set(item, 'description', '');
+				}
+				if (item.subjectname == null) {
+					Vue.set(item,'subjectname', item.firstname);
+				}
+				if (item.displayname == null) {
+					Vue.set(item,'displayname', item.firstname);
+				}
+				if (item.lastname == null) {
+					Vue.set(item,'lastname', item.firstname);
 				}
 			},
 			deleteProps(obj) {
 				var item = this.cleanProps(obj);
-				Vue.delete(item, 'userCount');
-				Vue.delete(item, 'permissions');
+				// Vue.delete(item, 'password');
+				Vue.delete(item, 'isactivated');
+				Vue.delete(item, 'totallogincount');
+				Vue.delete(item, 'failedlogincount');
+				Vue.delete(item, 'invalidpasswordattemptcount');
+				Vue.delete(item, 'ispasswordchangerequired');
+				Vue.delete(item, 'passwordexpiresat');
+				Vue.delete(item, 'lastloginat');
+				Vue.delete(item, 'lastpasswordchangeat');
+				Vue.delete(item, 'lastauthenticatedat');
+				Vue.delete(item, 'lastfailedloginat');
+
 				Vue.delete(item, 'users');
+				Vue.delete(item, 'membershiplist');
+				Vue.delete(item, 'userList');
+				Vue.delete(item, 'permissions');
+				Vue.delete(item, 'permissionslist');
+				Vue.delete(item, 'permissionfilter');
+				Vue.delete(item, 'groupfilter');
+				Vue.delete(item, 'userfilter');
+				Vue.delete(item, 'userCount');
 				item.effectivestartdate = moment(this.group.effectivestartdate).toISOString();
 				item.effectiveenddate = moment(this.group.effectiveenddate).toISOString();
 				return item;
@@ -230,34 +312,12 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 				});
 			},
 			async deleteGroupOnly(item, conf) {
-				var del = await this.deleteItem(abyss.ajax.user_group_list, item, conf);
+				var del = await this.deleteItem(abyss.ajax.subjects, item, conf);
 				console.log("del: ", del);
 				if (del) {
 					this.$toast('success', {title: 'ITEM DELETED', message: 'Item deleted successfully', position: 'topRight'});
 				}
 			},
-			/*deleteGroup(item) {
-				var r = confirm('Are you sure to delete?');
-				if (r == true) {
-					console.log("item.membershiplist: ", item.membershiplist);
-					if (item.membershiplist.length > 0) {
-						item.membershiplist.forEach((value, key) => {
-							console.log("value.uuid: ", value.uuid);
-							axios.delete(abyss.ajax.subject_memberships + '/' + value.uuid, value).then(response => {
-								console.log("DELETE subject_memberships response: ", response);
-							}, error => {
-								this.handleError(error);
-							});
-						});
-					}
-					axios.delete(abyss.ajax.user_group_list + '/' + item.uuid, item).then(response => {
-						item.isdeleted = true;
-						console.log("DELETE group response: ", response);
-					}, error => {
-						this.handleError(error);
-					});
-				}
-			},*/
 			async addDeleteGroupUsers() {
 				if (this.memberAdd.length > 0) {
 					await this.addBulkItems(abyss.ajax.subject_memberships, this.memberAdd);
@@ -274,42 +334,12 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 					});
 				}
 			},
-			/*addDeleteGroupUsers() {
-				if (this.memberAdd.length > 0) {
-					console.log("ADD: ");
-					axios.post(abyss.ajax.subject_memberships, this.memberAdd).then(response => {
-						console.log("response: ", response);
-						if (response.data[0].status != 500 ) {
-							console.log("memberAdd response.data[0].response: ", response.data[0].response);
-						}
-					}, error => {
-						this.handleError(error);
-					});
-				}
-				if (this.memberDelete.length > 0) {
-					console.log("DELETE: ");
-					this.memberDelete.forEach((value, key) => {
-						var obj = _.cloneDeep(value);
-						Vue.delete(obj, 'uuid');
-						Vue.delete(obj, 'created');
-						Vue.delete(obj, 'updated');
-						Vue.delete(obj, 'deleted');
-						Vue.delete(obj, 'isdeleted');
-						Vue.delete(obj, 'isactivated');
-						axios.delete(abyss.ajax.subject_memberships + '/' +value.uuid, obj).then(response => {
-							console.log("DELETE License response: ", response);
-						}, error => {
-							this.handleError(error);
-						});
-					});
-				}
-			},*/
 			async groupAction(act) {
 				var result = await this.$validator.validateAll();
 				if (result) {
 					if (act == 'add') {
 						this.fixProps(this.group);
-						var item = await this.addItem(abyss.ajax.user_group_list, this.deleteProps(this.group), this.groupList);
+						var item = await this.addItem(abyss.ajax.subjects, this.deleteProps(this.group), this.groupList);
 						if (item) {
 							await this.addDeleteGroupUsers();
 							this.$emit('set-state', 'init');
@@ -317,7 +347,10 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 						}
 					}
 					if (act == 'edit') {
-						var item = await this.editItem( abyss.ajax.user_group_list, this.group.uuid, this.deleteProps(this.group), this.groupList );
+						Vue.set(this.group,'subjectname', this.group.firstname);
+						Vue.set(this.group,'displayname', this.group.firstname);
+						Vue.set(this.group,'lastname', this.group.firstname);
+						var item = await this.editItem( abyss.ajax.subjects, this.group.uuid, this.deleteProps(this.group), this.groupList );
 						if (item) {
 							await this.addDeleteGroupUsers();
 							this.$emit('set-state', 'init');
@@ -327,76 +360,23 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 					}
 				}
 			},
-			/*groupAction(act) {
-				this.$validator.validateAll().then((result) => {
-					if (result) {
-						if (act == 'add') {
-							this.fixProps(this.group);
-							var itemArr = [];
-							itemArr.push(this.deleteProps(this.group));
-							axios.post(abyss.ajax.user_group_list, itemArr).then(response => {
-								console.log("addGroup response: ", response);
-								if (response.data[0].status != 500 ) {
-									this.groupList.push(response.data[0].response);
-									this.addDeleteGroupUsers();
-									this.$emit('set-state', 'init');
-									this.group = _.cloneDeep(this.newGroup);
-								}
-							}, error => {
-								this.handleError(error);
-							});
-						}
-						if (act == 'edit') {
-							this.updateItem(abyss.ajax.user_group_list + '/' + this.group.uuid, this.deleteProps(this.group), this.groupList).then(response => {
-								console.log("editGroup response: ", response);
-								this.addDeleteGroupUsers();
-								// console.log("this.group: ", JSON.stringify(this.group, null, '\t') );
-								this.$emit('set-state', 'init');
-								this.group = _.cloneDeep(this.newGroup);
-								this.selected = null;
-							});
-						}
-						return;
-					}
-				});
-			},*/
-			/*getPage(p, d) {
-				axios.get(abyss.ajax.user_group_list)
-				.then(response => {
-					// this.groupList = response.data;
-					this.groupList = _.map(response.data, o => _.extend({users: []}, o));
-					this.groupList.forEach((value, key) => {
-						// var flt = this.memberOptions.filter((item) => item.subjectgroupid == value.uuid );
-						var flt = this.memberOptions.filter((item) => item.subjectgroupid == value.uuid && item.isdeleted == false );
-						// console.log("flt: ", flt);
-						var grpusr = _.filter(this.userList, (item) => _.find(flt, { subjectid: item.uuid, isdeleted: false }));
-						// console.log("grpusr: ", grpusr);
-						Vue.set(value, 'membershiplist', flt);
-						Vue.set(value, 'users', grpusr);
-						Vue.set(value, 'userCount', grpusr.length);
-						// value.users = grpusr;
-					});
-					// 2DO append memberOptions.uuid
-					this.paginate = this.makePaginate(this.groupList);
-					this.preload();
-				}, error => {
-					this.handleError(error);
-				});
-			},*/
 			async getPage(p, d) {
 				var subject_directories_list = this.getList(abyss.ajax.subject_directories_list);
 				var user_list = this.getList(abyss.ajax.user_list);
 				var subject_memberships = this.getList(abyss.ajax.subject_memberships);
+				var permission_list = this.getList(abyss.ajax.permission_list);
 				var user_group_list = this.getList(abyss.ajax.user_group_list);
 				var organizations_list = this.getList(abyss.ajax.organizations_list);
 
-				var [directoryOptions, userList, memberOptions, groupList, orgOptions] = await Promise.all([subject_directories_list, user_list, subject_memberships, user_group_list, organizations_list]);
+				var [directoryOptions, userList, memberOptions, permissionOptions, groupList, orgOptions] = await Promise.all([subject_directories_list, user_list, subject_memberships, permission_list, user_group_list, organizations_list]);
 
 				this.directoryOptions = directoryOptions.filter( (item) => item.isdeleted == false );
 				this.userList = userList.filter( (item) => item.isdeleted == false );
 				this.memberOptions = memberOptions.filter( (item) => item.isdeleted == false );
+				this.permissionOptions = permissionOptions;
 
-				this.groupList = _.map(groupList, o => _.extend({users: []}, o));
+				// this.groupList = _.map(groupList, o => _.extend({users: []}, o));
+				this.groupList = _.map(groupList, o => _.extend({permissionfilter: true, groupfilter: true, userfilter: true}, o));
 				this.groupList.forEach((value, key) => {
 					var flt = this.memberOptions.filter((item) => item.subjectgroupid == value.uuid && item.isdeleted == false );
 					var grpusr = _.filter(this.userList, (item) => _.find(flt, { subjectid: item.uuid, isdeleted: false }));
@@ -425,24 +405,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 			this.$emit('set-page', 'user-groups', 'init');
 			this.newGroup = _.cloneDeep(this.group);
 			this.getPage(1);
-			/*axios.all([
-				axios.get(abyss.ajax.subject_directories_list),
-				axios.get(abyss.ajax.user_list),
-				axios.get(abyss.ajax.subject_memberships),
-				axios.get(abyss.ajax.organizations_list),
-			]).then(
-				axios.spread((subject_directories_list, user_list, subject_memberships, organizations_list) => {
-					this.directoryOptions = subject_directories_list.data.filter( (item) => item.isdeleted == false );
-					// this.orgOptions = this.$root.rootData.user.organizations.filter( (item) => item.isdeleted == false );
-					this.orgOptions = organizations_list.data.filter( (item) => item.isdeleted == false );
-					this.userList = user_list.data.filter( (item) => item.isdeleted == false );
-					this.memberOptions = subject_memberships.data.filter( (item) => item.isdeleted == false );
-
-					this.getPage(1);
-				})
-			).catch(error => {
-				this.handleError(error);
-			});*/
 		}
 	});
 });

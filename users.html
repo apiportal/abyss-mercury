@@ -19,20 +19,20 @@
 				<div class="nicescroll--bar">
 					<div class="fow no-gutters">
 						<div class="fol fol-6 form-group mb-0 bg-white">
-							<v-select label="subjectname" :filterable="true" :options="userOptions" @search="getUserOptions" :on-change="filterUser" placeholder="Search Users">
+							<v-select label="displayname" :filterable="true" :options="userOptions" @search="getUserOptions" :on-change="filterUser" placeholder="Search Users">
 								<span slot="no-options"></span>
 								<template slot="option" slot-scope="option">
 									<strong>{{ option.firstname }} {{ option.lastname }}</strong>
-									<div>{{ option.subjectname }}</div>
+									<div>{{ option.displayname }}</div>
 									<small>{{ option.email }}</small>
 								</template>
 								<template slot="selected-option" slot-scope="option">
-									<strong>{{ option.firstname }} {{ option.lastname }}</strong> <em>{{ option.subjectname }}</em> <small>{{ option.email }}</small>
+									<strong>{{ option.firstname }} {{ option.lastname }}</strong> <em>{{ option.displayname }}</em> <small>{{ option.email }}</small>
 								</template>
 							</v-select>
 						</div>
 						<div class="fol form-group mb-0 bg-white">
-							<v-select label="groupname" :filterable="true" :options="groupOptions" :on-change="filterGroup" placeholder="Search Groups">
+							<v-select label="firstname" :filterable="true" :options="groupOptions" @search="getGroupOptions" :on-change="filterGroup" placeholder="Search Groups">
 								<span slot="no-options"></span>
 							</v-select>
 						</div>
@@ -71,6 +71,7 @@
 							</td>
 							<td>
 								{{user.displayname}}
+								<small class="d-block">{{user.description}}</small>
 							</td>
 							<td>
 								<div>
@@ -108,7 +109,7 @@
 								<div class="">
 									<strong class="small">GROUP:</strong>
 									<small v-for="(u, index) in user.groups">
-										{{u.groupname}}<span v-if="index != (user.groups.length - 1)">, </span>
+										{{u.firstname}}<span v-if="index != (user.groups.length - 1)">, </span>
 									</small>
 									<!-- <small class="ml--auto">{{getGroupName(user.uuid)}}</small> -->
 									<!-- <small class="ml--auto">{{user.groupslist}}</small> -->
@@ -162,7 +163,7 @@
 						</div>
 						<div class="form-group" v-bind:class="{ 'has-error': errors.has('email') }">
 							<label for="email">Email:</label>
-							<input type="text" name="email" id="email" v-model="user.email" v-validate="'required|email'" class="form-control" placeholder="email">
+							<input type="text" name="email" id="email" v-model="user.email" v-validate="'required|email'" class="form-control">
 							<em v-bind:class="{ 'show': errors.has('email') }">{{ errors.first('email') }}</em>
 						</div>
 						<div class="form-group">
@@ -209,13 +210,6 @@
 							</select>
 							<em v-bind:class="{ 'show': errors.has('organization') }">{{ errors.first('organization') }}</em>
 						</div>
-						<div class="form-group " v-bind:class="{ 'has-error': errors.has('typeid') }">
-							<label>User Type</label>
-							<select class="form-control" name="typeid" id="typeid" v-model="user.subjecttypeid" v-validate="'required'" disabled>
-								<option v-for="(typ,index) in typeOptions" :value="typ.uuid">{{typ.typename}}</option>
-							</select>
-							<em v-bind:class="{ 'show': errors.has('typeid') }">{{ errors.first('typeid') }}</em>
-						</div>
 						<div class="form-group " v-bind:class="{ 'has-error': errors.has('dirid') }">
 							<label>Directory</label>
 							<select class="form-control" name="dirid" id="dirid" v-model="user.subjectdirectoryid" v-validate="'required'">
@@ -223,28 +217,31 @@
 							</select>
 							<em v-bind:class="{ 'show': errors.has('dirid') }">{{ errors.first('dirid') }}</em>
 						</div>
+						<div class="form-group">
+							<label for="description">Description:</label>
+							<textarea type="text" name="description" id="description" v-model="user.description" class="form-control"></textarea>
+						</div>
 						<div class="form-group v-select-color-pink">
 							<label>Add User to Group:</label>
-							<!-- <v-select label="groupname" multiple :filterable="false" :options="groupOptions" @search="getGroupOptions" v-model="user.groups"> -->
-							<v-select label="groupname" multiple :filterable="false" :options="groupOptions" v-model="user.groups" :on-change="setUserGroups">
+							<!-- <v-select label="firstname" multiple :filterable="false" :options="groupOptions" @search="getGroupOptions" v-model="user.groups"> -->
+							<v-select label="firstname" multiple :filterable="false" :options="groupOptions" v-model="user.groups" :on-change="setUserGroups">
 								<span slot="no-options"></span>
 								<template slot="option" slot-scope="option">
-									<div>{{ option.groupname }}</div>
+									<div>{{ option.firstname }}</div>
 									<code class="d-block small"><small>{{option.uuid}}</small></code>
 								</template>
 								<template slot="selected-option" slot-scope="option">
-									<div>{{ option.groupname }}</div>
+									<div>{{ option.firstname }}</div>
 									<code class="d-block small"><small>{{option.uuid}}</small></code>
 								</template>
 							</v-select>
 						</div>
-						<div class="form-group v-select-color-green">
+						<!-- <div class="form-group v-select-color-green">
 							<label>Assign Permission to User:</label>
-							<!-- <v-select label="permission" multiple :filterable="false" :options="permissionOptions" @search="getPermissionOptions" v-model="user.permissions"> -->
 							<v-select label="permission" multiple :filterable="false" :options="permissionOptions" v-model="user.permissions" :on-change="setUserPermissions">
 								<span slot="no-options"></span>
 							</v-select>
-						</div>
+						</div> -->
 					</div>
 				</div>
 			</aside>

@@ -28,7 +28,7 @@
 									<i class="fas fa-check-circle txt-green" title="Active" v-if="!app.isdeleted"></i>
 									<i class="fas fa-times-circle txt-red" title="Deleted" v-if="app.isdeleted"></i>
 										{{app.firstname}}
-										<small class="d-block">{{app.lastname}}</small>
+										<small class="d-block">{{app.description}}</small>
 									</div>
 									<div>
 										<div class="d-flex txt-uppercase flt-r small txt-muted">
@@ -91,10 +91,10 @@
 							<input type="text" name="firstname" id="firstname" v-model="app.firstname" v-validate="'required'" class="form-control">
 							<em v-bind:class="{ 'show': errors.has('firstname') }">{{ errors.first('firstname') }}</em>
 						</div>
-						<div class="form-group" v-bind:class="{ 'has-error': errors.has('lastname') }">
-							<label for="lastname">Description:</label>
-							<textarea name="lastname" id="lastname" v-model="app.lastname" v-validate="'required'" class="form-control"></textarea>
-							<em v-bind:class="{ 'show': errors.has('lastname') }">{{ errors.first('lastname') }}</em>
+						<div class="form-group" v-bind:class="{ 'has-error': errors.has('description') }">
+							<label for="description">Description:</label>
+							<textarea name="description" id="description" v-model="app.description" v-validate="'required'" class="form-control"></textarea>
+							<em v-bind:class="{ 'show': errors.has('description') }">{{ errors.first('description') }}</em>
 						</div>
 						<div class="form-group form-inline">
 							<label class="d-block">Activate APP</label>

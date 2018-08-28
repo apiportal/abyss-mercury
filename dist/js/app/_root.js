@@ -566,7 +566,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 			// ■■■■■■■■ apiOwner ■■■■■■■■ //
 			async apiOwner(item) {
 				var res = await this.getItem(abyss.ajax.subjects, item.subjectid);
-				Vue.set(item, 'apiOwnerName', res.firstname + ' ' + res.lastname );
+				Vue.set(item, 'apiOwnerName', res.displayname );
+				// Vue.set(item, 'apiOwnerName', res.firstname + ' ' + res.lastname );
 			},
 			/*apiOwner(item) {
 				axios.get(abyss.ajax.subjects + '/' + item.subjectid)
@@ -761,7 +762,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 					var contLicenseName = licenses.find( (e) => e.uuid == vCon.licenseid );
 					Vue.set(vCon, 'contractLicenseName', contLicenseName.name );
 					var contPerson = await this.getItem(abyss.ajax.subjects, vCon.crudsubjectid);
-					Vue.set(vCon, 'contractPerson', contPerson.firstname + ' ' + contPerson.lastname );
+					Vue.set(vCon, 'contractPerson', contPerson.displayname );
+					// Vue.set(vCon, 'contractPerson', contPerson.firstname + ' ' + contPerson.lastname );
 					var hasCont = _.find(this.$root.appList, { contracts: [ { uuid: vCon.uuid, isdeleted: false } ]});
 					if (hasCont) {
 						Vue.set(vCon, 'subscribed', true );
@@ -968,7 +970,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 				myAppList.forEach(async (value, key) => {
 					var res = await this.getItem(abyss.ajax.subjects, value.appid);
 					res.appUser = value;
-					await this.getResources(res, 'APP', res.firstname, res.lastname);
+					await this.getResources(res, 'APP', res.firstname, res.description);
 					var permissions_app = this.getList(abyss.ajax.permissions_app + res.uuid);
 					var contracts_app = this.getList(abyss.ajax.contracts_app + res.uuid);
 					var [subscriptions, contracts] = await Promise.all([permissions_app, contracts_app]);
@@ -1021,8 +1023,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 						axios.get(abyss.ajax.subjects + '/' + value.appid).then(response => {
 							var res = response.data[0];
 							res.appUser = value;
-							// this.getResources(res, 'APP', res.firstname, res.lastname);
-							this.getResources2(res, 'APP', res.firstname, res.lastname).then(response => {
+							// this.getResources(res, 'APP', res.firstname, res.description);
+							this.getResources2(res, 'APP', res.firstname, res.description).then(response => {
 								axios.all([
 									axios.get(abyss.ajax.permissions_app + res.uuid),
 									axios.get(abyss.ajax.contracts_app + res.uuid),
@@ -1578,8 +1580,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 					var shareView = {
 						organizationid: this.$root.abyssOrgId,
 						crudsubjectid: this.$root.rootData.user.uuid,
-						permission: 'Shared ' + this.$root.previewedApi.openapidocument.info.title + ' API by ' + this.$root.rootData.user.subjectname + ' with ' + this.$root.shareApi.selectedUser.subjectname + ', with read-only permission',
-						description: this.$root.rootData.user.firstname + ' ' + this.$root.rootData.user.lastname + ' has shared ' + this.$root.previewedApi.openapidocument.info.title + ' API with ' + this.$root.shareApi.selectedUser.firstname + ' ' + this.$root.shareApi.selectedUser.lastname + ', with read-only permission',
+						permission: 'Shared ' + this.$root.previewedApi.openapidocument.info.title + ' API by ' + this.$root.rootData.user.displayname + ' with ' + this.$root.shareApi.selectedUser.displayname + ', with read-only permission',
+						description: this.$root.rootData.user.displayname + ' has shared ' + this.$root.previewedApi.openapidocument.info.title + ' API with ' + this.$root.shareApi.selectedUser.displayname + ', with read-only permission',
 						effectivestartdate: moment().toISOString(),
 						effectiveenddate: moment().add(1, 'years').toISOString(),
 						subjectid: this.$root.shareApi.selectedUser.uuid,
@@ -1591,6 +1593,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 					if (this.$root.shareApi.readonly) {
 						console.log("shareView: ", shareView);
 						var share = await this.addItem(abyss.ajax.permission_list, shareView);
+						if (share) {
+							this.$toast('info', {message: 'API shared successfully', title: 'API SHARED', position: 'topRight'});
+						}
 						// Vue.set(this.$root.previewedApi, 'sharedWith', share);
 						// this.createAccessTokens(this.$root.previewedApi.uuid, 'API', share);
 					}
@@ -1598,8 +1603,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 						// var shareArr = [];
 						var shareEdit = _.cloneDeep(shareView);
 						Vue.set(shareEdit, 'resourceactionid', '7e55b086-75e0-4209-9cc5-51baa38393ed');
-						Vue.set(shareEdit, 'permission', 'Shared ' + this.$root.previewedApi.openapidocument.info.title + ' API by ' + this.$root.rootData.user.subjectname + ' with ' + this.$root.shareApi.selectedUser.subjectname + ', with read/write permission');
-						Vue.set(shareEdit, 'description', this.$root.rootData.user.firstname + ' ' + this.$root.rootData.user.lastname + ' has shared ' + this.$root.previewedApi.openapidocument.info.title + ' API with ' + this.$root.shareApi.selectedUser.firstname + ' ' + this.$root.shareApi.selectedUser.lastname + ', with read/write permission');
+						Vue.set(shareEdit, 'permission', 'Shared ' + this.$root.previewedApi.openapidocument.info.title + ' API by ' + this.$root.rootData.user.displayname + ' with ' + this.$root.shareApi.selectedUser.displayname + ', with read/write permission');
+						Vue.set(shareEdit, 'description', this.$root.rootData.user.displayname + ' has shared ' + this.$root.previewedApi.openapidocument.info.title + ' API with ' + this.$root.shareApi.selectedUser.displayname + ', with read/write permission');
 						// shareArr.push(shareView);
 						// shareArr.push(shareEdit);
 						// console.log("shareArr: ", shareArr);
@@ -1610,6 +1615,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 						var [share1, share2] = await Promise.all([share_1, share_2]);
 						console.log("shareView: ", shareView);
 						console.log("shareEdit: ", shareEdit);
+						if (share2) {
+							this.$toast('info', {message: 'API shared successfully', title: 'API SHARED', position: 'topRight'});
+						}
 					}
 				}
 			},
@@ -1768,15 +1776,15 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 				}
 			},
 			/*createUserPermAndToken() {
-				// this.createResource(item, 'APP', item.firstname, item.lastname);
+				// this.createResource(item, 'APP', item.firstname, item.description);
 				// Resource Type: 12947d53-022a-4dcf-bb06-ffa81dab4c16 PLATFORM
 				// Resource Action: 2318f036-10e5-41b0-8b51-24adbffd2a2e USE_PLATFORM
 				// Resource: ebe1ca8b-a891-42e9-b053-f4ac3829653c Abyss Platform
 				var permission = {
 					organizationid: this.$root.abyssOrgId,
 					crudsubjectid: this.$root.rootData.user.uuid,
-					permission: 'Token Permission of ' + this.$root.rootData.user.subjectname + ' USER',
-					description: 'Token Permission of ' + this.$root.rootData.user.subjectname + ' USER',
+					permission: 'Token Permission of ' + this.$root.rootData.user.displayname + ' USER',
+					description: 'Token Permission of ' + this.$root.rootData.user.displayname + ' USER',
 					effectivestartdate: moment().toISOString(),
 					effectiveenddate: moment().add(1, 'years').toISOString(),
 					subjectid: this.$root.rootData.user.uuid,

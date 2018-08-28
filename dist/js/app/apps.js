@@ -110,7 +110,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 					"email": this.$root.rootData.user.email,
 					"secondaryemail": null,
 					"effectivestartdate": moment().format('YYYY-MM-DD HH:mm:ss'),
-					"effectiveenddate": moment().add(6, 'months').format('YYYY-MM-DD HH:mm:ss'),
+					"effectiveenddate": moment().add(6, 'years').format('YYYY-MM-DD HH:mm:ss'),
 					"password": 'temppassword',
 					"picture": null,
 					"totallogincount": null,
@@ -127,6 +127,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 					"issandbox": false,
 					"url": null,
 					"isrestrictedtoprocessing": false,
+					"description": null,
 				},
 				selectedApp: {},
 				newApp: {},
@@ -196,14 +197,20 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 				if (item.islocked == null) {
 					Vue.set(item, 'islocked', false);
 				}
-				if (item.subjectname == null) {
-					Vue.set(item,'subjectname', item.firstname);
-				}
 				if (item.url == null) {
 					Vue.set(item, 'url', '');
 				}
+				if (item.description == null) {
+					Vue.set(item, 'description', '');
+				}
+				if (item.subjectname == null) {
+					Vue.set(item,'subjectname', item.firstname);
+				}
 				if (item.displayname == null) {
-					Vue.set(item,'displayname', item.lastname);
+					Vue.set(item,'displayname', item.firstname);
+				}
+				if (item.lastname == null) {
+					Vue.set(item,'lastname', item.firstname);
 				}
 			},
 			deleteProps(obj) {
@@ -356,7 +363,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 							this.fixProps(this.app);
 							var item = await this.addItem(abyss.ajax.subjects, this.deleteProps(this.app));
 							this.app = item;
-							await this.createResource(item, 'APP', item.firstname, item.lastname);
+							await this.createResource(item, 'APP', item.firstname, item.description);
 							var itemObj = {
 								organizationid: this.$root.abyssOrgId,
 								crudsubjectid: this.$root.rootData.user.uuid,
@@ -377,10 +384,11 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 					if (act == 'edit') {
 						if (this.beforeAppAction() && !this.preventCancel) {
 							Vue.set(this.app,'subjectname', this.app.firstname);
-							Vue.set(this.app,'displayname', this.app.lastname);
+							Vue.set(this.app,'displayname', this.app.firstname);
+							Vue.set(this.app,'lastname', this.app.firstname);
 							var item = await this.editItem( abyss.ajax.subjects, this.app.uuid, this.deleteProps(this.app), this.$root.appList );
-							await this.getResources(item, 'APP', item.firstname, item.lastname);
-							await this.updateResource(item, 'APP', item.firstname, item.lastname);
+							await this.getResources(item, 'APP', item.firstname, item.description);
+							await this.updateResource(item, 'APP', item.firstname, item.description);
 							this.$emit('set-state', 'init');
 							this.app = _.cloneDeep(this.newApp);
 							this.selected = null;
@@ -404,7 +412,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 									var item = response.data[0].response;
 									this.$root.appList.push(item);
 									this.app = item;
-									this.createResource2(item, 'APP', item.firstname, item.lastname)
+									this.createResource2(item, 'APP', item.firstname, item.description)
 									.then(response => {
 										var itemObj = {
 											organizationid: this.$root.abyssOrgId,
@@ -443,14 +451,15 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 						if (act == 'edit') {
 							if (this.beforeAppAction() && !this.preventCancel) {
 								Vue.set(this.app,'subjectname', this.app.firstname);
-								Vue.set(this.app,'displayname', this.app.lastname);
+								Vue.set(this.app,'displayname', this.app.firstname);
+								Vue.set(this.app,'lastname', this.app.firstname);
 								console.log("EDITTTTTTTTTTTTTTT: ", this.app);
 								this.updateItem(abyss.ajax.subjects + '/' + this.app.uuid, this.deleteProps(this.app), this.$root.appList).then(response => {
 									console.log("editApp response: ", response);
 									var item = response.data[0];
-									this.getResources(item, 'APP', item.firstname, item.lastname);
+									this.getResources(item, 'APP', item.firstname, item.description);
 									setTimeout(() => {
-										this.updateResource(item, 'APP', item.firstname, item.lastname);
+										this.updateResource(item, 'APP', item.firstname, item.description);
 									},100);
 									this.$emit('set-state', 'init');
 									this.app = _.cloneDeep(this.newApp);

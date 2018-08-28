@@ -18,8 +18,26 @@
 				<div class="column-main-fixed-overlay" v-if="rootState == 'add' || rootState == 'edit'" v-on:click="$emit('set-state', 'init'); cancelGroup()"></div>
 				<div class="nicescroll--bar">
 					<div class="fow no-gutters">
+						<div class="fol fol-6 form-group mb-0 bg-white">
+							<v-select label="firstname" :filterable="true" :options="groupOptions" @search="getGroupOptions" :on-change="filterGroup" placeholder="Search Groups">
+								<span slot="no-options"></span>
+							</v-select>
+						</div>
 						<div class="fol form-group mb-0 bg-white">
-							<v-select label="groupname" :filterable="true" :options="groupOptions" @search="getGroupOptions" :on-change="filterGroup" placeholder="Search Groups">
+							<v-select label="displayname" :filterable="true" :options="userOptions" @search="getUserOptions" :on-change="filterUser" placeholder="Search Users">
+								<span slot="no-options"></span>
+								<template slot="option" slot-scope="option">
+									<strong>{{ option.firstname }} {{ option.lastname }}</strong>
+									<div>{{ option.displayname }}</div>
+									<small>{{ option.email }}</small>
+								</template>
+								<template slot="selected-option" slot-scope="option">
+									<strong>{{ option.firstname }} {{ option.lastname }}</strong> <em>{{ option.displayname }}</em> <small>{{ option.email }}</small>
+								</template>
+							</v-select>
+						</div>
+						<div class="fol form-group mb-0 bg-white">
+							<v-select label="permission" :filterable="true" :options="permissionOptions" :on-change="filterPermission" placeholder="Search Permissions">
 								<span slot="no-options"></span>
 							</v-select>
 						</div>
@@ -27,23 +45,23 @@
 					<table class="table table-hover table-bordered table-edge">
 						<tr>
 							<th class="td-bool" v-bind:class="sort.order" v-on:click="sortList(sort, 'isenabled', Boolean)">Status</th>
-							<th class="td-name" v-bind:class="sort.order" v-on:click="sortList(sort, 'groupname', String)">Group Name</th>
+							<th class="td-name" v-bind:class="sort.order" v-on:click="sortList(sort, 'firstname', String)">Group Name</th>
 							<th class="td-number" v-bind:class="sort.order" v-on:click="sortList(sort, 'userCount', Number)">Users</th>
 							<th class="td-datetime-x" v-bind:class="sort.order" v-on:click="sortList(sort, 'created', Date)">Created / Updated / Deleted</th>
 							<th class="td-datetime" v-bind:class="sort.order" v-on:click="sortList(sort, 'effectivestartdate', Date)">Effective From</th>
 							<th class="td-datetime" v-bind:class="sort.order" v-on:click="sortList(sort, 'effectiveenddate', Date)">Effective To</th>
-							<th class="td-long" v-bind:class="sort.order" v-on:click="sortList(sort, 'permissions', Array)">Permissions</th>
+							<th class="td-long"></th>
 							<th class="td-action-1"></th>
 							<th class="td-action-1"></th>
 						</tr>
-						<tr v-for="(group, index) in sortBy(sort, groupList)" v-bind:key="group.uuid" v-bind:class="{'active': isSelected(index), 'tr-deleted': group.isdeleted}">
+						<tr v-for="(group, index) in sortBy(sort, groupList)" v-bind:key="group.uuid" v-bind:class="{'active': isSelected(index), 'tr-deleted': group.isdeleted}" v-if="group.userfilter && group.permissionfilter">
 							<td class="txt-c">
 								<i class="fas fa-circle" title="Not Enabled" v-if="!group.isenabled"></i>
 								<i class="fas fa-check-circle txt-green" title="Enabled" v-if="group.isenabled"></i>
 								<i class="fas fa-times-circle txt-red" title="Deleted" v-if="group.isdeleted"></i>
 							</td>
 							<td>
-								<div class="d-block">{{group.groupname}}</div>
+								<div class="d-block">{{group.firstname}}</div>
 								<small class="d-block">{{group.description}}</small>
 								<code class="d-block small txt-purple"><small>{{group.uuid}}</small></code>
 							</td>
@@ -65,11 +83,14 @@
 							<td>{{group.effectivestartdate | formatDateTime}}</td>
 							<td>{{group.effectiveenddate | formatDateTime}}</td>
 							<td>
-								<span v-for="(g, index) in group.permissions">
-									{{g.name}}
-									<span v-if="index != (group.permissions.length - 1)">, </span>
-								</span>
-								<!-- commaJoin[index] -->
+								<div class="">
+									<strong class="small">PERMISSIONS:</strong>
+									<small class="ml--auto">{{getPermissionName(group.uuid)}}</small>
+								</div>
+								<div class="">
+									<strong class="small">DIRECTORY:</strong>
+									<small class="ml--auto">{{getDirName(group.subjectdirectoryid)}}</small>
+								</div>
 							</td>
 							<td class="td-action-1">
 								<a class="btn btn-xl txt-link btn-square" title="EDIT GROUP" v-on:click="$emit('set-state', 'edit'); selectGroup(group, index);"><i class="fas fa-edit"></i></a>
@@ -91,14 +112,14 @@
 						</h5>
 					</div>
 					<div class="p-3">
-						<div class="form-group" v-bind:class="{ 'has-error': errors.has('groupname') }">
-							<label for="groupname">Group Name:</label>
-							<input type="text" name="groupname" id="groupname" v-model="group.groupname" v-validate="'required|min:2|alpha_spaces'" class="form-control" placeholder="groupname">
-							<em v-bind:class="{ 'show': errors.has('groupname') }">{{ errors.first('groupname') }}</em>
+						<div class="form-group" v-bind:class="{ 'has-error': errors.has('firstname') }">
+							<label for="firstname">Group Name:</label>
+							<input type="text" name="firstname" id="firstname" v-model="group.firstname" v-validate="'required|min:2|alpha_spaces'" class="form-control">
+							<em v-bind:class="{ 'show': errors.has('firstname') }">{{ errors.first('firstname') }}</em>
 						</div>
 						<div class="form-group" v-bind:class="{ 'has-error': errors.has('description') }">
 							<label for="description">Decription:</label>
-							<textarea type="text" name="description" id="description" v-model="group.description" v-validate="'required'" class="form-control" placeholder="Decription"></textarea>
+							<textarea type="text" name="description" id="description" v-model="group.description" v-validate="'required'" class="form-control"></textarea>
 							<em v-bind:class="{ 'show': errors.has('description') }">{{ errors.first('description') }}</em>
 						</div>
 						<div class="form-group form-group-date" v-bind:class="{ 'has-error': errors.has('effectivestartdate') }">
@@ -154,7 +175,7 @@
 						</div>
 						<div class="form-group v-select-color-green">
 							<label>Permissions</label>
-							<v-select label="permission" multiple :filterable="false" :options="permissionOptions" @search="getPermissionOptions" v-model="group.permissions">
+							<v-select label="permission" multiple :filterable="false" :options="permissionOptions" v-model="group.permissions" :on-change="setGroupPermissions">
 								<span slot="no-options"></span>
 							</v-select>
 						</div>
@@ -168,12 +189,12 @@
 					</div>
 					<div class="p-3">
 						<div class="form-group v-select-color-purple">
-							<v-select label="subjectname" multiple :filterable="false" :options="userOptions" @search="getUserOptions" v-model="group.users" :on-change="setGroupUsers">
+							<v-select label="displayname" multiple :filterable="false" :options="userOptions" @search="getUserOptions" v-model="group.users" :on-change="setGroupUsers">
 								<span slot="no-options"></span>
 								<template slot="option" slot-scope="option">
 									<div :class="{'txt-muted': option.isdeleted}">
 										<strong>{{ option.firstname }} {{ option.lastname }}</strong>
-										<div>{{ option.subjectname }}</div>
+										<div>{{ option.displayname }}</div>
 										<small>{{ option.email }}</small>
 										<code class="d-block small"><small>{{option.uuid}}</small></code>
 									</div>
@@ -181,7 +202,7 @@
 								<template slot="selected-option" slot-scope="option">
 									<div :class="{'txt-muted': option.isdeleted}">
 										<strong>{{ option.firstname }} {{ option.lastname }}</strong>
-										<div>{{ option.subjectname }}</div>
+										<div>{{ option.displayname }}</div>
 										<small>{{ option.email }}</small>
 										<code class="d-block small"><small>{{option.uuid}}</small></code>
 									</div>

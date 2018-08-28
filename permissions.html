@@ -27,7 +27,7 @@
 							<th class="td-bool" v-bind:class="sort.order" v-on:click="sortList(sort, 'isdeleted', Boolean)">Status</th>
 							<th class="td-name" v-bind:class="sort.order" v-on:click="sortList(sort, 'permission', String)">Permission Name / Resource</th>
 							<th class="td-bool" v-bind:class="sort.order" v-on:click="sortList(sort, 'resource.resourceType.type', String)">Resource Type</th>
-							<th class="td-name" v-bind:class="sort.order" v-on:click="sortList(sort, 'subject.subjectname', String)">Subject</th>
+							<th class="td-name" v-bind:class="sort.order" v-on:click="sortList(sort, 'subject.displayname', String)">Subject</th>
 							<th class="td-bool" v-bind:class="sort.order" v-on:click="sortList(sort, 'subject.subjectType', String)">Subject Type</th>
 							<th class="td-name" v-bind:class="sort.order" v-on:click="sortList(sort, 'resourceAction.description', String)">Resource Action</th>
 							<th class="td-name" v-bind:class="sort.order" v-on:click="sortList(sort, 'accessManager.accessmanagername', String)">Access Manager</th>
@@ -56,7 +56,7 @@
 								{{permission.resource.resourceType.type}}
 							</td>
 							<td v-if="permission.subject">
-								<strong :title="permission.subject.lastname">{{permission.subject.subjectname}}</strong>
+								<strong :title="permission.subject.description">{{permission.subject.displayname}}</strong>
 								<small class="d-block"><strong>EMAIL:</strong> {{permission.subject.email}}</small>
 								<small class="d-block"><strong>URL:</strong> {{permission.subject.url}}</small>
 								<code class="d-block txt-line small txt-blue"><small>{{permission.subjectid}}</small></code>
@@ -166,7 +166,7 @@
 						<div class="form-group " v-bind:class="{ 'has-error': errors.has('subject') }">
 							<label>Subject</label>
 							<select class="form-control" name="subject" id="subject" v-model="permission.subjectid" v-validate="'required'">
-								<option v-for="(sb,index) in subjectOptions" v-if="sb.subjecttypeid == permission.resource.resourceType.subjectTypeId" :value="sb.uuid">{{sb.subjectname}}</option>
+								<option v-for="(sb,index) in subjectOptions" v-if="sb.subjecttypeid == permission.resource.resourceType.subjectTypeId" :value="sb.uuid">{{sb.displayname}}</option>
 							</select>
 							<em v-bind:class="{ 'show': errors.has('subject') }">{{ errors.first('subject') }}</em>
 						</div>

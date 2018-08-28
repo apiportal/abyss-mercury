@@ -83,14 +83,14 @@
 										<h5 class="row mb-0 mt-3 py-2 px-3 brd-b brd-t">Share This API</h5>
 										<div class="form-group pt-3">
 											<label>Select user to share this app</label>
-											<v-select label="subjectname" :filterable="true" :options="$root.userOptions" @search="$root.getUserOptions" v-model="$root.shareApi.selectedUser" placeholder="Search Users">
+											<v-select label="displayname" :filterable="true" :options="$root.userOptions" @search="$root.getUserOptions" v-model="$root.shareApi.selectedUser" placeholder="Search Users">
 												<span slot="no-options"></span>
 												<template slot="option" slot-scope="option">
 													<strong>{{ option.firstname }} {{ option.lastname }}</strong>
-													<div>{{ option.subjectname }}</div>
+													<div>{{ option.displayname }}</div>
 												</template>
 												<template slot="selected-option" slot-scope="option">
-													<strong>{{ option.firstname }} {{ option.lastname }}</strong> <em>{{ option.subjectname }}</em>
+													<strong>{{ option.firstname }} {{ option.lastname }}</strong> <em>{{ option.displayname }}</em>
 												</template>
 											</v-select>
 										</div>
