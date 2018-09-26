@@ -124,6 +124,11 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 			return moment(String(value)).format('DD.MM.YYYY HH:mm');
 		}
 	});
+	Vue.filter('formatDateTimeSec', function(value) {
+		if (value) {
+			return moment(String(value)).format('DD.MM.YYYY HH:mm:ss');
+		}
+	});
 	Vue.filter('formatDate', function(value) {
 		if (value) {
 			return moment(String(value)).format('DD.MM.YYYY');
@@ -187,11 +192,12 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 				}
 			},
 			preload() {
-				// $(document).ready(function() {
+				this.$nextTick(() => {
 					$(".preloader-it").fadeOut("slow");
-					$('.nicescroll-bar').slimscroll({height:'100%',color: '#878787', disableFadeOut : true,borderRadius:0,size:'4px',alwaysVisible:false});
-					// this.isLoading = false;
-				// });
+					require(['slimscroll'],function(){
+						$('.nicescroll-bar').slimscroll({height:'100%',color: '#878787', disableFadeOut : true,borderRadius:0,size:'4px',alwaysVisible:false});
+					});
+				});
 			},
 			preloadInit() {
 				$('.preloader-it > .la-anim-1').addClass('la-animate');
@@ -351,9 +357,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 				if (res) {
 					Vue.set(subs, 'accessToken', res );
 					if (subs.isdeleted) {
-						console.log("subs.accessToken.isdeleted: ", subs.accessToken.isdeleted);
+						// console.log("subs.accessToken.isdeleted: ", subs.accessToken.isdeleted);
 						if (!subs.accessToken.isdeleted) {
-							console.log("deleted: ", subs.accessToken);
+							// console.log("deleted: ", subs.accessToken);
 							await this.deleteItem(abyss.ajax.resource_access_tokens, subs.accessToken, false);
 						}
 					}
@@ -620,6 +626,27 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 					this.handleError(error);
 				});
 			},*/
+			// ■■■■■■■■ shareApi ■■■■■■■■ //
+			async setSharedApis() {
+				var myApiPermissions = await this.getList(abyss.ajax.permission_my_apis + this.$root.rootData.user.uuid);
+				Vue.set( this.$root.shareApi, 'isMine', true );
+				// myApiPermissions = _.orderBy(myApiPermissions, resourceactionid);
+				// myApiPermissions = myApiPermissions.filter((el) => el.resourceactionid != abyss.defaultIds.invokeApi && el.resourceid == this.$root.previewedApi.resource.uuid && el.isdeleted != true );
+				// myApiPermissions = _.uniqBy(myApiPermissions, 'resourceid');
+				// Vue.set( this.$root.shareApi, 'permissions', myApiPermissions );
+				Vue.set( this.$root.shareApi, 'permissions', myApiPermissions.filter((el) => el.resourceactionid != abyss.defaultIds.invokeApi && el.resourceid == this.$root.previewedApi.resource.uuid && el.isdeleted != true ) );
+				this.$root.shareApi.permissions.forEach(async (value, key) => {
+					var permUser = await this.getItem(abyss.ajax.subjects, value.subjectid);
+					Vue.set(value, 'user', permUser);
+					if (value.resourceactionid == abyss.defaultIds.editApi) {
+						var hasUserView = this.$root.shareApi.permissions.find((e) => e.subjectid == value.subjectid && e.resourceactionid == abyss.defaultIds.viewApi );
+						Vue.set(hasUserView, 'view', 'hide');
+						Vue.set(value, 'text', 'with read/write permission');
+					} else {
+						Vue.set(value, 'text', 'with read-only permission');
+					}
+				});
+			},
 			// ■■■■■■■■ previewApi ■■■■■■■■ //
 			cancelPreviewApp() {
 				$('body').removeClass('no-scroll');
@@ -633,7 +660,12 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 				this.$root.previewedApi = {};
 				this.hideLegalText();
 				this.cancelTestApi();
-				Vue.set( this.$root.shareApi, 'isMine', false );
+				Vue.set( this.$root, 'shareApi', {
+					isMine: false,
+					selectedUser: null,
+					permissions: null,
+					readonly: true,
+				} );
 				// console.log("this.$root.pageCurrent: ", this.$root.pageCurrent);
 				// console.log("this.$root.rootState: ", this.$root.rootState);
 				// console.log("this.$root.$refs.refMyApis.api.uuid: ", this.$root.$refs.refMyApis.api.uuid);
@@ -664,7 +696,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 						if (apiCon.length) {
 							await this.getContracts(this.$root.previewedApi, this.$root.previewedApi.licenses, apiCon, true);
 						}
-						Vue.set( this.$root.shareApi, 'isMine', true );
+						this.setSharedApis(item);
 					} else {
 						var mySubsApp = _.filter(this.$root.appList, { contracts: [ { apiid: item.uuid } ]});
 						var mySubsAppCont = [];
@@ -789,8 +821,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 							effectiveenddate: moment().add(1, 'years').toISOString(),
 							subjectid: vCon.subjectid,
 							resourceid: item.resource.uuid,
-							resourceactionid: 'c5639f00-94c9-4cc9-8ad9-df76f9d162a8',
-							accessmanagerid: '6223ebbe-b30f-4976-bcf9-364003142379',
+							resourceactionid: abyss.defaultIds.invokeApi,
+							accessmanagerid: abyss.defaultIds.accessManager,
 							isactive: true,
 						};
 						var res = await this.addItem(abyss.ajax.permission_list, subscription);
@@ -854,8 +886,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 										effectiveenddate: moment().add(1, 'years').toISOString(),
 										subjectid: vCon.subjectid,
 										resourceid: item.resource.uuid,
-										resourceactionid: 'c5639f00-94c9-4cc9-8ad9-df76f9d162a8',
-										accessmanagerid: '6223ebbe-b30f-4976-bcf9-364003142379',
+										resourceactionid: abyss.defaultIds.invokeApi,
+										accessmanagerid: abyss.defaultIds.accessManager,
 										isactive: true,
 									};
 									var subsArr = [];
@@ -974,8 +1006,10 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 					var permissions_app = this.getList(abyss.ajax.permissions_app + res.uuid);
 					var contracts_app = this.getList(abyss.ajax.contracts_app + res.uuid);
 					var [subscriptions, contracts] = await Promise.all([permissions_app, contracts_app]);
+					subscriptions = subscriptions.filter((el) => el.resourceactionid == abyss.defaultIds.invokeApi && el.isdeleted == false );
 					Vue.set(res, 'contracts', contracts );
 					Vue.set(res, 'subscriptions', subscriptions );
+					Vue.set(res, 'subscriptionsCount', res.subscriptions.length );
 					if (no) {
 						this.mySubscriptions += res.contracts.length;
 					}
@@ -993,6 +1027,11 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 							Vue.set(sub, 'resource', resource );
 							// await this.getResources(api, 'API', api.name, api.description);
 							await this.getAccessTokens(sub.resource.resourcerefid, 'API', sub);
+
+							var apiName = await this.getItem(abyss.ajax.api_list, sub.resource.resourcerefid)
+							Vue.set(sub, 'apiName', apiName.openapidocument.info.title);
+							var apiOwner = await this.getItem(abyss.ajax.subjects, apiName.crudsubjectid)
+							Vue.set(sub, 'apiOwner', apiOwner.displayname);
 						});
 					}
 					if (this.$root.rootData.myPermissions.length > 0) {
@@ -1009,7 +1048,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 					appArr.push(res);
 				});
 				Vue.set(this.$root, 'appList', appArr );
-				// this.preload();
 				console.log(this.$options.name + " this.$root.appList: ", this.$root.appList);
 			},
 			/*getMyApps(no) { // @explore.js - refactor apps.js getpage
@@ -1102,8 +1140,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 					effectiveenddate: moment().add(1, 'years').toISOString(),
 					subjectid: this.$root.rootData.user.uuid,
 					resourceid: item.resource.uuid,
-					resourceactionid: 'e085cb50-8a98-4511-bc8a-00edabbae8a9', // OWN_APP
-					accessmanagerid: '6223ebbe-b30f-4976-bcf9-364003142379',
+					resourceactionid: abyss.defaultIds.ownApp, // OWN_APP
+					accessmanagerid: abyss.defaultIds.accessManager,
 					isactive: true,
 				};
 				var subs = await this.addItem(abyss.ajax.permission_list, subscription);
@@ -1111,7 +1149,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 				this.createAccessTokens(item.uuid, 'APP', subs);
 
 				var consume = _.cloneDeep(subscription);
-				Vue.set(consume, 'resourceactionid', '761c8386-4624-416e-b9e4-b59ea2c597fc');
+				Vue.set(consume, 'resourceactionid', abyss.defaultIds.consumeApp);
 				await this.addItem(abyss.ajax.permission_list, consume);
 			},
 			/*setAppPermAndToken(item) {
@@ -1124,8 +1162,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 					effectiveenddate: moment().add(1, 'years').toISOString(),
 					subjectid: this.$root.rootData.user.uuid,
 					resourceid: item.resource.uuid,
-					resourceactionid: 'e085cb50-8a98-4511-bc8a-00edabbae8a9', // OWN_APP
-					accessmanagerid: '6223ebbe-b30f-4976-bcf9-364003142379',
+					resourceactionid: abyss.defaultIds.ownApp, // OWN_APP
+					accessmanagerid: abyss.defaultIds.accessManager,
 					isactive: true,
 				};
 				var subsArr = [];
@@ -1140,7 +1178,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 					this.handleError(error);
 				});
 				var consume = _.cloneDeep(subscription);
-				Vue.set(consume, 'resourceactionid', '761c8386-4624-416e-b9e4-b59ea2c597fc');
+				Vue.set(consume, 'resourceactionid', abyss.defaultIds.consumeApp);
 				var consumeArr = [];
 				consumeArr.push(consume);
 				console.log("consumeArr: ", consumeArr);
@@ -1218,8 +1256,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 						effectiveenddate: moment().add(1, 'years').toISOString(),
 						subjectid: this.api.selectedApp.uuid,
 						resourceid: this.api.resource.uuid,
-						resourceactionid: 'c5639f00-94c9-4cc9-8ad9-df76f9d162a8',
-						accessmanagerid: '6223ebbe-b30f-4976-bcf9-364003142379',
+						resourceactionid: abyss.defaultIds.invokeApi,
+						accessmanagerid: abyss.defaultIds.accessManager,
 						isactive: true,
 					};
 					var subs = await this.addItem(abyss.ajax.permission_list, subscription);
@@ -1232,7 +1270,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 						apiid: this.api.uuid,
 						subjectid: this.api.selectedApp.uuid,
 						environment: this.myAppsEnvironment(this.api.issandbox),
-						contractstateid: '846282ec-1329-4a3c-908b-672b4de3ade2', //ACTIVATED
+						contractstateid: abyss.defaultIds.contractActivated, //ACTIVATED
 						status: 'inforce',
 						isrestrictedtosubsetofapi: false,
 						licenseid: this.api.selectedLicense,
@@ -1260,8 +1298,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 						effectiveenddate: moment().add(1, 'years').toISOString(),
 						subjectid: this.api.selectedApp.uuid,
 						resourceid: this.api.resource.uuid,
-						resourceactionid: 'c5639f00-94c9-4cc9-8ad9-df76f9d162a8',
-						accessmanagerid: '6223ebbe-b30f-4976-bcf9-364003142379',
+						resourceactionid: abyss.defaultIds.invokeApi,
+						accessmanagerid: abyss.defaultIds.accessManager,
 						isactive: true,
 					};
 					// subscription
@@ -1280,7 +1318,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 								apiid: this.api.uuid,
 								subjectid: this.api.selectedApp.uuid,
 								environment: this.myAppsEnvironment(this.api.issandbox),
-								contractstateid: '846282ec-1329-4a3c-908b-672b4de3ade2', //ACTIVATED
+								contractstateid: abyss.defaultIds.contractActivated, //ACTIVATED
 								status: 'inforce',
 								isrestrictedtosubsetofapi: false,
 								licenseid: this.api.selectedLicense,
@@ -1500,6 +1538,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 		name: 'portal',
 		data: {
 			isLoading: true,
+			searchAll: "",
+			searchResults: null,
+			searchPaginate: null,
 			sort: {
 				key: 'name',
 				type: String,
@@ -1515,9 +1556,15 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 			rootState: 'init',
 			pageClassPrefix: 'vs',
 			pageClass: '',
+			abyssUrl: abyss.abyssUrl,
 			abyssEndpoint: abyss.abyssLocation,
 			abyssSandbox: abyss.isAbyssSandbox,
 			abyssVersion: abyss.abyssVersion,
+			abyssSubjectTypeIds: {
+				app: abyss.defaultIds.subjectTypeApp,
+				user: abyss.defaultIds.subjectTypeUser,
+				group: abyss.defaultIds.subjectTypeGroup,
+			},
 			abyssOrgName: null,
 			abyssOrgId: null,
 			rootData: {},
@@ -1562,63 +1609,197 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 			shareApi: {
 				isMine: false,
 				selectedUser: null,
+				permissions: null,
 				readonly: true,
 			},
 			end: []
 		},
 		methods: {
-			// ■■■■■■■■ shareApi ■■■■■■■■ //
+			// ■■■■■■■■ search ■■■■■■■■ //
+			setSearchPaginate(data, p) {
+				console.log("data: ", data);
+				let total = data.hits.total;
+				let size = 100;
+				// let pages = total / size;
+				let pages = Math.ceil(total / size);
+				let first = p == 0;
+				let last = p == pages - 1;
+				console.log("p, pages: ", p, pages);
+				let paginate = {
+					pages: [],
+					first: first,
+					last: last,
+					pageSize: size,
+					totalPages: pages,
+					currentPage: p
+				};
+				for (var i = 0; i < paginate.totalPages; i++) {
+					paginate.pages.push(i);
+				}
+				// console.log("paginate: ", paginate);
+				return paginate;
+			},
+			gatSearchAll(data) {
+				return axios.post(abyss.abyssSearch, data).then(response => {
+					console.log("response: ", response);
+					return response;
+				});
+			},
+			onSearchAll(p) {
+					var vm = this;
+					var searchAll = {
+						"query": {
+							"query_string": {
+								"query": this.searchAll
+							}
+						},
+						"from": p,
+						"size": 100
+					};
+				// if (!this.searchPaginate.first || !this.searchPaginate.last) {
+				// }
+					$.ajax({
+						url: abyss.abyssSearch,
+						type:"POST",
+						contentType: 'application/json',
+						// accept: 'application/json',
+						// responseType: 'json',
+						// data: this.searchAll,
+						data: JSON.stringify(searchAll),
+						success(result) {
+							// console.log("result: ", result);
+							vm.searchResults = result;
+							vm.searchPaginate = vm.setSearchPaginate(vm.searchResults, p);
+							vm.preload();
+							
+							vm.$nextTick(() => {
+								UI.navhorz.init();
+							});
+						}
+					});
+			},
+			// ■■■■■■■■ searchUsers ■■■■■■■■ //
 			async getUserOptions(search, loading) {
 				loading(true);
 				this.$root.userOptions = await this.getList(abyss.ajax.user_list + '?likename=' + search);
 				loading(false);
 			},
-			async shareMyApi() {
-				if (!this.$root.shareApi.selectedUser) {
-					this.$toast('warning', {title: 'Please select a USER', message: 'You have to select a USER in order to share this API', position: 'topRight'});
-				} else {
-					var shareView = {
-						organizationid: this.$root.abyssOrgId,
-						crudsubjectid: this.$root.rootData.user.uuid,
-						permission: 'Shared ' + this.$root.previewedApi.openapidocument.info.title + ' API by ' + this.$root.rootData.user.displayname + ' with ' + this.$root.shareApi.selectedUser.displayname + ', with read-only permission',
-						description: this.$root.rootData.user.displayname + ' has shared ' + this.$root.previewedApi.openapidocument.info.title + ' API with ' + this.$root.shareApi.selectedUser.displayname + ', with read-only permission',
-						effectivestartdate: moment().toISOString(),
-						effectiveenddate: moment().add(1, 'years').toISOString(),
-						subjectid: this.$root.shareApi.selectedUser.uuid,
-						resourceid: this.$root.previewedApi.resource.uuid,
-						resourceactionid: 'bf0b6ac2-7d07-49c6-b3f8-0fd7c927126e', // VIEW_API
-						accessmanagerid: '6223ebbe-b30f-4976-bcf9-364003142379',
-						isactive: true,
-					};
-					if (this.$root.shareApi.readonly) {
-						console.log("shareView: ", shareView);
-						var share = await this.addItem(abyss.ajax.permission_list, shareView);
-						if (share) {
-							this.$toast('info', {message: 'API shared successfully', title: 'API SHARED', position: 'topRight'});
-						}
-						// Vue.set(this.$root.previewedApi, 'sharedWith', share);
-						// this.createAccessTokens(this.$root.previewedApi.uuid, 'API', share);
+			async deleteSharedApi(item, conf, list){
+				/*var hasUserView = this.$root.shareApi.permissions.find((e) => e.subjectid == item.subjectid && e.resourceactionid == abyss.defaultIds.viewApi );
+				var hasUserEdit = this.$root.shareApi.permissions.find((e) => e.subjectid == item.subjectid && e.resourceactionid == abyss.defaultIds.editApi );
+				if (item.resourceactionid == abyss.defaultIds.viewApi && !hasUserEdit) {
+					// var delView = await this.deleteItem(abyss.ajax.permission_list, item, conf, list);
+					console.log("delete hasUserView: ", item);
+					// if (delView) {
+					if (true) {
+						this.$toast('success', {title: 'ITEM DELETED', message: 'Item deleted successfully', position: 'topRight'});
+						await this.setSharedApis();
 					}
-					if (!this.$root.shareApi.readonly) {
-						// var shareArr = [];
+				} else if (item.resourceactionid == abyss.defaultIds.editApi && hasUserView) {
+					// var delEdit = await this.deleteItem(abyss.ajax.permission_list, item, conf, list);
+					// console.log("delete hasUserEdit: ", hasUserView,);
+					console.log("delete hasUserEdit: ", item);
+					// if (delEdit) {
+					if (true) {
+						this.$toast('success', {title: 'ITEM DELETED', message: 'Item deleted successfully', position: 'topRight'});
+						Vue.delete(hasUserView, 'view');
+						// await this.setSharedApis();
+					}
+				}*/
+				var del = await this.deleteItem(abyss.ajax.permission_list, item, conf, list);
+				if (del) {
+					this.$toast('success', {title: 'ITEM DELETED', message: 'Item deleted successfully', position: 'topRight'});
+					await this.setSharedApis();
+					// setTimeout(() => {
+					// 	this.$refs.refIndex.getApisSharedByMe();
+					// 	// this.$refs.refIndex.getApisSharedWithMe();
+					// },5000);
+				}
+			},
+			async shareMyApi() {
+				if (this.$root.shareApi.selectedUser) {
+					var hasUserView = this.$root.shareApi.permissions.find((e) => e.subjectid == this.$root.shareApi.selectedUser.uuid && e.resourceactionid == abyss.defaultIds.viewApi );
+					var hasUserEdit = this.$root.shareApi.permissions.find((e) => e.subjectid == this.$root.shareApi.selectedUser.uuid && e.resourceactionid == abyss.defaultIds.editApi );
+					if (this.$root.shareApi.readonly && hasUserView && !hasUserEdit) {
+						this.$toast('warning', {title: 'Already Shared', message: 'with read-only permission', position: 'topRight'});
+					} else if (this.$root.shareApi.readonly && hasUserView && hasUserEdit) {
+						this.$toast('warning', {title: 'Already Shared', message: 'with read/write permission', position: 'topRight'});
+					} else if (!this.$root.shareApi.readonly && hasUserEdit) {
+						this.$toast('warning', {title: 'Already Shared', message: 'with read/write permission', position: 'topRight'});
+					} else {
+
+						var shareView = {
+							organizationid: this.$root.abyssOrgId,
+							crudsubjectid: this.$root.rootData.user.uuid,
+							permission: 'Shared ' + this.$root.previewedApi.openapidocument.info.title + ' API by ' + this.$root.rootData.user.displayname + ' with ' + this.$root.shareApi.selectedUser.displayname + ', with read-only permission',
+							description: this.$root.rootData.user.displayname + ' has shared ' + this.$root.previewedApi.openapidocument.info.title + ' API with ' + this.$root.shareApi.selectedUser.displayname + ', with read-only permission',
+							effectivestartdate: moment().toISOString(),
+							effectiveenddate: moment().add(1, 'years').toISOString(),
+							subjectid: this.$root.shareApi.selectedUser.uuid,
+							resourceid: this.$root.previewedApi.resource.uuid,
+							resourceactionid: abyss.defaultIds.viewApi, // VIEW_API
+							accessmanagerid: abyss.defaultIds.accessManager,
+							isactive: true,
+						};
+
 						var shareEdit = _.cloneDeep(shareView);
-						Vue.set(shareEdit, 'resourceactionid', '7e55b086-75e0-4209-9cc5-51baa38393ed');
+						Vue.set(shareEdit, 'resourceactionid', abyss.defaultIds.editApi);
 						Vue.set(shareEdit, 'permission', 'Shared ' + this.$root.previewedApi.openapidocument.info.title + ' API by ' + this.$root.rootData.user.displayname + ' with ' + this.$root.shareApi.selectedUser.displayname + ', with read/write permission');
 						Vue.set(shareEdit, 'description', this.$root.rootData.user.displayname + ' has shared ' + this.$root.previewedApi.openapidocument.info.title + ' API with ' + this.$root.shareApi.selectedUser.displayname + ', with read/write permission');
-						// shareArr.push(shareView);
-						// shareArr.push(shareEdit);
-						// console.log("shareArr: ", shareArr);
-						// await this.addBulkItems(abyss.ajax.permission_list, shareArr);
-						///////////
-						var share_1 = this.addItem(abyss.ajax.permission_list, shareView);
-						var share_2 = this.addItem(abyss.ajax.permission_list, shareEdit);
-						var [share1, share2] = await Promise.all([share_1, share_2]);
-						console.log("shareView: ", shareView);
-						console.log("shareEdit: ", shareEdit);
-						if (share2) {
-							this.$toast('info', {message: 'API shared successfully', title: 'API SHARED', position: 'topRight'});
+
+						if (this.$root.shareApi.readonly && !hasUserView && !hasUserEdit) {
+							console.log("shareView: ", shareView);
+							var shView = await this.addItem(abyss.ajax.permission_list, shareView);
+							if (shView) {
+							// if (true) {
+								this.$toast('info', {message: 'API shared successfully', title: 'API SHARED with read-only permission', position: 'topRight'});
+								await this.setSharedApis();
+								// setTimeout(() => {
+								// 	this.$refs.refIndex.getApisSharedByMe();
+								// 	// this.$refs.refIndex.getApisSharedWithMe();
+								// },5000);
+							}
+						} else if (!this.$root.shareApi.readonly && hasUserView) {
+							console.log("shareEdit: ", shareEdit);
+							var shEdit = await this.addItem(abyss.ajax.permission_list, shareEdit);
+							if (shEdit) {
+							// if (true) {
+								this.$toast('info', {message: 'API shared successfully', title: 'API SHARED with read/write permission', position: 'topRight'});
+								await this.setSharedApis();
+								// setTimeout(() => {
+								// 	this.$refs.refIndex.getApisSharedByMe();
+								// 	// this.$refs.refIndex.getApisSharedWithMe();
+								// },5000);
+							}
+						} else if (!this.$root.shareApi.readonly && !hasUserView && !hasUserEdit) {
+							// var shareArr = [];
+							// shareArr.push(shareView);
+							// shareArr.push(shareEdit);
+							// console.log("shareArr: ", shareArr);
+							// await this.addBulkItems(abyss.ajax.permission_list, shareArr);
+							///////////
+							/*var share_1 = this.addItem(abyss.ajax.permission_list, shareView);
+							var share_2 = this.addItem(abyss.ajax.permission_list, shareEdit);
+							var [share1, share2] = await Promise.all([share_1, share_2]);*/
+							var share1 = await this.addItem(abyss.ajax.permission_list, shareView);
+							if (share1) {
+								var share2 = await this.addItem(abyss.ajax.permission_list, shareEdit);
+							}
+							console.log("shareView: ", shareView);
+							console.log("shareEdit: ", shareEdit);
+							if (share2) {
+							// if (true) {
+								this.$toast('info', {message: 'API shared successfully', title: 'API SHARED with read/write permission', position: 'topRight'});
+								await this.setSharedApis();
+								// setTimeout(() => {
+								// 	this.$refs.refIndex.getApisSharedByMe();
+								// 	// this.$refs.refIndex.getApisSharedWithMe();
+								// },5000);
+							}
 						}
 					}
+				} else {
+					this.$toast('warning', {title: 'Please select a USER', message: 'You have to select a USER in order to share this API', position: 'topRight'});
 				}
 			},
 			// ■■■■■■■■ taxonomies ■■■■■■■■ //
@@ -1778,8 +1959,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 			/*createUserPermAndToken() {
 				// this.createResource(item, 'APP', item.firstname, item.description);
 				// Resource Type: 12947d53-022a-4dcf-bb06-ffa81dab4c16 PLATFORM
-				// Resource Action: 2318f036-10e5-41b0-8b51-24adbffd2a2e USE_PLATFORM
-				// Resource: ebe1ca8b-a891-42e9-b053-f4ac3829653c Abyss Platform
 				var permission = {
 					organizationid: this.$root.abyssOrgId,
 					crudsubjectid: this.$root.rootData.user.uuid,
@@ -1788,9 +1967,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 					effectivestartdate: moment().toISOString(),
 					effectiveenddate: moment().add(1, 'years').toISOString(),
 					subjectid: this.$root.rootData.user.uuid,
-					resourceid: 'ebe1ca8b-a891-42e9-b053-f4ac3829653c', // Abyss Platform
-					resourceactionid: '2318f036-10e5-41b0-8b51-24adbffd2a2e', // USE_PLATFORM
-					accessmanagerid: '6223ebbe-b30f-4976-bcf9-364003142379',
+					resourceid: abyss.defaultIds.abyssPlatform, // Abyss Platform
+					resourceactionid: abyss.defaultIds.usePlatform, // USE_PLATFORM
+					accessmanagerid: abyss.defaultIds.accessManager,
 					isactive: true,
 				};
 				var permArr = [];
@@ -1814,9 +1993,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 					effectivestartdate: moment().toISOString(),
 					effectiveenddate: moment().add(1, 'years').toISOString(),
 					subjectid: this.$root.rootData.user.uuid,
-					resourceid: 'ebe1ca8b-a891-42e9-b053-f4ac3829653c', // Abyss Platform
-					resourceactionid: '2318f036-10e5-41b0-8b51-24adbffd2a2e', // USE_PLATFORM
-					accessmanagerid: '6223ebbe-b30f-4976-bcf9-364003142379',
+					resourceid: abyss.defaultIds.abyssPlatform, // Abyss Platform
+					resourceactionid: abyss.defaultIds.usePlatform, // USE_PLATFORM
+					accessmanagerid: abyss.defaultIds.accessManager,
 					isactive: true,
 				};
 				var perm = await this.addItem(abyss.ajax.permission_list, permission);
@@ -1922,7 +2101,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 				}
 			},
 			/*getOrganizations(id) {
-				axios.get(abyss.ajax.organizations_list + '/' + '3c65fafc-8f3a-4243-9c4e-2821aa32d293')
+				axios.get(abyss.ajax.organizations_list + '/' + abyss.defaultIds.organization)
 				.then(response => {
 					Vue.set(this, 'defaultOrganization', response.data[0] );
 						var orgs = [];
@@ -1949,7 +2128,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 				});
 			},*/
 			async getOrganizations(id) {
-				var defaultOrganization = await this.getItem(abyss.ajax.organizations_list, '3c65fafc-8f3a-4243-9c4e-2821aa32d293');
+				var defaultOrganization = await this.getItem(abyss.ajax.organizations_list, abyss.defaultIds.organization);
 				Vue.set(this, 'defaultOrganization', defaultOrganization );
 				var orgs = [];
 				var subjectOrganizations = await this.getList(abyss.ajax.subject_organizations_list + '/' + id);
@@ -1960,7 +2139,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 					orgs.push(res);
 				});
 				Vue.set(this.rootData.user, 'organizations', orgs );
-				this.isLoading = false;
 			},
 			// ■■■■■■■■ getRootData-rootFunc ■■■■■■■■ //
 			setPage(page, state) {
@@ -2037,9 +2215,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 				Vue.set(this.rootData, 'resourceActions', resourceActions );
 				Vue.set(this.rootData, 'contractStates', contractStates );
 				Vue.set(this.rootData, 'myPermissions', myPermissions );
-				this.getMyUserGroup(id);
-				this.getMyUserPerm(id);
-				this.getOrganizations(id);
+				await this.getMyUserGroup(id);
+				await this.getMyUserPerm(id);
+				await this.getOrganizations(id);
 			},
 			/*getRootData(id) {
 				axios.all([
@@ -2102,14 +2280,14 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 					this.handleError(error);
 				});
 			},*/
-			getMyUserGroup() {
+			async getMyUserGroup() {
 				Vue.set(this.rootData.user, 'groups', [] );
 				if (this.rootData.user.memberships.length > 0) {
 					this.rootData.user.memberships.forEach((value, key) => {
 						var grp = _.find(this.rootData.userGroupList, { 'uuid': value.subjectgroupid });
 						this.rootData.user.groups.push(grp);
 					});
-					var isAdmin = _.find(this.$root.rootData.user.groups, { uuid: 'd911bf07-7ae8-46dd-9039-295f79575a90'});
+					var isAdmin = _.find(this.$root.rootData.user.groups, { uuid: abyss.defaultIds.groupAdmin});
 					if (isAdmin) {
 						Vue.set(this.rootData.user, 'isAdmin', true );
 					}
@@ -2117,7 +2295,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 			},
 			async getMyUserPerm() {
 				if (this.rootData.myPermissions.length > 0) {
-					var userPerm = _.find(this.rootData.myPermissions, { 'resourceid': 'ebe1ca8b-a891-42e9-b053-f4ac3829653c', 'resourceactionid': '2318f036-10e5-41b0-8b51-24adbffd2a2e', 'isdeleted': false });
+					var userPerm = _.find(this.rootData.myPermissions, { 'resourceid': abyss.defaultIds.abyssPlatform, 'resourceactionid': abyss.defaultIds.usePlatform, 'isdeleted': false });
 					// console.log("userPerm: ", userPerm);
 					if (userPerm) {
 						Vue.set(this.rootData.user, 'permission', userPerm );
@@ -2168,18 +2346,14 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 		},
 		beforeMount() {
 		},
-		created() {
+		async created() {
 			this.preloadInit();
 			if (abyss.isAbyssSandbox) {
 				$('body').addClass('is-sandbox');
-				this.$cookie.set('abyss.session', abyss.session, 10);
-				this.$cookie.set('abyss.login.organization.name', 'monasdyas', 10); //ten day
-				this.$cookie.set('abyss.login.organization.uuid', '89db8aca-51b3-435b-a79d-e1f4067d2076', 10); //day
-				// this.$cookie.set('abyss.login.organization.uuid', '3c65fafc-8f3a-4243-9c4e-2821aa32d293', 10); //ten day
-				this.$cookie.set('abyss.principal.uuid', '9820d2aa-eb02-4a58-8cc5-8b9a89504df9', 10); //day
-				// this.$cookie.set('abyss.principal.uuid', '32c9c734-11cb-44c9-b06f-0b52e076672d', 1); //day
-				// this.$cookie.set('abyss.principal.uuid', 'd6bba21e-6d4c-4f87-897e-436bd97d41c0', 1); //day
-				// this.$cookie.set('abyss.principal.uuid', 'c053c421-cb53-4ceb-acd0-a77c1f65438b', 10); //day
+				this.$cookie.set('abyss.session', abyss.sandbox.session, 10);
+				this.$cookie.set('abyss.login.organization.name', abyss.sandbox.orgName, 10);
+				this.$cookie.set('abyss.login.organization.uuid', abyss.sandbox.orgId, 10);
+				this.$cookie.set('abyss.principal.uuid', abyss.sandbox.userId, 10);
 			}
 			this.abyssOrgName = this.$cookie.get('abyss.login.organization.name');
 			this.abyssOrgId = this.$cookie.get('abyss.login.organization.uuid');
@@ -2191,7 +2365,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 			}
 			// this.$cookie.delete('abyss.principal.uuid');
 			this.newTax = _.cloneDeep(this.tax);
-			this.getRootData(principal);
+			await this.getRootData(principal);
+			this.isLoading = false;
 		}
 	});
 });

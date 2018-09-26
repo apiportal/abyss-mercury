@@ -1,8 +1,9 @@
-define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select'], function(abyss, Vue, axios, VeeValidate, _, VueSelect) {
+define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highcharts', 'highcharts-vue'], function(abyss, Vue, axios, VeeValidate, _, VueSelect, Highcharts, HighchartsVue) {
 	Vue.component('v-select', VueSelect.VueSelect);
+	Vue.use(HighchartsVue.default);
 // ■■■■■■■■ api-list ■■■■■■■■ //
 	Vue.component('api-list', {
-		props: ['api', 'index'],
+		props: ['api', 'index', 'subs'],
 		data() {
 			return {
 				isLoading: true,
@@ -113,8 +114,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select'], funct
 					order: 'desc'
 				},
 				sortApp: {
-					key: 'created',
-					type: Date,
+					key: 'subscriptions',
+					type: Array,
 					order: 'desc'
 				},
 				pageState: 'init',
@@ -122,79 +123,103 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select'], funct
 				myBusinessApiList: [],
 				myProxyApiList: [],
 				myApiSubscriptions: [],
-				mySubscribers: 0,
+				apisSharedWithMe: [],
+				apisSharedByMe: [],
+				permissionsSharedWithMe: [],
+				permissionsSharedByMe: [],
+				mySubscribersCount: 0,
+				// mySubscribers: [],
 				mySubscriptions: 0,
 				appList: [],
 				api: {},
 				app: {},
 
+				mySubscribersChart: {
+					chart: {
+						// type: 'spline'
+						// type: 'column'
+						type: 'pie'
+					},
+					title: {
+						text: 'My APIs'
+					},
+					series: [
+						{
+							"name": "My Subscribers",
+							"colorByPoint": true,
+							"data": [],
+						}
+					]
+				},
+				mySubscriptionsChart: {
+					chart: {
+						// type: 'column'
+						type: 'pie'
+					},
+					title: {
+						text: 'My APPS'
+					},
+					series: [
+						{
+							"name": "My Subscriptions",
+							"colorByPoint": true,
+							"data": [],
+						}
+					]
+				},
+				myBusinessApisChart: {
+					chart: {
+						type: 'pie'
+					},
+					title: {
+						text: 'My Proxy APİs'
+					},
+					series: [
+						{
+							"name": "My Business APIs",
+							"colorByPoint": true,
+							"data": [],
+						}
+					]
+				},
+
 				end: []
 			};
 		},
 		methods: {
-			/*getPage(p, d) {
-				axios.all([
-					axios.get(abyss.ajax.permission_my_apis + this.$root.rootData.user.uuid),
-					axios.get(abyss.ajax.my_business_api_list + this.$root.rootData.user.uuid),
-					axios.get(abyss.ajax.my_proxy_api_list + this.$root.rootData.user.uuid),
-					// axios.get(abyss.ajax.permissions_app + this.$root.rootData.user.uuid),
-				]).then(
-					axios.spread((permission_my_apis, my_business_api_list, my_proxy_api_list) => {
-						// this.myApiSubscriptions = permission_my_apis.data.filter( (item) => item.isdeleted == false );
-						this.myApiSubscriptions = permission_my_apis.data;
-						this.myBusinessApiList = my_business_api_list.data;
-						this.myProxyApiList = my_proxy_api_list.data;
-						var buss = [];
-						this.myProxyApiList.forEach((value, key) => {
-							Vue.set(value, 'subscriptions', []);
-							this.getResources2(value, 'API', value.openapidocument.info.title + ' ' + value.openapidocument.info.version, value.openapidocument.info.description)
-							.then(response => {
-								var subs = this.myApiSubscriptions.filter((el) => el.resourceid == value.resource.uuid );
-								if (subs) {
-									value.subscriptions = subs;
-									this.mySubscribers = this.myApiSubscriptions.length;
-									this.preload();
-									this.isLoading = false;
-								}
-							});
-							buss.push(value.businessapiid);
-						});
-						console.log("buss: ", buss);
-						this.myBusinessApiList.forEach((value, key) => {
-							Vue.set(value, 'proxies', []);
-							var papi = this.myProxyApiList.filter((el) => el.businessapiid == value.uuid );
-							if (papi) {
-								value.proxies = papi;
-							}
-						});
-						this.preload();
-					})
-				).catch(error => {
-					this.handleError(error);
-				});
-			},*/
 			async getPage(p, d) {
 				var permission_my_apis = this.getList(abyss.ajax.permission_my_apis + this.$root.rootData.user.uuid);
 				var my_business_api_list = this.getList(abyss.ajax.my_business_api_list + this.$root.rootData.user.uuid);
 				var my_proxy_api_list = this.getList(abyss.ajax.my_proxy_api_list + this.$root.rootData.user.uuid);
-				var [myApiSubscriptions, myBusinessApiList, myProxyApiList] = await Promise.all([permission_my_apis, my_business_api_list, my_proxy_api_list]);
-				this.myApiSubscriptions = myApiSubscriptions;
+				var my_api_permissions = this.getList(abyss.ajax.permissions_app + this.$root.rootData.user.uuid);
+				var [myApiSubscriptions, myBusinessApiList, myProxyApiList, permissionsSharedWithMe] = await Promise.all([permission_my_apis, my_business_api_list, my_proxy_api_list, my_api_permissions]);
+				// this.myApiSubscriptions = myApiSubscriptions;
+				this.myApiSubscriptions = myApiSubscriptions.filter((el) => el.resourceactionid == abyss.defaultIds.invokeApi );
 				this.myBusinessApiList = myBusinessApiList;
 				this.myProxyApiList = myProxyApiList;
-				var buss = [];
+
+				this.permissionsSharedWithMe = permissionsSharedWithMe.filter( (el) => el.isdeleted != true );
+				this.permissionsSharedByMe = myApiSubscriptions.filter((el) => el.resourceactionid != abyss.defaultIds.invokeApi && el.isdeleted != true );
+				// this.permissionsSharedWithMe = permissionsSharedWithMe;
+				// this.permissionsSharedByMe = myApiSubscriptions.filter((el) => el.resourceactionid != abyss.defaultIds.invokeApi );
+
+				this.myApiSubscriptions.forEach(async (value, key) => {
+					var subject_Name = await this.getItem(abyss.ajax.subjects, value.subjectid);
+					var subject_Owner = await this.getItem(abyss.ajax.subjects, value.crudsubjectid);
+					var [subjectName, subjectOwner] = await Promise.all([subject_Name, subject_Owner]);
+					Vue.set(value, 'subjectName', subjectName.displayname);
+					Vue.set(value, 'subjectOwner', subjectOwner.displayname);
+				});
+				this.mySubscribersCount = this.myApiSubscriptions.length;
 				this.myProxyApiList.forEach(async (value, key) => {
 					Vue.set(value, 'subscriptions', []);
 					await this.getResources(value, 'API', value.openapidocument.info.title + ' ' + value.openapidocument.info.version, value.openapidocument.info.description);
 					var subs = this.myApiSubscriptions.filter((el) => el.resourceid == value.resource.uuid );
-					if (subs) {
+					// if (subs) {
 						value.subscriptions = subs;
-						this.mySubscribers = this.myApiSubscriptions.length;
-						this.preload();
-						this.isLoading = false;
-					}
-					buss.push(value.businessapiid);
+						value.subscriptionsCount = subs.length;
+					// }
 				});
-				console.log("buss: ", buss);
 				this.myBusinessApiList.forEach((value, key) => {
 					Vue.set(value, 'proxies', []);
 					var papi = this.myProxyApiList.filter((el) => el.businessapiid == value.uuid );
@@ -202,16 +227,110 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select'], funct
 						value.proxies = papi;
 					}
 				});
-				this.preload();
+			},
+			async getApisSharedByMe() {
+				var apisSharedByMe = await this.getList(abyss.ajax.apis_shared_by_me + this.$root.rootData.user.uuid);
+				// 2DO ABYSSP-300 "/apis/sharedby/subject" returns 2 same API's if shared read/write
+				this.apisSharedByMe = _.uniqBy(apisSharedByMe, 'uuid');
+				this.apisSharedByMe.forEach(async (value, key) => {
+					Vue.set(value, 'subscriptions', []);
+					await this.getResources(value, 'API', value.openapidocument.info.title + ' ' + value.openapidocument.info.version, value.openapidocument.info.description);
+					var subs = this.myApiSubscriptions.filter((el) => el.resourceid == value.resource.uuid );
+					if (subs) {
+						value.subscriptions = subs;
+					}
+					var perms = this.permissionsSharedByMe.filter((el) => el.resourceid == value.resource.uuid );
+
+					if (perms.length) {
+						perms = _.uniqBy(perms, 'subjectid');
+						perms.forEach(async (value, key) => {
+							var sharedWith = await this.getItem(abyss.ajax.subjects, value.subjectid)
+							Vue.set(value, 'sharedWith', sharedWith.displayname);
+							// console.log("value.sharedWith: ", value.sharedWith);
+						});
+						Vue.set( value, 'sharedArr', perms );
+					} else {
+						Vue.set( value, 'isShareDeleted', true );
+					}
+					console.log("getApisSharedByMe: ", perms);
+					/*var permView = perms.find((el) => el.resourceactionid == abyss.defaultIds.viewApi );
+					var permEdit = perms.find((el) => el.resourceactionid == abyss.defaultIds.editApi );
+					var perm = permView;
+					if (permEdit) {
+						Vue.set(value, 'permissions', permEdit);
+						perm = permEdit;
+					} else {
+						Vue.set(value, 'permissions', permView);
+					}
+					console.log("perm: ", perm);
+					if (perm) {
+						var sharedWith = await this.getItem(abyss.ajax.subjects, perm.subjectid)
+						Vue.set(value, 'sharedWith', sharedWith.displayname);
+					} else {
+						Vue.set( value, 'isShareDeleted', true );
+					}*/
+				});
+			},
+			async getApisSharedWithMe() {
+				var apisSharedWithMe = await this.getList(abyss.ajax.apis_shared_with_me + this.$root.rootData.user.uuid);
+				this.apisSharedWithMe = _.uniqBy(apisSharedWithMe, 'uuid');
+				this.apisSharedWithMe.forEach(async (value, key) => {
+					Vue.set(value, 'subscriptions', []);
+					await this.getResources(value, 'API', value.openapidocument.info.title + ' ' + value.openapidocument.info.version, value.openapidocument.info.description);
+					var subs = this.myApiSubscriptions.filter((el) => el.resourceid == value.resource.uuid );
+					if (subs) {
+						value.subscriptions = subs;
+					}
+					var perms = this.permissionsSharedWithMe.filter((el) => el.resourceid == value.resource.uuid );
+
+					if (perms.length) {
+						perms = _.uniqBy(perms, 'resourceid');
+						var sharedBy = await this.getItem(abyss.ajax.subjects, perms[0].crudsubjectid)
+						Vue.set(value, 'sharedBy', sharedBy.displayname);
+					} else {
+						Vue.set( value, 'isShareDeleted', true );
+					}
+					console.log("getApisSharedWithMe: ", perms);
+
+					/*var permView = perms.find((el) => el.resourceactionid == abyss.defaultIds.viewApi );
+					var permEdit = perms.find((el) => el.resourceactionid == abyss.defaultIds.editApi );
+					var perm = permView;
+					if (permEdit) {
+						Vue.set(value, 'permissions', permEdit);
+						perm = permEdit;
+					} else {
+						Vue.set(value, 'permissions', permView);
+					}
+					// console.log("perm: ", perm);
+					if (perm) {
+						var sharedBy = await this.getItem(abyss.ajax.subjects, perm.crudsubjectid)
+						Vue.set(value, 'sharedBy', sharedBy.displayname);
+					} else {
+						Vue.set( value, 'isShareDeleted', true );
+					}*/
+				});
 			},
 		},
 		mounted() {
-			console.log("this.$root.appList: ", this.$root.appList);
+			// console.log("this.$root.appList: ", this.$root.appList);
 		},
-		created() {
+		async created() {
 			this.$emit('set-page', 'index', 'init');
-			this.getPage(1);
-			this.getMyApps(true);
-		}
+			await this.getPage(1);
+			await this.getMyApps(true);
+			await this.getApisSharedByMe();
+			await this.getApisSharedWithMe();
+			// await this.qqq(true);
+			this.isLoading = false;
+			this.preload();
+			setTimeout(() => {
+				var mySubscribers = this.myProxyApiList.filter((el) => el.subscriptionsCount != 0 );
+				this.mySubscribersChart.series[0].data = _.map(mySubscribers, v => ({"y":v.subscriptionsCount, "id":v.uuid, "name":v.openapidocument.info.title}));
+				var mySubscriptions = this.$root.appList.filter((el) => el.subscriptionsCount != 0 );
+				this.mySubscriptionsChart.series[0].data = _.map(mySubscriptions, v => ({"y":v.subscriptionsCount, "id":v.uuid, "name":v.firstname}));
+				var myBusinessApis = this.myBusinessApiList.filter((el) => el.proxies.length != 0 );
+				this.myBusinessApisChart.series[0].data = _.map(myBusinessApis, v => ({"y":v.proxies.length, "id":v.uuid, "name":v.openapidocument.info.title}));
+			},1000);
+	},
 	});
 });

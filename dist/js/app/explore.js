@@ -106,8 +106,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select'], funct
 			async getApiOptions(search, loading) {
 				loading(true);
 				var apiOptions = await this.getList(abyss.ajax.proxy_list + '/?likename=' + search);
-				// this.apiOptions = apiOptions.filter( (item) => item.isdeleted == false && item.apivisibilityid == 'e63c2874-aa12-433c-9dcf-65c1e8738a14' );
-				this.apiOptions = apiOptions.filter( (item) => item.apivisibilityid == 'e63c2874-aa12-433c-9dcf-65c1e8738a14' );
+				// this.apiOptions = apiOptions.filter( (item) => item.isdeleted == false && item.apivisibilityid == abyss.defaultIds.apiVisibilityPublic );
+				this.apiOptions = apiOptions.filter( (item) => item.apivisibilityid == abyss.defaultIds.apiVisibilityPublic );
 				this.apiOptions.forEach((value, key) => {
 					Vue.set(value, 'name', value.openapidocument.info.title);
 				});
@@ -118,8 +118,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select'], funct
 				axios.get(abyss.ajax.proxy_list + '/?likename=' + search)
 				.then((response) => {
 					if (response.data != null) {
-						// this.apiOptions = response.data.filter( (item) => item.isdeleted == false && item.apivisibilityid == 'e63c2874-aa12-433c-9dcf-65c1e8738a14' );
-						this.apiOptions = response.data.filter( (item) => item.apivisibilityid == 'e63c2874-aa12-433c-9dcf-65c1e8738a14' );
+						// this.apiOptions = response.data.filter( (item) => item.isdeleted == false && item.apivisibilityid == abyss.defaultIds.apiVisibilityPublic );
+						this.apiOptions = response.data.filter( (item) => item.apivisibilityid == abyss.defaultIds.apiVisibilityPublic );
 						this.apiOptions.forEach((value, key) => {
 							Vue.set(value, 'name', value.openapidocument.info.title);
 						});
@@ -169,12 +169,13 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select'], funct
 				if (nm) {
 					this.filterTxt = nm;
 				}
-				var apiList = await this.getList(pxEndpoint);
-				// this.apiList = apiList.filter( (item) => item.isdeleted == false && item.apivisibilityid == 'e63c2874-aa12-433c-9dcf-65c1e8738a14' );
+				this.apiList = await this.getList(pxEndpoint);
+				this.apiList.forEach(async (value, key) => {
+					await this.getResources(value, 'API', value.openapidocument.info.title + ' ' + value.openapidocument.info.version, value.openapidocument.info.description);
+				});
+				// this.apiList = apiList.filter( (item) => item.isdeleted == false && item.apivisibilityid == abyss.defaultIds.apiVisibilityPublic );
 				// this.apiList = apiList;
-				this.apiList = apiList.filter( (item) => item.apivisibilityid == 'e63c2874-aa12-433c-9dcf-65c1e8738a14' );
-				this.paginate = this.makePaginate(this.apiList);
-				this.preload();
+				
 			},
 			/*getPage(p, px, nm) {
 				var pxEndpoint = abyss.ajax.proxy_list+'/';
@@ -188,9 +189,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select'], funct
 					axios.get(pxEndpoint),
 				]).then(
 					axios.spread((api_list) => {
-						// this.apiList = api_list.data.filter( (item) => item.isdeleted == false && item.apivisibilityid == 'e63c2874-aa12-433c-9dcf-65c1e8738a14' );
+						// this.apiList = api_list.data.filter( (item) => item.isdeleted == false && item.apivisibilityid == abyss.defaultIds.apiVisibilityPublic );
 						// this.apiList = api_list.data;
-						this.apiList = api_list.data.filter( (item) => item.apivisibilityid == 'e63c2874-aa12-433c-9dcf-65c1e8738a14' );
+						this.apiList = api_list.data.filter( (item) => item.apivisibilityid == abyss.defaultIds.apiVisibilityPublic );
 						this.paginate = this.makePaginate(api_list.data);
 						this.preload();
 					})
@@ -200,10 +201,14 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select'], funct
 			},*/
 			////////////////
 		},
-		created() {
+		async created() {
 			this.$emit('set-page', 'explore', 'init');
-			this.getPage(1);
-			this.getMyApps();
+			await this.getPage(1);
+			await this.getMyApps();
+			this.apiList = this.apiList.filter( (item) => item.apivisibilityid == abyss.defaultIds.apiVisibilityPublic );
+			this.paginate = this.makePaginate(this.apiList);
+			this.isLoading = false;
+			this.preload();
 		}
 	});
 });

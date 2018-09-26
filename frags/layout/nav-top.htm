@@ -42,9 +42,9 @@
 		</div>
 		<div id="mobile_only_nav" class="mobile-only-nav align-items-center">
 			<small>{{abyssVersion | formatDateTime}}</small>
-			<form id="search_form" role="search" class="top-nav-search fol">
+			<form id="search_form" role="search" class="top-nav-search fol" v-on:submit.prevent="onSearchAll(0)">
 				<div class="input-group">
-					<input type="text" name="example-input1-group2" class="form-control" placeholder="Search">
+					<input type="text" name="example-input1-group2" class="form-control" placeholder="Search" v-model="searchAll">
 					<span class="input-group-btn">
 					<button type="button" class="btn btn-default" data-target="#search_form" data-toggle="collapse" aria-label="Close" aria-expanded="true"><i class="fas fa-search"></i></button>
 					</span>

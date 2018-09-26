@@ -13053,6 +13053,35 @@ tbody tr.active {
   .nav-caret:hover:before {
     opacity: 1; }
 
+.nav-horz {
+  overflow: hidden;
+  height: 44px;
+  padding: 0;
+  position: relative; }
+  .nav-horz > nav {
+    width: 100%;
+    margin: 0 auto;
+    height: 44px !important;
+    overflow-x: auto !important;
+    overflow-y: hidden; }
+  .nav-horz > nav {
+    width: calc(100% - 80px);
+    margin: 0 40px 0 40px; }
+  .nav-horz .nav-horz-arrows {
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    top: 0;
+    z-index: 1;
+    text-align: center; }
+    .nav-horz .nav-horz-arrows i {
+      line-height: 40px;
+      font-size: 28px; }
+  .nav-horz .nav-horz-left {
+    left: 0; }
+  .nav-horz .nav-horz-right {
+    right: 0; }
+
 .fixed-sidebar-left {
   position: fixed;
   top: 66px;
@@ -13415,11 +13444,10 @@ a#toggle_mobile_nav {
       border-radius: 50px;
       border-color: rgba(0, 0, 0, 0.27);
       height: 36px;
-      background: #fff;
-      padding-right: 30px; }
+      background: #fff; }
     .navbar .top-nav-search .input-group .input-group-btn {
       position: absolute;
-      right: 25px;
+      right: 15px;
       top: 8px;
       z-index: 4; }
       .navbar .top-nav-search .input-group .input-group-btn > .btn {
@@ -13957,17 +13985,15 @@ a#toggle_mobile_nav {
   .code-editor #swagger-editor .ace_scrollbar-v {
     overflow: auto; }
     .code-editor #swagger-editor .ace_scrollbar-v::-webkit-scrollbar {
-      width: 20px;
-      height: 20px; }
+      width: 12px;
+      height: 12px; }
     .code-editor #swagger-editor .ace_scrollbar-v::-webkit-scrollbar-thumb {
-      width: 10px;
-      border: 8px solid rgba(0, 0, 0, 0);
-      border-width: 8px 4px 4px 4px;
+      border: 2px solid rgba(0, 0, 0, 0);
       background-clip: padding-box;
       background-color: rgba(255, 255, 255, 0.2); }
     .code-editor #swagger-editor .ace_scrollbar-v::-webkit-scrollbar-button {
-      width: 20px;
-      height: 20px;
+      width: 12px;
+      height: 12px;
       display: none; }
     .code-editor #swagger-editor .ace_scrollbar-v::-webkit-scrollbar-corner {
       background-color: transparent; }
@@ -14550,6 +14576,56 @@ a#toggle_mobile_nav {
   background-color: #073460;
   border-color: #073460; }
 
+.badge-primary {
+  background-color: #177ec1;
+  border-color: #177ec1;
+  color: #fff; }
+
+.badge-other {
+  background-color: #9fb9c9;
+  border-color: #9fb9c9;
+  color: #fff; }
+
+.badge-grey {
+  background-color: #9fb9c9;
+  border-color: #9fb9c9;
+  color: #fff; }
+
+.badge-PUT {
+  background-color: #FCA130;
+  border-color: #FCA130;
+  color: #fff; }
+
+.badge-GET {
+  background-color: #61AFFE;
+  border-color: #61AFFE;
+  color: #fff; }
+
+.badge-POST {
+  background-color: #49CC90;
+  border-color: #49CC90;
+  color: #fff; }
+
+.badge-DELETE {
+  background-color: #F93E3E;
+  border-color: #F93E3E;
+  color: #fff; }
+
+.badge-PATCH {
+  background-color: #50e3c2;
+  border-color: #50e3c2;
+  color: #fff; }
+
+.badge-HEAD {
+  background-color: #9012fe;
+  border-color: #9012fe;
+  color: #fff; }
+
+.badge-OPTIONS {
+  background-color: #0d5aa7;
+  border-color: #0d5aa7;
+  color: #fff; }
+
 .organizations-panel .field-controls .field-controls .field-link {
   padding-left: 25px; }
 
@@ -15032,9 +15108,6 @@ a#toggle_mobile_nav {
   @media (min-width: 992px) {
     .card-scroll {
       height: calc(50vh - (66px + 56px)); } }
-  @media (min-width: 1200px) {
-    .card-scroll {
-      height: calc(100vh - (66px + 60px + 46px)); } }
 
 .preview-overlay {
   position: fixed;
@@ -15145,6 +15218,21 @@ a#toggle_mobile_nav {
     padding-top: 46px; }
     .preview-test .legal-text > div {
       height: 100% !important; }
+
+.search-results {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding-top: 92px; }
+  .search-results > div {
+    height: 100% !important; }
+  .search-results .nav-horz {
+    position: absolute;
+    top: 46px;
+    right: 0;
+    left: 0; }
 
 .column-width {
   width: 290px;
@@ -21003,19 +21091,33 @@ a.txt-link {
 .wk-scroll, .v-select .dropdown-menu, .code-editor #swagger-editor .Pane2, .column-aside .column-content, .column-main .acedit {
   overflow: auto; }
   .wk-scroll::-webkit-scrollbar, .v-select .dropdown-menu::-webkit-scrollbar, .code-editor #swagger-editor .Pane2::-webkit-scrollbar, .column-aside .column-content::-webkit-scrollbar, .column-main .acedit::-webkit-scrollbar {
-    width: 20px;
-    height: 20px; }
+    width: 12px;
+    height: 12px; }
   .wk-scroll::-webkit-scrollbar-thumb, .v-select .dropdown-menu::-webkit-scrollbar-thumb, .code-editor #swagger-editor .Pane2::-webkit-scrollbar-thumb, .column-aside .column-content::-webkit-scrollbar-thumb, .column-main .acedit::-webkit-scrollbar-thumb {
-    width: 10px;
-    border: 8px solid rgba(0, 0, 0, 0);
-    border-width: 8px 4px 4px 4px;
+    border: 2px solid rgba(0, 0, 0, 0);
     background-clip: padding-box;
     background-color: rgba(33, 33, 33, 0.2); }
   .wk-scroll::-webkit-scrollbar-button, .v-select .dropdown-menu::-webkit-scrollbar-button, .code-editor #swagger-editor .Pane2::-webkit-scrollbar-button, .column-aside .column-content::-webkit-scrollbar-button, .column-main .acedit::-webkit-scrollbar-button {
-    width: 20px;
-    height: 20px;
+    width: 12px;
+    height: 12px;
     display: none; }
   .wk-scroll::-webkit-scrollbar-corner, .v-select .dropdown-menu::-webkit-scrollbar-corner, .code-editor #swagger-editor .Pane2::-webkit-scrollbar-corner, .column-aside .column-content::-webkit-scrollbar-corner, .column-main .acedit::-webkit-scrollbar-corner {
+    background-color: transparent; }
+
+.wk-scroll-sm, .nav-horz > nav {
+  overflow: auto; }
+  .wk-scroll-sm::-webkit-scrollbar, .nav-horz > nav::-webkit-scrollbar {
+    width: 4px;
+    height: 4px; }
+  .wk-scroll-sm::-webkit-scrollbar-thumb, .nav-horz > nav::-webkit-scrollbar-thumb {
+    border: 0px solid rgba(0, 0, 0, 0);
+    background-clip: padding-box;
+    background-color: rgba(33, 33, 33, 0.2); }
+  .wk-scroll-sm::-webkit-scrollbar-button, .nav-horz > nav::-webkit-scrollbar-button {
+    width: 4px;
+    height: 4px;
+    display: none; }
+  .wk-scroll-sm::-webkit-scrollbar-corner, .nav-horz > nav::-webkit-scrollbar-corner {
     background-color: transparent; }
 
 @media print {

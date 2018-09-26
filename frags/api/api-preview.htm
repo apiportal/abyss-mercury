@@ -11,17 +11,25 @@
 			<strong class="txt-black">{{api.openapidocument.info.title}}</strong>
 			<small class="">{{api.openapidocument.info.version}}</small>
 		</div>
+		<div v-if="api.sharedBy">Shared by {{api.sharedBy}}</div>
+		<div v-if="api.sharedWith">Shared with {{api.sharedWith}}</div>
+		<div v-if="api.sharedArr" v-for="(shr, index) in api.sharedArr">Shared with {{shr.sharedWith}}</div>
 		<small class="flt-r">{{activeVisibility}} {{apiEnvironment}}</small>
 		<span v-if="!api.isproxyapi">
 			<small>Proxies: <strong v-if="api.proxies">{{api.proxies.length}}</strong></small>
 		</span>
 		<div v-if="api.isproxyapi">
-			<div v-if="api.subscriptions.length">
-				<small class="txt-uppercase">Subscriptions:</small> <strong class="txt-black">{{api.subscriptions.length}}</strong>
-			</div>
-			<small class="d-block">Business API: <strong>{{businessapi}}</strong></small>
+			<small class="d-block" v-if="businessapi">Business API: <strong>{{businessapi}}</strong></small>
+			<small class="txt-uppercase" v-if="subs">Subscriptions:</small> <strong class="txt-black">{{api.subscriptionsCount}}</strong>
 		</div>
+		<ol class="small pl-3" v-if="subs">
+			<li v-for="(sub, index) in api.subscriptions">
+				<strong>{{sub.subjectOwner}}</strong> with <span>{{sub.subjectName}}</span>
+				<small class="flt-r txt-muted">{{sub.effectivestartdate | formatDate}} - {{sub.effectiveenddate | formatDate}}</small>
+			</li>
+		</ol>
 		<code class="d-block small" :style="{ 'color': api.color }"><small>{{api.uuid}}</small></code>
+		<code class="d-block small txt-orange" v-if="api.resource"><small>{{api.resource.uuid}}</small></code>
 	</a>
 </div>
 
@@ -36,6 +44,7 @@
 			<p>{{api.apiOwnerName}}</p>
 			<p class="sandbox-item">
 				<code class="d-block small txt-purple"><small>{{api.uuid}}</small></code>
+				<code class="d-block small txt-orange" v-if="api.resource"><small>{{api.resource.uuid}}</small></code>
 			</p>
 			<div>{{api.openapidocument.info.description | truncate(75)}}</div>
 		</div>
@@ -95,13 +104,38 @@
 											</v-select>
 										</div>
 										<div class="form-group form-inline">
-											<label class="d-block">Read-only</label>
+											<label class="d-block">
+												<span v-if="$root.shareApi.readonly">Read-only</span>
+												<span v-else>Read/Write</span>
+											</label>
 											<span class="switch switch-primary ml-auto">
 												<input type="checkbox" name="readonly" id="readonly" v-model="$root.shareApi.readonly" checked>
 												<label for="readonly"></label>
 											</span>
 										</div>
 										<button class="btn btn-sm btn-outline-pink btn-block" v-on:click="$root.shareMyApi()">Share</button>
+										<div class="row" v-if="$root.shareApi.permissions.length">
+											<h6 class="py-2 px-3 mb-0 brd-b brd-t mt-3">You have shared this API with</h6>
+											<div v-for="(sub, index) in $root.shareApi.permissions" class="brd-b brd-0-last field-controls" :class="sub.view">
+												<span class="ficon-act ficon-act-abs"><a v-on:click="$root.deleteSharedApi(sub, true, $root.shareApi.permissions)"><i class="fa fa-trash-alt"></i></a></span>
+												<div class="py-2 px-3">
+													<div v-if="sub.user">
+														<strong>{{sub.user.displayname}}</strong>
+														<small class="d-block"><strong>{{sub.text}}</strong></small>
+													</div>
+													<div class="ddd" v-if="$root.abyssSandbox">
+														<small class="d-block">{{sub.permission}}</small>
+														<small class="d-block">{{sub.view}}</small>
+														<small class="txt-uppercase">resourceid</small>
+														<code class="d-block txt-line small txt-blue"><small>{{sub.resourceid}}</small></code>
+														<small class="txt-uppercase">resourceactionid</small>
+														<code class="d-block txt-line small txt-blue"><small>{{sub.resourceactionid}}</small></code>
+														<small class="txt-uppercase">subjectid</small>
+														<code class="d-block txt-line small txt-blue"><small>{{sub.subjectid}}</small></code>
+													</div>
+												</div>
+											</div>
+										</div>
 									</div>
 								</div>
 							</div>

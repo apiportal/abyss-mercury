@@ -10,10 +10,12 @@ define(['global'], function(abyss){
 	var abyssYamlPort = hostPort;
 	var abyssGatewayPath = gatewayContext;
 	var abyssGatewayPort = gatewayPort;
+	var abyssSearch = searchAllUrl;
 	var abyssPath = 'abyss/oapi';
 	var abyssYamlPath = 'abyss/openapi';
 	var abyssJsonPath = 'data';
 	var abyssCredentials = true;
+	var abyssUrl = abyssProtocol + '://' + abyssHost + ':' + abyssPort;
 	var abyssLocation = abyssProtocol + '://' + abyssHost + ':' + abyssPort + '/' + abyssPath;
 	var abyssJsonLocation = abyssProtocol + '://' + abyssHost + ':' + abyssJsonPort + '/' + abyssJsonPath;
 	var abyssYamlLocation = abyssProtocol + '://' + abyssHost + ':' + abyssYamlPort + '/' + abyssYamlPath;
@@ -67,6 +69,8 @@ define(['global'], function(abyss){
 		// https://dev2.apiportal.com/abyss/openapi/ResourceType.yaml
 		resource_types: '/resource-types/', // uuid
 		// https://dev2.apiportal.com/abyss/openapi/Api.yaml
+		apis_shared_with_me: '/apis/sharedwith/subject/', // uuid
+		apis_shared_by_me: '/apis/sharedby/subject/', // uuid
 		api_list: '/apis/',
 		my_api_list: '/apis/subject/',
 		my_business_api_list: '/apis/businesses/subject/',
@@ -187,13 +191,20 @@ define(['global'], function(abyss){
 	}
 	if (isAbyssSandbox === true) {
 		abyssYamlLocation = '/000?file=' + abyssYamlLocation;
-	}
-	if (isAbyssSandbox === true) {
 		// abyssDataList.policy_types = '/data/POLICYTYPES.json';
 		// abyssDataList.policies = '/data/POLICIES.json';
 	}
 	var abyssAllDataList = Object.assign(abyssJsonList, abyssDataList);
 	// console.log("abyssAllDataList: ", abyssAllDataList);
+	var testerList = {
+		ilkiz: '9820d2aa-eb02-4a58-8cc5-8b9a89504df9',
+		faik: '32c9c734-11cb-44c9-b06f-0b52e076672d',
+		halil: 'd6bba21e-6d4c-4f87-897e-436bd97d41c0',
+		faber: 'c053c421-cb53-4ceb-acd0-a77c1f65438b',
+		abyss: '3c65fafc-8f3a-4243-9c4e-2821aa32d293',
+		monasdyas: '89db8aca-51b3-435b-a79d-e1f4067d2076',
+		org: 'monasdyas',
+	}
 	return {
 		name: 'Abyss Api Portal',
 		version: 'V.0.0',
@@ -201,12 +212,57 @@ define(['global'], function(abyss){
 		abyssVersion: abyssVersion,
 		isAbyssSandbox: isAbyssSandbox,
 		abyssGatewayUrl: abyssGatewayUrl,
+		abyssUrl: abyssUrl,
 		abyssLocation: abyssLocation,
 		abyssYamlLocation: abyssYamlLocation,
 		abyssCredentials: abyssCredentials,
+		abyssSearch: abyssSearch,
 		ajax: abyssAllDataList,
-		echo: 'http://local.abyss.com/000',
-		session: 'a51666ff540afd276ebd145681808149',
+		echoPost: 'http://192.168.10.38:11080/post',
+		sandbox: {
+			session: 'a51666ff540afd276ebd145681808149',
+			// userId: testerList.faik,
+			// orgId: testerList.abyss,
+			userId: testerList.ilkiz,
+			orgId: testerList.monasdyas,
+			orgName: testerList.org,
+		},
+		defaultIds: {
+			accessManager: '6223ebbe-b30f-4976-bcf9-364003142379',
+			invokeApi: 'c5639f00-94c9-4cc9-8ad9-df76f9d162a8',
+			abyssPlatform: 'ebe1ca8b-a891-42e9-b053-f4ac3829653c',
+			ownApp: 'e085cb50-8a98-4511-bc8a-00edabbae8a9',
+			usePlatform: '2318f036-10e5-41b0-8b51-24adbffd2a2e',
+			groupAdmin: 'd911bf07-7ae8-46dd-9039-295f79575a90',
+			viewApi: 'bf0b6ac2-7d07-49c6-b3f8-0fd7c927126e',
+			editApi: '7e55b086-75e0-4209-9cc5-51baa38393ed',
+			consumeApp: '761c8386-4624-416e-b9e4-b59ea2c597fc',
+			contractActivated: '846282ec-1329-4a3c-908b-672b4de3ade2',
+			organization: '3c65fafc-8f3a-4243-9c4e-2821aa32d293',
+			subjectTypeApp: 'ca80dd37-7484-46d3-b4a1-a8af93b2d3c6',
+			subjectTypeUser: '21371a15-04f8-445e-a899-006ee11c0e09',
+			subjectTypeGroup: 'c5ef2da7-b55e-4dec-8be3-96bf30255781',
+			apiStateDraft: 'dccb1796-9338-4ae8-a0d9-02654d1e2c6d',
+			apiVisibilityPrivate: '043d4827-cff4-43f9-9d5b-782d1f83b3f0',
+			apiVisibilityPublic: 'e63c2874-aa12-433c-9dcf-65c1e8738a14',
+		}
+		// abyss.defaultIds.invokeApi
+		// abyss.defaultIds.accessManager
+		// abyss.defaultIds.abyssPlatform
+		// abyss.defaultIds.ownApp
+		// abyss.defaultIds.usePlatform
+		// abyss.defaultIds.groupAdmin
+		// abyss.defaultIds.viewApi
+		// abyss.defaultIds.editApi
+		// abyss.defaultIds.consumeApp
+		// abyss.defaultIds.contractActivated
+		// abyss.defaultIds.organization
+		// abyss.defaultIds.subjectTypeApp
+		// abyss.defaultIds.subjectTypeUser
+		// abyss.defaultIds.subjectTypeGroup
+		// abyss.defaultIds.apiStateDraft
+		// abyss.defaultIds.apiVisibilityPrivate
+		// abyss.defaultIds.apiVisibilityPublic
 	};
 });
 

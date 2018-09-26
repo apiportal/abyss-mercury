@@ -36,7 +36,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 					"isdeleted": false,
 					"crudsubjectid": null,
 					"isactivated": false,
-					"subjecttypeid": "21371a15-04f8-445e-a899-006ee11c0e09",
+					"subjecttypeid": abyss.defaultIds.subjectTypeUser,
 					"subjectname": null,
 					"firstname": null,
 					"lastname": null,

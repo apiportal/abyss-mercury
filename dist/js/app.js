@@ -306,6 +306,88 @@ define(['config', 'jquery', 'bootstrap', 'domready'], function(config, $){
 			});
 		},
 	}
+	UI.navhorz = {
+		init: function() {
+			var items = $('.nav-horz > nav > ul > li').width();
+			var $outer = $('.nav-horz nav');
+			var $inner = $('.nav-horz ul');
+			if ($inner.width() > $outer.width()) {
+				$('.nav-horz').addClass('active');
+			} else {
+				$('.nav-horz').removeClass('active');
+			}
+			console.log("$outer.width(): ", $outer.width());
+			// console.log("$inner.width(): ", $inner.width());
+			/*var inp = $('.' + type).find('.column-item#' + id);
+			inp.closest('.column-content').animate({
+				scrollTop: inp.position().top + inp.closest('.column-content').scrollTop()
+			}, 'slow', function () {
+
+			});*/
+			/*if ($('.nav-horz > nav > ul > li.active:visible').length) {
+				// navPointerScroll($('.nav-horz > nav > ul > li.active:visible'));
+				var ele = $('.nav-horz > nav > ul > li.active:visible');
+				$($outer).animate({
+					scrollLeft: ele.position().left + $($outer).scrollLeft() - 20
+				}, 200)
+			}*/
+			// $($outer).scrollLeft(200).delay(200).animate({
+			// 	scrollLeft: "-=200"
+			// }, 500);
+			/*$('.nav-horz-right').click(function() {
+				console.log("this: ", this);
+				$($outer).animate({
+					scrollLeft: '+=' + items
+				});
+			});
+			$('.nav-horz-left').click(function() {
+				console.log("this: ", this);
+				$($outer).animate({
+					scrollLeft: "-=" + items
+				});
+			});*/
+			if (!/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+				var scrolling = false;
+				/*$(".nav-horz-right").bind("mouseover", function(event) {
+					scrolling = true;
+					scrollContent("right");
+				}).bind("mouseout", function(event) {
+					scrolling = false;
+				});
+				$(".nav-horz-left").bind("mouseover", function(event) {
+					scrolling = true;
+					scrollContent("left");
+				}).bind("mouseout", function(event) {
+					scrolling = false;
+				});*/
+				function scrollContent(direction) {
+					var amount = (direction === "left" ? "-=3px" : "+=3px");
+					$($outer).animate({
+						scrollLeft: amount
+					}, 1, function() {
+						if (scrolling) {
+							scrollContent(direction);
+						}
+					});
+				}
+			}
+			/*$('.nav-horz > nav > ul > li').click(function () {
+				navPointerScroll($(this));
+			});
+			function navPointerScroll(ele) {
+				var parentScroll = $inner.scrollLeft();
+				var offset = ($(ele).offset().left - $inner.offset().left);
+				var totalelement = offset + $(ele).outerWidth()/2;
+				var rt = (($(ele).offset().left) - ($outer.offset().left) + ($(ele).outerWidth())/2);
+				// $('.nav-horz-pointer').animate({
+				// 	left: totalelement + parentScroll
+				// }, 200)
+				$($outer).animate({
+					left: totalelement + parentScroll
+				}, 200)
+			}*/
+		},
+	};
 	UI.chatApp = {
 		init: function() {
 			var chatAppTarget = $('.chat-for-widgets-1.chat-cmplt-wrap');

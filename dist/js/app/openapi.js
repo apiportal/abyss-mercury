@@ -1671,7 +1671,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				stateOptions: [],
 
 				dropSpecsOptions: {
-					url: 'http://192.168.10.38:11080/post',
+					url: abyss.echoPost,
 					method: 'post',
 					uploadMultiple: false,
 					maxFiles: 1,
@@ -1686,7 +1686,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					}
 				},
 				dropImageOptions: {
-					url: 'http://192.168.10.38:11080/post',
+					url: abyss.echoPost,
 					method: 'post',
 					uploadMultiple: false,
 					maxFiles: 1,
@@ -1729,8 +1729,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					"crudsubjectid": null,
 					"subjectid": null,
 					"isproxyapi": false,
-					"apistateid": "dccb1796-9338-4ae8-a0d9-02654d1e2c6d",
-					"apivisibilityid": "043d4827-cff4-43f9-9d5b-782d1f83b3f0",
+					"apistateid": abyss.defaultIds.apiStateDraft,
+					"apivisibilityid": abyss.defaultIds.apiVisibilityPrivate,
 					"languagename": "OpenAPI",
 					"languageversion": "3.0.0",
 					"languageformat": 1,

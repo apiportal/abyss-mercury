@@ -314,9 +314,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 				this.resourceActionOptions = this.$root.rootData.resourceActions;
 				this.$root.rootData.resourceTypes.forEach((value, key) => {
 					if (value.type == 'API') {
-						Vue.set(value, 'subjectTypeId', 'ca80dd37-7484-46d3-b4a1-a8af93b2d3c6' ); // APP
+						Vue.set(value, 'subjectTypeId', abyss.defaultIds.subjectTypeApp ); // APP
 					} else {
-						Vue.set(value, 'subjectTypeId', '21371a15-04f8-445e-a899-006ee11c0e09' ); // USER
+						Vue.set(value, 'subjectTypeId', abyss.defaultIds.subjectTypeUser ); // USER
 					}
 				});
 
@@ -364,9 +364,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 					this.resourceActionOptions = this.$root.rootData.resourceActions;
 					this.$root.rootData.resourceTypes.forEach((value, key) => {
 						if (value.type == 'API') {
-							Vue.set(value, 'subjectTypeId', 'ca80dd37-7484-46d3-b4a1-a8af93b2d3c6' ); // APP
+							Vue.set(value, 'subjectTypeId', abyss.defaultIds.subjectTypeApp ); // APP
 						} else {
-							Vue.set(value, 'subjectTypeId', '21371a15-04f8-445e-a899-006ee11c0e09' ); // USER
+							Vue.set(value, 'subjectTypeId', abyss.defaultIds.subjectTypeUser ); // USER
 						}
 					});
 					this.getPage(1);

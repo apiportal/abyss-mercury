@@ -102,7 +102,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 					"isdeleted": false,
 					"crudsubjectid": null,
 					"isactivated": false,
-					"subjecttypeid": "ca80dd37-7484-46d3-b4a1-a8af93b2d3c6",
+					"subjecttypeid": abyss.defaultIds.subjectTypeApp,
 					"subjectname": null,
 					"firstname": null,
 					"lastname": null,

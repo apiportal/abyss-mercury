@@ -45,10 +45,12 @@ require.config({
 		"izitoast-css": "plugins/iziToast.min.css?noext",
 		"izitoast": "plugins/iziToast.min",
 		"tiny-cookie": "plugins/tiny-cookie.min",
+		"highcharts": "plugins/Highcharts",
 		//// comps ////
 		"vee-validate": "comps/vee-validate.min",
 		"vue-select": "comps/vue-select",
 		"vue-cookie": "comps/vue-cookie",
+		"highcharts-vue": "comps/highcharts-vue.min",
 		// "date-picker": "comps/date-picker",
 		"VueBootstrapDatetimePicker": "comps/vue-bootstrap-datetimepicker.min",
 		"vue-dropzone": "comps/vue2Dropzone",

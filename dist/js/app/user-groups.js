@@ -46,7 +46,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 					"isdeleted": false,
 					"crudsubjectid": null,
 					"isactivated": false,
-					"subjecttypeid": "c5ef2da7-b55e-4dec-8be3-96bf30255781",
+					"subjecttypeid": abyss.defaultIds.subjectTypeGroup,
 					"subjectname": null,
 					"firstname": null,
 					"lastname": null,

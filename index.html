@@ -12,7 +12,7 @@
 <div id="portal" class="wrapper" v-bind:class="pageClass">
 	<div th:replace="webroot/frags/layout/navs.htm :: navs"></div>
 	<main class="page-wrapper">
-	<index inline-template ref="refPage" v-on:set-state="setState" v-on:set-page="setPage" v-bind:root-state="rootState" v-if="!$root.isLoading">
+	<index inline-template ref="refIndex" v-on:set-state="setState" v-on:set-page="setPage" v-bind:root-state="rootState" v-if="!$root.isLoading">
 		<section class="xxx" v-if="!isLoading">
 			<transition name="fade">
 			<div th:replace="webroot/frags/api/api-preview.htm :: apiPreview"></div>
@@ -20,77 +20,115 @@
 			<transition name="fade">
 			<div th:replace="webroot/frags/api/app-preview.htm :: appPreview"></div>
 			</transition>
-			<div class="fow cards justify-content-center">
-				<div class="fol-sm-6 fol-lg-3 fol-xll-3 p-3 card-item">
+			<div class="fow no-gutters cards justify-content-center">
+
+				<div class="fol-sm-12 fol-xl-8 fol-xll-9 p-3 card-item">
 					<div class="card">
-						<div class="card-scroll">
-							<div class="nicescroll-bar">
-								<div class="bg-pink txt-white txt-c p-3 justify-content-center">
-									My<br>Subscribers
-									<h1 class="mb-0 mt-2">{{mySubscribers}}</h1>
-								</div>
-								<div class="bg-cyan txt-white txt-c p-3 justify-content-center">
-									My<br>Subscriptions
-									<h1 class="mb-0 mt-2">{{mySubscriptions}}</h1>
+						<div class="card-title bg-green txt-white"><h6 class="txt-white d-flex">My Proxy APIs & Subscribers <span class="ml-auto">{{mySubscribersCount}}</span></h6></div>
+						<div class="fow">
+							<div class="fol-sm-6">
+								<highcharts :options="mySubscribersChart"></highcharts>
+							</div>
+							<div class="fol-sm-6">
+								<div class="card-scroll">
+									<div class="nicescroll-bar">
+										<api-list v-for="(api, index) in sortByNested(sortProxy, myProxyApiList)" :api="api" :index="index" :subs="true" :key="api.uuid" inline-template>
+											<div th:replace="webroot/frags/api/api-preview.htm :: apiDash"></div>
+										</api-list>
+									</div>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-				<div class="fol-sm-6 fol-lg-3 fol-xll-3 p-3 card-item">
+				<div class="fol-sm-6 fol-xl-4 fol-xll-3 p-3 card-item">
 					<div class="card">
-						<div class="card-title"><h6>My APPS</h6></div>
+						<div class="card-title"><h6>APIs Shared with Me</h6></div>
 						<div class="card-scroll">
 							<div class="nicescroll-bar">
-								<div v-for="(app, index) in sortByNested(sortApp, $root.appList)" v-if="app.subscriptions" class="brd-b brd-0-last field-controls">
-									<a class="nav-link d-block" v-on:click="getMyAppDetail(app,index,true);" :class="{'is-deleted': app.isdeleted}">
-										<div class="">										
-											<i class="fas fa-check-circle txt-green" title="Active" v-if="!app.isdeleted"></i>
-											<i class="fas fa-times-circle txt-red" title="Deleted" v-if="app.isdeleted"></i>
-											<strong>{{app.firstname}}</strong>
-										</div>
-										<div>
-											<div class="d-flex txt-uppercase flt-r small txt-muted">
-												<span v-if="!app.isdeleted" :title="app.updated | formatDateTime">
-													{{app.created | formatDateTime}}
-												</span>
-												<span class="ml-auto txt-r" v-if="app.isdeleted">
-													{{app.deleted | formatDateTime}}
-												</span>
-											</div>
-										</div>
-										<div v-if="app.contracts"><small class="txt-uppercase">Subscriptions:</small> <strong class="txt-black">{{app.contracts.length}}</strong></div>
-										<code class="d-block txt-line small txt-blue"><small>{{app.uuid}}</small></code>
-									</a>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="fol-sm-6 fol-lg-3 fol-xll-3 p-3 card-item">
-					<div class="card">
-						<div class="card-title"><h6>My Proxy APIs</h6></div>
-						<div class="card-scroll">
-							<div class="nicescroll-bar">
-								<api-list v-for="(api, index) in sortByNested(sortProxy, myProxyApiList)" :api="api" :index="index" :key="api.uuid" inline-template>
+								<api-list v-for="(api, index) in apisSharedWithMe" :api="api" :index="index" :key="api.uuid" v-if="!api.isShareDeleted" :subs="false" inline-template>
 									<div th:replace="webroot/frags/api/api-preview.htm :: apiDash"></div>
 								</api-list>
 							</div>
 						</div>
 					</div>
 				</div>
-				<div class="fol-sm-6 fol-lg-3 fol-xll-3 p-3 card-item">
+				<div class="fol-sm-6 fol-xl-4 fol-xll-3 p-3 card-item">
 					<div class="card">
-						<div class="card-title"><h6>My Business APIs</h6></div>
+						<div class="card-title"><h6>APIs Shared by Me</h6></div>
 						<div class="card-scroll">
 							<div class="nicescroll-bar">
-								<api-list v-for="(api, index) in sortByNested(sortApi, myBusinessApiList)" :api="api" :index="index" :key="api.uuid" v-if="api.proxies.length > 0" inline-template>
+								<api-list v-for="(api, index) in apisSharedByMe" :api="api" :index="index" :key="api.uuid" :subs="false" v-if="!api.isShareDeleted" inline-template>
 									<div th:replace="webroot/frags/api/api-preview.htm :: apiDash"></div>
 								</api-list>
 							</div>
 						</div>
 					</div>
 				</div>
+				<div class="fol-sm-12 fol-xl-8 fol-xll-9 p-3 card-item">
+					<div class="card">
+						<div class="card-title bg-cyan txt-white"><h6 class="txt-white d-flex">My APPS & Subscriptions <span class="ml-auto">{{mySubscriptions}}</span></h6></div>
+						<div class="fow">
+							<div class="fol-sm-6">
+								<highcharts :options="mySubscriptionsChart"></highcharts>
+							</div>
+							<div class="fol-sm-6">
+								<div class="card-scroll">
+									<div class="nicescroll-bar">
+										<div v-for="(app, index) in sortByNested(sortApp, $root.appList)" v-if="app.subscriptions" class="brd-b brd-0-last field-controls">
+											<a class="nav-link d-block" v-on:click="getMyAppDetail(app,index,true);" :class="{'is-deleted': app.isdeleted}">
+												<div class="">										
+													<i class="fas fa-check-circle txt-green" title="Active" v-if="!app.isdeleted"></i>
+													<i class="fas fa-times-circle txt-red" title="Deleted" v-if="app.isdeleted"></i>
+													<strong>{{app.firstname}}</strong>
+												</div>
+												<div>
+													<div class="d-flex txt-uppercase flt-r small txt-muted">
+														<span v-if="!app.isdeleted" :title="app.updated | formatDateTime">
+															{{app.created | formatDateTime}}
+														</span>
+														<span class="ml-auto txt-r" v-if="app.isdeleted">
+															{{app.deleted | formatDateTime}}
+														</span>
+													</div>
+												</div>
+												<code class="d-block txt-line small txt-blue"><small>{{app.uuid}}</small></code>
+												<div v-if="app.contracts"><small class="txt-uppercase">Subscriptions:</small> <strong class="txt-black">{{app.subscriptionsCount}}</strong></div>
+												<ol class="small pl-3">
+													<li v-for="(sub, index) in app.subscriptions">
+														<strong>{{sub.apiName}}</strong> by <span>{{sub.apiOwner}}</span>
+														<div>{{sub.effectivestartdate | formatDate}} - {{sub.effectiveenddate | formatDate}}</div>
+													</li>
+												</ol>
+											</a>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="fol-sm-12 fol-xl-8 fol-xll-9 p-3 card-item">
+					<div class="card">
+						<div class="card-title bg-pink txt-white"><h6 class="txt-white d-flex">My Business APIs & Subscribers <span class="ml-auto">{{myBusinessApiList.length}}</span></h6></div>
+						<div class="fow">
+							<div class="fol-sm-6">
+								<highcharts :options="myBusinessApisChart"></highcharts>
+							</div>
+							<div class="fol-sm-6">
+								<div class="card-scroll">
+									<div class="nicescroll-bar">
+										<api-list v-for="(api, index) in sortByNested(sortApi, myBusinessApiList)" :api="api" :index="index" :subs="false" :key="api.uuid" v-if="api.proxies.length > 0" inline-template>
+											<div th:replace="webroot/frags/api/api-preview.htm :: apiDash"></div>
+										</api-list>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
 			</div>
 		</section>
 	</index>
