@@ -100,7 +100,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 			/*async getPermissionOptions(search, loading) {
 				loading(true);
 				var permissionOptions = await this.getList(abyss.ajax.permission_list + '?likename=' + search);
-				this.permissionOptions = permissionOptions.filter( (item) => item.isdeleted == false );
+				this.permissionOptions = permissionOptions.filter( (item) => !item.isdeleted );
 				loading(false);
 			},*/
 			regenPass(numLc, numUc, numDigits, numSpecial) {
@@ -120,7 +120,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 				if (filter == null) {
 					// this.getPage(1);
 					// var sss = _.filter(this.userList, (item) => _.find(flt, { filtered: 'group' }));
-					var sss = this.userList.filter((item) => item.groupfilter == false );
+					var sss = this.userList.filter((item) => item.groupfilter === false );
 					console.log("sss: ", sss);
 					sss.forEach((value, key) => {
 						value.groupfilter = true;
@@ -156,7 +156,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 			filterPermission(filter) {
 				if (filter == null) {
 					// this.getPage(1);
-					var sss = this.userList.filter((item) => item.permissionfilter == false );
+					var sss = this.userList.filter((item) => item.permissionfilter === false );
 					sss.forEach((value, key) => {
 						value.permissionfilter = true;
 					});
@@ -192,7 +192,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 			setUserGroups(filter) {
 				console.log("this.user.groups: ", this.user.groups);
 				console.log("this.user.membershiplist: ", this.user.membershiplist);
-				if (filter && filter.length != 0) {
+				if (filter && filter.length !== 0) {
 					var itemArr = [];
 					filter.forEach((value, key) => {
 						var newObj = {
@@ -281,7 +281,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 			},
 			async deleteUser(item) {
 				var r = confirm('Are you sure to delete?');
-				if (r == true) {
+				if (r === true) {
 					if (item.membershiplist.length > 0) {
 						await this.deleteUserMemberships(item);
 						await this.deleteUserOnly(item, false);
@@ -325,7 +325,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 			async userAction(act) {
 				var result = await this.$validator.validateAll();
 				if (result) {
-					if (act == 'add') {
+					if (act === 'add') {
 						this.fixProps(this.user);
 						var item = await this.addItem(abyss.ajax.subjects, this.deleteProps(this.user), this.userList);
 						if (item) {
@@ -334,7 +334,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 							this.user = _.cloneDeep(this.newUser);
 						}
 					}
-					if (act == 'edit') {
+					if (act === 'edit') {
 						var item = await this.editItem( abyss.ajax.subjects, this.user.uuid, this.deleteProps(this.user), this.userList );
 						if (item) {
 							await this.addDeleteUserGroups();
@@ -354,7 +354,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 				var organizations_list = this.getList(abyss.ajax.organizations_list);
 
 				var [directoryOptions, groupOptions, memberOptions, permissionOptions, userList, orgOptions] = await Promise.all([subject_directories_list, user_group_list, subject_memberships, permission_list, user_list, organizations_list]);
-				// .filter( (item) => item.isdeleted == false )
+				// .filter( (item) => !item.isdeleted )
 				this.directoryOptions = directoryOptions;
 				this.groupOptions = groupOptions;
 				this.memberOptions = memberOptions;

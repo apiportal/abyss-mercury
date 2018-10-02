@@ -21,7 +21,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 			},
 			businessapi: {
 				get() {
-					var bapi = this.$parent.myBusinessApiList.find((el) => el.uuid == this.api.businessapiid );
+					var bapi = this.$parent.myBusinessApiList.find((el) => el.uuid === this.api.businessapiid );
 					if (bapi) {
 						return bapi.openapidocument.info.title;
 					}
@@ -29,7 +29,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 			},
 			activeVisibility: {
 				get() {
-					var slcVisibility = this.$root.rootData.apiVisibilityList.find((el) => el.uuid == this.api.apivisibilityid );
+					var slcVisibility = this.$root.rootData.apiVisibilityList.find((el) => el.uuid === this.api.apivisibilityid );
 					if (slcVisibility) {
 						return slcVisibility.name;
 					}
@@ -194,12 +194,12 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 				var my_api_permissions = this.getList(abyss.ajax.permissions_app + this.$root.rootData.user.uuid);
 				var [myApiSubscriptions, myBusinessApiList, myProxyApiList, permissionsSharedWithMe] = await Promise.all([permission_my_apis, my_business_api_list, my_proxy_api_list, my_api_permissions]);
 				// this.myApiSubscriptions = myApiSubscriptions;
-				this.myApiSubscriptions = myApiSubscriptions.filter((el) => el.resourceactionid == abyss.defaultIds.invokeApi );
+				this.myApiSubscriptions = myApiSubscriptions.filter((el) => el.resourceactionid === abyss.defaultIds.invokeApi );
 				this.myBusinessApiList = myBusinessApiList;
 				this.myProxyApiList = myProxyApiList;
 
-				this.permissionsSharedWithMe = permissionsSharedWithMe.filter( (el) => el.isdeleted != true );
-				this.permissionsSharedByMe = myApiSubscriptions.filter((el) => el.resourceactionid != abyss.defaultIds.invokeApi && el.isdeleted != true );
+				this.permissionsSharedWithMe = permissionsSharedWithMe.filter( (el) => !el.isdeleted );
+				this.permissionsSharedByMe = myApiSubscriptions.filter((el) => el.resourceactionid !== abyss.defaultIds.invokeApi && !el.isdeleted );
 				// this.permissionsSharedWithMe = permissionsSharedWithMe;
 				// this.permissionsSharedByMe = myApiSubscriptions.filter((el) => el.resourceactionid != abyss.defaultIds.invokeApi );
 
@@ -214,7 +214,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 				this.myProxyApiList.forEach(async (value, key) => {
 					Vue.set(value, 'subscriptions', []);
 					await this.getResources(value, 'API', value.openapidocument.info.title + ' ' + value.openapidocument.info.version, value.openapidocument.info.description);
-					var subs = this.myApiSubscriptions.filter((el) => el.resourceid == value.resource.uuid );
+					var subs = this.myApiSubscriptions.filter((el) => el.resourceid === value.resource.uuid );
 					// if (subs) {
 						value.subscriptions = subs;
 						value.subscriptionsCount = subs.length;
@@ -222,7 +222,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 				});
 				this.myBusinessApiList.forEach((value, key) => {
 					Vue.set(value, 'proxies', []);
-					var papi = this.myProxyApiList.filter((el) => el.businessapiid == value.uuid );
+					var papi = this.myProxyApiList.filter((el) => el.businessapiid === value.uuid );
 					if (papi) {
 						value.proxies = papi;
 					}
@@ -235,11 +235,11 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 				this.apisSharedByMe.forEach(async (value, key) => {
 					Vue.set(value, 'subscriptions', []);
 					await this.getResources(value, 'API', value.openapidocument.info.title + ' ' + value.openapidocument.info.version, value.openapidocument.info.description);
-					var subs = this.myApiSubscriptions.filter((el) => el.resourceid == value.resource.uuid );
+					var subs = this.myApiSubscriptions.filter((el) => el.resourceid === value.resource.uuid );
 					if (subs) {
 						value.subscriptions = subs;
 					}
-					var perms = this.permissionsSharedByMe.filter((el) => el.resourceid == value.resource.uuid );
+					var perms = this.permissionsSharedByMe.filter((el) => el.resourceid === value.resource.uuid );
 
 					if (perms.length) {
 						perms = _.uniqBy(perms, 'subjectid');
@@ -277,11 +277,11 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 				this.apisSharedWithMe.forEach(async (value, key) => {
 					Vue.set(value, 'subscriptions', []);
 					await this.getResources(value, 'API', value.openapidocument.info.title + ' ' + value.openapidocument.info.version, value.openapidocument.info.description);
-					var subs = this.myApiSubscriptions.filter((el) => el.resourceid == value.resource.uuid );
+					var subs = this.myApiSubscriptions.filter((el) => el.resourceid === value.resource.uuid );
 					if (subs) {
 						value.subscriptions = subs;
 					}
-					var perms = this.permissionsSharedWithMe.filter((el) => el.resourceid == value.resource.uuid );
+					var perms = this.permissionsSharedWithMe.filter((el) => el.resourceid === value.resource.uuid );
 
 					if (perms.length) {
 						perms = _.uniqBy(perms, 'resourceid');
@@ -324,11 +324,11 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 			this.isLoading = false;
 			this.preload();
 			setTimeout(() => {
-				var mySubscribers = this.myProxyApiList.filter((el) => el.subscriptionsCount != 0 );
+				var mySubscribers = this.myProxyApiList.filter((el) => el.subscriptionsCount !== 0 );
 				this.mySubscribersChart.series[0].data = _.map(mySubscribers, v => ({"y":v.subscriptionsCount, "id":v.uuid, "name":v.openapidocument.info.title}));
-				var mySubscriptions = this.$root.appList.filter((el) => el.subscriptionsCount != 0 );
+				var mySubscriptions = this.$root.appList.filter((el) => el.subscriptionsCount !== 0 );
 				this.mySubscriptionsChart.series[0].data = _.map(mySubscriptions, v => ({"y":v.subscriptionsCount, "id":v.uuid, "name":v.firstname}));
-				var myBusinessApis = this.myBusinessApiList.filter((el) => el.proxies.length != 0 );
+				var myBusinessApis = this.myBusinessApiList.filter((el) => el.proxies.length !== 0 );
 				this.myBusinessApisChart.series[0].data = _.map(myBusinessApis, v => ({"y":v.proxies.length, "id":v.uuid, "name":v.openapidocument.info.title}));
 			},1000);
 	},

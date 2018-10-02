@@ -105,12 +105,12 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 		},
 		methods: {
 			getTemplate(typ) {
-				var type = this.accessManagerTypes.find((el) => el.uuid == typ );
+				var type = this.accessManagerTypes.find((el) => el.uuid === typ );
 				Vue.set(this.accessManager, 'accessmanagerattributes', type.attributetemplate);
 			},
 			addType() {
-				var ttt = _.findIndex(this.accessManagerTypes, function(o) { return o.typename == 'newType'; });
-				if (ttt == -1) {
+				var ttt = _.findIndex(this.accessManagerTypes, function(o) { return o.typename === 'newType'; });
+				if (ttt === -1) {
 					var newType = _.cloneDeep(this.accessManagerType);
 					this.accessManagerTypes.push(newType);
 				}
@@ -155,7 +155,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 			},
 			/*deleteType(item) {
 				var r = confirm('Are you sure to delete?');
-				if (r == true) {
+				if (r === true) {
 					axios.delete(abyss.ajax.access_manager_types + '/' + item.uuid, item).then(response => {
 						item.isdeleted = true;
 						console.log("deleteUser response: ", response);
@@ -172,7 +172,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 				}
 			},
 			getTypeName(typ) {
-				var subType = this.accessManagerTypes.find((el) => el.uuid == typ );
+				var subType = this.accessManagerTypes.find((el) => el.uuid === typ );
 				if (subType) {
 					return subType.typename;
 				}
@@ -209,7 +209,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 			},
 			/*deleteAccessManager(item) {
 				var r = confirm('Are you sure to delete?');
-				if (r == true) {
+				if (r === true) {
 					axios.delete(abyss.ajax.access_managers + '/' + item.uuid, item).then(response => {
 						item.isdeleted = true;
 						console.log("DELETE accessManager response: ", response);
@@ -221,7 +221,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 			async accessManagerAction(act) {
 				var result = await this.$validator.validateAll();
 				if (result) {
-					/*if (act == 'add') {
+					/*if (act === 'add') {
 						this.fixProps(this.accessManager);
 						var itemArr = [];
 						itemArr.push(this.deleteProps(this.accessManager));
@@ -234,19 +234,19 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 							this.handleError(error);
 						});
 					}*/
-					if (act == 'add') {
+					if (act === 'add') {
 						this.fixProps(this.accessManager);
 						var item = await this.addItem(abyss.ajax.access_managers, this.deleteProps(this.accessManager), this.accessManagerList);
 						this.$emit('set-state', 'init');
 						this.accessManager = _.cloneDeep(this.newAccessManager);
 					}
-					if (act == 'edit') {
+					if (act === 'edit') {
 						var item = await this.editItem( abyss.ajax.access_managers, this.accessManager.uuid, this.deleteProps(this.accessManager), this.accessManagerList );
 						this.$emit('set-state', 'init');
 						this.accessManager = _.cloneDeep(this.newAccessManager);
 						this.selected = null;
 					}
-					/*if (act == 'edit') {
+					/*if (act === 'edit') {
 						this.updateItem(abyss.ajax.access_managers + '/' + this.accessManager.uuid, this.deleteProps(this.accessManager), this.accessManagerList).then(response => {
 							console.log("editAccessManager response: ", response);
 							this.$emit('set-state', 'init');

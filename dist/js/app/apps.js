@@ -153,8 +153,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 			},
 			async getDirectoryOptions() {
 				var directoryOptions = await this.getList(abyss.ajax.subject_directories_list);
-				this.directoryOptions = directoryOptions.filter( (item) => item.isdeleted == false );
-				this.orgOptions = this.$root.rootData.user.organizations.filter( (item) => item.isdeleted == false );
+				this.directoryOptions = directoryOptions.filter( (item) => !item.isdeleted );
+				this.orgOptions = this.$root.rootData.user.organizations.filter( (item) => !item.isdeleted );
 			},
 			filterApp() {
 				// 2DO
@@ -237,7 +237,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 			},
 			async deleteApp(item) {
 				var r = confirm('Are you sure to delete?');
-				if (r == true) {
+				if (r === true) {
 					item.contracts.forEach(async (con, k) => {
 						var del = await this.deleteItem(abyss.ajax.resources, con.resource, false);
 						if (del) {
@@ -270,7 +270,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 			},
 			/*deleteApp(item) {
 				var r = confirm('Are you sure to delete?');
-				if (r == true) {
+				if (r === true) {
 					console.log("item: ", JSON.stringify(item, null, '\t'));
 					item.contracts.forEach((con, k) => {
 						console.log("con.resource.uuid: ", abyss.ajax.resources + '/' + con.resource.uuid);
@@ -358,7 +358,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 			async appAction(act) {
 				var result = await this.$validator.validateAll();
 				if (result) {
-					if (act == 'add') {
+					if (act === 'add') {
 						if (this.beforeAppAction()) {
 							this.fixProps(this.app);
 							var item = await this.addItem(abyss.ajax.subjects, this.deleteProps(this.app));
@@ -381,7 +381,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 							// this.preventCancel = true;
 						}
 					}
-					if (act == 'edit') {
+					if (act === 'edit') {
 						if (this.beforeAppAction() && !this.preventCancel) {
 							Vue.set(this.app,'subjectname', this.app.firstname);
 							Vue.set(this.app,'displayname', this.app.firstname);
@@ -399,7 +399,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 			/*appAction(act) {
 				this.$validator.validateAll().then((result) => {
 					if (result) {
-						if (act == 'add') {
+						if (act === 'add') {
 							if (this.beforeAppAction()) {
 								this.fixProps(this.app);
 								var iAppArr = [];
@@ -448,7 +448,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 								});
 							}
 						}
-						if (act == 'edit') {
+						if (act === 'edit') {
 							if (this.beforeAppAction() && !this.preventCancel) {
 								Vue.set(this.app,'subjectname', this.app.firstname);
 								Vue.set(this.app,'displayname', this.app.firstname);

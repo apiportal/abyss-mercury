@@ -106,8 +106,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select'], funct
 			async getApiOptions(search, loading) {
 				loading(true);
 				var apiOptions = await this.getList(abyss.ajax.proxy_list + '/?likename=' + search);
-				// this.apiOptions = apiOptions.filter( (item) => item.isdeleted == false && item.apivisibilityid == abyss.defaultIds.apiVisibilityPublic );
-				this.apiOptions = apiOptions.filter( (item) => item.apivisibilityid == abyss.defaultIds.apiVisibilityPublic );
+				// this.apiOptions = apiOptions.filter( (item) => !item.isdeleted && item.apivisibilityid == abyss.defaultIds.apiVisibilityPublic );
+				this.apiOptions = apiOptions.filter( (item) => item.apivisibilityid === abyss.defaultIds.apiVisibilityPublic );
 				this.apiOptions.forEach((value, key) => {
 					Vue.set(value, 'name', value.openapidocument.info.title);
 				});
@@ -118,7 +118,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select'], funct
 				axios.get(abyss.ajax.proxy_list + '/?likename=' + search)
 				.then((response) => {
 					if (response.data != null) {
-						// this.apiOptions = response.data.filter( (item) => item.isdeleted == false && item.apivisibilityid == abyss.defaultIds.apiVisibilityPublic );
+						// this.apiOptions = response.data.filter( (item) => !item.isdeleted && item.apivisibilityid == abyss.defaultIds.apiVisibilityPublic );
 						this.apiOptions = response.data.filter( (item) => item.apivisibilityid == abyss.defaultIds.apiVisibilityPublic );
 						this.apiOptions.forEach((value, key) => {
 							Vue.set(value, 'name', value.openapidocument.info.title);
@@ -173,7 +173,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select'], funct
 				this.apiList.forEach(async (value, key) => {
 					await this.getResources(value, 'API', value.openapidocument.info.title + ' ' + value.openapidocument.info.version, value.openapidocument.info.description);
 				});
-				// this.apiList = apiList.filter( (item) => item.isdeleted == false && item.apivisibilityid == abyss.defaultIds.apiVisibilityPublic );
+				// this.apiList = this.apiList.filter( (item) => !item.isdeleted && item.apivisibilityid == abyss.defaultIds.apiVisibilityPublic );
 				// this.apiList = apiList;
 				
 			},
@@ -189,7 +189,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select'], funct
 					axios.get(pxEndpoint),
 				]).then(
 					axios.spread((api_list) => {
-						// this.apiList = api_list.data.filter( (item) => item.isdeleted == false && item.apivisibilityid == abyss.defaultIds.apiVisibilityPublic );
+						// this.apiList = api_list.data.filter( (item) => !item.isdeleted && item.apivisibilityid == abyss.defaultIds.apiVisibilityPublic );
 						// this.apiList = api_list.data;
 						this.apiList = api_list.data.filter( (item) => item.apivisibilityid == abyss.defaultIds.apiVisibilityPublic );
 						this.paginate = this.makePaginate(api_list.data);
@@ -205,7 +205,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select'], funct
 			this.$emit('set-page', 'explore', 'init');
 			await this.getPage(1);
 			await this.getMyApps();
-			this.apiList = this.apiList.filter( (item) => item.apivisibilityid == abyss.defaultIds.apiVisibilityPublic );
+			this.apiList = this.apiList.filter( (item) => item.apivisibilityid === abyss.defaultIds.apiVisibilityPublic );
 			this.paginate = this.makePaginate(this.apiList);
 			this.isLoading = false;
 			this.preload();

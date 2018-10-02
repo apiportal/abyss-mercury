@@ -139,7 +139,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 			},
 			/*deletePermission(item) {
 				var r = confirm('Are you sure to delete?');
-				if (r == true) {
+				if (r === true) {
 					axios.delete(abyss.ajax.permission_list + '/' + item.uuid, item).then(response => {
 						item.isdeleted = true;
 						console.log("DELETE permission response: ", response);
@@ -151,14 +151,14 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 			async permissionAction(act) {
 				var result = await this.$validator.validateAll();
 				if (result) {
-					if (act == 'add') {
+					if (act === 'add') {
 						this.fixProps(this.permission);
 						var item = await this.addItem(abyss.ajax.permission_list, this.deleteProps(this.permission));
 						this.getPage(1);
 						this.$emit('set-state', 'init');
 						this.permission = _.cloneDeep(this.newPermission);
 					}
-					if (act == 'edit') {
+					if (act === 'edit') {
 						var item = await this.editItem( abyss.ajax.permission_list, this.permission.uuid, this.deleteProps(this.permission) );
 						this.getPage(1);
 						this.$emit('set-state', 'init');
@@ -170,7 +170,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 			/*permissionAction(act) {
 				this.$validator.validateAll().then((result) => {
 					if (result) {
-						if (act == 'add') {
+						if (act === 'add') {
 							this.fixProps(this.permission);
 							var itemArr = [];
 							itemArr.push(this.deleteProps(this.permission));
@@ -185,7 +185,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 								this.handleError(error);
 							});
 						}
-						if (act == 'edit') {
+						if (act === 'edit') {
 							this.updateItem(abyss.ajax.permission_list + '/' + this.permission.uuid, this.deleteProps(this.permission), this.permissionList).then(response => {
 								console.log("editPermission response: ", response);
 								this.getPage(1);

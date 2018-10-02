@@ -2,8 +2,8 @@ var $lt = null, $pt = null, $pi = null, loaded = false;
 loaded = false;
 function fragListener(event) {
 	// var $source = $(this);
-	var isl = event.type != 'load';
-	var isb = isl || event.type != 'beforehttp';
+	var isl = event.type !== 'load';
+	var isb = isl || event.type !== 'beforehttp';
 	if (!isl && !isb) {
 		return;
 	}
@@ -20,7 +20,7 @@ function fragListener(event) {
 	}
 }
 function fragsListener(event) {
-	if (event.type != 'load') {
+	if (event.type !== 'load') {
 		return;
 	}
 	var firstLoad = !loaded;

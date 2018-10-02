@@ -22,7 +22,7 @@ define(['global'], function(abyss){
 	var abyssGatewayUrl = abyssProtocol + '://' + abyssHost + ':' + abyssGatewayPort + '/' + abyssGatewayPath;
 	// gateway url = hostProtocol+host+gatewayPort+gatewayContext
 	// if (abyssHost.indexOf(".com") >= 0) {
-	if (hostProtocol == 'https') {
+	if (hostProtocol === 'https') {
 		abyssLocation = abyssProtocol + '://' + abyssHost + '/' + abyssPath;
 		abyssJsonLocation = abyssProtocol + '://' + abyssHost + '/' + abyssJsonPath;
 		abyssYamlLocation = abyssProtocol + '://' + abyssHost + '/' + abyssYamlPath;

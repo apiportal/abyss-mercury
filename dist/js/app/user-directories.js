@@ -142,7 +142,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 			},
 			/*deleteType(item) {
 				var r = confirm('Are you sure to delete?');
-				if (r == true) {
+				if (r === true) {
 					axios.delete(abyss.ajax.subject_directory_types + '/' + item.uuid, item).then(response => {
 						item.isdeleted = true;
 						console.log("deleteUser response: ", response);
@@ -202,7 +202,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 			},
 			/*deleteDirectory(item) {
 				var r = confirm('Are you sure to delete?');
-				if (r == true) {
+				if (r === true) {
 					axios.delete(abyss.ajax.subject_directories_list + '/' + item.uuid, item).then(response => {
 						item.isdeleted = true;
 						console.log("DELETE directory response: ", response);
@@ -214,7 +214,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 			async directoryAction(act) {
 				var result = await this.$validator.validateAll();
 				if (result) {
-					/*if (act == 'add') {
+					/*if (act === 'add') {
 						this.fixProps(this.directory);
 						var itemArr = [];
 						itemArr.push(this.deleteProps(this.directory));
@@ -228,19 +228,19 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 							this.handleError(error);
 						});
 					}*/
-					if (act == 'add') {
+					if (act === 'add') {
 						this.fixProps(this.directory);
 						var item = await this.addItem(abyss.ajax.subject_directories_list, this.deleteProps(this.directory), this.directoryList);
 						this.$emit('set-state', 'init');
 						this.directory = _.cloneDeep(this.newDirectory);
 					}
-					if (act == 'edit') {
+					if (act === 'edit') {
 						var item = await this.editItem( abyss.ajax.subject_directories_list, this.directory.uuid, this.deleteProps(this.directory), this.directoryList );
 						this.$emit('set-state', 'init');
 						this.directory = _.cloneDeep(this.newDirectory);
 						this.selected = null;
 					}
-					/*if (act == 'edit') {
+					/*if (act === 'edit') {
 						this.updateItem(abyss.ajax.subject_directories_list + '/' + this.directory.uuid, this.deleteProps(this.directory), this.directoryList).then(response => {
 							console.log("editDirectory response: ", response);
 							this.$emit('set-state', 'init');

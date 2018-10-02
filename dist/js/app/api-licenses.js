@@ -121,7 +121,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment'], funct
 			},
 			/*deleteLicense(item) {
 				var r = confirm('Are you sure to delete?');
-				if (r == true) {
+				if (r === true) {
 					axios.delete(abyss.ajax.licenses + '/' + item.uuid, item).then(response => {
 						item.isdeleted = true;
 						console.log("DELETE license response: ", response);
@@ -134,7 +134,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment'], funct
 			async licenseAction(act) {
 				var result = await this.$validator.validateAll();
 				if (result) {
-					/*if (act == 'add') {
+					/*if (act === 'add') {
 						this.fixProps(this.license);
 						var itemArr = [];
 						itemArr.push(this.deleteProps(this.license));
@@ -152,7 +152,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment'], funct
 							this.handleError(error);
 						});
 					}*/
-					if (act == 'add') {
+					if (act === 'add') {
 						this.fixProps(this.license);
 						console.log("this.deleteProps(this.license): ", this.deleteProps(this.license));
 						var item = await this.addItem(abyss.ajax.licenses, this.deleteProps(this.license), this.licenseList);
@@ -161,7 +161,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment'], funct
 						this.$emit('set-state', 'init');
 						this.license = _.cloneDeep(this.newLicense);
 					}
-					if (act == 'edit') {
+					if (act === 'edit') {
 						console.log("this.deleteProps(this.license): ", this.deleteProps(this.license));
 						var item = await this.editItem( abyss.ajax.licenses, this.license.uuid, this.deleteProps(this.license), this.licenseList );
 						console.log("getResources--------------: ", item);
@@ -171,7 +171,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment'], funct
 						this.license = _.cloneDeep(this.newLicense);
 						this.selected = null;
 					}
-					/*if (act == 'edit') {
+					/*if (act === 'edit') {
 						this.updateItem(abyss.ajax.licenses + '/' + this.license.uuid, this.deleteProps(this.license), this.licenseList).then(response => {
 							console.log("editLicense response: ", response);
 							var item = response.data[0];
@@ -206,7 +206,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment'], funct
 				var subject_policies_list = this.getList(abyss.ajax.subject_policies_list + this.$root.rootData.user.uuid);
 				var [licenseList, policyList] = await Promise.all([subject_licenses_list, subject_policies_list]);
 				Vue.set( this, 'licenseList', licenseList );
-				Vue.set( this, 'policyList', policyList.filter( (item) => item.isdeleted == false ) );
+				Vue.set( this, 'policyList', policyList.filter( (item) => item.isdeleted === false ) );
 				this.licenseList.forEach((value, key) => {
 					Vue.set(value, 'policies', _.filter(this.policyList, (v) => _.includes(value.licensedocument.termsOfService.policyKey, v.uuid)) );
 					this.getResources(value, 'LICENSE', value.name, value.licensedocument.info.description);
@@ -221,16 +221,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment'], funct
 			this.newLicense = _.cloneDeep(this.license);
 			console.time();
 			this.getPage(1);
-			/*axios.all([
-				axios.get(abyss.ajax.subject_policies_list + this.$root.rootData.user.uuid ),
-			]).then(
-				axios.spread((subject_policies_list) => {
-					this.policyList = subject_policies_list.data.filter( (item) => item.isdeleted == false );
-					this.getPage(1);
-				})
-			).catch(error => {
-				this.handleError(error);
-			});*/
 		}
 	});
 });

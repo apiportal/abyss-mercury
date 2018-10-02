@@ -993,7 +993,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 						console.log("this.child: ", this.child);
 						Vue.set(this.child, 'x-abyss-privacy', {attributeClass: 'auxiliary', action: 'passThrough'});
 					}
-					if (newVal == false) {
+					if (newVal === false) {
 						console.log("this.child: ", this.child);
 						Vue.delete(this.child, 'x-abyss-privacy');
 					}
@@ -2523,7 +2523,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				if (this.isChanged && this.rootState != 'init') {
 					var r = confirm('Are you sure to cancel editing this API?' + '\nCHANGES: ' + JSON.stringify(this.changes, null, 2));
 					console.log("rrrrrrrrrrrrrrrr: ", r);
-					if (r == true) {
+					if (r === true) {
 						this.cancelApi();
 					}
 					return r;
@@ -3051,7 +3051,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				axios.get(this.ajaxMyBusinessUrl + '?likename=' + search)
 				.then((response) => {
 					if (response.data != null) {
-						// this.businessApiOptions = response.data.filter( (item) => item.isdeleted == false );
+						// this.businessApiOptions = response.data.filter( (item) => !item.isdeleted );
 						this.businessApiOptions = response.data;
 						this.businessApiOptions.forEach((value, key) => {
 							Vue.set(value, 'name', value.openapidocument.info.title);
@@ -3078,7 +3078,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				axios.get(this.ajaxMyProxiesUrl + '?likename=' + search)
 				.then((response) => {
 					if (response.data != null) {
-						// this.proxyApiOptions = response.data.filter( (item) => item.isdeleted == false );
+						// this.proxyApiOptions = response.data.filter( (item) => !item.isdeleted );
 						this.proxyApiOptions = response.data;
 						this.proxyApiOptions.forEach((value, key) => {
 							Vue.set(value, 'name', value.openapidocument.info.title);
@@ -3153,7 +3153,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				});
 			},*/
 			fixCategory(filter) {
-				if (filter && filter.length != 0) {
+				if (filter && filter.length !== 0) {
 					filter.forEach((value, key) => {
 						// console.log("value: ", value);
 						if (typeof value === 'string') {
@@ -3176,7 +3176,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				}
 			},
 			fixTag(filter) {
-				if (filter && filter.length != 0) {
+				if (filter && filter.length !== 0) {
 					filter.forEach((value, key) => {
 						// console.log("value: ", value);
 						if (typeof value === 'string') {
@@ -3200,7 +3200,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				}
 			},
 			fixGroup(filter) {
-				if (filter && filter.length != 0) {
+				if (filter && filter.length !== 0) {
 					filter.forEach((value, key) => {
 						// console.log("value: ", value);
 						if (!value.uuid) {
@@ -3448,7 +3448,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				var apiLicenses = await this.getList(abyss.ajax.api_licenses_api + item.uuid);
 				if (apiLicenses) {
 					console.log("this.myLicenseList: ", this.myLicenseList);
-					this.myApiLicenses = apiLicenses.filter( (item) => item.isdeleted == false );
+					this.myApiLicenses = apiLicenses.filter( (item) => !item.isdeleted );
 					console.log("this.myApiLicenses: ", this.myApiLicenses);
 					this.myLicenseList.forEach((value, key) => {
 						var index = _.findIndex(this.myApiLicenses, { 'licenseid': value.uuid });
@@ -3466,7 +3466,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				axios.get(abyss.ajax.api_licenses_api + item.uuid).then(response => {
 					if (response.data != null) {
 						console.log("GET License response: ", response);
-						this.myApiLicenses = response.data.filter( (item) => item.isdeleted == false );
+						this.myApiLicenses = response.data.filter( (item) => !item.isdeleted );
 						var actLcs = _.filter(this.myApiLicenses, { 'apiid': item.uuid });
 						console.log("actLcs: ", actLcs);
 						actLcs.forEach((value, key) => {
@@ -3608,9 +3608,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					this.swChanges = this.checkDiff(val, this.swOld);
 					// console.log("swaggerText.swChanges: ", this.swChanges);
 					if ( Object.keys(this.swChanges).length > 1 ) {
-						// if (this.swaggerText.focus == false) {
+						// if (this.swaggerText.focus === false) {
 							// console.log("val.focus: ", val.focus);
-						if (val.focus == false) {
+						if (val.focus === false) {
 							console.log("!!!!!!!!!!!!!!!!!!!!: ");
 							this.uploadSchema(val.text);
 						}
@@ -3626,8 +3626,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 			var subject_licenses_list = this.getList(abyss.ajax.subject_licenses_list + this.$root.rootData.user.uuid );
 			var subject_policies_list = this.getList(abyss.ajax.subject_policies_list + this.$root.rootData.user.uuid );
 			var [myLicenseList, myPolicyList] = await Promise.all([subject_licenses_list, subject_policies_list]);
-			this.myLicenseList = myLicenseList.filter( (item) => item.isdeleted == false );
-			this.myPolicyList = myPolicyList.filter( (item) => item.isdeleted == false );
+			this.myLicenseList = myLicenseList.filter( (item) => !item.isdeleted );
+			this.myPolicyList = myPolicyList.filter( (item) => !item.isdeleted );
 			var newLcs = this.myLicenseList;
 			newLcs.forEach((value, key) => {
 				Vue.set(value, 'policies', _.filter(this.myPolicyList, (v) => _.includes(value.licensedocument.termsOfService.policyKey, v.uuid)) );
@@ -3640,8 +3640,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				axios.get(abyss.ajax.subject_policies_list + this.$root.rootData.user.uuid ),
 			]).then(
 				axios.spread((subject_licenses_list, subject_policies_list) => {
-					this.myLicenseList = subject_licenses_list.data.filter( (item) => item.isdeleted == false );
-					this.myPolicyList = subject_policies_list.data.filter( (item) => item.isdeleted == false );
+					this.myLicenseList = subject_licenses_list.data.filter( (item) => !item.isdeleted );
+					this.myPolicyList = subject_policies_list.data.filter( (item) => !item.isdeleted );
 					var newLcs = this.myLicenseList;
 					newLcs.forEach((value, key) => {
 						Vue.set(value, 'policies', _.filter(this.myPolicyList, (v) => _.includes(value.licensedocument.termsOfService.policyKey, v.uuid)) );

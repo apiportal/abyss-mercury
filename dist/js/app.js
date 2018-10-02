@@ -8,7 +8,6 @@ define(['config', 'jquery', 'bootstrap', 'domready'], function(config, $){
 	var $wrapper = $('body');
 	var dropdownAnims = function(){
 		function dropdownEffectData(target) {
-			// @todo - page level global?
 			var effectInDefault = null,
 				effectOutDefault = null;
 			var dropdown = $(target),
@@ -43,7 +42,7 @@ define(['config', 'jquery', 'bootstrap', 'domready'], function(config, $){
 				data.dropdownMenu.removeClass('animated');
 				data.dropdownMenu.removeClass(data.effectIn);
 				data.dropdownMenu.removeClass(data.effectOut);
-				if (typeof callbackFunc == 'function') {
+				if (typeof callbackFunc === 'function') {
 					callbackFunc();
 				}
 			});
@@ -72,7 +71,7 @@ define(['config', 'jquery', 'bootstrap', 'domready'], function(config, $){
 				}
 			},
 		});
-		/*var navbarToggle = '.navbar-toggle'; 
+		/*var navbarToggle = '.navbar-toggle';
 		$('.dropdown, .dropup').each(function() {
 			var dropdown = $(this),
 				dropdownToggle = $('[data-toggle="dropdown"]', dropdown),
@@ -82,7 +81,7 @@ define(['config', 'jquery', 'bootstrap', 'domready'], function(config, $){
 			// $('.dropdown').on('mouseenter mouseleave click tap', function() {
 			// dropdown.on('mouseenter mouseleave click tap', function() {
 				var notMobileMenu = $(navbarToggle).size() > 0 && $(navbarToggle).css('display') === 'none';
-				if ((dropdownHoverAll == true || (dropdownHoverAll == false && notMobileMenu))) {
+				if ((dropdownHoverAll === true || (dropdownHoverAll === false && notMobileMenu))) {
 					// dropdownToggle.trigger('click');
 					dropdownToggle.dropdown('toggle');
 					// $(this).toggleClass("open");
@@ -151,30 +150,28 @@ define(['config', 'jquery', 'bootstrap', 'domready'], function(config, $){
 			return;
 		});
 		$(document).on("mouseenter mouseleave",".fixed-sidebar-left", function(e) {
-			if (e.type == "mouseenter") {
-				$wrapper.addClass("sidebar-hover"); 
-			}
-			else { 
-				$wrapper.removeClass("sidebar-hover");  
+			if (e.type === "mouseenter") {
+				$wrapper.addClass("sidebar-hover");
+			} else {
+				$wrapper.removeClass("sidebar-hover");
 			}
 			return false;
 		});
 		$(document).on("mouseenter mouseleave",".wrapper > .setting-panel", function(e) {
-			if (e.type == "mouseenter") {
-				$wrapper.addClass("no-transition"); 
-			}
-			else { 
-				$wrapper.removeClass("no-transition");  
+			if (e.type === "mouseenter") {
+				$wrapper.addClass("no-transition");
+			} else {
+				$wrapper.removeClass("no-transition");
 			}
 			return false;
 		});
 		// ■■ Todo
 		var random = Math.random();
 		$(document).on("keypress","#add_todo",function (e) {
-			if ((e.which == 13)&&(!$(this).val().length == 0))  {
+			if ((e.which === 13)&&(!$(this).val().length === 0))  {
 					$('<li class="nav-item"><div class="checkbox checkbox-success"><input type="checkbox" id="checkbox'+random+'"/><label for="checkbox'+random+'">' + $('.new-todo input').val() + '</label></div></li>').insertAfter(".todo-list li:last-child");
 					$('.new-todo input').val('');
-			} else if(e.which == 13) {
+			} else if(e.which === 13) {
 				alert('Please type somthing!');
 			}
 			return;
@@ -196,15 +193,15 @@ define(['config', 'jquery', 'bootstrap', 'domready'], function(config, $){
 		var refreshMe = '.refresh';
 		$(document).on("click",refreshMe,function (e) {
 			var panelToRefresh = $(this).closest('.panel').find('.refresh-container');
-			var dataToRefresh = $(this).closest('.panel').find('.panel-wrapper');
+			// var dataToRefresh = $(this).closest('.panel').find('.panel-wrapper');
 			var loadingAnim = panelToRefresh.find('.la-anim-1');
 			panelToRefresh.show();
 			setTimeout(function(){
 				loadingAnim.addClass('la-animate');
 			},100);
-			function started(){} //function before timeout
+			// function started(){} //function before timeout
 			setTimeout(function(){
-				function completed(){} //function after timeout
+				// function completed(){} //function after timeout
 				panelToRefresh.fadeOut(800);
 				setTimeout(function(){
 					loadingAnim.removeClass('la-animate');
@@ -222,7 +219,7 @@ define(['config', 'jquery', 'bootstrap', 'domready'], function(config, $){
 		$(document).on('click', '.close-panel', function (e) {
 			var effect = $(this).data('effect');
 				$(this).closest('.panel')[effect]();
-			return false;	
+			return false;
 		});
 		// ■■ Nav Tab Responsive Js
 		$(document).on('show.bs.tab', '.nav-tabs-responsive [data-toggle="tab"]', function(e) {
@@ -262,7 +259,7 @@ define(['config', 'jquery', 'bootstrap', 'domready'], function(config, $){
 			this.menus();
 			this.elements();
 			this.resize();
-			// if ($('.acedit').length) { 
+			// if ($('.acedit').length) {
 			// 	require(['ace'], function(doc) {
 			// 		// UI.ace.init('.acedit');
 			// 	});
@@ -315,24 +312,20 @@ define(['config', 'jquery', 'bootstrap', 'domready'], function(config, $){
 			var width = $(window).width();
 			$('.full-height').css('height', (height));
 			// $('.page-wrapper').css('min-height', (height));
-			
 			// ■■ Right Sidebar Scroll Start
 			if(width<=1007){
 				$('#chat_list_scroll').css('height', (height - 270));
 				$('.fixed-sidebar-right .chat-content').css('height', (height - 279));
 				$('.fixed-sidebar-right .set-height-wrap').css('height', (height - 219));
-				
-			}
-			else {
+			} else {
 				$('#chat_list_scroll').css('height', (height - 204));
 				$('.fixed-sidebar-right .chat-content').css('height', (height - 213));
 				$('.fixed-sidebar-right .set-height-wrap').css('height', (height - 153));
 			}	
 			// ■■ Right Sidebar Scroll End
-			
 			// ■■ Vertical Tab Height Cal Start
 			var verticalTab = $(".vertical-tab");
-			if( verticalTab.length > 0 ){ 
+			if( verticalTab.length > 0 ){
 				for(var i = 0; i < verticalTab.length; i++){
 					var $this =$(verticalTab[i]);
 					$this.find('ul.nav').css(
@@ -384,7 +377,7 @@ define(['config', 'jquery', 'bootstrap', 'domready'], function(config, $){
 			// $('input:checkbox').keypress(function(event) {
 			// 	console.log("this: ", this);
 			// 	var keycode = (event.keyCode ? event.keyCode : event.which);
-			// 	if (keycode == 13) {
+			// 	if (keycode === 13) {
 			// 		$(this).attr('checked', 'checked');
 			// 		// Checkbox_to_RadioButton(this);
 			// 		// alert("Enter key was pressed");
@@ -427,7 +420,7 @@ define(['config', 'jquery', 'bootstrap', 'domready'], function(config, $){
 			});
 			$(document).on('click', '.column-minimize-button', function () {
 				var targets = $(this).data('targets') || '';
-				var target = $(this).data('target') || '';
+				// var target = $(this).data('target') || '';
 				$(targets).addClass('column-minimize');
 			});
 			$(document).on('click', '.column-normalize-button', function () {
@@ -447,7 +440,7 @@ define(['config', 'jquery', 'bootstrap', 'domready'], function(config, $){
 			$(document).on('click', '.js-eye', function (e) {
 				var $pass = $(this).parents('.js-showpass').find('input');
 				var $eye = $(this).find('i');
-				if ($pass.attr('type') == 'password') {
+				if ($pass.attr('type') === 'password') {
 					$pass.attr('type', 'text');
 					$eye.addClass('fa-eye-slash');
 					$eye.removeClass('fa-eye');
@@ -521,11 +514,11 @@ define(['config', 'jquery', 'bootstrap', 'domready'], function(config, $){
 			$('.fixed-sidebar-left .side-nav li a').each(function(i, e) {
 				var locPath = UI.helpers.location.pathname;
 				if ( $(this).attr('href') ) {
-					if ( $(this).attr('href').indexOf('http') != -1 ) {
+					if ( $(this).attr('href').indexOf('http') !== -1 ) {
 						locPath = location.origin + locPath;
 					}
-					if ( location.pathname != "/" ) { 
-						if ( $(this).attr('href') == locPath || $(this).data('href') == locPath ) {
+					if ( location.pathname !== "/" ) {
+						if ( $(this).attr('href') === locPath || $(this).data('href') === locPath ) {
 							if ($(this).is('.js-collapse-open')) {
 								var target = $(this).next('button').data('target');
 								$(target).addClass('in');
@@ -543,7 +536,7 @@ define(['config', 'jquery', 'bootstrap', 'domready'], function(config, $){
 	}
 	UI.navhorz = {
 		init: function() {
-			var items = $('.nav-horz > nav > ul > li').width();
+			// var items = $('.nav-horz > nav > ul > li').width();
 			var $outer = $('.nav-horz nav');
 			var $inner = $('.nav-horz ul');
 			if ($inner.width() > $outer.width()) {
@@ -637,40 +630,39 @@ define(['config', 'jquery', 'bootstrap', 'domready'], function(config, $){
 				var width = $(window).width();
 				if(width<=1007) {
 					chatAppTarget.removeClass('chat-box-slide');
-				}	
+				}
 				return false;
 			});
 		},
 		evnt: function() {
 			// ■■ Chat
 			$(document).on("keypress","#input_msg_send",function (e) {
-				if ((e.which == 13)&&(!$(this).val().length == 0)) {
+				if ((e.which === 13)&&(!$(this).val().length === 0)) {
 					$('<li class="self mb-2"><div class="self-msg-wrap"><div class="msg d-block float-right">' + $(this).val() + '<div class="msg-per-detail mt-5"><span class="msg-time txt-grey">3:30 pm</span></div></div></div><div class="clearfix"></div></li>').insertAfter(".fixed-sidebar-right .chat-content ul li:last-child");
 					$(this).val('');
-				} else if(e.which == 13) {
+				} else if(e.which === 13) {
 					alert('Please type somthing!');
 				}
 				return;
 			});
 			$(document).on("keypress","#input_msg_send_widget",function (e) {
-				if ((e.which == 13)&&(!$(this).val().length == 0)) {
+				if ((e.which === 13)&&(!$(this).val().length === 0)) {
 					$('<li class="self mb-2"><div class="self-msg-wrap"><div class="msg d-block float-right">' + $(this).val() + '<div class="msg-per-detail mt-5"><span class="msg-time txt-grey">3:30 pm</span></div></div></div><div class="clearfix"></div></li>').insertAfter(".chat-for-widgets .chat-content ul li:last-child");
 					$(this).val('');
-				} else if(e.which == 13) {
+				} else if(e.which === 13) {
 					alert('Please type somthing!');
 				}
 				return;
 			});
 			$(document).on("keypress","#input_msg_send_chatapp",function (e) {
-				if ((e.which == 13)&&(!$(this).val().length == 0)) {
+				if ((e.which === 13)&&(!$(this).val().length === 0)) {
 					$('<li class="self mb-2"><div class="self-msg-wrap"><div class="msg d-block float-right">' + $(this).val() + '<div class="msg-per-detail mt-5"><span class="msg-time txt-grey">3:30 pm</span></div></div></div><div class="clearfix"></div></li>').insertAfter(".chat-for-widgets-1 .chat-content ul li:last-child");
 					$(this).val('');
-				} else if(e.which == 13) {
+				} else if(e.which === 13) {
 					alert('Please type asomthing!');
 				}
 				return;
 			});
-			
 			$(document).on("click",".fixed-sidebar-right .chat-cmplt-wrap .chat-data",function (e) {
 				$(".fixed-sidebar-right .chat-cmplt-wrap").addClass('chat-box-slide');
 				return false;
@@ -679,7 +671,6 @@ define(['config', 'jquery', 'bootstrap', 'domready'], function(config, $){
 				$(".fixed-sidebar-right .chat-cmplt-wrap").removeClass('chat-box-slide');
 				return false;
 			});
-			
 			// ■■ Chat for Widgets
 			$(document).on("click",".chat-for-widgets.chat-cmplt-wrap .chat-data",function (e) {
 				$(".chat-for-widgets.chat-cmplt-wrap").addClass('chat-box-slide');
@@ -709,11 +700,8 @@ define(['config', 'jquery', 'bootstrap', 'domready'], function(config, $){
 			var $thiz = $(this);
 			var target = $thiz.data('target') || $thiz.attr('href');
 			var cls = $thiz.data('class') || '';
-			if ($thiz.is(':radio') || $thiz.is(':checkbox') && $thiz.prop( "checked" )){
-				$(target).removeClass(cls);
-			} else {
-				$(target).removeClass(cls);
-			}
+			// if ($thiz.is(':radio') || $thiz.is(':checkbox') && $thiz.prop( "checked" )){ } else {}
+			$(target).removeClass(cls);
 		});
 	};
 	$.fn.initz_addclass = function() {
@@ -721,11 +709,7 @@ define(['config', 'jquery', 'bootstrap', 'domready'], function(config, $){
 			var $thiz = $(this);
 			var target = $thiz.data('target') || $thiz.attr('href');
 			var cls = $thiz.data('class') || '';
-			if ($thiz.is(':radio') || $thiz.is(':checkbox') && $thiz.prop( "checked" )){
-				$(target).addClass(cls);
-			} else {
-				$(target).addClass(cls);
-			}
+			$(target).addClass(cls);
 		});
 	};
 	$.fn.initz_toggleclass = function() {
@@ -734,13 +718,8 @@ define(['config', 'jquery', 'bootstrap', 'domready'], function(config, $){
 			var target = $thiz.data('target') || $thiz.attr('href');
 			var cls = $thiz.data('class') || '';
 			var remove = $thiz.data('remove') || '';
-			if ($thiz.is(':radio') || $thiz.is(':checkbox') && $thiz.prop( "checked" )){
-				$(target).toggleClass(cls);
-				$(target).removeClass(remove);
-			} else {
-				$(target).toggleClass(cls);
-				$(target).removeClass(remove);
-			}
+			$(target).toggleClass(cls);
+			$(target).removeClass(remove);
 			// console.log("target: ", i, target, cls, $(target).is('.' + cls));
 			if ($(target).is('.' + cls)) {
 				$thiz.addClass('active');
@@ -755,13 +734,8 @@ define(['config', 'jquery', 'bootstrap', 'domready'], function(config, $){
 			var target = $thiz.data('target') || $thiz.attr('href');
 			var cls = $thiz.data('class') || '';
 			var all = $thiz.data('all');
-			if ($thiz.is(':radio') || $thiz.is(':checkbox') && $thiz.prop( "checked" )){
-				$(all).removeClass(cls);
-				$(target).addClass(cls);
-			} else {
-				$(all).removeClass(cls);
-				$(target).addClass(cls);
-			}
+			$(all).removeClass(cls);
+			$(target).addClass(cls);
 		});
 	};
 	$.fn.initz_pageclass = function() {
@@ -770,19 +744,14 @@ define(['config', 'jquery', 'bootstrap', 'domready'], function(config, $){
 			var target = '.wrapper';
 			var cls = $thiz.data('page') || '';
 			var remove = $thiz.data('pageremove') || '';
-			if ($thiz.is(':radio') || $thiz.is(':checkbox') && $thiz.prop( "checked" )){
-				$(target).addClass(cls);
-				$(target).removeClass(remove);
-			} else {
-				$(target).addClass(cls);
-				$(target).removeClass(remove);
-			}
+			$(target).addClass(cls);
+			$(target).removeClass(remove);
 		});
 	};
 	$.fn.initz_uncheck = function() {
 		return this.each(function(i,e) {
 			var $thiz = $(this);
-			var target = $thiz.data('uncheck');
+			// var target = $thiz.data('uncheck');
 			$('input[name="specs"]').prop('checked', false);
 		});
 	};
