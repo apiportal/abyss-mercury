@@ -167,7 +167,7 @@ const MyToaster = {
 						}
 					});
 				},
-				toast2(type, ops) {
+				/*toast2(type, ops) {
 					var defs = this.toastOptions.defs;
 					require(['izitoast'],function(iziToast){
 						if (type == 'show') {
@@ -176,25 +176,25 @@ const MyToaster = {
 							iziToast.error(ops);
 						}
 					});
-				},
-				toastAnswer() {
+				},*/
+				/*toastAnswer() {
 					return this.answer;
-				}
+				}*/
 			}
 		})
 		// 4. add an instance method
 		Vue.prototype.$toast = function(type, methodOptions) {
 			this.toast(type, methodOptions);
 		}
-		Vue.prototype.$toastAnswer = function(type, methodOptions) {
+		/*Vue.prototype.$toastAnswer = function(type, methodOptions) {
 			console.log("this.answer: ", this.answer);
 			return this.answer;
-		}
-		Vue.prototype.$toast2 = function(type, methodOptions) {
+		}*/
+		/*Vue.prototype.$toast2 = function(type, methodOptions) {
 			this.toast2(type, methodOptions);
 			console.log("this.toastAnswer(): ", this.toastAnswer());
 			return this.toastAnswer();
-		}
+		}*/
 		Vue.prototype.$service = service;
 	}
 }

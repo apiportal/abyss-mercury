@@ -989,11 +989,10 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				set(newVal) {
 					console.log("newVal: ", newVal);
 					console.log("this: ", this);
-					if (newVal == true) {
+					if (newVal) {
 						console.log("this.child: ", this.child);
 						Vue.set(this.child, 'x-abyss-privacy', {attributeClass: 'auxiliary', action: 'passThrough'});
-					}
-					if (newVal === false) {
+					} else {
 						console.log("this.child: ", this.child);
 						Vue.delete(this.child, 'x-abyss-privacy');
 					}
@@ -2090,7 +2089,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 									spec: {
 										wrapActions: {
 											updateSpec: (oriAction) => (...args) => {
-												var [str, src, arg1, arg2, arg3] = args;
+												// var [str, src, arg1, arg2, arg3] = args;
+												var [str, src] = args;
 												// console.log("str: ", str);
 												if (!src) {
 													src = 'fields';
@@ -2485,7 +2485,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 						$thiz.val(vm.api.color);
 						var zbg = $thiz.data('targetbg')||'body';
 						// var ztxt = $thiz.data('targettxt')||'h1,h2,h3';
-						var zformat = $thiz.data('format')||'rgba';
+						// var zformat = $thiz.data('format')||'rgba';
 						// var bodyStyle = $(zbg)[0].style;
 						$thiz.colorpicker({
 							// format: zformat, 
@@ -3584,9 +3584,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				handler(val, oldVal) {
 					this.changes = this.checkDiff(val, this.selectedApi);
 					if ( Object.keys(this.changes).length == 0 || (Object.keys(this.changes).length == 1 && Object.keys(this.changes).some(v => v == 'specs')) ) {
-						this.isChanged = false; 
+						this.isChanged = false;
 					} else {
-						this.isChanged = true; 
+						this.isChanged = true;
 					}
 					// if ( Object.keys(this.changes).some(v => v == 'openapidocument') && (this.$root.rootState == 'edit' || this.$root.rootState == 'create') ) {
 						console.log("11111111111: ", this.$root.rootState);

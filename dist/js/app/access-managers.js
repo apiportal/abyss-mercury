@@ -175,6 +175,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 				var subType = this.accessManagerTypes.find((el) => el.uuid === typ );
 				if (subType) {
 					return subType.typename;
+				} else {
+					return false;
 				}
 			},
 			cancelAccessManager() {
@@ -236,12 +238,12 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 					}*/
 					if (act === 'add') {
 						this.fixProps(this.accessManager);
-						var item = await this.addItem(abyss.ajax.access_managers, this.deleteProps(this.accessManager), this.accessManagerList);
+						await this.addItem(abyss.ajax.access_managers, this.deleteProps(this.accessManager), this.accessManagerList);
 						this.$emit('set-state', 'init');
 						this.accessManager = _.cloneDeep(this.newAccessManager);
 					}
 					if (act === 'edit') {
-						var item = await this.editItem( abyss.ajax.access_managers, this.accessManager.uuid, this.deleteProps(this.accessManager), this.accessManagerList );
+						await this.editItem( abyss.ajax.access_managers, this.accessManager.uuid, this.deleteProps(this.accessManager), this.accessManagerList );
 						this.$emit('set-state', 'init');
 						this.accessManager = _.cloneDeep(this.newAccessManager);
 						this.selected = null;

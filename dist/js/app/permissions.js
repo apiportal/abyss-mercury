@@ -153,13 +153,13 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 				if (result) {
 					if (act === 'add') {
 						this.fixProps(this.permission);
-						var item = await this.addItem(abyss.ajax.permission_list, this.deleteProps(this.permission));
+						await this.addItem(abyss.ajax.permission_list, this.deleteProps(this.permission));
 						this.getPage(1);
 						this.$emit('set-state', 'init');
 						this.permission = _.cloneDeep(this.newPermission);
 					}
 					if (act === 'edit') {
-						var item = await this.editItem( abyss.ajax.permission_list, this.permission.uuid, this.deleteProps(this.permission) );
+						await this.editItem( abyss.ajax.permission_list, this.permission.uuid, this.deleteProps(this.permission) );
 						this.getPage(1);
 						this.$emit('set-state', 'init');
 						this.permission = _.cloneDeep(this.newPermission);

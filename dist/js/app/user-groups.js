@@ -144,12 +144,16 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 				var subDir = this.directoryOptions.find((el) => el.uuid == dir );
 				if (subDir) {
 					return subDir.directoryname;
+				} else {
+					return false;
 				}
 			},
 			getPermissionName(dir) {
 				var subPrm = this.permissionOptions.filter((el) => el.subjectid == dir );
 				if (subPrm) {
 					return subPrm.map(e => e.permission).join(', ');
+				} else {
+					return false;
 				}
 			},
 			filterPermission(filter) {
@@ -397,6 +401,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 					console.log("item: ", item);
 					if (item.permissions.length) {
 						return item.permissions.map(e => e.name).join(', ');
+					} else {
+						return false;
 					}
 				});
 			},

@@ -162,7 +162,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 			cancelApp() {
 				if (!this.preventCancel) {
 					this.preventCancel = false;
-					this.$emit('set-state', 'init'); 
+					this.$emit('set-state', 'init');
 					var index = this.$root.appList.indexOf(this.app);
 					this.$root.appList[index] = this.selectedApp;
 					this.app = _.cloneDeep(this.newApp);
@@ -371,7 +371,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 								appid: item.uuid,
 							};
 							var uApp = await this.addItem(abyss.ajax.subject_app_list, itemObj);
-							await this.setAppPermAndToken(this.app);
+							if (uApp) {
+								await this.setAppPermAndToken(this.app);
+							}
 							// this.$root.appList.push(item);
 							// this.app = _.cloneDeep(this.newApp);
 							this.getMyApps();

@@ -162,6 +162,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 				var subType = this.directoryTypes.find((el) => el.uuid == typ );
 				if (subType) {
 					return subType.typename;
+				} else {
+					return false;
 				}
 			},
 			cancelDirectory() {
@@ -230,12 +232,12 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 					}*/
 					if (act === 'add') {
 						this.fixProps(this.directory);
-						var item = await this.addItem(abyss.ajax.subject_directories_list, this.deleteProps(this.directory), this.directoryList);
+						await this.addItem(abyss.ajax.subject_directories_list, this.deleteProps(this.directory), this.directoryList);
 						this.$emit('set-state', 'init');
 						this.directory = _.cloneDeep(this.newDirectory);
 					}
 					if (act === 'edit') {
-						var item = await this.editItem( abyss.ajax.subject_directories_list, this.directory.uuid, this.deleteProps(this.directory), this.directoryList );
+						await this.editItem( abyss.ajax.subject_directories_list, this.directory.uuid, this.deleteProps(this.directory), this.directoryList );
 						this.$emit('set-state', 'init');
 						this.directory = _.cloneDeep(this.newDirectory);
 						this.selected = null;

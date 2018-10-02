@@ -180,10 +180,10 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 				return shuffle(pass).join('');
 			},
 			getObjCount(obj) {
-				var count = 0;
+				// var count = 0;
 				if (obj) {
 					var el = Object.keys(obj);
-					count = el.length;
+					var count = el.length;
 					if (el) {
 						return el.length;
 					}
@@ -1373,7 +1373,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 				this.$root.isTestApi = true;
 				// require(['swagger-ui'],function(){
 				// define(['swagger-ui'],function(SwaggerUIBundle){
-				var vm = this;
 				require(['swagger-ui', 'css!swagger-ui-css'],function(SwaggerUIBundle){
 					const swUi = SwaggerUIBundle({
 						// url: "https://petstore.swagger.io/v2/swagger.json",
@@ -2310,7 +2309,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 							Vue.set( this.rootData.user.permission, 'accessToken', sortToken[0] );
 							for (var i = 1; i < sortToken.length; i++) {
 								// console.log("sortToken[i].created: ", sortToken[i].created);
-								var del = await this.deleteItem(abyss.ajax.resource_access_tokens, sortToken[i], false);
+								await this.deleteItem(abyss.ajax.resource_access_tokens, sortToken[i], false);
+								// var del = await this.deleteItem(abyss.ajax.resource_access_tokens, sortToken[i], false);
 								// console.log("del: ", del);
 							}
 						}

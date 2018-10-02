@@ -114,6 +114,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 						grpName.push(this.groupOptions.find((el) => el.uuid == value.subjectgroupid ));
 					});
 					return grpName.map(e => e.firstname).join(', ');
+				} else {
+					return false;
 				}
 			},
 			filterGroup(filter) {
@@ -145,12 +147,16 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 				var subDir = this.directoryOptions.find((el) => el.uuid == dir );
 				if (subDir) {
 					return subDir.directoryname;
+				} else {
+					return false;
 				}
 			},
 			getPermissionName(dir) {
 				var subPrm = this.permissionOptions.filter((el) => el.subjectid == dir );
 				if (subPrm) {
 					return subPrm.map(e => e.permission).join(', ');
+				} else {
+					return false;
 				}
 			},
 			filterPermission(filter) {

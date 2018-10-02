@@ -137,6 +137,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 			myReadeds(item) {
 				if (!item.lastMessage.isread && item.folder != 'Draft' && item.folder != 'Sent') {
 					return true;
+				} else {
+					return false;
 				}
 			},
 			async filterMessage(filter) {

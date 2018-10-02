@@ -750,7 +750,7 @@ define(['config', 'jquery', 'bootstrap', 'domready'], function(config, $){
 	};
 	$.fn.initz_uncheck = function() {
 		return this.each(function(i,e) {
-			var $thiz = $(this);
+			// var $thiz = $(this);
 			// var target = $thiz.data('uncheck');
 			$('input[name="specs"]').prop('checked', false);
 		});
