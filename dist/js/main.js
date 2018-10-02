@@ -26,7 +26,7 @@ require.config({
 		"bootstrap": "lib/bootstrap.min",
 		"lodash": "lib/lodash.min",
 		"bootstrap4": "lib/bootstrap.bundle.min",
-		"Vue": "lib/vue",
+		"Vue": "lib/vue.min",
 		// "vue": ["require-vuejs", "https://rawgit.com/edgardleal/require-vuejs/master/dist/require-vuejs"],
 		"vue": ["lib/require-vuejs.min"],
 		"axios": "lib/axios.min",
