@@ -475,7 +475,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 			},*/
 		},
 		mounted() {
-			vm = this;
+			var vm = this;
 			new ClipboardJS('.js-copy', {
 				text: function(trigger) {
 					var targets = $(trigger).data('clipboard-targets');

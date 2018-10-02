@@ -284,11 +284,11 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					var editorOptions = {};
 					var element = document.getElementById('schemaContainer');
 					this.schemaEditor = new JSONEditor(element, editorOptions, initial);
-					schemaEditorClose = function() {
+					var schemaEditorClose = function() {
 						this.schemaEditor.destroy();
 						$('#schemaModal').modal('hide');
 					}.bind(this);
-					schemaEditorSave = function() {
+					var schemaEditorSave = function() {
 						obj[key] = this.schemaEditor.get();
 						schemaEditorClose();
 					}.bind(this);
@@ -648,14 +648,14 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 							var newSec = clone(this.openapi.security);
 							if (!newSec || newSec.length === 0) {
 								newSec = [];
-								for (s in this.openapi.components.securitySchemes) {
+								for (var s in this.openapi.components.securitySchemes) {
 									var scheme = this.openapi.components.securitySchemes[s];
 									var scopes = [];
 									if (scheme.type === 'oauth2') {
 										for (var f in scheme.flows) {
 											var flow = scheme.flows[f];
 											if (flow.scopes) {
-												for (sc in flow.scopes) {
+												for (var sc in flow.scopes) {
 													if (scopes.indexOf(s) < 0) scopes.push(sc);
 												}
 											}
@@ -2244,7 +2244,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				renderOutputAll(type) {
 					$('#all-output').html('<pre class="prettyprint"><code id="pretty-'+type+'"></code></pre>');
 					var def = this.postProcessDefinition();
-					output = JSON.stringify(def, null, 4);
+					var output = JSON.stringify(def, null, 4);
 					if (type == 'yaml') {
 						try {
 							this.editorType = 'yaml';
@@ -2258,7 +2258,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					this.outputRendered = true;
 					this.uploadRendered = false;
 					this.swaggerRendered = false;
-					clippy = new ClipboardJS('#copy-all', {
+					var clippy = new ClipboardJS('#copy-all', {
 						// target: $('#pretty-'+type)
 						target(trigger) {
 							// return $('#pretty-'+type);

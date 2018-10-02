@@ -35,9 +35,9 @@ require.config({
 		"swagger-ui": "swagger/swagger-ui-bundle",
 		"swagger-ui-css": "swagger/swagger-ui.css?noext",
 		//// plugins ////
-		"slimscroll": "plugins/jquery.slimscroll",
+		"slimscroll": "plugins/jquery.slimscroll.min",
 		"moment": "plugins/moment.min",
-		"dropzone": "plugins/dropzone/dropzone",
+		"dropzone": "plugins/dropzone/dropzone.min",
 		"eonasdan-bootstrap-datetimepicker": "plugins/bootstrap-datetimepicker.min",
 		"bootstrap-datetimepicker-css": "plugins/bootstrap-datetimepicker.min.css?noext",
 		"colorpicker": "plugins/bootstrap-colorpicker/bootstrap-colorpicker.min",
