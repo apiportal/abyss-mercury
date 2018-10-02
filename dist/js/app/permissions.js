@@ -131,23 +131,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 				return item;
 			},
 			async deletePermission(item) {
-				var del = await this.deleteItem(abyss.ajax.permission_list, item, true);
-				console.log("del: ", del);
-				if (del) {
-					this.$toast('success', {title: 'ITEM DELETED', message: 'Item deleted successfully', position: 'topRight'});
-				}
+				await this.deleteItem(abyss.ajax.permission_list, item, true);
 			},
-			/*deletePermission(item) {
-				var r = confirm('Are you sure to delete?');
-				if (r === true) {
-					axios.delete(abyss.ajax.permission_list + '/' + item.uuid, item).then(response => {
-						item.isdeleted = true;
-						console.log("DELETE permission response: ", response);
-					}, error => {
-						this.handleError(error);
-					});
-				}
-			},*/
 			async permissionAction(act) {
 				var result = await this.$validator.validateAll();
 				if (result) {

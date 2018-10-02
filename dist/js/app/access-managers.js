@@ -153,23 +153,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 				await this.editItem( abyss.ajax.access_manager_types, item.uuid, this.deleteProps(item), this.accessManagerTypes );
 				this.$emit('set-state', 'init');
 			},
-			/*deleteType(item) {
-				var r = confirm('Are you sure to delete?');
-				if (r === true) {
-					axios.delete(abyss.ajax.access_manager_types + '/' + item.uuid, item).then(response => {
-						item.isdeleted = true;
-						console.log("deleteUser response: ", response);
-					}, error => {
-						this.handleError(error);
-					});
-				}
-			},*/
-			async deleteAccessManager(item) {
-				var del = await this.deleteItem(abyss.ajax.access_manager_types, item, true);
-				console.log("del: ", del);
-				if (del) {
-					this.$toast('success', {title: 'ITEM DELETED', message: 'Item deleted successfully', position: 'topRight'});
-				}
+			async deleteType(item) {
+				item.isdeleted = true;
+				await this.deleteItem(abyss.ajax.access_manager_types, item, true);
 			},
 			getTypeName(typ) {
 				var subType = this.accessManagerTypes.find((el) => el.uuid === typ );
@@ -203,23 +189,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 				return item;
 			},
 			async deleteAccessManager(item) {
-				var del = await this.deleteItem(abyss.ajax.access_managers, item, true);
-				console.log("del: ", del);
-				if (del) {
-					this.$toast('success', {title: 'ITEM DELETED', message: 'Item deleted successfully', position: 'topRight'});
-				}
+				item.isdeleted = true;
+				await this.deleteItem(abyss.ajax.access_managers, item, true);
 			},
-			/*deleteAccessManager(item) {
-				var r = confirm('Are you sure to delete?');
-				if (r === true) {
-					axios.delete(abyss.ajax.access_managers + '/' + item.uuid, item).then(response => {
-						item.isdeleted = true;
-						console.log("DELETE accessManager response: ", response);
-					}, error => {
-						this.handleError(error);
-					});
-				}
-			},*/
 			async accessManagerAction(act) {
 				var result = await this.$validator.validateAll();
 				if (result) {

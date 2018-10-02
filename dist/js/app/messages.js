@@ -200,11 +200,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 				return item;
 			},
 			async deleteMessage(item) {
-				// var del = await this.deleteItem(abyss.ajax.messages, item, true);
+				// await this.deleteItem(abyss.ajax.messages, item, true);
 				console.log("del: ", del);
-				// if (del) {
-					// this.$toast('success', {title: 'ITEM DELETED', message: 'Item deleted successfully', position: 'topRight'});
-				// }
 			},
 			async markAsStarred(ness) {
 			},

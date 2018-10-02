@@ -279,7 +279,7 @@
 					});
 				}
 				promise.catch((error) => {
-					alert(error);
+					console.log(error);
 				});
 			},
 			setAWSSigningURL(location) {

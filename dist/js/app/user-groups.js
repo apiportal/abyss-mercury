@@ -296,31 +296,23 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 				return item;
 			},
 			async deleteGroup(item) {
-				var r = confirm('Are you sure to delete?');
-				if (r === true) {
+				var deleteConfirm = await this.deleteConfirm();
+				if (deleteConfirm) {
 					if (item.membershiplist.length > 0) {
 						await this.deleteGroupMemberships(item);
 						await this.deleteGroupOnly(item, false);
 					} else {
-						await this.deleteGroupOnly(item, true);
+						await this.deleteGroupOnly(item, false);
 					}
 				}
 			},
 			async deleteGroupMemberships(item) {
 				item.membershiplist.forEach(async (value, key) => {
-					var del = await this.deleteItem(abyss.ajax.subject_memberships, value, false);
-					console.log("del: ", del);
-					if (del) {
-						console.log("value: ", value);
-					}
+					await this.deleteItem(abyss.ajax.subject_memberships, value, false);
 				});
 			},
 			async deleteGroupOnly(item, conf) {
-				var del = await this.deleteItem(abyss.ajax.subjects, item, conf);
-				console.log("del: ", del);
-				if (del) {
-					this.$toast('success', {title: 'ITEM DELETED', message: 'Item deleted successfully', position: 'topRight'});
-				}
+				await this.deleteItem(abyss.ajax.subjects, item, conf);
 			},
 			async addDeleteGroupUsers() {
 				if (this.memberAdd.length > 0) {

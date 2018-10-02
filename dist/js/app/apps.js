@@ -236,8 +236,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 				return item;
 			},
 			async deleteApp(item) {
-				var r = confirm('Are you sure to delete?');
-				if (r === true) {
+				var deleteConfirm = await this.deleteConfirm();
+				if (deleteConfirm) {
 					item.contracts.forEach(async (con, k) => {
 						var del = await this.deleteItem(abyss.ajax.resources, con.resource, false);
 						if (del) {
@@ -336,12 +336,12 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 			},*/
 			beforeAppAction(c) {
 				/*if ( (this.app.password && this.app.uuid && !this.resetKey && this.$root.rootState != 'add') ) {
-					alert('Please copy APP Key and APP Secret!');
+					this.$toast('error', {title: 'Please copy APP Key and APP Secret!', message: '...', position: 'topRight'});
 					return false;
 				} else if (this.preventCancel) {
 					console.log("this.preventCancel: ", this.preventCancel);
 					if (!this.app.password || this.app.password == 'temppassword') {
-						alert('Please generate APP Secret!');
+						this.$toast('error', {title: 'Please generate APP Secret!', message: '...', position: 'topRight'});
 						return false;
 					} else {
 						if (this.resetKey) {

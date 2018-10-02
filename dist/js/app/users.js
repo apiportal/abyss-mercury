@@ -286,31 +286,24 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 				return item;
 			},
 			async deleteUser(item) {
-				var r = confirm('Are you sure to delete?');
-				if (r === true) {
+				var deleteConfirm = await this.deleteConfirm();
+				if (deleteConfirm) {
+					console.log("item.membershiplist: ", item.membershiplist);
 					if (item.membershiplist.length > 0) {
 						await this.deleteUserMemberships(item);
 						await this.deleteUserOnly(item, false);
 					} else {
-						await this.deleteUserOnly(item, true);
+						await this.deleteUserOnly(item, false);
 					}
 				}
 			},
 			async deleteUserMemberships(item) {
 				item.membershiplist.forEach(async (value, key) => {
-					var del = await this.deleteItem(abyss.ajax.subject_memberships, value, false);
-					console.log("del: ", del);
-					if (del) {
-						console.log("value: ", value);
-					}
+					await this.deleteItem(abyss.ajax.subject_memberships, value, false);
 				});
 			},
 			async deleteUserOnly(item, conf) {
-				var del = await this.deleteItem(abyss.ajax.subjects, item, conf);
-				console.log("del: ", del);
-				if (del) {
-					this.$toast('success', {title: 'ITEM DELETED', message: 'Item deleted successfully', position: 'topRight'});
-				}
+				await this.deleteItem(abyss.ajax.subjects, item, conf);
 			},
 			async addDeleteUserGroups() {
 				if (this.memberAdd.length > 0) {
@@ -321,10 +314,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 						var item = this.cleanProps(value);
 						Vue.delete(item, 'isactivated');
 						var del = await this.deleteItem(abyss.ajax.subject_memberships, value, false);
-						console.log("del: ", del);
-						if (del) {
-							console.log("value: ", value);
-						}
 					});
 				}
 			},

@@ -1,6 +1,6 @@
 // define(['Vue', 'axios', 'vee-validate', 'moment'], function (Vue, axios, VeeValidate, moment) {
 // define(['config', 'Vue', 'axios', 'vee-validate', 'tiny-cookie', 'vue-cookie', 'moment', 'izitoast', 'vue-izitoast'], function (abyss, Vue, axios, VeeValidate, Cookie, VueCookie, moment, iziToast) {
-define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izitoast', 'vue-izitoast'], function (abyss, Vue, axios, VeeValidate, VueCookie, moment, iziToast) {
+define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izitoast', 'sweetalert2', 'vue-izitoast', 'css!sweetalert2-css'], function (abyss, Vue, axios, VeeValidate, VueCookie, moment, iziToast, swal) {
 // ■■■■■■■■ AXIOS ■■■■■■■■ //
 	axios.defaults.headers.common['Accept'] = 'application/json';
 	axios.defaults.headers.common['Content-Type'] = 'application/json';
@@ -32,7 +32,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 			} else {
 				var err = arr.join(', ');
 				iziToast.error({title: 'ERROR', message: err, position: 'topRight', timeout: false, color: 'red'});
-				// alert(err);
 				throw new axios.Cancel(arr.join(', '));  
 			}
 		} else {
@@ -47,14 +46,11 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 			// console.log("error.response.status", error.response.status);
 			// console.log("error.response.headers", error.response.headers);
 			if ( error.response.status === 401) {
-				// alert('Your session has expired');
 				window.location.href = '/abyss/login';
 			} else {
 				if (error.response.data) {
-					// alert(error.response.status + '\n' + error.response.data.usermessage);
 					iziToast.error({title: error.response.status.toString(), message: error.response.data.usermessage, position: 'topRight', timeout: false, color: 'red'});
 				} else {
-					// alert(error.response.status + '\n' + error.response.statusText);
 					iziToast.error({title: error.response.status.toString(), message: error.response.statusText, position: 'topRight', timeout: false, color: 'red'});
 				}
 			}
@@ -75,9 +71,15 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 	// Window.Vue = Vue;
 	// Window.Vue.use(VueIziToast);
 	// Vue.prototype.$toast = VueIziToast;
+	const swalPlugin = {}
+	swalPlugin.install = function(Vue){
+		Vue.prototype.$swal = swal;
+	}
+
 	Vue.use(MyToaster);
 	Vue.use(VeeValidate);
 	Vue.use(VueCookie);
+	Vue.use(swalPlugin);
 	const dictionary = {
 		en: {
 			attributes: {
@@ -257,7 +259,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 					return response.data[0];
 				});
 			},
-			deleteItem(url, item, conf, arr) {
+			/*deleteItem222(url, item, conf, arr) {
 				var r = true;
 				if (conf) {
 					r = confirm('Are you sure to delete?');
@@ -279,6 +281,57 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 					console.log("CANCEL deleteItem: ");
 					return false;
 				}
+			},*/
+			async deleteConfirm(item) {
+				return this.$swal({
+					title: 'Are you sure?',
+					text: 'You can\'t revert your action',
+					type: 'warning',
+					showCancelButton: true,
+					confirmButtonText: 'Yes Delete it!',
+					cancelButtonText: 'No, Keep it!',
+					showCloseButton: true,
+					// showLoaderOnConfirm: true
+				}).then((result) => {
+					if (result.value) {
+						return result.value;
+					} else {
+						return false;
+					}
+				});
+			},
+			async deleteItem(url, item, conf, arr) {
+				if (conf) {
+					console.log("confirm true: ", conf);
+					var deleteConfirm = await this.deleteConfirm();
+					if (deleteConfirm) {
+						return await this.deletePost(url, item, conf, arr);
+					} else {
+						// this.$swal('Cancelled', 'Your file is still intact', 'info');
+						return false;
+					}
+				} else {
+					console.log("confirm false: ", conf);
+					return await this.deletePost(url, item, conf, arr);
+				}
+			},
+			async deletePost(url, item, conf, arr) {
+				return axios.delete(url + '/' + item.uuid, item).then(response => {
+					console.log("deleteItem: ", url, response);
+					// if (response.status == 204) {
+					if (response.status >= 200 && response.status < 300) {
+						Vue.set( item, 'isdeleted', true );
+						if (arr) {
+							var index = arr.indexOf(item);
+							arr.splice(index, 1);
+						}
+						// this.$swal('Deleted', 'Item deleted successfully', 'success');
+						this.$toast('success', {title: 'ITEM DELETED', message: 'Item deleted successfully', position: 'topRight'});
+						return response;
+					} else {
+						this.$toast('error', {title: 'ERROR', message: 'Item is not deleted', position: 'topRight'});
+					}
+				});
 			},
 			updateItem(url, item, arr) {
 				return axios.put(url, item).then(response => {
@@ -1191,13 +1244,31 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 			// ■■■■■■■■ subscribe ■■■■■■■■ //
 			selectAppToSubscribe(val) {
 				if (this.api.issandbox !== val.issandbox) {
-					alert('Your APP environment and selected API environment should match');
+					this.$toast('warning', {title: 'ENVIRONMENT DOES NOT MATCH', message: 'Your APP environment and selected API environment should match', position: 'topRight'})
 					Vue.delete(this.api, 'selectedApp');
 				}
 			},
+			async unsubscribeConfirm(item) {
+				return this.$swal({
+					title: 'Are you sure to unsubscribe?',
+					type: 'warning',
+					showCancelButton: true,
+					confirmButtonText: 'Yes Unsubscribe it!',
+					cancelButtonText: 'No, Keep it!',
+					showCloseButton: true,
+					// showLoaderOnConfirm: true
+				}).then((result) => {
+					if (result.value) {
+						return result.value;
+					} else {
+						return false
+					}
+				});
+			},
 			async unsubscribeFromApi(cont) {
-				var r = confirm('Are you sure to unsubscribe?');
-				if (r === true) {
+				var unsubscribeConfirm = await this.unsubscribeConfirm();
+				console.log("unsubscribeConfirm: ", unsubscribeConfirm);
+				if (unsubscribeConfirm) {
 					var delToken = await this.deleteItem(abyss.ajax.resource_access_tokens, cont.subscription.accessToken, false);
 					if (delToken) {
 						var delSub = await this.deleteItem(abyss.ajax.permission_list, cont.subscription, false);
@@ -1285,9 +1356,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 			},
 			/*subscribeToApi(val) {
 				if (!this.api.selectedApp) {
-					alert('Please select an APP');
+					this.$toast('warning', {title: 'Please select an APP', message: 'You have to select an APP in order to subscribe to this API', position: 'topRight'});
 				} else if (!this.api.selectedLicense) {
-					alert('Please select a License');
+					this.$toast('warning', {title: 'Please select a LICENSE', message: 'You have to select an license in order to subscribe to this API', position: 'topRight'});
 				} else {
 					var subscription = {
 						organizationid: this.$root.abyssOrgId,
@@ -1691,7 +1762,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 					console.log("delete hasUserView: ", item);
 					// if (delView) {
 					if (true) {
-						this.$toast('success', {title: 'ITEM DELETED', message: 'Item deleted successfully', position: 'topRight'});
 						await this.setSharedApis();
 					}
 				} else if (item.resourceactionid == abyss.defaultIds.editApi && hasUserView) {
@@ -1700,14 +1770,12 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 					console.log("delete hasUserEdit: ", item);
 					// if (delEdit) {
 					if (true) {
-						this.$toast('success', {title: 'ITEM DELETED', message: 'Item deleted successfully', position: 'topRight'});
 						Vue.delete(hasUserView, 'view');
 						// await this.setSharedApis();
 					}
 				}*/
 				var del = await this.deleteItem(abyss.ajax.permission_list, item, conf, list);
 				if (del) {
-					this.$toast('success', {title: 'ITEM DELETED', message: 'Item deleted successfully', position: 'topRight'});
 					await this.setSharedApis();
 					// setTimeout(() => {
 					// 	this.$refs.refIndex.getApisSharedByMe();
@@ -1856,11 +1924,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 				this.$root.setState('init');
 				console.log("deleteTax list, arrlist, item: ", list, this.rootData[arrlist], item);
 				// 2DO 2ASK how to delete api-api-xxx
-				/*var del = await this.deleteItem(this.getEndpoint(list), item, true, this.rootData[arrlist]);
-				console.log("del: ", del);
-				if (del) {
-					this.$toast('success', {title: 'ITEM DELETED', message: 'Item deleted successfully', position: 'topRight'});
-				}*/
+				// await this.deleteItem(this.getEndpoint(list), item, true, this.rootData[arrlist]);
+				
 			},
 			// 2DO 2ASK added group/tag/category not existing in my /api-api-groups/subject/{uuid}
 			// https://dev2.apiportal.com/abyss/oapi/api-api-groups // apiid, apigroupid
@@ -1949,7 +2014,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 			},*/
 			async recreateUserPermAndToken() {
 				var del = await this.deleteItem(abyss.ajax.resource_access_tokens, this.$root.rootData.user.permission.accessToken, false);
-				console.log("del: ", del);
 				if (del) {
 					await this.createAccessTokens(this.$root.rootData.user.uuid, 'PLATFORM', this.$root.rootData.user.permission);
 					this.$toast('success', {title: 'ACCESS TOKEN REGENERATED', message: 'Your Access Token successfully', position: 'topRight'});
@@ -2029,11 +2093,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 				var delOrgUser = await this.deleteItem(abyss.ajax.subject_organizations, item.organizationUser, true);
 				console.log("delOrgUser: ", delOrgUser);
 				if (delOrgUser) {
-					var del = await this.deleteItem(abyss.ajax.organizations_list, item, false);
-					console.log("del: ", del);
-					if (del) {
-						this.$toast('success', {title: 'ITEM DELETED', message: 'Item deleted successfully', position: 'topRight'});
-					}
+					await this.deleteItem(abyss.ajax.organizations_list, item, false);
 				}
 			},
 			/*organizationAction(act, org) {
@@ -2360,7 +2420,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 			var principal = this.$cookie.get('abyss.principal.uuid');
 			var session = this.$cookie.get('abyss.session');
 			if (!this.abyssOrgName || !this.abyssOrgId || !principal || !session) {
-				alert('COOKIE EXPIRED');
+				this.$toast('error', {title: 'COOKIE EXPIRED', message: 'You have to login again', position: 'topRight'});
 				window.location.href = '/abyss/logout';
 			}
 			// this.$cookie.delete('abyss.principal.uuid');

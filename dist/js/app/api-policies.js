@@ -69,24 +69,11 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 			},
 			async deletePolicy(item) {
 				var del = await this.deleteItem(abyss.ajax.policies, item, true);
-				console.log("del: ", del);
 				if (del) {
-					this.$toast('success', {title: 'ITEM DELETED', message: 'Item deleted successfully', position: 'topRight'});
+					item.isdeleted = true;
 					this.deleteResource(item);
 				}
 			},
-			/*deletePolicy(item) {
-				var r = confirm('Are you sure to delete?');
-				if (r === true) {
-					axios.delete(abyss.ajax.policies + '/' + item.uuid, item).then(response => {
-						item.isdeleted = true;
-						console.log("DELETE policy response: ", response);
-						this.deleteResource(item);
-					}, error => {
-						this.handleError(error);
-					});
-				}
-			},*/
 			async policyAction(act) {
 				var result = await this.$validator.validateAll();
 				if (result) {

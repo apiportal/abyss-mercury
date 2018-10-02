@@ -2050,6 +2050,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 						}
 						catch (ex) {
 							this.showAlert('The definition could not be parsed');
+							// this.$toast('warning', {title: 'The definition could not be parsed', message: 'The definition could not be parsed', position: 'topRight'});
 						}
 					}
 					if (schema.openapi && schema.openapi.startsWith('3.0.')) {
@@ -2161,7 +2162,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 						},100);	
 					}
 					catch (ex) {
-						alert(ex);
+						this.showAlert(ex);
 					}
 				},
 				async loadFromUrlSchema(val, load) {
@@ -2249,9 +2250,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 						try {
 							this.editorType = 'yaml';
 							output = jsyaml.dump(def);
-						}
-						catch (ex) {
-							alert(ex.message);
+						} catch (ex) {
+							this.showAlert(ex.message);
 						}
 					}
 					$('#pretty-'+type).html(output);
@@ -2517,7 +2517,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 			isSelectedApi(i) {
 				return i === this.api.uuid;
 			},
-			beforeCancelApi(c) {
+			/*beforeCancelApi(c) {
 				console.log("beforeCancelApi this.isChanged: ", this.isChanged, Object.keys(this.changes).length, this.changes, "version: ", _.has(this.changes, 'openapidocument.info.version'), this.verChanged);
 				// console.log("this.isChanged this.rootState: ", this.isChanged, this.rootState);
 				if (this.isChanged && this.rootState != 'init') {
@@ -2532,6 +2532,31 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					// 	console.log("ccccccccccccccccccccc: ", c);
 						this.cancelApi();
 					// }
+					return true;
+				}
+			},*/
+			beforeCancelApi(c) {
+				console.log("beforeCancelApi this.isChanged: ", this.isChanged, Object.keys(this.changes).length, this.changes, "version: ", _.has(this.changes, 'openapidocument.info.version'), this.verChanged);
+				if (this.isChanged && this.rootState != 'init') {
+					this.$swal({
+						title: 'Are you sure to cancel editing this API?',
+						html: '<pre class="txt-l">' + JSON.stringify(this.changes, null, 2) + '</pre>',
+						type: 'warning',
+						showCancelButton: true,
+						confirmButtonText: 'Yes Cancel it!',
+						cancelButtonText: 'No, Keep it!',
+						showCloseButton: true,
+						// showLoaderOnConfirm: true
+					}).then((result) => {
+						if (result.value) {
+							this.cancelApi();
+							return true;
+						} else {
+							return result.value;
+						}
+					});
+				} else {
+					this.cancelApi();
 					return true;
 				}
 			},
@@ -2686,7 +2711,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				return axios.post(abyss.ajax.validate_oas, spec).then(response => {
 					if (show) {
 						if (response.data) {
-							alert('VALID');
+							this.showAlert('VALID');
 						}
 					}
 					return response;
@@ -2704,7 +2729,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					// console.log("validateOas response: ", response);
 					if (show) {
 						if (response.data) {
-							alert('VALID');
+							this.showAlert('VALID');
 						}
 					}
 					return response;
@@ -2965,7 +2990,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 						});
 						return;
 					}
-					// alert('Correct them errors!');
+					// this.showAlert('Correct them errors!');
 				});
 			},*/
 			async filterApi(filter) {

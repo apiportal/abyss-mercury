@@ -140,23 +140,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 				await this.editItem( abyss.ajax.subject_directory_types, item.uuid, this.deleteProps(item), this.directoryTypes );
 				this.$emit('set-state', 'init');
 			},
-			/*deleteType(item) {
-				var r = confirm('Are you sure to delete?');
-				if (r === true) {
-					axios.delete(abyss.ajax.subject_directory_types + '/' + item.uuid, item).then(response => {
-						item.isdeleted = true;
-						console.log("deleteUser response: ", response);
-					}, error => {
-						this.handleError(error);
-					});
-				}
-			},*/
 			async deleteType(item) {
-				var del = await this.deleteItem(abyss.ajax.subject_directory_types, item, true);
-				console.log("del: ", del);
-				if (del) {
-					this.$toast('success', {title: 'ITEM DELETED', message: 'Item deleted successfully', position: 'topRight'});
-				}
+				await this.deleteItem(abyss.ajax.subject_directory_types, item, true);
 			},
 			getTypeName(typ) {
 				var subType = this.directoryTypes.find((el) => el.uuid == typ );
@@ -196,23 +181,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 				return item;
 			},
 			async deleteDirectory(item) {
-				var del = await this.deleteItem(abyss.ajax.subject_directories_list, item, true);
-				console.log("del: ", del);
-				if (del) {
-					this.$toast('success', {title: 'ITEM DELETED', message: 'Item deleted successfully', position: 'topRight'});
-				}
+				await this.deleteItem(abyss.ajax.subject_directories_list, item, true);
 			},
-			/*deleteDirectory(item) {
-				var r = confirm('Are you sure to delete?');
-				if (r === true) {
-					axios.delete(abyss.ajax.subject_directories_list + '/' + item.uuid, item).then(response => {
-						item.isdeleted = true;
-						console.log("DELETE directory response: ", response);
-					}, error => {
-						this.handleError(error);
-					});
-				}
-			},*/
 			async directoryAction(act) {
 				var result = await this.$validator.validateAll();
 				if (result) {

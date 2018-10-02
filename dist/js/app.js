@@ -1,6 +1,6 @@
 var IZ = IZ || {}, UI = UI || {};
 // define(['config', 'jquery', 'moment', 'bootstrap', 'domready!'], function(config, $, moment){
-define(['config', 'jquery', 'bootstrap', 'domready'], function(config, $){
+define(['config', 'jquery', 'izitoast', 'bootstrap', 'domready'], function(config, $, iziToast){
 //■■■iife
 // (function($) {
 	// console.log(moment().format('LLLL'));
@@ -172,7 +172,7 @@ define(['config', 'jquery', 'bootstrap', 'domready'], function(config, $){
 					$('<li class="nav-item"><div class="checkbox checkbox-success"><input type="checkbox" id="checkbox'+random+'"/><label for="checkbox'+random+'">' + $('.new-todo input').val() + '</label></div></li>').insertAfter(".todo-list li:last-child");
 					$('.new-todo input').val('');
 			} else if(e.which === 13) {
-				alert('Please type somthing!');
+				iziToast.error({title: 'warning', message: 'Please type asomthing!', position: 'topRight', color: 'orange'});
 			}
 			return;
 		});
@@ -380,7 +380,6 @@ define(['config', 'jquery', 'bootstrap', 'domready'], function(config, $){
 			// 	if (keycode === 13) {
 			// 		$(this).attr('checked', 'checked');
 			// 		// Checkbox_to_RadioButton(this);
-			// 		// alert("Enter key was pressed");
 			// 	}
 			// 	event.stopPropagation();
 			// });
@@ -637,29 +636,29 @@ define(['config', 'jquery', 'bootstrap', 'domready'], function(config, $){
 		evnt: function() {
 			// ■■ Chat
 			$(document).on("keypress","#input_msg_send",function (e) {
-				if ((e.which === 13)&&(!$(this).val().length === 0)) {
+				if ((e.which == 13)&&(!$(this).val().length == 0)) {
 					$('<li class="self mb-2"><div class="self-msg-wrap"><div class="msg d-block float-right">' + $(this).val() + '<div class="msg-per-detail mt-5"><span class="msg-time txt-grey">3:30 pm</span></div></div></div><div class="clearfix"></div></li>').insertAfter(".fixed-sidebar-right .chat-content ul li:last-child");
 					$(this).val('');
-				} else if(e.which === 13) {
-					alert('Please type somthing!');
+				} else if((e.which == 13)&&($(this).val().length == 0)) {
+					iziToast.error({title: 'warning', message: 'Please type asomthing!', position: 'topRight', color: 'orange'});
 				}
 				return;
 			});
 			$(document).on("keypress","#input_msg_send_widget",function (e) {
-				if ((e.which === 13)&&(!$(this).val().length === 0)) {
+				if ((e.which == 13)&&(!$(this).val().length == 0)) {
 					$('<li class="self mb-2"><div class="self-msg-wrap"><div class="msg d-block float-right">' + $(this).val() + '<div class="msg-per-detail mt-5"><span class="msg-time txt-grey">3:30 pm</span></div></div></div><div class="clearfix"></div></li>').insertAfter(".chat-for-widgets .chat-content ul li:last-child");
 					$(this).val('');
-				} else if(e.which === 13) {
-					alert('Please type somthing!');
+				} else if((e.which == 13)&&($(this).val().length == 0)) {
+					iziToast.error({title: 'warning', message: 'Please type asomthing!', position: 'topRight', color: 'orange'});
 				}
 				return;
 			});
 			$(document).on("keypress","#input_msg_send_chatapp",function (e) {
-				if ((e.which === 13)&&(!$(this).val().length === 0)) {
+				if ((e.which == 13)&&(!$(this).val().length == 0)) {
 					$('<li class="self mb-2"><div class="self-msg-wrap"><div class="msg d-block float-right">' + $(this).val() + '<div class="msg-per-detail mt-5"><span class="msg-time txt-grey">3:30 pm</span></div></div></div><div class="clearfix"></div></li>').insertAfter(".chat-for-widgets-1 .chat-content ul li:last-child");
 					$(this).val('');
 				} else if(e.which === 13) {
-					alert('Please type asomthing!');
+					iziToast.error({title: 'warning', message: 'Please type asomthing!', position: 'topRight', color: 'orange'});
 				}
 				return;
 			});

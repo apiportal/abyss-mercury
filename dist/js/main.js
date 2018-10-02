@@ -46,6 +46,9 @@ require.config({
 		"izitoast": "plugins/iziToast.min",
 		"tiny-cookie": "plugins/tiny-cookie.min",
 		"highcharts": "plugins/Highcharts",
+		"sweetalert2": "plugins/sweetalert2.min",
+		"sweetalert2-css": "plugins/sweetalert2.min.css?noext",
+		// "markdown-it": "plugins/openapi/markdown-it.min",
 		//// comps ////
 		"vee-validate": "comps/vee-validate.min",
 		"vue-select": "comps/vue-select",

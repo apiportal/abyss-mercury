@@ -113,24 +113,11 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment'], funct
 			},
 			async deleteLicense(item) {
 				var del = await this.deleteItem(abyss.ajax.licenses, item, true);
-				console.log("del: ", del);
 				if (del) {
-					this.$toast('success', {title: 'ITEM DELETED', message: 'Item deleted successfully', position: 'topRight'});
+					item.isdeleted = true;
 					this.deleteResource(item);
 				}
 			},
-			/*deleteLicense(item) {
-				var r = confirm('Are you sure to delete?');
-				if (r === true) {
-					axios.delete(abyss.ajax.licenses + '/' + item.uuid, item).then(response => {
-						item.isdeleted = true;
-						console.log("DELETE license response: ", response);
-						this.deleteResource(item);
-					}, error => {
-						this.handleError(error);
-					});
-				}
-			},*/
 			async licenseAction(act) {
 				var result = await this.$validator.validateAll();
 				if (result) {

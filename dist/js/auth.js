@@ -37,11 +37,9 @@ define(['config', 'Vue', 'axios', 'vee-validate'], function (abyss, Vue, axios, 
 				event.preventDefault();
 				this.$validator.validateAll().then((result) => {
 					if (result) {
-						// alert('Form Submitted!');
 						document.querySelector('#validForm').submit();
 						return;
 					}
-					// alert('Correct them errors!');
 				});
 			},
 			preload() {
