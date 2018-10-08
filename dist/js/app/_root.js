@@ -128,12 +128,12 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 	});
 	Vue.filter('formatDateTimeSec', function(value) {
 		if (value) {
-			return moment(String(value)).format('DD.MM.YYYY HH:mm:ss');
+			return moment.utc(String(value)).format('DD.MM.YYYY HH:mm:ss');
 		}
 	});
 	Vue.filter('formatDate', function(value) {
 		if (value) {
-			return moment(String(value)).format('DD.MM.YYYY');
+			return moment.utc(String(value)).format('DD.MM.YYYY');
 		}
 	});
 	Vue.filter('listCommaSeparated', function(item) {
@@ -870,8 +870,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 							crudsubjectid: this.$root.rootData.user.uuid,
 							permission: 'Subscription of ' + contApp.firstname + ' APP to ' + item.openapidocument.info.title + ' API',
 							description: 'Subscription of ' + contApp.firstname + ' APP to ' + item.openapidocument.info.title + ' API',
-							effectivestartdate: moment().toISOString(),
-							effectiveenddate: moment().add(1, 'years').toISOString(),
+							effectivestartdate: moment.utc().toISOString(),
+							effectiveenddate: moment.utc().add(1, 'years').toISOString(),
 							subjectid: vCon.subjectid,
 							resourceid: item.resource.uuid,
 							resourceactionid: abyss.defaultIds.invokeApi,
@@ -935,8 +935,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 										crudsubjectid: this.$root.rootData.user.uuid,
 										permission: 'Subscription of ' + contApp.firstname + ' APP to ' + item.openapidocument.info.title + ' API',
 										description: 'Subscription of ' + contApp.firstname + ' APP to ' + item.openapidocument.info.title + ' API',
-										effectivestartdate: moment().toISOString(),
-										effectiveenddate: moment().add(1, 'years').toISOString(),
+										effectivestartdate: moment.utc().toISOString(),
+										effectiveenddate: moment.utc().add(1, 'years').toISOString(),
 										subjectid: vCon.subjectid,
 										resourceid: item.resource.uuid,
 										resourceactionid: abyss.defaultIds.invokeApi,
@@ -1189,8 +1189,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 					crudsubjectid: this.$root.rootData.user.uuid,
 					permission: 'Subscription of my own ' + item.firstname + ' APP',
 					description: 'Subscription of my own ' + item.firstname + ' APP',
-					effectivestartdate: moment().toISOString(),
-					effectiveenddate: moment().add(1, 'years').toISOString(),
+					effectivestartdate: moment.utc().toISOString(),
+					effectiveenddate: moment.utc().add(1, 'years').toISOString(),
 					subjectid: this.$root.rootData.user.uuid,
 					resourceid: item.resource.uuid,
 					resourceactionid: abyss.defaultIds.ownApp, // OWN_APP
@@ -1211,8 +1211,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 					crudsubjectid: this.$root.rootData.user.uuid,
 					permission: 'Subscription of my own ' + item.firstname + ' APP',
 					description: 'Subscription of my own ' + item.firstname + ' APP',
-					effectivestartdate: moment().toISOString(),
-					effectiveenddate: moment().add(1, 'years').toISOString(),
+					effectivestartdate: moment.utc().toISOString(),
+					effectiveenddate: moment.utc().add(1, 'years').toISOString(),
 					subjectid: this.$root.rootData.user.uuid,
 					resourceid: item.resource.uuid,
 					resourceactionid: abyss.defaultIds.ownApp, // OWN_APP
@@ -1323,8 +1323,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 						crudsubjectid: this.$root.rootData.user.uuid,
 						permission: 'Subscription of ' + this.api.selectedApp.firstname + ' APP to ' + this.api.openapidocument.info.title + ' API',
 						description: 'Subscription of ' + this.api.selectedApp.firstname + ' APP to ' + this.api.openapidocument.info.title + ' API',
-						effectivestartdate: moment().toISOString(),
-						effectiveenddate: moment().add(1, 'years').toISOString(),
+						effectivestartdate: moment.utc().toISOString(),
+						effectiveenddate: moment.utc().add(1, 'years').toISOString(),
 						subjectid: this.api.selectedApp.uuid,
 						resourceid: this.api.resource.uuid,
 						resourceactionid: abyss.defaultIds.invokeApi,
@@ -1365,8 +1365,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 						crudsubjectid: this.$root.rootData.user.uuid,
 						permission: 'Subscription of ' + this.api.selectedApp.firstname + ' APP to ' + this.api.openapidocument.info.title + ' API',
 						description: 'Subscription of ' + this.api.selectedApp.firstname + ' APP to ' + this.api.openapidocument.info.title + ' API',
-						effectivestartdate: moment().toISOString(),
-						effectiveenddate: moment().add(1, 'years').toISOString(),
+						effectivestartdate: moment.utc().toISOString(),
+						effectiveenddate: moment.utc().add(1, 'years').toISOString(),
 						subjectid: this.api.selectedApp.uuid,
 						resourceid: this.api.resource.uuid,
 						resourceactionid: abyss.defaultIds.invokeApi,
@@ -1496,7 +1496,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 					Vue.delete(item, 'isAdmin');
 					Vue.delete(item, 'permission');
 					if (item.effectiveenddate == null) {
-						item.effectiveenddate = moment(item.effectivestartdate).add(6, 'months').toISOString();
+						item.effectiveenddate = moment.utc(item.effectivestartdate).add(6, 'months').toISOString();
 					}
 					if (item.secondaryemail == null) {
 						Vue.set(item, 'secondaryemail', item.email);
@@ -1621,7 +1621,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 				type: String,
 				order: 'asc'
 			},
-			now: moment().toISOString(),
+			now: moment.utc().toISOString(),
 			pageCurrent: '',
 			rootState: 'init',
 			pageClassPrefix: 'vs',
@@ -1800,8 +1800,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 							crudsubjectid: this.$root.rootData.user.uuid,
 							permission: 'Shared ' + this.$root.previewedApi.openapidocument.info.title + ' API by ' + this.$root.rootData.user.displayname + ' with ' + this.$root.shareApi.selectedUser.displayname + ', with read-only permission',
 							description: this.$root.rootData.user.displayname + ' has shared ' + this.$root.previewedApi.openapidocument.info.title + ' API with ' + this.$root.shareApi.selectedUser.displayname + ', with read-only permission',
-							effectivestartdate: moment().toISOString(),
-							effectiveenddate: moment().add(1, 'years').toISOString(),
+							effectivestartdate: moment.utc().toISOString(),
+							effectiveenddate: moment.utc().add(1, 'years').toISOString(),
 							subjectid: this.$root.shareApi.selectedUser.uuid,
 							resourceid: this.$root.previewedApi.resource.uuid,
 							resourceactionid: abyss.defaultIds.viewApi, // VIEW_API
@@ -2027,8 +2027,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 					crudsubjectid: this.$root.rootData.user.uuid,
 					permission: 'Token Permission of ' + this.$root.rootData.user.displayname + ' USER',
 					description: 'Token Permission of ' + this.$root.rootData.user.displayname + ' USER',
-					effectivestartdate: moment().toISOString(),
-					effectiveenddate: moment().add(1, 'years').toISOString(),
+					effectivestartdate: moment.utc().toISOString(),
+					effectiveenddate: moment.utc().add(1, 'years').toISOString(),
 					subjectid: this.$root.rootData.user.uuid,
 					resourceid: abyss.defaultIds.abyssPlatform, // Abyss Platform
 					resourceactionid: abyss.defaultIds.usePlatform, // USE_PLATFORM
@@ -2053,8 +2053,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 					crudsubjectid: this.$root.rootData.user.uuid,
 					permission: 'Token Permission of ' + this.$root.rootData.user.subjectname + ' USER',
 					description: 'Token Permission of ' + this.$root.rootData.user.subjectname + ' USER',
-					effectivestartdate: moment().toISOString(),
-					effectiveenddate: moment().add(1, 'years').toISOString(),
+					effectivestartdate: moment.utc().toISOString(),
+					effectiveenddate: moment.utc().add(1, 'years').toISOString(),
 					subjectid: this.$root.rootData.user.uuid,
 					resourceid: abyss.defaultIds.abyssPlatform, // Abyss Platform
 					resourceactionid: abyss.defaultIds.usePlatform, // USE_PLATFORM

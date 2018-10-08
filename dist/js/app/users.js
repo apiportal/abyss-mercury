@@ -44,8 +44,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 					"url": null,
 					"email": null,
 					"secondaryemail": null,
-					"effectivestartdate": moment().format('YYYY-MM-DD HH:mm:ss'),
-					"effectiveenddate": moment().add(50, 'years').format('YYYY-MM-DD HH:mm:ss'),
+					"effectivestartdate": moment.utc().format('YYYY-MM-DD HH:mm:ss'),
+					"effectiveenddate": moment.utc().add(50, 'years').format('YYYY-MM-DD HH:mm:ss'),
 					"password": null,
 					"picture": null,
 					"totallogincount": null,
@@ -238,10 +238,10 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 			fixProps(item) {
 				this.fillProps(item);
 				if (item.effectiveenddate == null) {
-					Vue.set(item, 'effectiveenddate', moment().add(50, 'years').format('YYYY-MM-DD HH:mm:ss'));
+					Vue.set(item, 'effectiveenddate', moment.utc().add(50, 'years').format('YYYY-MM-DD HH:mm:ss'));
 				}
 				if (item.effectivestartdate == null) {
-					Vue.set(item, 'effectivestartdate', moment().format('YYYY-MM-DD HH:mm:ss'));
+					Vue.set(item, 'effectivestartdate', moment.utc().format('YYYY-MM-DD HH:mm:ss'));
 				}
 				if (item.secondaryemail == null) {
 					Vue.set(item, 'secondaryemail', item.email);
@@ -281,8 +281,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 				Vue.delete(item, 'permissionfilter');
 				Vue.delete(item, 'groupfilter');
 				Vue.delete(item, 'userfilter');
-				item.effectivestartdate = moment(this.user.effectivestartdate).toISOString();
-				item.effectiveenddate = moment(this.user.effectiveenddate).toISOString();
+				item.effectivestartdate = moment.utc(this.user.effectivestartdate).toISOString();
+				item.effectiveenddate = moment.utc(this.user.effectiveenddate).toISOString();
 				return item;
 			},
 			async deleteUser(item) {

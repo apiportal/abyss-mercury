@@ -1739,7 +1739,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					"businessapiid": null,
 					"image": "",
 					"color": "#006699",
-					"deployed": moment().toISOString(),
+					"deployed": moment.utc().toISOString(),
 					"changelog": "",
 					"apioriginuuid": null,
 					"version": "1.0.0",
@@ -2346,7 +2346,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					Vue.set(item, 'color', '#006699');
 				}
 				if (item.deployed == null) {
-					Vue.set(item, 'deployed', moment().toISOString() );
+					Vue.set(item, 'deployed', moment.utc().toISOString() );
 				}
 				if (item.image == null) {
 					Vue.set(item, 'image', '' );

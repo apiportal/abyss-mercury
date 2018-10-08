@@ -113,10 +113,10 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 					Vue.set(item,'subjectid',this.$root.rootData.user.uuid);
 				}
 				if (item.effectiveenddate == null) {
-					Vue.set(item, 'effectiveenddate', moment().add(6, 'months').format('YYYY-MM-DD HH:mm:ss'));
+					Vue.set(item, 'effectiveenddate', moment.utc().add(6, 'months').format('YYYY-MM-DD HH:mm:ss'));
 				}
 				if (item.effectivestartdate == null) {
-					Vue.set(item, 'effectivestartdate', moment().format('YYYY-MM-DD HH:mm:ss'));
+					Vue.set(item, 'effectivestartdate', moment.utc().format('YYYY-MM-DD HH:mm:ss'));
 				}
 			},
 			deleteProps(obj) {
@@ -126,8 +126,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 				Vue.delete(item, 'resourceAction');
 				Vue.delete(item, 'organization');
 				Vue.delete(item, 'subject');
-				item.effectivestartdate = moment(item.effectivestartdate).toISOString();
-				item.effectiveenddate = moment(item.effectiveenddate).toISOString();
+				item.effectivestartdate = moment.utc(item.effectivestartdate).toISOString();
+				item.effectiveenddate = moment.utc(item.effectiveenddate).toISOString();
 				return item;
 			},
 			async deletePermission(item) {

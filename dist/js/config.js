@@ -191,8 +191,7 @@ define(['global'], function(abyss){
 	}
 	if (isAbyssSandbox === true) {
 		abyssYamlLocation = '/000?file=' + abyssYamlLocation;
-		// abyssDataList.policy_types = '/data/POLICYTYPES.json';
-		// abyssDataList.policies = '/data/POLICIES.json';
+		// abyssDataList.messages = '/data/messages.json';
 	}
 	var abyssAllDataList = Object.assign(abyssJsonList, abyssDataList);
 	// console.log("abyssAllDataList: ", abyssAllDataList);

@@ -26,8 +26,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 					"isenabled": true,
 					"groupname": null,
 					"description": null,
-					"effectivestartdate": moment().format('YYYY-MM-DD HH:mm:ss'),
-					"effectiveenddate": moment().add(6, 'months').format('YYYY-MM-DD HH:mm:ss'),
+					"effectivestartdate": moment.utc().format('YYYY-MM-DD HH:mm:ss'),
+					"effectiveenddate": moment.utc().add(6, 'months').format('YYYY-MM-DD HH:mm:ss'),
 					"organizationid": null,
 					"crudsubjectid": null,
 					"subjectdirectoryid": null,
@@ -54,8 +54,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 					"url": null,
 					"email": null,
 					"secondaryemail": null,
-					"effectivestartdate": moment().format('YYYY-MM-DD HH:mm:ss'),
-					"effectiveenddate": moment().add(50, 'years').format('YYYY-MM-DD HH:mm:ss'),
+					"effectivestartdate": moment.utc().format('YYYY-MM-DD HH:mm:ss'),
+					"effectiveenddate": moment.utc().add(50, 'years').format('YYYY-MM-DD HH:mm:ss'),
 					"password": null,
 					"picture": null,
 					"totallogincount": null,
@@ -235,10 +235,10 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 			fixProps(item) {
 				this.fillProps(item);
 				if (item.effectiveenddate == null) {
-					Vue.set(item, 'effectiveenddate', moment().add(50, 'years').format('YYYY-MM-DD HH:mm:ss'));
+					Vue.set(item, 'effectiveenddate', moment.utc().add(50, 'years').format('YYYY-MM-DD HH:mm:ss'));
 				}
 				if (item.effectivestartdate == null) {
-					Vue.set(item, 'effectivestartdate', moment().format('YYYY-MM-DD HH:mm:ss'));
+					Vue.set(item, 'effectivestartdate', moment.utc().format('YYYY-MM-DD HH:mm:ss'));
 				}
 				if (item.email == null) {
 					Vue.set(item, 'email', item.displayname + '@verapi.com');
@@ -291,8 +291,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 				Vue.delete(item, 'groupfilter');
 				Vue.delete(item, 'userfilter');
 				Vue.delete(item, 'userCount');
-				item.effectivestartdate = moment(this.group.effectivestartdate).toISOString();
-				item.effectiveenddate = moment(this.group.effectiveenddate).toISOString();
+				item.effectivestartdate = moment.utc(this.group.effectivestartdate).toISOString();
+				item.effectiveenddate = moment.utc(this.group.effectiveenddate).toISOString();
 				return item;
 			},
 			async deleteGroup(item) {

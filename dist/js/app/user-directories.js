@@ -170,7 +170,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 			fixProps(item) {
 				this.fillProps(item);
 				if (item.lastsyncronizedat == null) {
-					Vue.set(item,'lastsyncronizedat', moment().toISOString());
+					Vue.set(item,'lastsyncronizedat', moment.utc().toISOString());
 				}
 				if (item.lastsyncronizationduration == null) {
 					Vue.set(item,'lastsyncronizationduration', 0);

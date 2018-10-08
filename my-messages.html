@@ -1,0 +1,241 @@
+﻿<!DOCTYPE html>
+<html class="vs-my-messages" lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:include="webroot/frags/layout/head.htm :: header">
+<script src="/dist/js/lib/jquery.min.js"></script>
+<script src="/dist/js/lib/thymus.min.js" id="thymus"
+	data-thx-base-path="." data-thx-frag-extension=".htm"
+	data-thx-head-frag="th:include=webroot/frags/layout/head.htm :: header"
+	data-thx-preload-js="/dist/js/loader.js"
+	data-thx-onfrags="fragsListener();" data-thx-onfrag="fragListener()"></script>
+</head>
+<body>
+<div id="portal" class="wrapper" v-bind:class="pageClass">
+	<div th:replace="webroot/frags/layout/navs.htm :: navs"></div>
+	<main class="page-wrapper">
+	<my-messages inline-template v-on:set-state="setState" ref="refMyMessages" v-on:set-page="setPage" v-bind:root-state="rootState" v-if="!$root.isLoading && !isLoading">
+		<div class="columns">
+			<aside class="column column-aside list-column">
+				<div class="clearfix column-header column-min-button">
+					<h5 class="column-header-title">My Messages</h5>
+					<span v-if="filterTxt != ''" v-on:click="getPage(1);filterTxt=''" class="badge badge-blue api-clear-filter">{{filterTxt}} <i class="fas fa-times"></i></span>
+				</div>
+				<div class="column-content">
+					<div class="nicescroll-bar">
+						<div class="column-space">
+							<ul class="nav">
+								<li :class="{'active': filt.fval == 'Inbox'}">
+									<a href="#" v-on:click="filterMessages('Inbox', 'folder')"> <i class="fa fa-fw fa-inbox mr-2"></i>
+										Inbox
+										<!-- <span class="badge badge-pill badge-outline flt-r">2</span> -->
+									</a>
+								</li>
+								<li :class="{'active': filt.fval == 'Sent'}">
+									<a href="#" v-on:click="filterMessages('Sent', 'folder')"> <i class="fa fa-fw fa-envelope mr-2"></i>
+										Sent
+									</a>
+								</li>
+								<li :class="{'active': filt.fval == 'Important'}">
+									<a href="#" v-on:click="filterMessages('Important', 'priority')">
+										<i class="fa fa-fw fa-bookmark mr-2"></i>
+										Important
+									</a>
+								</li>
+								<li :class="{'active': filt.fkey == 'isstarred'}">
+									<a href="#" v-on:click="filterMessages(true, 'isstarred')">
+										<i class="fa fa-fw fa-star mr-2"></i>
+										Starred
+									</a>
+								</li>
+								<li :class="{'active': filt.fval == 'Draft'}">
+									<a href="#" v-on:click="filterMessages('Draft', 'folder')">
+										<i class="fa fa-fw fa-folder mr-2"></i>
+										Drafts
+										<!-- <span class="badge badge-pill badge-outline flt-r">20</span> -->
+									</a>
+								</li>
+								<li :class="{'active': filt.fkey == 'isdeleted'}">
+									<a href="#" v-on:click="filterMessages(true, 'isdeleted')"> <i class="fa fa-fw fa-trash mr-2"></i> Trash </a>
+								</li>
+							</ul>
+							<h6 class="p-3">Message Types</h6>
+							<ul class="nav">
+								<li v-for="(type, index) in messageTypes" :class="{'active': filt.fval == type.uuid}">
+									<a href="#" :title="type.description" v-on:click="filterMessages(type.uuid, 'messagetypeid')"><i class="fas fa-fw fa-stop mr-2" :class="'label-' + type.uuid"></i>{{type.name}}</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</aside>
+			<section class="column column-main">
+				<div class="bg-white">
+					<v-select label="subject" :filterable="true" :options="messageOptions" @search="getMessageOptions" :on-change="filterMessage" placeholder="Search Messages">
+						<span slot="no-options"></span>
+						<template slot="option" slot-scope="option">
+							<div><strong class="txt-black">{{ option.subject }}</strong> <small class="txt-muted">{{ option.sentat | formatDateTime }}</small></div>
+							<small class="d-block txt-truncate">{{option.body | truncate(75)}}</small>
+						</template>
+						<template slot="selected-option" slot-scope="option">
+							<div><strong class="txt-black">{{ option.subject }}</strong> <small class="txt-muted">{{ option.sentat | formatDateTime }}</small></div>
+						</template>
+					</v-select>
+				</div>
+				<table class="table table-hover table-bordered table-edge message">
+					<tr v-for="(message, index) in filteredMessages" v-bind:key="message.uuid" v-bind:class="{'fnt-bold txt-black': myReadeds(message), 'active': isSelected(index)}" v-if="message.sender">
+						<td class="td-min txt-c">
+							<i class="fas fa-bookmark txt-grey" v-if="message.priority != 'Important'"></i>
+							<i class="fas fa-bookmark txt-orange" v-if="message.priority == 'Important'"></i>
+						</td>
+						<td class="td-min txt-c cursor-pointer" v-on:click="markAsStarred(message)">
+							<i class="fas fa-star txt-grey" v-if="!message.isstarred"></i>
+							<i class="fas fa-star txt-orange" v-if="message.isstarred"></i>
+						</td>
+						<td class="td-message-folder"><span class="badge badge-outline">{{message.folder}}</span></td>
+						<td class="txt-truncate" v-on:click="selectViewMessage(message, index);">
+							<span class="td-name" v-if="message.folder == 'Inbox' && filt.fval != 'Sent'">From: {{message.sender.displayname}}</span>
+							<span class="td-name" v-if="message.folder == 'Inbox' && filt.fval == 'Sent'">To: {{message.sender.displayname}}</span>
+							<span class="td-name" v-if="message.folder == 'Sent' || message.folder == 'Draft'">To: {{message.receiver.displayname}}</span>
+							<span class="pr-3 d-inline-block">{{message.subject}}</span>
+							<small class="txt-muted">{{message.lastMessage.body | truncate(75)}}</small>
+						</td>
+						<td class="td-datetime txt-r" v-on:click="selectViewMessage(message, index);">
+							<small v-if="message.folder != 'Draft' && !message.isdeleted">{{message.lastMessage.sentat | formatDateTime}}</small>
+							<small v-if="message.folder == 'Draft' && !message.isdeleted">{{message.updated | formatDateTime}}</small>
+							<small v-if="message.isdeleted">{{message.deleted | formatDateTime}}</small>
+						</td>
+						<td class="td-message-type txt-r" v-on:click="selectViewMessage(message, index);"><span class="badge txt-white" :class="'badge-' + message.messageType.uuid">{{message.messageType.name}}</span></td>
+						<td class="td-min txt-c cursor-pointer" v-on:click="deleteMessage(message, index)" v-bind:class="{'tr-deleted': message.isdeleted }">
+							<i class="fa fa-trash-alt"></i>
+						</td>
+					</tr>
+				</table>
+			</section>
+			<transition name="fade">
+			<div class="preview-test-overlay" v-on:click="$emit('set-state', 'init');cancelMessage()" v-if="rootState != 'init'"></div>
+			</transition>
+			<transition name="slide">
+			<div class="preview-test" v-if="rootState != 'init'">
+				<div class="clearfix column-header column-min-button">
+					<div class="column-header-button">
+						<button type="button" class="close" v-on:click="$emit('set-state', 'init'); cancelMessage()">×</button>
+					</div>
+					<h5 class="px-3 py-2 m-0">
+						<span v-if="rootState == 'view'">View Message</span>
+						<span v-if="rootState == 'reply'">Reply Message</span>
+						<span v-if="rootState == 'create'">New Message</span>
+						<span v-if="rootState == 'edit'">Edit Message</span>
+						<small><code class="txt-blue"><small>{{message.parentmessageid}}</small></code></small>
+					</h5>
+				</div>
+				<div class="legal-text">
+					<div class="nicescroll--bar wk-scroll">
+						<div class="p--3" v-if="rootState == 'view'">
+							<div class="d-flex align-items-center p-3">
+								<h6 class="m-0">
+									<i class="fas fa-bookmark txt-orange mr-2" v-if="viewMessage.priority == 'Important'"></i>
+									{{viewMessage.subject}}
+								</h6>
+								<span class="badge txt-white ml-auto" :class="'badge-' + viewMessage.messageType.uuid">{{viewMessage.messageType.name}}</span>
+							</div>
+							<message-tree :message="viewMessage"></message-tree>
+						</div>
+						<div class="p-3" v-if="rootState == 'create' || rootState == 'edit' || rootState == 'view'">
+							<input type="text" name="parentmessageid" id="parentmessageid" v-model="message.parentmessageid" class="form-control hide">
+							<div class="row">
+								<div class="col-sm-6">
+									<div class="form-group v-select-color-purple" v-if="rootState != 'view'" v-bind:class="{ 'has-error': errors.has('receiver') }">
+										<label>To</label>
+										<v-select label="displayname" :filterable="false" :options="$root.userOptions" @search="$root.getUserOptions" v-model="message.receiver" v-validate="'required'" name="receiver" @input="setReceiver">
+											<span slot="no-options"></span>
+											<template slot="option" slot-scope="option">
+												<div :class="{'txt-muted': option.isdeleted}">
+													<strong>{{ option.displayname }}</strong>
+													<small>{{ option.email }}</small>
+												</div>
+											</template>
+											<template slot="selected-option" slot-scope="option">
+												<div :class="{'txt-muted': option.isdeleted}">
+													<strong>{{ option.displayname }}</strong>
+													<small>{{ option.email }}</small>
+												</div>
+											</template>
+										</v-select>
+									</div>
+								</div>
+								<div class="col-sm-6">
+									<div class="form-group " v-if="rootState != 'view'" v-bind:class="{ 'has-error': errors.has('messagetype') }">
+										<label>Message Type</label>
+										<select class="form-control" name="messagetype" id="messagetype" v-model="message.messagetypeid" v-validate="'required'">
+											<option v-for="(type,index) in messageTypes" :value="type.uuid">{{type.name}}</option>
+										</select>
+										<em v-bind:class="{ 'show': errors.has('messagetype') }">{{ errors.first('messagetype') }}</em>
+									</div>
+								</div>
+							</div>
+							<div class="form-group" v-if="rootState != 'view'" v-bind:class="{ 'has-error': errors.has('subject') }">
+								<label for="subject">Subject:</label>
+								<input type="text" name="subject" id="subject" v-model="message.subject" v-validate="'required'" class="form-control">
+								<em v-bind:class="{ 'show': errors.has('subject') }">{{ errors.first('subject') }}</em>
+							</div>
+							<div class="form-group" v-bind:class="{ 'has-error': errors.has('body') }">
+								<label for="body">Message to <span v-if="message.receiver && rootState == 'view'">{{message.receiver.displayname}}</span></label>
+								<textarea type="text" name="body" id="body" v-model="message.body" v-validate="'required'" class="form-control message-text"></textarea>
+								<em v-bind:class="{ 'show': errors.has('body') }">{{ errors.first('body') }}</em>
+							</div>
+							<div class="form-group form-inline" v-if="rootState != 'view'">
+								<label class="d-block txt-line mb-0">Mark as Important</label>
+								<span class="switch switch-primary ml-auto">
+									<input type="checkbox" id="priority" name="priority" v-model="message.priority" true-value="Important" false-value="">
+									<label for="priority"></label>
+								</span>
+							</div>
+							<!-- <pre>{{stringifyMessage}}</pre> -->
+							<!-- <pre>{{this.viewMessage}}</pre> -->
+							<!-- <pre>{{this.message}}</pre> -->
+						</div>
+					</div>
+				</div>
+			</div>
+			</transition>
+			<div class="btn-float-br">
+				<button class="btn btn-xl btn-green btn-circle" v-if="rootState == 'init'" v-on:click="$emit('set-state', 'create')" title="NEW MESSAGE"><i class="fas fa-plus"></i></button>
+
+				<button type="button" class="btn btn-secondary btn-xl btn-circle" v-if="rootState != 'init'" v-on:click="$emit('set-state', 'init'); cancelMessage()" title="CANCEL MESSAGE"><i class="fas fa-times"></i></button>
+
+				<button type="button" class="btn btn-green btn-xl btn-circle" v-if="rootState != 'init' && rootState != 'create'" v-on:click="deleteMessage(message)" title="DELETE MESSAGE"><i class="fas fa-trash"></i></button>
+
+				<button type="button" class="btn btn-primary btn-xl btn-circle" v-if="rootState == 'create' || rootState == 'view'"  v-on:click="messageAction('create')" title="SAVE AS DRAFT"><i class="fas fa-save"></i></button>
+
+				<button type="button" class="btn btn-primary btn-xl btn-circle" v-if="rootState == 'edit'"  v-on:click="messageAction('edit')" title="SAVE MESSAGE"><i class="fas fa-save"></i></button>
+
+				<button type="button" class="btn btn-pink btn-xl btn-circle" v-if="rootState != 'init' && rootState != 'view'" v-on:click="messageAction('send')" title="SEND MESSAGE"><i class="fas fa-share"></i></button>
+
+				<!-- <button type="button" class="btn btn-primary btn-xl btn-circle" v-if="rootState == 'view'"  v-on:click="messageAction('edit')" title="FORWARD MESSAGE"><i class="fas fa-forward"></i></button> -->
+				<button type="button" class="btn btn-pink btn-xl btn-circle" v-if="rootState == 'view'" v-on:click="messageAction('send')" title="REPLY MESSAGE"><i class="fas fa-reply"></i></button>
+			</div>
+		</div>
+	</my-messages>
+	</main>
+</div>
+<div type="text/x-template" class="hide" id="message-tree">
+	<ul class="">
+	<li class="">
+		<div class="px-3 pb-1 pt-3 brd-b">
+			<strong class="txt-black">{{message.sender.displayname}}</strong>
+			<span>{{message.sentat | formatDateTime}}</span>
+			<code class="small"><small>{{message.uuid}}</small></code>
+			<span class="flt-r">To: <strong class="txt-black">{{message.receiver.displayname}}</strong></span>
+		</div>
+		<div class="px-3 py-2 messages">
+			<!-- <pre>{{message.body}}</pre> -->
+			<div v-html="markdownMessage"></div>
+		</div>
+		<message-tree :message="message.children" v-if="message.children"></message-tree>
+	</li>
+	</ul>
+</div>
+<script src="/dist/js/plugins/openapi/markdown-it.min.js"></script>
+<script id="reqVue" data-module="messages" data-main="/dist/js/main" src="/dist/js/lib/require.min.js"></script>
+</body>
+</html>
+
