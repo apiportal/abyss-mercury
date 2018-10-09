@@ -110,32 +110,12 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 				var index = this.directoryTypes.indexOf(t);
 				this.directoryTypes.splice(index, 1);
 			},
-			/*saveAddType(t) {
-				this.fillProps(t);
-				var itemArr = [];
-				itemArr.push(this.deleteProps(t));
-				// console.log("this.deleteProps(t): ", this.deleteProps(t));
-				axios.post(abyss.ajax.subject_directory_types, itemArr).then(response => {
-					console.log("subject_directory_types response: ", response);
-					this.directoryTypes.push(response.data[0].response);
-					this.cancelAddType(t);
-					this.$emit('set-state', 'init');
-				}, error => {
-					this.handleError(error);
-				});
-			},*/
 			async saveAddType(item) {
 				this.fixProps(item);
 				await this.addItem( abyss.ajax.subject_directory_types, this.deleteProps(item), this.directoryTypes );
 				this.cancelAddType(item);
 				this.$emit('set-state', 'init');
 			},
-			/*saveType(item) {
-				this.updateItem(abyss.ajax.subject_directory_types + '/' + item.uuid, this.deleteProps(item)).then(response => {
-					console.log("save subject_directory_types response: ", response);
-					this.$emit('set-state', 'init');
-				});
-			},*/
 			async saveType(item) {
 				await this.editItem( abyss.ajax.subject_directory_types, item.uuid, this.deleteProps(item), this.directoryTypes );
 				this.$emit('set-state', 'init');
@@ -186,20 +166,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 			async directoryAction(act) {
 				var result = await this.$validator.validateAll();
 				if (result) {
-					/*if (act === 'add') {
-						this.fixProps(this.directory);
-						var itemArr = [];
-						itemArr.push(this.deleteProps(this.directory));
-						// console.log("this.deleteProps(this.directory): ", this.deleteProps(this.directory));
-						axios.post(abyss.ajax.subject_directories_list, itemArr).then(response => {
-							console.log("addDirectory response: ", response);
-							this.directoryList.push(response.data[0].response);
-							this.$emit('set-state', 'init');
-							this.directory = _.cloneDeep(this.newDirectory);
-						}, error => {
-							this.handleError(error);
-						});
-					}*/
 					if (act === 'add') {
 						this.fixProps(this.directory);
 						await this.addItem(abyss.ajax.subject_directories_list, this.deleteProps(this.directory), this.directoryList);
@@ -212,34 +178,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 						this.directory = _.cloneDeep(this.newDirectory);
 						this.selected = null;
 					}
-					/*if (act === 'edit') {
-						this.updateItem(abyss.ajax.subject_directories_list + '/' + this.directory.uuid, this.deleteProps(this.directory), this.directoryList).then(response => {
-							console.log("editDirectory response: ", response);
-							this.$emit('set-state', 'init');
-							this.directory = _.cloneDeep(this.newDirectory);
-							this.selected = null;
-						});
-					}*/
 				}
 			},
-			/*getPage(p, d) {
-				axios.all([
-					axios.get(abyss.ajax.subject_directory_types),
-					axios.get(abyss.ajax.organizations_list),
-					axios.get(abyss.ajax.subject_directories_list)
-				]).then(
-					axios.spread((subject_directory_types, organizations_list, subject_directories_list) => {
-						this.directoryTypes = subject_directory_types.data;
-						// this.orgOptions = this.$root.rootData.user.organizations;
-						this.orgOptions = organizations_list.data;
-						this.directoryList = subject_directories_list.data;
-						this.paginate = this.makePaginate(this.directoryList);
-						this.preload();
-					})
-				).catch(error => {
-					this.handleError(error);
-				});
-			},*/
 			async getPage(p, d) {
 				var subject_directories_list = this.getList(abyss.ajax.subject_directories_list);
 				var subject_directory_types = this.getList(abyss.ajax.subject_directory_types);
@@ -250,13 +190,11 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 				Vue.set( this, 'orgOptions', orgOptions );
 				this.paginate = this.makePaginate(this.directoryList);
 				this.preload();
-				console.timeEnd();
 			},
 		},
 		created() {
 			this.$emit('set-page', 'user-directories', 'init');
 			this.newDirectory = _.cloneDeep(this.directory);
-			console.time();
 			this.getPage(1);
 		}
 	});

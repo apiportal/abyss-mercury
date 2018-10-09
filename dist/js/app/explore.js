@@ -113,25 +113,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select'], funct
 				});
 				loading(false);
 			},
-			/*getApiOptions(search, loading) {
-				loading(true);
-				axios.get(abyss.ajax.proxy_list + '/?likename=' + search)
-				.then((response) => {
-					if (response.data != null) {
-						// this.apiOptions = response.data.filter( (item) => !item.isdeleted && item.apivisibilityid == abyss.defaultIds.apiVisibilityPublic );
-						this.apiOptions = response.data.filter( (item) => item.apivisibilityid == abyss.defaultIds.apiVisibilityPublic );
-						this.apiOptions.forEach((value, key) => {
-							Vue.set(value, 'name', value.openapidocument.info.title);
-						});
-					} else {
-						this.apiOptions = [];
-					}
-					loading(false);
-				}, error => {
-					this.handleError(error);
-					loading(false);
-				});
-			},*/
 			async filterApi(filter) {
 				if (filter == null) {
 					this.getPage(1);
@@ -145,22 +126,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select'], funct
 					this.filterTxt = 'Search Result';
 				}
 			},
-			/*filterApi(filter) {
-				if (filter == null) {
-					this.getPage(1);
-				} else {
-					axios.get(abyss.ajax.proxy_list+'/')
-					.then(response => {
-						if (response.data != null) {
-							this.apiList = [];
-							this.apiList.push(filter);
-							this.filterTxt = 'Search Result';
-						}
-					}, error => {
-						this.handleError(error);
-					});
-				}
-			},*/
 			async getPage(p, px, nm) {
 				var pxEndpoint = abyss.ajax.proxy_list+'/';
 				if (px) {
@@ -177,29 +142,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select'], funct
 				// this.apiList = apiList;
 				
 			},
-			/*getPage(p, px, nm) {
-				var pxEndpoint = abyss.ajax.proxy_list+'/';
-				if (px) {
-					pxEndpoint = px;
-				}
-				if (nm) {
-					this.filterTxt = nm;
-				}
-				axios.all([
-					axios.get(pxEndpoint),
-				]).then(
-					axios.spread((api_list) => {
-						// this.apiList = api_list.data.filter( (item) => !item.isdeleted && item.apivisibilityid == abyss.defaultIds.apiVisibilityPublic );
-						// this.apiList = api_list.data;
-						this.apiList = api_list.data.filter( (item) => item.apivisibilityid == abyss.defaultIds.apiVisibilityPublic );
-						this.paginate = this.makePaginate(api_list.data);
-						this.preload();
-					})
-				).catch(error => {
-					this.handleError(error);
-				});
-			},*/
-			////////////////
 		},
 		async created() {
 			this.$emit('set-page', 'explore', 'init');

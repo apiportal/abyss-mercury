@@ -95,7 +95,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 				app: {
 					"uuid": null,
 					"organizationid": null,
-					// "organizationid": this.$root.abyssOrgId,
 					"created": null,
 					"updated": null,
 					"deleted": null,
@@ -268,72 +267,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 					}
 				}
 			},
-			/*deleteApp(item) {
-				var r = confirm('Are you sure to delete?');
-				if (r === true) {
-					console.log("item: ", JSON.stringify(item, null, '\t'));
-					item.contracts.forEach((con, k) => {
-						console.log("con.resource.uuid: ", abyss.ajax.resources + '/' + con.resource.uuid);
-						console.log("con.uuid: ", abyss.ajax.contracts + '/' + con.uuid);
-						axios.delete(abyss.ajax.resources + '/' + con.resource.uuid, con.resource).then(response => {
-							console.log("deleteAppContracts DELETE contract resource response: ", response);
-							axios.delete(abyss.ajax.contracts + '/' + con.uuid, con).then(response => {
-								console.log("deleteAppContracts DELETE contract response: ", response);
-
-							}, error => {
-								this.handleError(error);
-							});
-						}, error => {
-							this.handleError(error);
-						});
-					});
-					setTimeout(() => {
-						item.subscriptions.forEach((sub, k) => {
-							console.log("sub.accessToken.uuid: ", sub.accessToken.uuid);
-							console.log("sub.uuid: ", sub.uuid);
-							axios.delete(abyss.ajax.resource_access_tokens + '/' + sub.accessToken.uuid, sub.accessToken).then(response => {
-								console.log("deleteAppSubs DELETE resource_access_tokens response: ", response);
-								axios.delete(abyss.ajax.permission_list + '/' + sub.uuid, sub).then(response => {
-									console.log("deleteAppSubs DELETE permission_list response: ", response);
-								}, error => {
-									this.handleError(error);
-								});
-							}, error => {
-								this.handleError(error);
-							});
-						});
-					},100);
-					setTimeout(() => {
-						axios.delete(abyss.ajax.resource_access_tokens + '/' + item.permission.accessToken.uuid, item.permission.accessToken).then(response => {
-							console.log("deleteApp DELETE token response: ", response);
-							axios.delete(abyss.ajax.permission_list + '/' + item.permission.uuid, item.permission).then(response => {
-								console.log("deleteApp DELETE permission response: ", response);
-								axios.delete(abyss.ajax.resources + '/' + item.resource.uuid, item.resource).then(response => {
-									console.log("deleteApp DELETE resource response: ", response);
-									axios.delete(abyss.ajax.subject_app_list + '/' + item.appUser.uuid, item.appUser).then(response => {
-										item.appUser.isdeleted = true;
-										console.log("deleteApp DELETE userApp response: ", response);
-										axios.delete(abyss.ajax.subjects + '/' + item.uuid, item).then(response => {
-											item.isdeleted = true;
-											console.log("deleteApp DELETE app response: ", response);
-										}, error => {
-											this.handleError(error);
-										});
-									}, error => {
-										this.handleError(error);
-									});
-								}, error => {
-									this.handleError(error);
-								});
-							}, error => {
-								this.handleError(error);
-							});
-						}, error => {
-							this.handleError(error);
-						});
-					},200);
-				}
-			},*/
 			beforeAppAction(c) {
 				/*if ( (this.app.password && this.app.uuid && !this.resetKey && this.$root.rootState != 'add') ) {
 					this.$toast('error', {title: 'Please copy APP Key and APP Secret!', message: '...', position: 'topRight'});
@@ -398,83 +331,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 					}
 				}
 			},
-			/*appAction(act) {
-				this.$validator.validateAll().then((result) => {
-					if (result) {
-						if (act === 'add') {
-							if (this.beforeAppAction()) {
-								this.fixProps(this.app);
-								var iAppArr = [];
-								iAppArr.push(this.deleteProps(this.app));
-								// DUP !!!
-								// this.$emit('set-state', 'edit');
-								// this.preventCancel = true;
-								axios.post(abyss.ajax.subjects, iAppArr).then(response => {
-									console.log("addApp response: ", response);
-									var item = response.data[0].response;
-									this.$root.appList.push(item);
-									this.app = item;
-									this.createResource2(item, 'APP', item.firstname, item.description)
-									.then(response => {
-										var itemObj = {
-											organizationid: this.$root.abyssOrgId,
-											crudsubjectid: this.$root.rootData.user.uuid,
-											subjectid: this.$root.rootData.user.uuid,
-											appid: item.uuid,
-										};
-										var itemArr = [];
-										itemArr.push(itemObj);
-										axios.post(abyss.ajax.subject_app_list, itemArr).then(response => {
-											console.log("addUserApp response: ", response);
-											var uApp = response.data[0].response;
-											///////////////////////////
-											this.setAppPermAndToken(this.app);
-											setTimeout(() => {
-												// this.$root.appList.push(response.data[0].response);
-												// this.app = _.cloneDeep(this.newApp);
-												// Vue.set(this.app, 'subscriptions', []);
-												this.getMyApps();
-												this.$emit('set-state', 'init');
-												//// !! DISABLE KEY CONTROL
-												// this.$emit('set-state', 'edit');
-												// this.preventCancel = true;
-											},100);
-										}, error => {
-											this.handleError(error);
-										});
-									}, error => {
-										this.handleError(error);
-									});
-								}, error => {
-									this.handleError(error);
-								});
-							}
-						}
-						if (act === 'edit') {
-							if (this.beforeAppAction() && !this.preventCancel) {
-								Vue.set(this.app,'subjectname', this.app.firstname);
-								Vue.set(this.app,'displayname', this.app.firstname);
-								Vue.set(this.app,'lastname', this.app.firstname);
-								console.log("EDITTTTTTTTTTTTTTT: ", this.app);
-								this.updateItem(abyss.ajax.subjects + '/' + this.app.uuid, this.deleteProps(this.app), this.$root.appList).then(response => {
-									console.log("editApp response: ", response);
-									var item = response.data[0];
-									this.getResources(item, 'APP', item.firstname, item.description);
-									setTimeout(() => {
-										this.updateResource(item, 'APP', item.firstname, item.description);
-									},100);
-									this.$emit('set-state', 'init');
-									this.app = _.cloneDeep(this.newApp);
-									this.selected = null;
-								}, error => {
-									this.handleError(error);
-								});
-							}
-						}
-						return;
-					}
-				});
-			},*/
 		},
 		mounted() {
 			var vm = this;

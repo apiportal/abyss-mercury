@@ -121,27 +121,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment'], funct
 			async licenseAction(act) {
 				var result = await this.$validator.validateAll();
 				if (result) {
-					/*if (act === 'add') {
-						this.fixProps(this.license);
-						var itemArr = [];
-						itemArr.push(this.deleteProps(this.license));
-						axios.post(abyss.ajax.licenses, itemArr).then(response => {
-							console.log("addLicense response: ", response);
-							if (response.data[0].status != 500 ) {
-								var item = response.data[0].response;
-								Vue.set(item, 'policies', _.filter(this.policyList, (v) => _.includes(item.licensedocument.termsOfService.policyKey, v.uuid)) );
-								this.licenseList.push(item);
-								this.$emit('set-state', 'init');
-								this.license = _.cloneDeep(this.newLicense);
-								this.createResource(item, 'LICENSE', item.name, item.licensedocument.info.description);
-							}
-						}, error => {
-							this.handleError(error);
-						});
-					}*/
 					if (act === 'add') {
 						this.fixProps(this.license);
-						console.log("this.deleteProps(this.license): ", this.deleteProps(this.license));
 						var item = await this.addItem(abyss.ajax.licenses, this.deleteProps(this.license), this.licenseList);
 						await this.createResource(item, 'LICENSE', item.name, item.licensedocument.info.description);
 						Vue.set(item, 'policies', _.filter(this.policyList, (v) => _.includes(item.licensedocument.termsOfService.policyKey, v.uuid)) );
@@ -149,45 +130,15 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment'], funct
 						this.license = _.cloneDeep(this.newLicense);
 					}
 					if (act === 'edit') {
-						console.log("this.deleteProps(this.license): ", this.deleteProps(this.license));
 						var item = await this.editItem( abyss.ajax.licenses, this.license.uuid, this.deleteProps(this.license), this.licenseList );
-						console.log("getResources--------------: ", item);
 						await this.getResources(item, 'LICENSE', item.name, item.licensedocument.info.description); // for error check
 						await this.updateResource(item, 'LICENSE', item.name, item.licensedocument.info.description);
 						this.$emit('set-state', 'init');
 						this.license = _.cloneDeep(this.newLicense);
 						this.selected = null;
 					}
-					/*if (act === 'edit') {
-						this.updateItem(abyss.ajax.licenses + '/' + this.license.uuid, this.deleteProps(this.license), this.licenseList).then(response => {
-							console.log("editLicense response: ", response);
-							var item = response.data[0];
-							this.getResources(item, 'LICENSE', item.name, item.licensedocument.info.description);
-							setTimeout(() => {
-								this.updateResource(item, 'LICENSE', item.name, item.licensedocument.info.description);
-							},100);
-							this.$emit('set-state', 'init');
-							this.license = _.cloneDeep(this.newLicense);
-							this.selected = null;
-						});
-					}*/
 				}
 			},
-			/*getPage(p, d) {
-				axios.get(abyss.ajax.subject_licenses_list + this.$root.rootData.user.uuid)
-				.then(response => {
-					this.licenseList = response.data;
-					this.licenseList.forEach((value, key) => {
-						Vue.set(value, 'policies', _.filter(this.policyList, (v) => _.includes(value.licensedocument.termsOfService.policyKey, v.uuid)) );
-						this.getResources(value, 'LICENSE', value.name, value.licensedocument.info.description);
-					});
-					// this.licenseList = newLcs;
-					this.paginate = this.makePaginate(this.licenseList);
-					this.preload();
-				}, error => {
-					this.handleError(error);
-				});
-			},*/
 			async getPage(p, d) {
 				var subject_licenses_list = this.getList(abyss.ajax.subject_licenses_list + this.$root.rootData.user.uuid);
 				var subject_policies_list = this.getList(abyss.ajax.subject_policies_list + this.$root.rootData.user.uuid);
@@ -200,13 +151,11 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment'], funct
 				});
 				this.paginate = this.makePaginate(this.licenseList);
 				this.preload();
-				console.timeEnd();
 			},
 		},
 		created() {
 			this.$emit('set-page', 'licenses', 'init');
 			this.newLicense = _.cloneDeep(this.license);
-			console.time();
 			this.getPage(1);
 		}
 	});

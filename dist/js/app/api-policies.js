@@ -77,23 +77,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 			async policyAction(act) {
 				var result = await this.$validator.validateAll();
 				if (result) {
-					/*if (act === 'add') {
-						this.fixProps(this.policy);
-						var itemArr = [];
-						itemArr.push(this.deleteProps(this.policy));
-						axios.post(abyss.ajax.policies, itemArr).then(response => {
-							console.log("addPolicy response: ", response);
-							if (response.data[0].status != 500 ) {
-								var item = response.data[0].response;
-								this.policyList.push(item);
-								this.$emit('set-state', 'init');
-								this.policy = _.cloneDeep(this.newPolicy);
-								this.createResource(item, 'POLICY', item.name, item.description);
-							}
-						}, error => {
-							this.handleError(error);
-						});
-					}*/
 					if (act === 'add') {
 						this.fixProps(this.policy);
 						console.log("this.deleteProps(this.policy): ", this.deleteProps(this.policy));
@@ -110,40 +93,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 						this.policy = _.cloneDeep(this.newPolicy);
 						this.selected = null;
 					}
-					/*if (act === 'edit') {
-						this.updateItem(abyss.ajax.policies + '/' + this.policy.uuid, this.deleteProps(this.policy), this.policyList).then(response => {
-							console.log("editPolicy response: ", response);
-							var item = response.data[0];
-							this.getResources(item, 'POLICY', item.name, item.description);
-							setTimeout(() => {
-								this.updateResource(item, 'POLICY', item.name, item.description);
-							},100);
-							this.$emit('set-state', 'init');
-							this.policy = _.cloneDeep(this.newPolicy);
-							this.selected = null;
-						});
-					}*/
 				}
 			},
-			/*getPageOld(p, d) {
-				axios.all([
-					axios.get(abyss.ajax.subject_policies_list + this.$root.rootData.user.uuid ),
-					axios.get(abyss.ajax.policy_types),
-				]).then(
-					axios.spread((subject_policies_list, policy_types) => {
-						this.policyList = subject_policies_list.data;
-						this.policyList.forEach((value, key) => {
-							this.getResources(value, 'POLICY', value.name, value.description);
-						});
-						this.paginate = this.makePaginate(this.policyList);
-						this.preload();
-						this.policyTypes = policy_types.data;
-						console.timeEnd();
-					})
-				).catch(error => {
-					this.handleError(error);
-				});
-			},*/
 			async getPage(p, d) {
 				var subject_policies_list = this.getList(abyss.ajax.subject_policies_list + this.$root.rootData.user.uuid);
 				var policy_types = this.getList(abyss.ajax.policy_types);
@@ -155,13 +106,11 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 					this.getResources(value, 'POLICY', value.name, value.description);
 				});
 				Vue.set( this, 'policyTypes', policyTypes );
-				console.timeEnd();
 			},
 		},
 		created() {
 			this.$emit('set-page', 'policies', 'init');
 			this.newPolicy = _.cloneDeep(this.policy);
-			console.time();
 			this.getPage(1);
 		}
 	});

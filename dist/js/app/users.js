@@ -1,16 +1,5 @@
 define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'moment'], function(abyss, Vue, axios, VeeValidate, _, VueSelect, moment) {
 	Vue.component('v-select', VueSelect.VueSelect);
-	/*Vue.component('user-list', {
-		props: ['user', 'index'],
-		data() {
-			return {};
-		},
-		methods: {
-			// isSelected(i) {
-			// 	this.$parent.isSelected(i);
-			// },
-		}
-	});*/
 	Vue.component('users', {
 		props: {
 			rootState: { type: String }
@@ -123,16 +112,13 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 					// this.getPage(1);
 					// var sss = _.filter(this.userList, (item) => _.find(flt, { filtered: 'group' }));
 					var sss = this.userList.filter((item) => item.groupfilter === false );
-					console.log("sss: ", sss);
 					sss.forEach((value, key) => {
 						value.groupfilter = true;
 					});
 				} else {
 					// this.getPage(1, '&group='+filter.uuid);
 					var flt = this.memberOptions.filter((item) => item.subjectgroupid == filter.uuid );
-					console.log("flt: ", flt);
 					var xxx = _.reject(this.userList, (item) => _.find(flt, { subjectid: item.uuid }));
-					console.log("xxx: ", xxx);
 					xxx.forEach((value, key) => {
 						value.groupfilter = false;
 					});

@@ -1,6 +1,5 @@
 define(['config', 'Vue', 'axios', 'vee-validate'], function (abyss, Vue, axios, VeeValidate) {
 	Vue.use(VeeValidate)
-	// import { Validator } from 'vee-validate';
 	const dictionary = {
 		en: {
 			attributes: {
