@@ -35,13 +35,15 @@ require.config({
 		"bootstrap-datetimepicker-css": "plugins/bootstrap-datetimepicker.min.css?noext",
 		"colorpicker": "plugins/bootstrap-colorpicker/bootstrap-colorpicker.min",
 		"colorpicker-css": "plugins/bootstrap-colorpicker/bootstrap-colorpicker.min.css?noext",
-		"izitoast-css": "plugins/iziToast.min.css?noext",
+		// "izitoast-css": "plugins/iziToast.min.css?noext",
 		"izitoast": "plugins/iziToast.min",
+		"sortablejs": "plugins/Sortable.min",
 		"tiny-cookie": "plugins/tiny-cookie.min",
 		"highcharts": "plugins/Highcharts",
 		"sweetalert2": "plugins/sweetalert2.min",
 		"sweetalert2-css": "plugins/sweetalert2.min.css?noext",
 		//// comps ////
+		"vuedraggable": "comps/vuedraggable",
 		"vee-validate": "comps/vee-validate.min",
 		"vue-select": "comps/vue-select",
 		"vue-cookie": "comps/vue-cookie",
@@ -52,7 +54,7 @@ require.config({
 		"vue-dropzone-css": "comps/vue2Dropzone.css?noext",
 		// "vue-izitoast": "comps/vue-izitoast.min",
 		"vue-izitoast": "comps/vue-my-izitoast",
-
+		// "ace-init": "scripts/ace",
 		//// init ////
 		"config": "config",
 		"global": "/global",

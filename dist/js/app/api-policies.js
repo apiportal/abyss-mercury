@@ -80,15 +80,15 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 					if (act === 'add') {
 						this.fixProps(this.policy);
 						console.log("this.deleteProps(this.policy): ", this.deleteProps(this.policy));
-						var item = await this.addItem(abyss.ajax.policies, this.deleteProps(this.policy), this.policyList);
-						await this.createResource(item, 'POLICY', item.name, item.description);
+						var resAdd = await this.addItem(abyss.ajax.policies, this.deleteProps(this.policy), this.policyList);
+						await this.createResource(resAdd, 'POLICY', resAdd.name, resAdd.description);
 						this.$emit('set-state', 'init');
 						this.policy = _.cloneDeep(this.newPolicy);
 					}
 					if (act === 'edit') {
-						var item = await this.editItem( abyss.ajax.policies, this.policy.uuid, this.deleteProps(this.policy), this.policyList );
-						await this.getResources(item, 'POLICY', item.name, item.description); // for error check
-						await this.updateResource(item, 'POLICY', item.name, item.description);
+						var resEdit = await this.editItem( abyss.ajax.policies, this.policy.uuid, this.deleteProps(this.policy), this.policyList );
+						await this.getResources(resEdit, 'POLICY', resEdit.name, resEdit.description); // for error check
+						await this.updateResource(resEdit, 'POLICY', resEdit.name, resEdit.description);
 						this.$emit('set-state', 'init');
 						this.policy = _.cloneDeep(this.newPolicy);
 						this.selected = null;

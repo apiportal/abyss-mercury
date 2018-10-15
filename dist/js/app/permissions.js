@@ -159,7 +159,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 					// this.permissionList = await this.getItem(abyss.ajax.permission_list, filter.uuid);
 					this.permissionList = [];
 					this.permissionList.push(filter);
-					this.setPage();
+					this.setGetPage();
 				}
 			},
 			async getPermissionOptions(search, loading) {
@@ -167,7 +167,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 				this.permissionOptions = await this.getList(abyss.ajax.permission_list + '?likename=' + search);
 				loading(false);
 			},
-			async setPage() {
+			async setGetPage() {
 				this.permissionList.forEach(async (value, key) => {
 					var rAct = _.find(this.$root.rootData.resourceActions, { 'uuid': value.resourceactionid });
 					Vue.set(value, 'resourceAction', rAct );
@@ -218,7 +218,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 				this.permissionList = permissionList;
 				this.orgOptions = orgOptions;
 				this.paginate = this.makePaginate(this.permissionList);
-				this.setPage();
+				this.setGetPage();
 				this.preload();
 			},
 		},

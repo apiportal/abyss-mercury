@@ -140,7 +140,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 					Vue.set( this.filt, 'fval', '' );
 					this.messageList = [];
 					this.messageList.push(filter);
-					this.setPage();
+					this.setGetPage();
 				}
 			},
 			async getMessageOptions(search, loading) {
@@ -283,7 +283,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 					}
 				}
 			},
-			async setPage() {
+			async setGetPage() {
 				this.messageList.forEach(async (value, key) => {
 					if (value.receiversubjectid == this.$root.rootData.user.uuid) {
 						Vue.set( value, 'folder', 'Inbox' );
@@ -322,7 +322,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 				var [messageList, messageTypes] = await Promise.all([message_list, message_types]);
 				Vue.set( this, 'messageList', messageList );
 				Vue.set( this, 'messageTypes', messageTypes );
-				await this.setPage();
+				await this.setGetPage();
 				
 				this.paginate = this.makePaginate(this.messageList);
 				this.isLoading = false;

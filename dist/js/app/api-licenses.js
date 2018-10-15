@@ -123,16 +123,16 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment'], funct
 				if (result) {
 					if (act === 'add') {
 						this.fixProps(this.license);
-						var item = await this.addItem(abyss.ajax.licenses, this.deleteProps(this.license), this.licenseList);
-						await this.createResource(item, 'LICENSE', item.name, item.licensedocument.info.description);
-						Vue.set(item, 'policies', _.filter(this.policyList, (v) => _.includes(item.licensedocument.termsOfService.policyKey, v.uuid)) );
+						var resAdd = await this.addItem(abyss.ajax.licenses, this.deleteProps(this.license), this.licenseList);
+						await this.createResource(resAdd, 'LICENSE', resAdd.name, resAdd.licensedocument.info.description);
+						Vue.set(resAdd, 'policies', _.filter(this.policyList, (v) => _.includes(resAdd.licensedocument.termsOfService.policyKey, v.uuid)) );
 						this.$emit('set-state', 'init');
 						this.license = _.cloneDeep(this.newLicense);
 					}
 					if (act === 'edit') {
-						var item = await this.editItem( abyss.ajax.licenses, this.license.uuid, this.deleteProps(this.license), this.licenseList );
-						await this.getResources(item, 'LICENSE', item.name, item.licensedocument.info.description); // for error check
-						await this.updateResource(item, 'LICENSE', item.name, item.licensedocument.info.description);
+						var resEdit = await this.editItem( abyss.ajax.licenses, this.license.uuid, this.deleteProps(this.license), this.licenseList );
+						await this.getResources(resEdit, 'LICENSE', resEdit.name, resEdit.licensedocument.info.description); // for error check
+						await this.updateResource(resEdit, 'LICENSE', resEdit.name, resEdit.licensedocument.info.description);
 						this.$emit('set-state', 'init');
 						this.license = _.cloneDeep(this.newLicense);
 						this.selected = null;

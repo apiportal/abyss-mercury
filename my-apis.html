@@ -8,7 +8,7 @@
 	data-thx-preload-js="/dist/js/loader.js"
 	data-thx-onfrags="fragsListener();" data-thx-onfrag="fragListener()"></script>
 <link href="/dist/css/obsidian.css" rel="stylesheet">
-<link href="/dist/css/jsoneditor.min.css" rel="stylesheet" type="text/css">
+<link href="/dist/js/plugins/jsoneditor/jsoneditor.min.css" rel="stylesheet" type="text/css">
 </head>
 <body>
 <div id="portal" class="wrapper" v-bind:class="pageClass">
@@ -121,7 +121,7 @@
 								</span>
 							</div>
 							<div id="servers" class="collapse">
-								<api-servers v-for="(server,sindex) in openapi.servers" :server="server" :sindex="sindex" :key="sindex" inline-template>
+								<api-servers v-for="(server,sindex) in openapi.servers" :server="server" :sindex="sindex" :key="sindex" :servers="openapi.servers" inline-template>
 									<div class="field-controls field-color-grey field-level-1">
 										<div class="field-sum">
 											<a class="field-link nav-caret" data-toggle="collapse" v-bind:data-target="'#server'+sindex" v-bind:aria-controls="'server'+sindex">
@@ -133,7 +133,7 @@
 										<div class="ficon-actions dropdown dropdown-hover">
 											<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
 											<ul class="dropdown-menu dropdown-menu-right" role="menu">
-												<li><a class="" title="Remove server" v-on:click="removeServer(sindex)" v-if="sindex > 0"><i class="fa fa-trash-alt"></i> Remove server</a></li>
+												<li><a class="" title="Remove server" v-on:click="removeServer(sindex)" v-if="servers.length > 1"><i class="fa fa-trash-alt"></i> Remove server</a></li>
 												<!-- <li><a title="Show Variables" data-toggle="collapse" v-bind:data-target="'#server'+sindex" v-bind:aria-controls="'server'+sindex"><i class="">V</i> Show Variables</a></li> -->
 												<li><a title="Add Variable" v-on:click="addVariable(sindex)"><i class="">V</i> Add Variable</a></li>
 												<li><a title="Add a server" v-on:click="addServer()"><i class="fa fa-plus"></i> Add a server</a></li>
@@ -880,10 +880,10 @@
 
 <script src="/dist/js/plugins/clipboard.min.js"></script>
 <script src="/dist/js/plugins/highlight.pack.js"></script>
-<script src="/dist/js/plugins/openapi/js-yaml.min.js"></script>
-<script src="/dist/js/plugins/openapi/jsonpatch.min.js"></script>
-<script src="/dist/js/plugins/openapi/jsoneditor.min.js"></script>
-<script src="/dist/js/plugins/openapi/markdown-it.min.js"></script>
+<script src="/dist/js/plugins/js-yaml.min.js"></script>
+<script src="/dist/js/plugins/jsonpatch.min.js"></script>
+<script src="/dist/js/plugins/jsoneditor/jsoneditor.min.js"></script>
+<script src="/dist/js/plugins/markdown-it.min.js"></script>
 <!-- <script src="/dist/js/swagger/swagger-editor-bundle.js"> </script> -->
 <script id="reqVue" data-module="openapi" data-main="/dist/js/main" src="/dist/js/lib/require.min.js"></script>
 </body>

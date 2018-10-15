@@ -284,11 +284,11 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					var editorOptions = {};
 					var element = document.getElementById('schemaContainer');
 					this.schemaEditor = new JSONEditor(element, editorOptions, initial);
-					var schemaEditorClose = function() {
+					schemaEditorClose = function() { // sonarqube not working with var
 						this.schemaEditor.destroy();
 						$('#schemaModal').modal('hide');
 					}.bind(this);
-					var schemaEditorSave = function() {
+					schemaEditorSave = function() { // sonarqube not working with var
 						obj[key] = this.schemaEditor.get();
 						schemaEditorClose();
 					}.bind(this);
@@ -1339,7 +1339,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 // ■■■■■■■■ api-srvvar ■■■■■■■■ //
 	Vue.component('api-servers', {
 		mixins: [mixOas],
-		props: ["server", "sindex"],
+		props: ["server", "sindex", "servers"],
 		computed: {
 			serverUrl : {
 				get() {
