@@ -57,7 +57,7 @@
 									<a href="#" v-on:click="filterMessages(true, 'isdeleted')"> <i class="fa fa-fw fa-trash mr-2"></i> Trash </a>
 								</li>
 							</ul>
-							<h6 class="p-3">Message Types</h6>
+							<h6 class="p-3">Message Categories</h6>
 							<ul class="nav">
 								<li v-for="(type, index) in messageTypes" :class="{'active': filt.fval == type.uuid}">
 									<a href="#" :title="type.description" v-on:click="filterMessages(type.uuid, 'messagetypeid')"><i class="fas fa-fw fa-stop mr-2" :class="'label-' + type.uuid"></i>{{type.name}}</a>
@@ -69,7 +69,7 @@
 			</aside>
 			<section class="column column-main">
 				<div class="bg-white">
-					<v-select label="subject" :filterable="true" :options="messageOptions" @search="getMessageOptions" :on-change="filterMessage" placeholder="Search Messages">
+					<v-select label="subject" :filterable="true" :options="messageOptions" @search="getMessageOptions" :on-change="filterMessage" placeholder="Search Messages by Subject">
 						<span slot="no-options"></span>
 						<template slot="option" slot-scope="option">
 							<div><strong class="txt-black">{{ option.subject }}</strong> <small class="txt-muted">{{ option.sentat | formatDateTime }}</small></div>
@@ -164,7 +164,7 @@
 								</div>
 								<div class="col-sm-6">
 									<div class="form-group " v-if="rootState != 'view'" v-bind:class="{ 'has-error': errors.has('messagetype') }">
-										<label>Message Type</label>
+										<label>Message Category</label>
 										<select class="form-control" name="messagetype" id="messagetype" v-model="message.messagetypeid" v-validate="'required'">
 											<option v-for="(type,index) in messageTypes" :value="type.uuid">{{type.name}}</option>
 										</select>

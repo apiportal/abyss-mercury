@@ -90,9 +90,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 			filteredMessages() {
 				var messageList = this.messageList;
 				// console.log("messageList: ", messageList);
-				if (this.searchMessages) {
+				/*if (this.searchMessages) {
 					messageList = messageList.filter(item => item.Name.toLowerCase().includes(this.searchMessages));
-				}
+				}*/
 				// console.log("this.filt.fval: ", this.filt.fval);
 				// console.log("this.filt.fkey: ", this.filt.fkey);
 				if (this.filt.fval == 'Sent') {
