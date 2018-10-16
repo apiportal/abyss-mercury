@@ -19,7 +19,7 @@
 			<small>Proxies: <strong v-if="api.proxies">{{api.proxies.length}}</strong></small>
 		</span>
 		<div v-if="api.isproxyapi">
-			<small class="d-block" v-if="businessapi">Business API: <strong>{{businessapi}}</strong></small>
+			<small class="d-block" v-if="business">Business API: <strong>{{businessapi}}</strong></small>
 			<small class="txt-uppercase" v-if="subs">Subscriptions:</small> <strong class="txt-black">{{api.subscriptionsCount}}</strong>
 		</div>
 		<ol class="small pl-3" v-if="subs">
