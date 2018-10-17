@@ -192,7 +192,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 				this.$nextTick(() => {
 					$(".preloader-it").fadeOut("slow");
 					require(['slimscroll'],function(){
-						$(bar).slimscroll({height:'100%',color: '#878787', disableFadeOut : true,borderRadius:0,size:'4px',alwaysVisible:false});
+						$(bar).slimscroll({height:'100%',color: '#878787', disableFadeOut : true,borderRadius:0,size:'4px',alwaysVisible: true});
 					});
 				});
 			},
@@ -545,9 +545,10 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 					}
 					await this.getTax(this.$root.previewedApi);
 					this.$root.setState('preview');
-					require(['slimscroll'],function(){
-						$('.nicescroll-bar').slimscroll({height:'100%',color: '#878787', disableFadeOut : true,borderRadius:0,size:'4px',alwaysVisible:false});
-					});
+					// require(['slimscroll'],function(){
+					// 	$('.nicescroll-bar').slimscroll({height:'100%',color: '#878787', disableFadeOut : true,borderRadius:0,size:'4px',alwaysVisible:false});
+					// });
+					this.preload('.nicescroll-bar');
 				} else {
 					Vue.set(this.$root, 'previewedApi', _.cloneDeep(item));
 					await this.getTax(this.$root.previewedApi);
@@ -633,11 +634,12 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 					this.$root.setState('previewapp');
 					$('body').addClass('no-scroll');
 					$('.page-wrapper').addClass('no-scroll');
-					setTimeout(() => {
-						require(['slimscroll'],function(){
-							$('.nicescroll-bar').slimscroll({height:'100%',color: '#878787', disableFadeOut : true,borderRadius:0,size:'4px',alwaysVisible:false});
-						});
-					},100);
+					// setTimeout(() => {
+					// 	require(['slimscroll'],function(){
+					// 		$('.nicescroll-bar').slimscroll({height:'100%',color: '#878787', disableFadeOut : true,borderRadius:0,size:'4px',alwaysVisible:false});
+					// 	});
+					// },100);
+					this.preload('.nicescroll-bar');
 				}
 			},
 			async getMyApps(no) {
@@ -814,9 +816,10 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 				Vue.set(this.$root.legalText, 'name', val.name);
 				Vue.set(this.$root.legalText, 'description', val.description);
 				Vue.set(this.$root.legalText, 'documentText', val.documentText);
-				setTimeout(() => {
-					$('.nicescroll-bar').slimscroll({height:'100%',color: '#878787', disableFadeOut : true,borderRadius:0,size:'4px',alwaysVisible:false});
-				},100);
+				// setTimeout(() => {
+				// 	$('.nicescroll-bar').slimscroll({height:'100%',color: '#878787', disableFadeOut : true,borderRadius:0,size:'4px',alwaysVisible:false});
+				// },100);
+				this.preload('.nicescroll-bar');
 				console.log("showLegalText: ");
 			},
 			cancelTestApi() {
@@ -1401,9 +1404,10 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 					this.rootState = state;
 					this.pageClass = this.pageClassPrefix + '-' + state;
 				}
-				require(['slimscroll'],function(){
-					$('.nicescroll-bar').slimscroll({height:'100%',color: '#878787', disableFadeOut : true,borderRadius:0,size:'4px',alwaysVisible:false});
-				});
+				// require(['slimscroll'],function(){
+				// 	$('.nicescroll-bar').slimscroll({height:'100%',color: '#878787', disableFadeOut : true,borderRadius:0,size:'4px',alwaysVisible:false});
+				// });
+				this.preload('.nicescroll-bar');
 			},
 			async getTaxData() {
 				var api_tag_subject = this.getList(abyss.ajax.api_tag_subject + this.$root.rootData.user.uuid);

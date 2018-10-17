@@ -2,6 +2,23 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 	Vue.component('draggable', vuedraggable);
 	Vue.component('v-select', VueSelect.VueSelect);
 	Vue.use(HighchartsVue.default);
+	const mixWidgets = {
+		computed: {
+			widgetClass : {
+				get() {
+					return this.data.class;
+				},
+				set(newVal) {
+					return newVal;
+				}
+			},
+		},
+		methods : {
+			chartCall(ev) {
+				console.log("ev: ", ev);
+			},
+		},
+	}
 // ■■■■■■■■ api-list ■■■■■■■■ //
 	Vue.component('api-list', {
 		props: ['api', 'index', 'subs', 'business'],
@@ -93,7 +110,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 	});
 	Vue.component('apis-shared-with-me', {
 		template:'#apis-shared-with-me',
-		props: [ 'meta', 'data', 'color' ],
+		mixins: [mixWidgets],
+		props: [ 'index', 'data', 'color' ],
 		data() {
 			return {
 				isLoading: true,
@@ -158,7 +176,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 	});
 	Vue.component('apis-shared-by-me', {
 		template:'#apis-shared-by-me',
-		props: [ 'meta', 'data', 'color' ],
+		mixins: [mixWidgets],
+		props: [ 'index', 'data', 'color' ],
 		data() {
 			return {
 				isLoading: true,
@@ -227,7 +246,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 	});
 	Vue.component('xxxxx', {
 		template:'#xxxxx',
-		props: [ 'meta', 'data', 'color' ],
+		mixins: [mixWidgets],
+		props: [ 'index', 'data', 'color' ],
 		data() {
 			return {
 				isLoading: true,
@@ -257,9 +277,45 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 			this.preload('.uuu');
 		},
 	});
+	Vue.component('widget-controls', {
+		template:'#widget-controls',
+		mixins: [mixWidgets],
+		props: [ 'index', 'data', 'color' ],
+		data() {
+			return {
+				isLoading: true,
+				chartTypes: [
+					{
+						name: 'Pie',
+						type: 'pie'
+					},
+					{
+						name: 'Column',
+						type: 'column'
+					},
+					{
+						name: 'Spline',
+						type: 'spline'
+					},
+				],
+			};
+		},
+		computed : {},
+		methods : {
+			redraw(val){
+				console.log("val: ", val);
+				// this.chartOptions.series[0].setData(this.agePotValue,true);
+				this.$parent.chartOptions.chart = this.data.chart;
+			},
+		},
+		async created() {
+			
+		},
+	});
 	Vue.component('my-proxy-apis', {
 		template:'#my-proxy-apis',
-		props: [ 'meta', 'data', 'color' ],
+		mixins: [mixWidgets],
+		props: [ 'index', 'data', 'color' ],
 		data() {
 			return {
 				isLoading: true,
@@ -277,10 +333,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 				myBusinessApiList: [],
 				myApiSubscriptions: [],
 				mySubscribersCount: 0,
-				mySubscribersChart: {
+				chartOptions: {
 					chart: {
-						// type: 'spline'
-						// type: 'column'
+						name: 'PIE',
 						type: 'pie'
 					},
 					title: {
@@ -292,7 +347,37 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 							"colorByPoint": true,
 							"data": [],
 						}
-					]
+					],
+					responsive: {
+						rules: [{
+							condition: {
+								maxWidth: 500
+							},
+							chartOptions: {
+								legend: {
+									align: 'center',
+									verticalAlign: 'bottom',
+									layout: 'horizontal'
+								},
+								yAxis: {
+									labels: {
+										align: 'left',
+										x: 0,
+										y: -5
+									},
+									title: {
+										text: null
+									}
+								},
+								subtitle: {
+									text: null
+								},
+								credits: {
+									enabled: false
+								}
+							}
+						}]
+					}
 				},
 			};
 		},
@@ -329,8 +414,11 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 		},
 		async created() {
 			await this.getProxyApis();
-			var mySubscribers = this.myProxyApiList.filter((el) => el.subscriptionsCount !== 0 );
-			this.mySubscribersChart.series[0].data = _.map(mySubscribers, v => ({"y":v.subscriptionsCount, "id":v.uuid, "name":v.openapidocument.info.title}));
+			if (this.data.chart) {
+				var mySubscribers = this.myProxyApiList.filter((el) => el.subscriptionsCount !== 0 );
+				this.chartOptions.chart = this.data.chart;
+				this.chartOptions.series[0].data = _.map(mySubscribers, v => ({"y":v.subscriptionsCount, "id":v.uuid, "name":v.openapidocument.info.title}));
+			}
 			this.isLoading = false;
 			this.preload('.my-proxy-bar');
 			console.log("my-proxy-apis: ");
@@ -338,7 +426,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 	});
 	Vue.component('my-business-apis', {
 		template:'#my-business-apis',
-		props: [ 'meta', 'data', 'color' ],
+		mixins: [mixWidgets],
+		props: [ 'index', 'data', 'color' ],
 		data() {
 			return {
 				isLoading: true,
@@ -355,7 +444,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 				myProxyApiList: [],
 				myBusinessApiList: [],
 				mySubscriptions: 0,
-				myBusinessApisChart: {
+				chartOptions: {
 					chart: {
 						type: 'pie'
 					},
@@ -393,8 +482,11 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 		},
 		async created() {
 			await this.getBusinessApis();
-			var myBusinessApis = this.myBusinessApiList.filter((el) => el.proxies.length !== 0 );
-			this.myBusinessApisChart.series[0].data = _.map(myBusinessApis, v => ({"y":v.proxies.length, "id":v.uuid, "name":v.openapidocument.info.title}));
+			if (this.data.chart) {
+				var myBusinessApis = this.myBusinessApiList.filter((el) => el.proxies.length !== 0 );
+				this.chartOptions.chart = this.data.chart;
+				this.chartOptions.series[0].data = _.map(myBusinessApis, v => ({"y":v.proxies.length, "id":v.uuid, "name":v.openapidocument.info.title}));
+			}
 			this.isLoading = false;
 			this.preload('.my-business-bar');
 			console.log("my-business-apis: ");
@@ -402,7 +494,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 	});
 	Vue.component('my-apps-subscriptions', {
 		template:'#my-apps-subscriptions',
-		props: [ 'meta', 'data', 'color' ],
+		mixins: [mixWidgets],
+		props: [ 'index', 'data', 'color' ],
 		data() {
 			return {
 				isLoading: true,
@@ -412,9 +505,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 					order: 'desc'
 				},
 				mySubscriptions: 0,
-				mySubscriptionsChart: {
+				chartOptions: {
 					chart: {
-						// type: 'column'
 						type: 'pie'
 					},
 					title: {
@@ -440,8 +532,11 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 		},
 		async created() {
 			await this.getMyApps(true);
-			var mySubscriptions = this.$root.appList.filter((el) => el.subscriptionsCount !== 0 );
-			this.mySubscriptionsChart.series[0].data = _.map(mySubscriptions, v => ({"y":v.subscriptionsCount, "id":v.uuid, "name":v.firstname}));
+			if (this.data.chart) {
+				var mySubscriptions = this.$root.appList.filter((el) => el.subscriptionsCount !== 0 );
+				this.chartOptions.chart = this.data.chart;
+				this.chartOptions.series[0].data = _.map(mySubscriptions, v => ({"y":v.subscriptionsCount, "id":v.uuid, "name":v.firstname}));
+			}
 			this.isLoading = false;
 			this.preload('.my-apps-bar');
 			console.log("my-apps-subscriptions: ");
@@ -456,55 +551,115 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 			return {
 				isLoading: true,
 				sort: {
-					key: 'name',
-					type: String,
+					key: 'order',
+					type: Number,
 					order: 'asc'
-				},
-				sortApp: {
-					key: 'subscriptions',
-					type: Array,
-					order: 'desc'
 				},
 				pageState: 'init',
 				paginate: {},
-				appList: [],
 				api: {},
 				app: {},
+				showWidgets: false,
+
+				"preferences": {
+					"uuid": "4c36206b-56bc-4266-a8e8-d722abe92691",
+					"organizationid": "89db8aca-51b3-435b-a79d-e1f4067d2076",
+					"created": "2018-10-08T16:03:33.35404Z",
+					"updated": "2018-10-08T16:03:33.35404Z",
+					"deleted": null,
+					"isdeleted": false,
+					"crudsubjectid": "9820d2aa-eb02-4a58-8cc5-8b9a89504df9",
+					"darksidebar": false,
+					"widgets": [
+						{
+							id: '1',
+							title: 'My Proxy APIs & Subscribers',
+							order: 1,
+							class: 'fol-sm-12 fol-xl-8 fol-xll-9',
+							comp: 'my-proxy-apis',
+						},
+						{
+							id: '2',
+							title: 'APIs Shared with Me',
+							order: 2,
+							class: 'fol-sm-6 fol-xl-4 fol-xll-3',
+							comp: 'apis-shared-with-me',
+						},
+						{
+							id: '3',
+							title: 'APIs Shared by Me',
+							order: 3,
+							class: 'fol-sm-6 fol-xl-4 fol-xll-3',
+							comp: 'apis-shared-by-me',
+						},
+						{
+							id: '4',
+							title: 'My APPS & Subscriptions',
+							order: 4,
+							class: 'fol-sm-12 fol-xl-8 fol-xll-9',
+							comp: 'my-apps-subscriptions',
+						},
+					],
+				},
 
 				widgets: [
 					{
 						id: '1',
-						title: '111',
-						order: '1',
-						class: 'fol-sm-12 fol-xl-8 fol-xll-9 p-3 card-item',
+						title: 'My Proxy APIs & Subscribers',
+						order: 1,
+						class: 'fol-sm-12 fol-xl-8',
+						size: '2/3',
+						color: 'green',
+						chart: {
+							name: 'Column',
+							type: 'column',
+						},
 						comp: 'my-proxy-apis',
 					},
 					{
 						id: '2',
-						title: '222',
-						order: '2',
-						class: 'fol-sm-6 fol-xl-4 fol-xll-3 p-3 card-item',
+						title: 'APIs Shared with Me',
+						order: 2,
+						class: 'fol-sm-6 fol-xl-4',
+						size: '1/3',
+						color: 'purple',
+						chart: null,
 						comp: 'apis-shared-with-me',
 					},
 					{
 						id: '3',
-						title: '333',
-						order: '3',
-						class: 'fol-sm-6 fol-xl-4 fol-xll-3 p-3 card-item',
+						title: 'APIs Shared by Me',
+						order: 3,
+						class: 'fol-sm-6 fol-xl-4',
+						size: '1/3',
+						color: 'orange',
+						chart: null,
 						comp: 'apis-shared-by-me',
 					},
 					{
 						id: '4',
-						title: '444',
-						order: '4',
-						class: 'fol-sm-12 fol-xl-8 fol-xll-9 p-3 card-item',
+						title: 'My APPS & Subscriptions',
+						order: 4,
+						class: 'fol-sm-12 fol-xl-8',
+						size: '2/3',
+						color: 'cyan',
+						chart: {
+							name: 'Pie',
+							type: 'pie',
+						},
 						comp: 'my-apps-subscriptions',
 					},
 					{
 						id: '5',
-						title: '555',
-						order: '5',
-						class: 'fol-sm-12 fol-xl-8 fol-xll-9 p-3 card-item',
+						title: 'My Business APIs & Subscribers',
+						order: 5,
+						class: 'fol-sm-12 fol-xl-8',
+						size: '2/3',
+						color: 'red',
+						chart: {
+							name: 'Pie',
+							type: 'pie',
+						},
 						comp: 'my-business-apis',
 					},
 				],
@@ -521,28 +676,65 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 			updateOrder(evt) {
 				console.log("evt: ", evt);
 				// console.log(evt.oldIndex, evt.newIndex, evt);
-				// this.$refs.orderedQuestions.value.forEach((item, index) => {
-				// 	Vue.set( item, 'neworder', index + 1 );
-				// });
 				this.widgets.forEach((item, index) => {
-					Vue.set( item, 'neworder', index + 1 );
-					if (item.order != item.neworder) {
+					Vue.set( item, 'order', index + 1 );
+					// Vue.set( item, 'neworder', index + 1 );
+					// if (item.order != item.neworder) {
 						this.saveWidgets(item);
-					}
+					// }
 				});
+			},
+			async deleteWidget(item) {
+				// var res = this.saveWidgets(item);
+				// if (res) {
+					var index = this.widgets.indexOf(item);
+					this.widgets.splice(index, 1);
+				// }
+				this.saveWidgets(item);
 			},
 			saveWidgets(item) {
 				console.log("saveWidgets: ", item);
-				item.order = item.neworder;
+				// item.order = item.neworder;
 				// var item = await this.editItem( abyss.ajax.preferences, this.widgets.uuid, this.deleteProps(this.widgets) );
 			},
+			selectWidgets() {
+				this.showWidgets = true;
+				$('body').addClass('no-scroll');
+				$('.page-wrapper').addClass('no-scroll');
+			},
+			cancelSelectWidgets() {
+				this.showWidgets = false;
+				$('body').removeClass('no-scroll');
+				$('.page-wrapper').removeClass('no-scroll');
+			},
+			widgetClass(item) {
+				switch (item.size) {
+					case '1/3':
+						return 'fol-sm-6 fol-xl-4';
+						break;
+					case '2/3':
+						return 'fol-sm-12 fol-xl-8';
+						break;
+					case 'full':
+						return 'fol-sm-12';
+						break;
+					case '1/2':
+						return 'fol-sm-6';
+						break;
+					default:
+						return 'fol-sm-6 fol-xl-4';
+						break;
+				}
+			},
 			async getPage(p, d) {
-				
+				// var xxx = this.widgets.filter(f => this.preferences.widgets.includes(f.id));
+				var xxx = _.filter(this.widgets, (v) => _.includes( this.preferences.widgets.map(e => e.id), v.id));
+				console.log("xxx: ", xxx);
 			},
 		},
 		async created() {
 			this.$emit('set-page', 'index', 'init');
-			// await this.getPage(1);
+			await this.getPage(1);
 			this.isLoading = false;
 			this.preload();
 		},
