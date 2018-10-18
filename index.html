@@ -14,33 +14,44 @@
 	<main class="page-wrapper">
 	<index inline-template ref="refIndex" v-on:set-state="setState" v-on:set-page="setPage" v-bind:root-state="rootState" v-if="!$root.isLoading">
 		<section class="xxx" v-if="!isLoading">
+
+			<div class="d-flex align-items-center px-3 pt-6 txt-c">
+				<h4 class="m-0">{{myDashboard.name}}</h4>
+				<button type="button" class="btn btn-outline-primary ml-auto" v-on:click="selectWidgets">Add Widget</button>
+			</div>
+
+			<draggable ref="orderedQuestions" v-model="preferences.widgets" @update="updateOrder" @clone="clone" :options="widgetOptions" class="fow cards justify-content-center">
+				<div class="p-3 card-item" :class="widgetClass(c)" v-for="(c, index) in sortByNested(sort, preferences.widgets)" :key="c.id">
+					<component :is="c.comp" :index="index" :data="c"></component>
+				</div>
+			</draggable>
+
 			<transition name="fade">
 			<div th:replace="webroot/frags/api/api-preview.htm :: apiPreview"></div>
 			</transition>
 			<transition name="fade">
 			<div th:replace="webroot/frags/api/app-preview.htm :: appPreview"></div>
 			</transition>
-			<draggable ref="orderedQuestions" v-model="widgets" @update="updateOrder" @clone="clone" :options="widgetOptions" class="fow cards justify-content-center">
-				<div class="p-3 card-item" :class="widgetClass(c)" v-for="(c, index) in sortByNested(sort, widgets)" :key="c.id">
-					<component :is="c.comp" :index="index" :data="c"></component>
-				</div>
-			</draggable>
-			<div class="fol-12 p-3 pb-6 txt-c"><button type="button" class="btn btn-outline-primary" v-on:click="selectWidgets">Add Widget</button></div>
+
 			<transition name="fade">
-			<div class="preview-test-overlay" v-on:click="cancelSelectWidgets()" v-if="showWidgets"></div>
+			<div class="column-main-fixed-overlay" v-on:click="cancelSelectWidgets()" v-if="showWidgets"></div>
 			</transition>
 			<transition name="slide">
-			<div class="preview-test" v-if="showWidgets">
+			<div class="column-fixed-right" v-if="showWidgets">
 				<div class="clearfix column-header column-min-button">
 					<div class="column-header-button">
 						<button type="button" class="close" v-on:click="cancelSelectWidgets()">×</button>
 					</div>
 					<h5 class="px-3 py-2 m-0">Choose Widgets</h5>
 				</div>
-				<div class="legal-text">
-					<div class="nicescroll--bar wk-scroll">
-						<div class="p-3">
-							
+				<div class="nicescroll--bar wk-scroll">
+					<div class="p-3">
+						<div class="py-2 d-flex align-items-center"  v-for="(w, index) in sortByNested(sort, widgets)" :key="w.id">
+							<span class="switch switch-primary mr-3">
+								<input type="checkbox" :id="'isactive'+index" v-model="w.isactive" v-on:change="addWidget(w)">
+								<label :for="'isactive'+index"></label>
+							</span>
+							{{w.title}}
 						</div>
 					</div>
 				</div>
@@ -54,7 +65,7 @@
 <div class="hide">
 	<div id="my-apps-subscriptions">
 		<div class="card dash-card-2" v-if="!isLoading">
-			<div class="card-title handle txt-white" :class="'bg-'+data.color"><h6 class="txt-white d-flex">{{data.title}} <span class="ml-3">{{mySubscriptions}}</span></h6><widget-controls :data="data"></widget-controls></div>
+			<div class="card-title handle txt-white" :class="'bg-'+data.color"><h6 class="txt-white d-flex">{{data.title}} <span class="mx-2">{{$root.appList.length}}</span> / <span class="mx-2">{{mySubscriptions}}</span></h6><widget-controls :data="data"></widget-controls></div>
 			<div class="fow">
 				<div class="fol-sm" v-if="data.chart">
 					<highcharts v-if="data.chart" :options="chartOptions"></highcharts>
@@ -97,7 +108,7 @@
 	</div>
 	<div id="my-business-apis">
 		<div class="card dash-card-2" v-if="!isLoading">
-			<div class="card-title handle txt-white" :class="'bg-'+data.color"><h6 class="txt-white d-flex">{{data.title}} <span class="ml-3">{{myBusinessApiList.length}}</span></h6><widget-controls :data="data"></widget-controls></div>
+			<div class="card-title handle txt-white" :class="'bg-'+data.color"><h6 class="txt-white d-flex">{{data.title}} <span class="mx-2">{{myBusinessApiList.length}}</span></h6><widget-controls :data="data"></widget-controls></div>
 			<div class="fow">
 				<div class="fol-sm" v-if="data.chart">
 					<highcharts v-if="data.chart" :options="chartOptions"></highcharts>
@@ -116,7 +127,7 @@
 	</div>
 	<div id="my-proxy-apis">
 		<div class="card dash-card-2" v-if="!isLoading">
-			<div class="card-title handle txt-white" :class="'bg-'+data.color"><h6 class="txt-white d-flex">{{data.title}} <span class="ml-3">{{mySubscribersCount}}</span></h6><widget-controls :data="data"></widget-controls></div>
+			<div class="card-title handle txt-white" :class="'bg-'+data.color"><h6 class="txt-white d-flex">{{data.title}} <span class="mx-2">{{myProxyApiList.length}}</span> / <span class="mx-2">{{mySubscribersCount}}</span></h6><widget-controls :data="data"></widget-controls></div>
 			<div class="fow">
 				<div class="fol-sm" v-if="data.chart">
 					<highcharts v-if="data.chart" :options="chartOptions"></highcharts>
@@ -135,7 +146,7 @@
 	</div>
 	<div id="apis-shared-with-me">
 		<div class="card dash-card" v-if="!isLoading">
-			<div class="card-title handle" :class="'bg-'+data.color"><h6 class="txt-white">{{data.title}}</h6><widget-controls :data="data"></widget-controls></div>
+			<div class="card-title handle" :class="'bg-'+data.color"><h6 class="txt-white">{{data.title}} <span class="mx-2">{{apisSharedWithMe.length}}</span></h6><widget-controls :data="data"></widget-controls></div>
 			<div class="card-scroll">
 				<div class="shared-with-bar">
 					<api-list v-for="(api, index) in apisSharedWithMe" :api="api" :index="index" :key="api.uuid" v-if="!api.isShareDeleted" :subs="false" :business="false" inline-template>
@@ -148,7 +159,7 @@
 	<div id="apis-shared-by-me">
 		<div class="card dash-card" v-if="!isLoading">
 			<div class="card-title handle" :class="'bg-'+data.color">
-				<h6 class="txt-white">{{data.title}}</h6>
+				<h6 class="txt-white">{{data.title}} <span class="mx-2">{{apisSharedByMe.length}}</span></h6>
 				<widget-controls :data="data"></widget-controls>
 			</div>
 			<div class="card-scroll">
@@ -161,16 +172,16 @@
 		</div>
 	</div>
 	<div id="widget-controls">
-		<div class="ficon-actions dropdown dropdown--hover dropdown-full">
+		<div class="ficon-actions dropdown dropdown-hover dropdown-full">
 			<button type="button" class="dropdown-toggle txt-white" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
 			<ul class="dropdown-menu dropdown-menu-right" role="menu">
 				<li class="p-2">
 					<label>Change Title</label>
-					<input class="form-control" name="title" v-model="$parent.data.title">
+					<input class="form-control" name="title" v-model.lazy="$parent.data.title" v-on:change="saveWidgets()">
 				</li>
 				<li class="p-2">
 					<label>Change Color</label>
-					<select v-model="$parent.data.color" class="form-control txt-white" :class="'bg-'+$parent.data.color">
+					<select v-model="$parent.data.color" class="form-control txt-white" :class="'bg-'+$parent.data.color" v-on:change="saveWidgets()">
 						<option class="bg-blue txt-white" value="blue">Blue</option>
 						<option class="bg-indigo txt-white" value="indigo">Indigo</option>
 						<option class="bg-purple txt-white" value="purple">Purple</option>
@@ -187,7 +198,7 @@
 				</li>
 				<li class="p-2">
 					<label>Change Size</label>
-					<select v-model="$parent.data.size" class="form-control">
+					<select v-model="$parent.data.size" class="form-control" v-on:change="saveWidgets()">
 						<option value="full">Full</option>
 						<option value="1/2">1/2</option>
 						<option value="1/3">1/3</option>
@@ -196,7 +207,7 @@
 				</li>
 				<li class="p-2" v-if="$parent.data.chart">
 					<label>Change Chart Type</label>
-					<select v-model="$parent.data.chart" class="form-control" v-on:change="redraw($event.target.value)">
+					<select v-model="$parent.data.chart" class="form-control" v-on:change="redraw($event.target.value);saveWidgets()">
 						<option :value="null">None</option>
 						<option v-for="(type,index) in chartTypes" :value="type">{{type.name}}</option>
 					</select>

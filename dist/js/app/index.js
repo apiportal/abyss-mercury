@@ -339,7 +339,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 						type: 'pie'
 					},
 					title: {
-						text: 'My APIs'
+						text: 'My Proxy APIs'
 					},
 					series: [
 						{
@@ -449,7 +449,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 						type: 'pie'
 					},
 					title: {
-						text: 'My Proxy APİs'
+						text: 'My Business APİs'
 					},
 					series: [
 						{
@@ -569,97 +569,199 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 					"deleted": null,
 					"isdeleted": false,
 					"crudsubjectid": "9820d2aa-eb02-4a58-8cc5-8b9a89504df9",
-					"darksidebar": false,
+					"subjectid": "9820d2aa-eb02-4a58-8cc5-8b9a89504df9",
+					"ui": {
+						"darksidebar": false,
+					},
+					"dashboards": [
+						{
+							"id": 1,
+							"name": "My First Dashboard",
+							"isactive": true,
+							"widgets": [
+								{
+									id: 1,
+									title: 'My Proxy APIs & Subscribers...',
+									order: 1,
+									size: '2/3',
+									color: 'green',
+									chart: {
+										name: 'Pie',
+										type: 'pie',
+									},
+								},
+								{
+									id: 2,
+									title: 'APIs Shared with Me...',
+									order: 2,
+									size: '1/3',
+									color: 'purple',
+									chart: null,
+								},
+								{
+									id: 3,
+									title: 'APIs Shared by Me...',
+									order: 3,
+									size: '1/3',
+									color: 'orange',
+									chart: null,
+								},
+							],
+						},
+						{
+							"id": 2,
+							"name": "My Second Dashboard",
+							"isactive": false,
+							"widgets": [
+								{
+									id: 1,
+									title: 'My Proxy APIs & Subscribers...',
+									order: 1,
+									size: '2/3',
+									color: 'green',
+									chart: {
+										name: 'Pie',
+										type: 'pie',
+									},
+								},
+								{
+									id: 2,
+									title: 'APIs Shared with Me...',
+									order: 2,
+									size: '1/3',
+									color: 'purple',
+									chart: null,
+								},
+								{
+									id: 3,
+									title: 'APIs Shared by Me...',
+									order: 3,
+									size: '1/3',
+									color: 'orange',
+									chart: null,
+								},
+								{
+									id: 4,
+									title: 'My APPS & Subscriptions...',
+									order: 4,
+									size: '2/3',
+									color: 'cyan',
+									chart: {
+										name: 'Pie',
+										type: 'pie',
+									},
+								},
+							],
+						},
+					],
 					"widgets": [
 						{
-							id: '1',
-							title: 'My Proxy APIs & Subscribers',
+							id: 1,
+							title: 'My Proxy APIs & Subscribers...',
 							order: 1,
-							class: 'fol-sm-12 fol-xl-8 fol-xll-9',
-							comp: 'my-proxy-apis',
+							size: '2/3',
+							color: 'green',
+							chart: {
+								name: 'Pie',
+								type: 'pie',
+							},
 						},
 						{
-							id: '2',
-							title: 'APIs Shared with Me',
+							id: 2,
+							title: 'APIs Shared with Me...',
 							order: 2,
-							class: 'fol-sm-6 fol-xl-4 fol-xll-3',
-							comp: 'apis-shared-with-me',
+							size: '1/3',
+							color: 'purple',
+							chart: null,
 						},
 						{
-							id: '3',
-							title: 'APIs Shared by Me',
+							id: 3,
+							title: 'APIs Shared by Me...',
 							order: 3,
-							class: 'fol-sm-6 fol-xl-4 fol-xll-3',
-							comp: 'apis-shared-by-me',
+							size: '1/3',
+							color: 'orange',
+							chart: null,
 						},
 						{
-							id: '4',
-							title: 'My APPS & Subscriptions',
+							id: 4,
+							title: 'My APPS & Subscriptions...',
 							order: 4,
-							class: 'fol-sm-12 fol-xl-8 fol-xll-9',
-							comp: 'my-apps-subscriptions',
+							size: '2/3',
+							color: 'cyan',
+							chart: {
+								name: 'Pie',
+								type: 'pie',
+							},
 						},
 					],
 				},
-
+				dashboards: [
+					{
+						id: 1,
+						name: "Default Dashboard",
+						isactive: true,
+						widgets: [1, 2, 3, 4, 5],
+					},
+					{
+						id: 2,
+						name: "Secondary Dashboard",
+						isactive: false,
+						widgets: [1, 2, 3, 4, 5],
+					},
+				],
 				widgets: [
 					{
-						id: '1',
+						id: 1,
 						title: 'My Proxy APIs & Subscribers',
-						order: 1,
-						class: 'fol-sm-12 fol-xl-8',
 						size: '2/3',
 						color: 'green',
 						chart: {
 							name: 'Column',
 							type: 'column',
 						},
+						isactive: null,
 						comp: 'my-proxy-apis',
 					},
 					{
-						id: '2',
+						id: 2,
 						title: 'APIs Shared with Me',
-						order: 2,
-						class: 'fol-sm-6 fol-xl-4',
 						size: '1/3',
 						color: 'purple',
 						chart: null,
+						isactive: null,
 						comp: 'apis-shared-with-me',
 					},
 					{
-						id: '3',
+						id: 3,
 						title: 'APIs Shared by Me',
-						order: 3,
-						class: 'fol-sm-6 fol-xl-4',
 						size: '1/3',
 						color: 'orange',
 						chart: null,
+						isactive: null,
 						comp: 'apis-shared-by-me',
 					},
 					{
-						id: '4',
+						id: 4,
 						title: 'My APPS & Subscriptions',
-						order: 4,
-						class: 'fol-sm-12 fol-xl-8',
 						size: '2/3',
 						color: 'cyan',
 						chart: {
 							name: 'Pie',
 							type: 'pie',
 						},
+						isactive: null,
 						comp: 'my-apps-subscriptions',
 					},
 					{
-						id: '5',
-						title: 'My Business APIs & Subscribers',
-						order: 5,
-						class: 'fol-sm-12 fol-xl-8',
+						id: 5,
+						title: 'My Business APIs',
 						size: '2/3',
 						color: 'red',
 						chart: {
 							name: 'Pie',
 							type: 'pie',
 						},
+						isactive: null,
 						comp: 'my-business-apis',
 					},
 				],
@@ -671,41 +773,61 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 				end: []
 			};
 		},
+		computed: {
+			myDashboard: {
+				get() {
+					if (this.preferences.dashboards.length) {
+						return this.preferences.dashboards.find((el) => el.isactive === true );
+					} else {
+						return this.dashboards.find((el) => el.isactive === true )
+					}
+				},
+				set(newVal) {
+					return newVal;
+				}
+			},
+		},
 		methods: {
 			clone(evt) {},
 			updateOrder(evt) {
 				console.log("evt: ", evt);
 				// console.log(evt.oldIndex, evt.newIndex, evt);
-				this.widgets.forEach((item, index) => {
+				this.preferences.widgets.forEach((item, index) => {
 					Vue.set( item, 'order', index + 1 );
 					// Vue.set( item, 'neworder', index + 1 );
 					// if (item.order != item.neworder) {
-						this.saveWidgets(item);
 					// }
 				});
+				this.saveWidgets();
 			},
-			async deleteWidget(item) {
-				// var res = this.saveWidgets(item);
-				// if (res) {
-					var index = this.widgets.indexOf(item);
-					this.widgets.splice(index, 1);
-				// }
-				this.saveWidgets(item);
+			deleteWidget(item) {
+				// var index = this.preferences.widgets.indexOf(item);
+				var index = _.findIndex(this.preferences.widgets, { 'id': item.id })
+				this.preferences.widgets.splice(index, 1);
+				// this.saveWidgets(item);
 			},
-			saveWidgets(item) {
-				console.log("saveWidgets: ", item);
+			saveWidgets() {
+				console.log("saveWidgets: ", this.preferences);
 				// item.order = item.neworder;
 				// var item = await this.editItem( abyss.ajax.preferences, this.widgets.uuid, this.deleteProps(this.widgets) );
 			},
+			addWidget(w) {
+				var item = _.cloneDeep(w);
+				if (item.isactive) {
+					this.preferences.widgets.push(item);
+				} else {
+					this.deleteWidget(item);
+				}
+			},
 			selectWidgets() {
 				this.showWidgets = true;
-				$('body').addClass('no-scroll');
-				$('.page-wrapper').addClass('no-scroll');
+				// $('body').addClass('no-scroll');
+				// $('.page-wrapper').addClass('no-scroll');
 			},
 			cancelSelectWidgets() {
 				this.showWidgets = false;
-				$('body').removeClass('no-scroll');
-				$('.page-wrapper').removeClass('no-scroll');
+				// $('body').removeClass('no-scroll');
+				// $('.page-wrapper').removeClass('no-scroll');
 			},
 			widgetClass(item) {
 				switch (item.size) {
@@ -728,8 +850,18 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 			},
 			async getPage(p, d) {
 				// var xxx = this.widgets.filter(f => this.preferences.widgets.includes(f.id));
-				var xxx = _.filter(this.widgets, (v) => _.includes( this.preferences.widgets.map(e => e.id), v.id));
-				console.log("xxx: ", xxx);
+				var inc = _.filter(this.widgets, (v) => _.includes( this.preferences.widgets.map(e => e.id), v.id));
+				var exc = _.reject(this.widgets, (v) => _.includes( this.preferences.widgets.map(e => e.id), v.id));
+				for (var item of inc) {
+					Vue.set( item, 'isactive', true );
+				}
+				for (var item of exc) {
+					Vue.set( item, 'isactive', false );
+				}
+				_.merge( this.preferences.widgets, _.map( inc, ( obj ) => {
+				    return _.pick( obj, 'id', 'comp' );
+				}));
+				console.log("this.myWidgets: ", this.myWidgets);
 			},
 		},
 		async created() {

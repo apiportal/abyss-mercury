@@ -347,7 +347,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 			},
 			sortByKeys(obj) {
 				var ordered = {};
-				Object.keys(obj).sort().forEach(function(key) {
+				Object.keys(obj).sort().forEach((key) => {
 					ordered[key] = obj[key];
 				});
 				return ordered;
@@ -653,22 +653,28 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 					var contracts_app = this.getList(abyss.ajax.contracts_app + res.uuid);
 					var [subscriptions, contracts] = await Promise.all([permissions_app, contracts_app]);
 					subscriptions = subscriptions.filter((el) => el.resourceactionid === abyss.defaultIds.invokeApi && el.isdeleted === false );
+					contracts = contracts.filter((el) => el.isdeleted === false );
 					Vue.set(res, 'contracts', contracts );
 					Vue.set(res, 'subscriptions', subscriptions );
 					Vue.set(res, 'subscriptionsCount', res.subscriptions.length );
 					if (no) {
 						this.mySubscriptions += res.contracts.length;
 					}
+					// console.log("res.contracts.length: ", res.contracts.length);
 					if (res.contracts.length > 0) {
-						res.contracts.forEach(async (cont, k) => {
+						for (var cont of res.contracts) {
+						// res.contracts.forEach(async (cont, k) => {
 							// var resource = await this.getItem(abyss.ajax.resources_reference, cont.uuid);
 							// Vue.set(cont, 'resource', resource );
 							await this.getResources(cont, 'CONTRACT', cont.name, cont.description);
-						});
+						// });
+						}
 					}
+					// console.log("res.subscriptions.length: ", res.subscriptions.length);
 					///////////////////// ?? subs resource
 					if (res.subscriptions.length > 0) {
-						res.subscriptions.forEach(async (sub, k) => {
+						// res.subscriptions.forEach(async (sub, k) => {
+						for (var sub of res.subscriptions) {
 							var resource = await this.getItem(abyss.ajax.resources, sub.resourceid);
 							Vue.set(sub, 'resource', resource );
 							// await this.getResources(api, 'API', api.name, api.description);
@@ -678,7 +684,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 							Vue.set(sub, 'apiName', apiName.openapidocument.info.title);
 							var apiOwner = await this.getItem(abyss.ajax.subjects, apiName.crudsubjectid)
 							Vue.set(sub, 'apiOwner', apiOwner.displayname);
-						});
+						}
+						// });
 					}
 					if (this.$root.rootData.myPermissions.length > 0) {
 						var appPerm = _.find(this.$root.rootData.myPermissions, { 'resourceid': res.resource.uuid });

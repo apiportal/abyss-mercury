@@ -168,6 +168,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 				loading(false);
 			},
 			async setGetPage() {
+				// for (var value of this.permissionList) {
 				this.permissionList.forEach(async (value, key) => {
 					var rAct = _.find(this.$root.rootData.resourceActions, { 'uuid': value.resourceactionid });
 					Vue.set(value, 'resourceAction', rAct );
@@ -188,6 +189,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 					var sTyp = _.find(this.subjectTypes, { 'uuid': value.subject.subjecttypeid });
 					Vue.set(value.subject, 'subjectType', sTyp.typename );
 				});
+				// }
 			},
 			async getPage(p, d) {
 				var access_managers = this.getList(abyss.ajax.access_managers);
@@ -218,7 +220,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 				this.permissionList = permissionList;
 				this.orgOptions = orgOptions;
 				this.paginate = this.makePaginate(this.permissionList);
-				this.setGetPage();
+				await this.setGetPage();
+				this.isLoading = false;
 				this.preload();
 			},
 		},
