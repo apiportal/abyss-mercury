@@ -165,6 +165,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 						Vue.set( item, 'isShareDeleted', true );
 					}*/
 				}
+				this.apisSharedWithMe = this.apisSharedWithMe.filter((el) => !el.isShareDeleted );
 			},
 		},
 		async created() {
@@ -531,7 +532,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 			},
 		},
 		async created() {
-			await this.getMyApps(true);
+			// await this.getMyApps(true);
 			if (this.data.chart) {
 				var mySubscriptions = this.$root.appList.filter((el) => el.subscriptionsCount !== 0 );
 				this.chartOptions.chart = this.data.chart;
@@ -559,159 +560,116 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 				paginate: {},
 				api: {},
 				app: {},
+				showEditDash: false,
+				showOverlay: false,
 				showWidgets: false,
-
-				"preferences": {
-					"uuid": "4c36206b-56bc-4266-a8e8-d722abe92691",
-					"organizationid": "89db8aca-51b3-435b-a79d-e1f4067d2076",
-					"created": "2018-10-08T16:03:33.35404Z",
-					"updated": "2018-10-08T16:03:33.35404Z",
-					"deleted": null,
-					"isdeleted": false,
-					"crudsubjectid": "9820d2aa-eb02-4a58-8cc5-8b9a89504df9",
-					"subjectid": "9820d2aa-eb02-4a58-8cc5-8b9a89504df9",
-					"ui": {
-						"darksidebar": false,
-					},
-					"dashboards": [
-						{
-							"id": 1,
-							"name": "My First Dashboard",
-							"isactive": true,
-							"widgets": [
-								{
-									id: 1,
-									title: 'My Proxy APIs & Subscribers...',
-									order: 1,
-									size: '2/3',
-									color: 'green',
-									chart: {
-										name: 'Pie',
-										type: 'pie',
-									},
-								},
-								{
-									id: 2,
-									title: 'APIs Shared with Me...',
-									order: 2,
-									size: '1/3',
-									color: 'purple',
-									chart: null,
-								},
-								{
-									id: 3,
-									title: 'APIs Shared by Me...',
-									order: 3,
-									size: '1/3',
-									color: 'orange',
-									chart: null,
-								},
-							],
-						},
-						{
-							"id": 2,
-							"name": "My Second Dashboard",
-							"isactive": false,
-							"widgets": [
-								{
-									id: 1,
-									title: 'My Proxy APIs & Subscribers...',
-									order: 1,
-									size: '2/3',
-									color: 'green',
-									chart: {
-										name: 'Pie',
-										type: 'pie',
-									},
-								},
-								{
-									id: 2,
-									title: 'APIs Shared with Me...',
-									order: 2,
-									size: '1/3',
-									color: 'purple',
-									chart: null,
-								},
-								{
-									id: 3,
-									title: 'APIs Shared by Me...',
-									order: 3,
-									size: '1/3',
-									color: 'orange',
-									chart: null,
-								},
-								{
-									id: 4,
-									title: 'My APPS & Subscriptions...',
-									order: 4,
-									size: '2/3',
-									color: 'cyan',
-									chart: {
-										name: 'Pie',
-										type: 'pie',
-									},
-								},
-							],
-						},
-					],
-					"widgets": [
-						{
-							id: 1,
-							title: 'My Proxy APIs & Subscribers...',
-							order: 1,
-							size: '2/3',
-							color: 'green',
-							chart: {
-								name: 'Pie',
-								type: 'pie',
-							},
-						},
-						{
-							id: 2,
-							title: 'APIs Shared with Me...',
-							order: 2,
-							size: '1/3',
-							color: 'purple',
-							chart: null,
-						},
-						{
-							id: 3,
-							title: 'APIs Shared by Me...',
-							order: 3,
-							size: '1/3',
-							color: 'orange',
-							chart: null,
-						},
-						{
-							id: 4,
-							title: 'My APPS & Subscriptions...',
-							order: 4,
-							size: '2/3',
-							color: 'cyan',
-							chart: {
-								name: 'Pie',
-								type: 'pie',
-							},
-						},
-					],
-				},
 				dashboards: [
 					{
-						id: 1,
-						name: "Default Dashboard",
-						isactive: true,
-						widgets: [1, 2, 3, 4, 5],
+						uuid: "a657b478-55d3-42ea-a7b1-e3cbb8210296",
+						name: "Blank Dashboard",
+						description: "Blank Dashboard Description",
+						isactive: false,
+						widgets: [],
 					},
 					{
-						id: 2,
+						uuid: "ca099337-95ac-4bde-9ec0-4634db46055e",
+						name: "Default Dashboard",
+						description: "Default Dashboard Description",
+						isactive: true,
+						widgets: [
+							{
+								uuid: "fe5a0293-6bdb-4fc2-b1d6-24bcd81ab28c",
+								title: 'My Proxy APIs & Subscribers',
+								size: '2/3',
+								color: 'green',
+								chart: {
+									name: 'Column',
+									type: 'column',
+								},
+								isactive: null,
+								comp: 'my-proxy-apis',
+								order: 1,
+							},
+							{
+								uuid: "560a8452-5f0a-4ed5-a022-d25285df99cb",
+								title: 'APIs Shared with Me',
+								size: '1/3',
+								color: 'purple',
+								chart: null,
+								isactive: null,
+								comp: 'apis-shared-with-me',
+								order: 2,
+							},
+							{
+								uuid: "32520383-96f8-4e20-aee8-0a858cde2b7e",
+								title: 'APIs Shared by Me',
+								size: '1/3',
+								color: 'orange',
+								chart: null,
+								isactive: null,
+								comp: 'apis-shared-by-me',
+								order: 3,
+							},
+							{
+								uuid: "66f83423-11d0-42bf-93bd-be4c9015ebc9",
+								title: 'My APPS & Subscriptions',
+								size: '2/3',
+								color: 'cyan',
+								chart: {
+									name: 'Pie',
+									type: 'pie',
+								},
+								isactive: null,
+								comp: 'my-apps-subscriptions',
+								order: 4,
+							},
+							{
+								uuid: "b3d3edd5-99c2-42df-896c-c1cf881cd3bf",
+								title: 'My Business APIs',
+								size: '2/3',
+								color: 'red',
+								chart: {
+									name: 'Pie',
+									type: 'pie',
+								},
+								isactive: null,
+								comp: 'my-business-apis',
+								order: 5,
+							},
+						],
+					},
+					{
+						uuid: "138af93d-77f4-40a5-965b-f4c08476a32b",
 						name: "Secondary Dashboard",
+						description: "Secondary Dashboard Description",
 						isactive: false,
-						widgets: [1, 2, 3, 4, 5],
+						widgets: [
+							{
+								uuid: "560a8452-5f0a-4ed5-a022-d25285df99cb",
+								title: 'APIs Shared with Me',
+								size: '1/3',
+								color: 'purple',
+								chart: null,
+								isactive: null,
+								comp: 'apis-shared-with-me',
+								order: 1,
+							},
+							{
+								uuid: "32520383-96f8-4e20-aee8-0a858cde2b7e",
+								title: 'APIs Shared by Me',
+								size: '1/3',
+								color: 'orange',
+								chart: null,
+								isactive: null,
+								comp: 'apis-shared-by-me',
+								order: 2,
+							},
+						],
 					},
 				],
 				widgets: [
 					{
-						id: 1,
+						uuid: "fe5a0293-6bdb-4fc2-b1d6-24bcd81ab28c",
 						title: 'My Proxy APIs & Subscribers',
 						size: '2/3',
 						color: 'green',
@@ -723,7 +681,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 						comp: 'my-proxy-apis',
 					},
 					{
-						id: 2,
+						uuid: "560a8452-5f0a-4ed5-a022-d25285df99cb",
 						title: 'APIs Shared with Me',
 						size: '1/3',
 						color: 'purple',
@@ -732,7 +690,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 						comp: 'apis-shared-with-me',
 					},
 					{
-						id: 3,
+						uuid: "32520383-96f8-4e20-aee8-0a858cde2b7e",
 						title: 'APIs Shared by Me',
 						size: '1/3',
 						color: 'orange',
@@ -741,7 +699,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 						comp: 'apis-shared-by-me',
 					},
 					{
-						id: 4,
+						uuid: "66f83423-11d0-42bf-93bd-be4c9015ebc9",
 						title: 'My APPS & Subscriptions',
 						size: '2/3',
 						color: 'cyan',
@@ -753,7 +711,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 						comp: 'my-apps-subscriptions',
 					},
 					{
-						id: 5,
+						uuid: "b3d3edd5-99c2-42df-896c-c1cf881cd3bf",
 						title: 'My Business APIs',
 						size: '2/3',
 						color: 'red',
@@ -770,64 +728,125 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 					draggable: '.card-item',
 					animation: 150,
 				},
+				// activeDashboard: {},
+				preferences: [],
 				end: []
 			};
 		},
 		computed: {
-			myDashboard: {
+			activeDashboard: {
 				get() {
 					if (this.preferences.dashboards.length) {
 						return this.preferences.dashboards.find((el) => el.isactive === true );
 					} else {
-						return this.dashboards.find((el) => el.isactive === true )
+						var def = _.cloneDeep(this.dashboards.find((el) => el.isactive === true ));
+						this.preferences.dashboards.push(def);
+						this.savePref();
+						return def;
 					}
 				},
 				set(newVal) {
-					return newVal;
+					this.getPage();
+					// return newVal;
 				}
 			},
 		},
+		/*watch: {
+			activeDashboard(newQuestion, oldQuestion) {
+				console.log("newQuestion, oldQuestion: ", newQuestion, oldQuestion);
+			}
+		},*/
 		methods: {
 			clone(evt) {},
 			updateOrder(evt) {
 				console.log("evt: ", evt);
 				// console.log(evt.oldIndex, evt.newIndex, evt);
-				this.preferences.widgets.forEach((item, index) => {
+				this.activeDashboard.widgets.forEach((item, index) => {
 					Vue.set( item, 'order', index + 1 );
 					// Vue.set( item, 'neworder', index + 1 );
 					// if (item.order != item.neworder) {
 					// }
 				});
-				this.saveWidgets();
+				this.savePref();
 			},
 			deleteWidget(item) {
-				// var index = this.preferences.widgets.indexOf(item);
-				var index = _.findIndex(this.preferences.widgets, { 'id': item.id })
-				this.preferences.widgets.splice(index, 1);
-				// this.saveWidgets(item);
+				// var index = this.activeDashboard.widgets.indexOf(item);
+				var index = _.findIndex(this.activeDashboard.widgets, { 'uuid': item.uuid })
+				this.activeDashboard.widgets.splice(index, 1);
+				this.savePref();
 			},
-			saveWidgets() {
-				console.log("saveWidgets: ", this.preferences);
+			savePref() {
+				var pref = _.cloneDeep(this.preferences);
+				for (var dash of pref.dashboards) {
+					for (var wgt of dash.widgets) {
+						Vue.delete( wgt, 'comp' );
+					}
+				}
+				console.log("savePref this.preferences: ", this.preferences);
+				console.log("savePref pref: ", pref);
 				// item.order = item.neworder;
 				// var item = await this.editItem( abyss.ajax.preferences, this.widgets.uuid, this.deleteProps(this.widgets) );
 			},
 			addWidget(w) {
 				var item = _.cloneDeep(w);
 				if (item.isactive) {
-					this.preferences.widgets.push(item);
+					this.activeDashboard.widgets.push(item);
+					this.savePref();
 				} else {
 					this.deleteWidget(item);
 				}
 			},
 			selectWidgets() {
+				this.showOverlay = true;
 				this.showWidgets = true;
 				// $('body').addClass('no-scroll');
 				// $('.page-wrapper').addClass('no-scroll');
 			},
-			cancelSelectWidgets() {
+			cancelOverlay() {
+				this.showOverlay = false;
 				this.showWidgets = false;
+				this.showEditDash = false;
 				// $('body').removeClass('no-scroll');
 				// $('.page-wrapper').removeClass('no-scroll');
+			},
+			editDashboard() {
+				this.showOverlay = true;
+				this.showEditDash = true;
+			},
+			copyDashboard(c) {
+				var item = _.cloneDeep(c);
+				Vue.set( item, 'name', item.name + ' Copy' );
+				this.preferences.dashboards.push(item);
+				this.savePref();
+				this.activateDashboard(item);
+			},
+			deleteDashboard(item) {
+				var index = _.findIndex(this.preferences.dashboards, { 'uuid': item.uuid });
+				this.preferences.dashboards.splice(index, 1);
+				this.savePref();
+				var other = this.preferences.dashboards[0];
+				if (other) {
+					Vue.set( other, 'isactive', true );
+					Vue.set( this, 'activeDashboard', other );
+				}
+				// this.activateDashboard(this.dashboards[0]);
+			},
+			activateDashboard(item) {
+				Vue.set( this.activeDashboard, 'isactive', false );
+				Vue.set( item, 'isactive', true );
+				this.savePref();
+				Vue.set( this, 'activeDashboard', item );
+				console.log("this.activeDashboard.widgets: ", this.activeDashboard.widgets);
+			},
+			createDashboard(ev) {
+				if (ev) {
+					console.log("ev: ", ev);
+					// var newDash = this.dashboards.find((el) => el.uuid === ev);
+					var newDash = _.cloneDeep(this.dashboards.find((el) => el.uuid === ev));
+					this.preferences.dashboards.push(newDash);
+					this.savePref();
+					this.activateDashboard(newDash);
+				}
 			},
 			widgetClass(item) {
 				switch (item.size) {
@@ -849,23 +868,29 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 				}
 			},
 			async getPage(p, d) {
-				// var xxx = this.widgets.filter(f => this.preferences.widgets.includes(f.id));
-				var inc = _.filter(this.widgets, (v) => _.includes( this.preferences.widgets.map(e => e.id), v.id));
-				var exc = _.reject(this.widgets, (v) => _.includes( this.preferences.widgets.map(e => e.id), v.id));
+				var inc = _.filter(this.widgets, (v) => _.includes( this.activeDashboard.widgets.map(e => e.uuid), v.uuid));
+				var exc = _.reject(this.widgets, (v) => _.includes( this.activeDashboard.widgets.map(e => e.uuid), v.uuid));
 				for (var item of inc) {
 					Vue.set( item, 'isactive', true );
 				}
 				for (var item of exc) {
 					Vue.set( item, 'isactive', false );
 				}
-				_.merge( this.preferences.widgets, _.map( inc, ( obj ) => {
-				    return _.pick( obj, 'id', 'comp' );
+				_.merge( this.activeDashboard.widgets, _.map( inc, ( obj ) => {
+				    return _.pick( obj, 'uuid', 'comp' );
 				}));
-				console.log("this.myWidgets: ", this.myWidgets);
+				console.log("this.activeDashboard.widgets: ", this.activeDashboard.widgets);
 			},
 		},
 		async created() {
 			this.$emit('set-page', 'index', 'init');
+			await this.getMyApps(true);
+			// var dashboards = await this.getList(abyss.ajax.dashboards + abyss.defaultIds.organization);
+			// var dashboards = await this.getList(abyss.ajax.dashboards);
+			// var preferences = await this.getItem(abyss.ajax.preferences, this.$root.rootData.user.uuid);
+			var preferences = await this.getList(abyss.ajax.preferences);
+			console.log("preferences: ", preferences);
+			this.preferences = preferences[0];
 			await this.getPage(1);
 			this.isLoading = false;
 			this.preload();

@@ -1689,6 +1689,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					method: 'post',
 					uploadMultiple: false,
 					maxFiles: 1,
+					// resizeWidth: 290px;
+					// resizeQuality: 0.8;
 					parallelUploads: 1,
 					thumbnailWidth: 260,
 					thumbnailHeight: 146,

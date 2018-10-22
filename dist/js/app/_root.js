@@ -517,6 +517,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 				$('body').addClass('no-scroll');
 				$('.page-wrapper').addClass('no-scroll');
 				if (item.isproxyapi) {
+					// await this.getMyApps();
 					Vue.set(this.$root, 'previewedApi', _.cloneDeep(item));
 					var apiLic = await this.getList(abyss.ajax.api_licenses_api + item.uuid);
 					var apiLicenses = apiLic.filter( (item) => item.isdeleted === false );
