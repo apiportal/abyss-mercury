@@ -193,6 +193,8 @@ define(['global'], function(abyss){
 	if (isAbyssSandbox === true) {
 		abyssYamlLocation = '/000?file=' + abyssYamlLocation;
 		abyssDataList.preferences = '/data/preferences.json';
+		abyssDataList.widgets = '/data/widgets.json';
+		abyssDataList.dashboards = '/data/dashboards.json';
 		// abyssDataList.messages = '/data/messages.json';
 	}
 	var abyssAllDataList = Object.assign(abyssJsonList, abyssDataList);
