@@ -46,19 +46,37 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 					"crudsubjectid": null,
 					"messagetypeid": null,
 					"parentmessageid": "175a21b0-8a62-40ff-a824-c7b98aa57240",
-					"sendersubjectid": null,
-					"receiversubjectid": null,
+                    "ownersubjectid": null,
+                    "conversationid": null,
+                    "folder": "SENT",
+                    "sender": {
+                        "sendersubjectid": null,
+                        "senderorganizationid": null,
+                        "sendersubjecttypeid": null,
+                        "senderdisplayname": null,
+                        "senderpicture": null
+                        //,"senderorganizationname": null
+                    },
+                    "receiver": {
+                        "receiversubjectid": null,
+                        "receiverorganizationid": null,
+                        "receiversubjecttypeid": null,
+                        "receiverdisplayname": null,
+                        "receiverpicture": null
+						//,"receiverorganizationname": null
+                    },
 					"subject": null,
+                    "bodycontenttype": "application/text",
 					"body": null,
-					"priority": "",
+					"priority": "Normal",
 					"isstarred": false,
 					"isread": false,
 					// "sentat": null,
-					// "readat": null,
 					"sentat": moment.utc('1900-01-01').toISOString(),
 					"readat": moment.utc('1900-01-01').toISOString(),
+                    "istrashed": false,
 					messageType: null,
-					receiver: null,
+					receiverx: null,
 				},
 				viewMessage: null,
 				selectedMessage: {},
@@ -124,7 +142,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 			},
 			myReadeds(item) {
 				// if (!item.lastMessage.isread && item.folder != 'Draft' && item.folder != 'Sent' && item.lastMessage.sendersubjectid != this.$root.rootData.user.uuid) {
-				if (!item.lastMessage.isread && item.lastMessage.sendersubjectid != this.$root.rootData.user.uuid) {
+				if (!item.lastMessage.isread && item.lastMessage.sender.sendersubjectid != this.$root.rootData.user.uuid) {
 					return true;
 				} else {
 					return false;
@@ -178,9 +196,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 					// this.selectedMessage = _.cloneDeep(item);
 					this.viewMessage = item;
 					console.log("view: ", this.viewMessage);
-					if (this.viewMessage.lastMessage.sendersubjectid == this.$root.rootData.user.uuid) {
-						this.message.receiver = this.viewMessage.lastMessage.receiver;
-						this.message.receiversubjectid = this.viewMessage.lastMessage.receiversubjectid;
+					if (this.viewMessage.lastMessage.sender.sendersubjectid == this.$root.rootData.user.uuid) {
+						this.message.receiverx = this.viewMessage.lastMessage.receiverx;
+						this.message.receiver.receiversubjectid = this.viewMessage.lastMessage.receiversubjectid;
 						console.log("my message: ", this.viewMessage);
 					} else {
 						if (!this.viewMessage.lastMessage.isread) {
@@ -192,8 +210,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 							await this.editItem( abyss.ajax.messages, read.uuid, this.deleteProps(read), this.messageList );
 						}
 						this.message.messagetypeid = this.viewMessage.lastMessage.messagetypeid;
-						this.message.receiver = this.viewMessage.lastMessage.sender;
-						this.message.receiversubjectid = this.viewMessage.lastMessage.sendersubjectid;
+						this.message.receiverx = this.viewMessage.lastMessage.senderx;
+						this.message.receiver.receiversubjectid = this.viewMessage.lastMessage.sender.sendersubjectid;
 						this.message.subject = this.viewMessage.lastMessage.subject;
 						this.message.parentmessageid = this.viewMessage.lastMessage.uuid;
 					}
@@ -206,8 +224,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 			},
 			fixProps(item) {
 				this.fillProps(item);
-				if (item.sendersubjectid == null) {
-					Vue.set(item,'sendersubjectid',this.$root.rootData.user.uuid);
+				if (item.sender.sendersubjectid == null) {
+					Vue.set(item,'sender.sendersubjectid',this.$root.rootData.user.uuid);
 				}
 				if (item.readat == null) {
 					Vue.set(item,'readat', moment.utc('1900-01-01').toISOString());
@@ -219,9 +237,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 			deleteProps(obj) {
 				var item = this.cleanProps(obj);
 				Vue.delete(item, 'messageType');
-				Vue.delete(item, 'sender');
-				Vue.delete(item, 'receiver');
-				Vue.delete(item, 'folder');
+				Vue.delete(item, 'senderx');
+				Vue.delete(item, 'receiverx');
+				//Vue.delete(item, 'folder');
 				Vue.delete(item, 'lastMessage');
 				Vue.delete(item, 'isLastMessage');
 				Vue.delete(item, 'children');
@@ -243,7 +261,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 			},
 			setReceiver(filter) {
 				if (filter != null) {
-					Vue.set( this.message, 'receiversubjectid', filter.uuid );
+					Vue.set( this.message, 'receiver.receiversubjectid', filter.uuid );
 				}
 			},
 			async messageAction(act) {
@@ -284,25 +302,29 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 				}
 			},
 			async setGetPage() {
+				var iii = 1;
 				this.messageList.forEach(async (value, key) => {
-					if (value.receiversubjectid == this.$root.rootData.user.uuid) {
-						Vue.set( value, 'folder', 'Inbox' );
-					}
-					if (value.sendersubjectid == this.$root.rootData.user.uuid) {
-						Vue.set( value, 'folder', 'Sent' );
-					}
-					if (!value.sentat || value.sentat == '1900-01-01T00:00:00.000Z' ) {
-						Vue.set( value, 'folder', 'Draft' );
-					}
+                    console.log(iii + '::'+ value.receiver.receiversubjectid);
+                    console.log(iii + '::'+ value.sender.sendersubjectid);
+                    iii = iii + 1;
+					// if (value.receiver.receiversubjectid == this.$root.rootData.user.uuid) {
+					// 	Vue.set( value, 'folder', 'Inbox' );
+					// }
+					// if (value.sender.sendersubjectid == this.$root.rootData.user.uuid) {
+					// 	Vue.set( value, 'folder', 'Sent' );
+					// }
+					// if (!value.sentat || value.sentat == '1900-01-01T00:00:00.000Z' ) {
+					// 	Vue.set( value, 'folder', 'Draft' );
+					// }
 					if (!value.parentmessageid ) {
 						Vue.set( value, 'parentmessageid', '175a21b0-8a62-40ff-a824-c7b98aa57240' );
 					}
 					var type = _.find(this.messageTypes, { 'uuid': value.messagetypeid });
 					Vue.set( value, 'messageType', _.pick(type, ['uuid', 'name']) );
-					var receiver = await this.getItem(abyss.ajax.subjects, value.receiversubjectid);
-					Vue.set( value, 'receiver', _.pick(receiver, ['uuid', 'organizationid', 'subjecttypeid', 'displayname', 'email', 'picture']) );
-					var sender = await this.getItem(abyss.ajax.subjects, value.sendersubjectid);
-					Vue.set( value, 'sender', _.pick(sender, ['uuid', 'organizationid', 'subjecttypeid', 'displayname', 'email', 'picture']) );
+					var receiverx = await this.getItem(abyss.ajax.subjects, value.receiver.receiversubjectid);
+					Vue.set( value, 'receiverx', _.pick(receiverx, ['uuid', 'organizationid', 'subjecttypeid', 'displayname', 'picture']) );
+					var senderx = await this.getItem(abyss.ajax.subjects, value.sender.sendersubjectid);
+					Vue.set( value, 'senderx', _.pick(senderx, ['uuid', 'organizationid', 'subjecttypeid', 'displayname', 'picture']) );
 				});
 				this.messageList = await this.unflattenParents(this.messageList, {uuid: '175a21b0-8a62-40ff-a824-c7b98aa57240'}, 'parentmessageid');
 				this.messageList.forEach(async(value, key) => {
@@ -317,7 +339,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 			async getPage(p, d) {
 				// var message_list = this.getList(abyss.ajax.my_messages + this.$root.rootData.user.uuid);
 				// var message_drafts = this.getList(abyss.ajax.my_messages_drafts + this.$root.rootData.user.uuid);
-				var message_list = this.getList(abyss.ajax.messages);
+				var message_list = this.getList(abyss.ajax.messages_of_subject); // + this.$root.rootData.user.uuid);
 				var message_types = this.getList(abyss.ajax.message_types);
 				var [messageList, messageTypes] = await Promise.all([message_list, message_types]);
 				Vue.set( this, 'messageList', messageList );

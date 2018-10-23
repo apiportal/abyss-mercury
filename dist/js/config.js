@@ -119,6 +119,7 @@ define(['global'], function(abyss){
 		access_manager_types: '/access-manager-types',
 		// https://dev2.apiportal.com/abyss/openapi/Message.yaml
 		messages: '/messages',
+		messages_of_subject: '/messages/subject/',
 		// https://dev2.apiportal.com/abyss/openapi/MessageType.yaml
 		message_types: '/message-types',
 
