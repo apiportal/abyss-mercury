@@ -304,7 +304,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 		computed : {},
 		methods : {
 			redraw(val){
-				console.log("val: ", val);
 				// this.chartOptions.series[0].setData(this.agePotValue,true);
 				this.$parent.chartOptions.chart = this.data.chart;
 			},
@@ -563,187 +562,25 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 				showEditDash: false,
 				showOverlay: false,
 				showWidgets: false,
-				dashboards: [
-					{
-						uuid: "a657b478-55d3-42ea-a7b1-e3cbb8210296",
-						name: "Blank Dashboard",
-						description: "Blank Dashboard Description",
-						isactive: false,
-						widgets: [],
-					},
-					{
-						uuid: "ca099337-95ac-4bde-9ec0-4634db46055e",
-						name: "Default Dashboard",
-						description: "Default Dashboard Description",
-						isactive: true,
-						widgets: [
-							{
-								uuid: "fe5a0293-6bdb-4fc2-b1d6-24bcd81ab28c",
-								title: 'My Proxy APIs & Subscribers',
-								size: '2/3',
-								color: 'green',
-								chart: {
-									name: 'Column',
-									type: 'column',
-								},
-								isactive: null,
-								comp: 'my-proxy-apis',
-								order: 1,
-							},
-							{
-								uuid: "560a8452-5f0a-4ed5-a022-d25285df99cb",
-								title: 'APIs Shared with Me',
-								size: '1/3',
-								color: 'purple',
-								chart: null,
-								isactive: null,
-								comp: 'apis-shared-with-me',
-								order: 2,
-							},
-							{
-								uuid: "32520383-96f8-4e20-aee8-0a858cde2b7e",
-								title: 'APIs Shared by Me',
-								size: '1/3',
-								color: 'orange',
-								chart: null,
-								isactive: null,
-								comp: 'apis-shared-by-me',
-								order: 3,
-							},
-							{
-								uuid: "66f83423-11d0-42bf-93bd-be4c9015ebc9",
-								title: 'My APPS & Subscriptions',
-								size: '2/3',
-								color: 'cyan',
-								chart: {
-									name: 'Pie',
-									type: 'pie',
-								},
-								isactive: null,
-								comp: 'my-apps-subscriptions',
-								order: 4,
-							},
-							{
-								uuid: "b3d3edd5-99c2-42df-896c-c1cf881cd3bf",
-								title: 'My Business APIs',
-								size: '2/3',
-								color: 'red',
-								chart: {
-									name: 'Pie',
-									type: 'pie',
-								},
-								isactive: null,
-								comp: 'my-business-apis',
-								order: 5,
-							},
-						],
-					},
-					{
-						uuid: "138af93d-77f4-40a5-965b-f4c08476a32b",
-						name: "Secondary Dashboard",
-						description: "Secondary Dashboard Description",
-						isactive: false,
-						widgets: [
-							{
-								uuid: "560a8452-5f0a-4ed5-a022-d25285df99cb",
-								title: 'APIs Shared with Me',
-								size: '1/3',
-								color: 'purple',
-								chart: null,
-								isactive: null,
-								comp: 'apis-shared-with-me',
-								order: 1,
-							},
-							{
-								uuid: "32520383-96f8-4e20-aee8-0a858cde2b7e",
-								title: 'APIs Shared by Me',
-								size: '1/3',
-								color: 'orange',
-								chart: null,
-								isactive: null,
-								comp: 'apis-shared-by-me',
-								order: 2,
-							},
-						],
-					},
-				],
-				widgets: [
-					{
-						uuid: "fe5a0293-6bdb-4fc2-b1d6-24bcd81ab28c",
-						title: 'My Proxy APIs & Subscribers',
-						size: '2/3',
-						color: 'green',
-						chart: {
-							name: 'Column',
-							type: 'column',
-						},
-						isactive: null,
-						comp: 'my-proxy-apis',
-					},
-					{
-						uuid: "560a8452-5f0a-4ed5-a022-d25285df99cb",
-						title: 'APIs Shared with Me',
-						size: '1/3',
-						color: 'purple',
-						chart: null,
-						isactive: null,
-						comp: 'apis-shared-with-me',
-					},
-					{
-						uuid: "32520383-96f8-4e20-aee8-0a858cde2b7e",
-						title: 'APIs Shared by Me',
-						size: '1/3',
-						color: 'orange',
-						chart: null,
-						isactive: null,
-						comp: 'apis-shared-by-me',
-					},
-					{
-						uuid: "66f83423-11d0-42bf-93bd-be4c9015ebc9",
-						title: 'My APPS & Subscriptions',
-						size: '2/3',
-						color: 'cyan',
-						chart: {
-							name: 'Pie',
-							type: 'pie',
-						},
-						isactive: null,
-						comp: 'my-apps-subscriptions',
-					},
-					{
-						uuid: "b3d3edd5-99c2-42df-896c-c1cf881cd3bf",
-						title: 'My Business APIs',
-						size: '2/3',
-						color: 'red',
-						chart: {
-							name: 'Pie',
-							type: 'pie',
-						},
-						isactive: null,
-						comp: 'my-business-apis',
-					},
-				],
 				widgetOptions: {
 					handle: '.handle',
 					draggable: '.card-item',
 					animation: 150,
 				},
-				// activeDashboard: {},
 				preferences: [],
+				dashboards: [],
 				end: []
 			};
 		},
 		computed: {
+			myDashboards() {
+				// get() {
+					return this.dashboards.filter((el) => el.crudsubjectid === this.$root.rootData.user.uuid );
+				// },
+			},
 			activeDashboard: {
 				get() {
-					if (this.preferences.dashboards.length) {
-						return this.preferences.dashboards.find((el) => el.isactive === true );
-					} else {
-						var def = _.cloneDeep(this.dashboards.find((el) => el.isactive === true ));
-						this.preferences.dashboards.push(def);
-						this.savePref();
-						return def;
-					}
+					return this.dashboards.find((el) => el.uuid === this.preferences.activedashboardid );
 				},
 				set(newVal) {
 					this.getPage();
@@ -767,86 +604,101 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 					// if (item.order != item.neworder) {
 					// }
 				});
-				this.savePref();
-			},
-			deleteWidget(item) {
-				// var index = this.activeDashboard.widgets.indexOf(item);
-				var index = _.findIndex(this.activeDashboard.widgets, { 'uuid': item.uuid })
-				this.activeDashboard.widgets.splice(index, 1);
-				this.savePref();
-			},
-			savePref() {
-				var pref = _.cloneDeep(this.preferences);
-				for (var dash of pref.dashboards) {
-					for (var wgt of dash.widgets) {
-						Vue.delete( wgt, 'comp' );
-					}
-				}
-				console.log("savePref this.preferences: ", this.preferences);
-				console.log("savePref pref: ", pref);
-				// item.order = item.neworder;
-				// var item = await this.editItem( abyss.ajax.preferences, this.widgets.uuid, this.deleteProps(this.widgets) );
+				this.saveDash();
 			},
 			addWidget(w) {
 				var item = _.cloneDeep(w);
 				if (item.isactive) {
 					this.activeDashboard.widgets.push(item);
-					this.savePref();
+					this.saveDash();
 				} else {
 					this.deleteWidget(item);
 				}
 			},
-			selectWidgets() {
-				this.showOverlay = true;
-				this.showWidgets = true;
-				// $('body').addClass('no-scroll');
-				// $('.page-wrapper').addClass('no-scroll');
+			deleteWidget(item) {
+				// var index = this.activeDashboard.widgets.indexOf(item);
+				var index = _.findIndex(this.activeDashboard.widgets, { 'uuid': item.uuid })
+				this.activeDashboard.widgets.splice(index, 1);
+				this.saveDash();
 			},
-			cancelOverlay() {
-				this.showOverlay = false;
-				this.showWidgets = false;
-				this.showEditDash = false;
-				// $('body').removeClass('no-scroll');
-				// $('.page-wrapper').removeClass('no-scroll');
+			deleteProps(obj) {
+				var item = this.cleanProps(obj);
+				Vue.delete(item, 'comp');
+				if (item.widgets) {
+					for (var wgt of item.widgets) {
+						Vue.delete( wgt, 'comp' );
+					}
+				}
+				return item;
 			},
-			editDashboard() {
-				this.showOverlay = true;
-				this.showEditDash = true;
+			savePref() {
+				console.log("savePref: ", this.deleteProps(this.preferences));
+				// var item = await this.editItem( abyss.ajax.preferences, this.preferences.uuid, this.deleteProps(this.preferences) );
+			},
+			saveDash() {
+				console.log("saveDash: ", this.deleteProps(this.activeDashboard));
+				// var item = await this.editItem( abyss.ajax.dashboarda, this.activeDashboard.uuid, this.deleteProps(this.activeDashboard) );
+			},
+			addDash(dash) {
+				console.log("addDash: ", this.deleteProps(dash));
+				// var item = await this.addItem(abyss.ajax.dashboarda, this.deleteProps(dash), this.dashboarda);
+				// if (item) {
+					this.dashboards.push(dash); //
+					this.activateDashboard(dash);
+				// }
 			},
 			copyDashboard(c) {
 				var item = _.cloneDeep(c);
 				Vue.set( item, 'name', item.name + ' Copy' );
-				this.preferences.dashboards.push(item);
-				this.savePref();
-				this.activateDashboard(item);
+				Vue.set( item, 'uuid', this.uuidv4() ); // del
+				console.log("item: ", item);
+				this.addDash(item);
 			},
 			deleteDashboard(item) {
-				var index = _.findIndex(this.preferences.dashboards, { 'uuid': item.uuid });
-				this.preferences.dashboards.splice(index, 1);
-				this.savePref();
-				var other = this.preferences.dashboards[0];
-				if (other) {
-					Vue.set( other, 'isactive', true );
-					Vue.set( this, 'activeDashboard', other );
-				}
-				// this.activateDashboard(this.dashboards[0]);
+				// var del = await this.deleteItem(abyss.ajax.dashboards, item, true, this.dashboards);
+				// if (del) {
+					item.isdeleted = true;
+					var index = _.findIndex(this.dashboards, { 'uuid': item.uuid });
+					this.dashboards.splice(index, 1);
+					console.log("this.myDashboards: ", this.myDashboards);
+					console.log("this.myDashboards.length: ", this.myDashboards.length);
+					if (this.myDashboards.length) {
+						this.activateDashboard(this.myDashboards[0])
+					} else {
+						this.createDashboard('a657b478-55d3-42ea-a7b1-e3cbb8210296');
+					}
+				// }
 			},
 			activateDashboard(item) {
-				Vue.set( this.activeDashboard, 'isactive', false );
-				Vue.set( item, 'isactive', true );
+				Vue.set( this.preferences, 'activedashboardid', item.uuid );
 				this.savePref();
 				Vue.set( this, 'activeDashboard', item );
 				console.log("this.activeDashboard.widgets: ", this.activeDashboard.widgets);
 			},
 			createDashboard(ev) {
 				if (ev) {
-					console.log("ev: ", ev);
-					// var newDash = this.dashboards.find((el) => el.uuid === ev);
 					var newDash = _.cloneDeep(this.dashboards.find((el) => el.uuid === ev));
-					this.preferences.dashboards.push(newDash);
-					this.savePref();
-					this.activateDashboard(newDash);
+					Vue.set( newDash, 'uuid', this.uuidv4() ); // del
+					Vue.set( newDash, 'crudsubjectid', this.$root.rootData.user.uuid ); // del
+					this.addDash(newDash);
 				}
+			},
+			selectWidgets() {
+				this.showOverlay = true;
+				this.showWidgets = true;
+				$('body').addClass('no-scroll');
+				$('.page-wrapper').addClass('no-scroll');
+			},
+			cancelOverlay() {
+				this.showOverlay = false;
+				this.showWidgets = false;
+				this.showEditDash = false;
+				$('body').removeClass('no-scroll');
+				$('.page-wrapper').removeClass('no-scroll');
+			},
+			editDashboard() {
+				this.showOverlay = true;
+				this.showEditDash = true;
 			},
 			widgetClass(item) {
 				switch (item.size) {
@@ -885,8 +737,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 		async created() {
 			this.$emit('set-page', 'index', 'init');
 			await this.getMyApps(true);
+			this.widgets = await this.getList(abyss.ajax.widgets);
 			// var dashboards = await this.getList(abyss.ajax.dashboards + abyss.defaultIds.organization);
-			// var dashboards = await this.getList(abyss.ajax.dashboards);
+			this.dashboards = await this.getList(abyss.ajax.dashboards);
 			// var preferences = await this.getItem(abyss.ajax.preferences, this.$root.rootData.user.uuid);
 			var preferences = await this.getList(abyss.ajax.preferences);
 			console.log("preferences: ", preferences);
@@ -894,6 +747,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 			await this.getPage(1);
 			this.isLoading = false;
 			this.preload();
+			console.log("this.myDashboards: ", this.myDashboards);
 		},
 	});
 });

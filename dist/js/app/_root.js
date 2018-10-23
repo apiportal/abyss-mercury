@@ -295,6 +295,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 						Vue.set( item, 'isdeleted', true );
 						if (arr) {
 							var index = arr.indexOf(item);
+							// var index = _.findIndex(arr, { 'uuid': item.uuid });
 							arr.splice(index, 1);
 						}
 						// this.$swal('Deleted', 'Item deleted successfully', 'success');
