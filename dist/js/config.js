@@ -164,9 +164,9 @@ define(['global'], function(abyss){
 	};
 	var abyssJsonList = {
 		index: '/index.json',
-		preferences = '/preferences.json',
-		widgets = '/widgets.json',
-		dashboards = '/dashboards.json'
+		preferences: '/preferences.json',
+		widgets: '/widgets.json',
+		dashboards: '/dashboards.json'
 	};
 
 	/*if (isAbyssSandbox === true) {
