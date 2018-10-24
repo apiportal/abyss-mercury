@@ -164,11 +164,11 @@ define(['global'], function(abyss){
 	};
 	var abyssJsonList = {
 		index: '/index.json',
-		preferences = '/preferences.json';
-		widgets = '/widgets.json';
-		dashboards = '/dashboards.json';
+		preferences = '/preferences.json',
+		widgets = '/widgets.json',
+		dashboards = '/dashboards.json'
 	};
-	
+
 	/*if (isAbyssSandbox === true) {
 		if (location.host == 'local.abyss.com' || location.host == 'localhost:7882' || location.host == 'localhost:7880') {
 			// abyssLocation = 'http://local.abyss.com/000?file=http://local.abyss.com/data';
