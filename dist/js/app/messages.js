@@ -47,8 +47,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 					"messagetypeid": null,
 					"parentmessageid": "175a21b0-8a62-40ff-a824-c7b98aa57240",
                     "ownersubjectid": null,
-                    "conversationid": null,
-                    "folder": "SENT",
+                    "conversationid": 0,
+                    "folder": "Sent",
                     "sender": {
                         "sendersubjectid": null,
                         "senderorganizationid": null,
@@ -224,8 +224,17 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 			},
 			fixProps(item) {
 				this.fillProps(item);
+				if (item.conversationid == null) {
+                    Vue.set(item,'conversationid', 0);
+				}
+				if (item.ownersubjectid == null) {
+                    Vue.set(item,'ownersubjectid', this.$root.rootData.user.uuid);
+				}
 				if (item.sender.sendersubjectid == null) {
 					Vue.set(item,'sender.sendersubjectid',this.$root.rootData.user.uuid);
+				}
+				if (item.sender.senderorganizationid == null) {
+                    Vue.set(item,'sender.senderorganizationid',this.$root.abyssOrgId); //User's Org Id
 				}
 				if (item.readat == null) {
 					Vue.set(item,'readat', moment.utc('1900-01-01').toISOString());
