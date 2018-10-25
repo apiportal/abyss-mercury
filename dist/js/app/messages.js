@@ -369,7 +369,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 				this.isLoading = false;
 				this.preload();
 				// XSS test
-				this.$toast('warning', {title: 'aaaaaaa &#x3C;img src=&#x22;http://unsplash.it/100/100?random&#x22; onclick=&#x22;alert(true);&#x22; /&#x3E;', message: '99999999 <script>alert("xss")</script>', position: 'topRight', timeout: false, closeOnClick: false});
+				// this.$toast('warning', {title: 'aaaaaaa &#x3C;img src=&#x22;http://unsplash.it/100/100?random&#x22; onclick=&#x22;alert(true);&#x22; /&#x3E;', message: '99999999 <script>alert("xss")</script>', position: 'topRight', timeout: false, closeOnClick: false});
 				// this.$toast('warning', {title: 'aaaaaaa &lt;img src=&quot;http://unsplash.it/100/100?random&quot; onclick=&quot;alert(true);&quot; /&gt;', message: '99999999 <script>alert("xss")</script>', position: 'topRight', timeout: false, closeOnClick: false});
 				// this.$toast('info', {title: 'aaaaaaa <img src="http://unsplash.it/100/100?random" onclick="alert(true);" />', message: '99999999 <script>alert("xss")</script>', position: 'topRight', timeout: false, closeOnClick: false});
 			},
