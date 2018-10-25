@@ -372,7 +372,7 @@
 		</div>
 	</div>
 	<div th:fragment="items" id="template-items">
-		<div class="field-acc pb-0 brd-0" :class="'field-l field-l-'+level">
+		<div class="field-acc pb-0 brd-0" v-if="child" :class="'field-l field-l-'+level">
 			<span class="ficon-act ficon-act-abs" v-if="!child.$ref">
 				<a v-on:click="addEnum()" title="Add Enum"><i class="">E</i> </a>
 				<a v-on:click="addSchema('item_0'+level)" title="Create item" v-if="child.type == 'object'"><i class="fa fa-fw fa-plus"></i></a>

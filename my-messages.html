@@ -53,8 +53,8 @@
 										<!-- <span class="badge badge-pill badge-outline flt-r">20</span> -->
 									</a>
 								</li>
-								<li :class="{'active': filt.fkey == 'isdeleted'}">
-									<a href="#" v-on:click="filterMessages(true, 'isdeleted')"> <i class="fa fa-fw fa-trash mr-2"></i> Trash </a>
+								<li :class="{'active': filt.fkey == 'istrashed'}">
+									<a href="#" v-on:click="filterMessages(true, 'istrashed')"> <i class="fa fa-fw fa-trash mr-2"></i> Trash </a>
 								</li>
 							</ul>
 							<h6 class="p-3">Message Categories</h6>
@@ -81,7 +81,7 @@
 					</v-select>
 				</div>
 				<table class="table table-hover table-bordered table-edge message">
-					<tr v-for="(message, index) in filteredMessages" v-bind:key="message.uuid" v-bind:class="{'fnt-bold txt-black': myReadeds(message), 'active': isSelected(index)}" v-if="message.sender">
+					<tr v-for="(message, index) in filteredMessages" v-bind:key="message.uuid" v-bind:class="{'fnt-bold txt-black': myReadeds(message), 'active': isSelected(index)}">
 						<td class="td-min txt-c">
 							<i class="fas fa-bookmark txt-grey" v-if="message.priority != 'Important'"></i>
 							<i class="fas fa-bookmark txt-orange" v-if="message.priority == 'Important'"></i>
@@ -92,19 +92,19 @@
 						</td>
 						<td class="td-message-folder"><span class="badge badge-outline">{{message.folder}}</span></td>
 						<td class="txt-truncate" v-on:click="selectViewMessage(message, index);">
-							<span class="td-name" v-if="message.folder == 'Inbox' && filt.fval != 'Sent'">From: {{message.sender.displayname}}</span>
-							<span class="td-name" v-if="message.folder == 'Inbox' && filt.fval == 'Sent'">To: {{message.sender.displayname}}</span>
-							<span class="td-name" v-if="message.folder == 'Sent' || message.folder == 'Draft'">To: {{message.receiver.displayname}}</span>
+							<span class="td-name txt-black" v-if="message.folder == 'Inbox' && filt.fval != 'Sent'">From: {{message.sender.senderdisplayname}}</span>
+							<span class="td-name txt-black" v-if="message.folder == 'Inbox' && filt.fval == 'Sent'">To: {{message.sender.senderdisplayname}}</span>
+							<span class="td-name txt-black" v-if="message.folder == 'Sent' || message.folder == 'Draft'">To: {{message.receiver.receiverdisplayname}}</span>
 							<span class="pr-3 d-inline-block">{{message.subject}}</span>
 							<small class="txt-muted">{{message.lastMessage.body | truncate(75)}}</small>
 						</td>
 						<td class="td-datetime txt-r" v-on:click="selectViewMessage(message, index);">
-							<small v-if="message.folder != 'Draft' && !message.isdeleted">{{message.lastMessage.sentat | formatDateTime}}</small>
-							<small v-if="message.folder == 'Draft' && !message.isdeleted">{{message.updated | formatDateTime}}</small>
-							<small v-if="message.isdeleted">{{message.deleted | formatDateTime}}</small>
+							<small v-if="message.folder != 'Draft' && !message.istrashed">{{message.lastMessage.sentat | formatDateTime}}</small>
+							<small v-if="message.folder == 'Draft' && !message.istrashed">{{message.updated | formatDateTime}}</small>
+							<!-- <small v-if="message.istrashed">{{message.deleted | formatDateTime}}</small> -->
 						</td>
 						<td class="td-message-type txt-r" v-on:click="selectViewMessage(message, index);"><span class="badge txt-white" :class="'badge-' + message.messageType.uuid">{{message.messageType.name}}</span></td>
-						<td class="td-min txt-c cursor-pointer" v-on:click="deleteMessage(message, index)" v-bind:class="{'tr-deleted': message.isdeleted }">
+						<td class="td-min txt-c cursor-pointer" v-on:click="deleteMessage(message, index)" v-bind:class="{'tr-deleted': message.istrashed }">
 							<i class="fa fa-trash-alt"></i>
 						</td>
 					</tr>
@@ -124,6 +124,7 @@
 						<span v-if="rootState == 'reply'">Reply Message</span>
 						<span v-if="rootState == 'create'">New Message</span>
 						<span v-if="rootState == 'edit'">Edit Message</span>
+						<small><code class="txt-green"><small>{{viewMessage.uuid}}</small></code></small>
 						<small><code class="txt-blue"><small>{{message.parentmessageid}}</small></code></small>
 					</h5>
 				</div>
@@ -144,19 +145,18 @@
 							<div class="row">
 								<div class="col-sm-6">
 									<div class="form-group v-select-color-purple" v-if="rootState != 'view'" v-bind:class="{ 'has-error': errors.has('receiver') }">
+									<!-- <div class="form-group v-select-color-purple" v-bind:class="{ 'has-error': errors.has('receiver') }"> -->
 										<label>To</label>
 										<v-select label="displayname" :filterable="false" :options="$root.userOptions" @search="$root.getUserOptions" v-model="message.receiver" v-validate="'required'" name="receiver" @input="setReceiver">
 											<span slot="no-options"></span>
 											<template slot="option" slot-scope="option">
-												<div :class="{'txt-muted': option.isdeleted}">
+												<div :class="{'txt-muted': option.istrashed}">
 													<strong>{{ option.displayname }}</strong>
-													<small>{{ option.email }}</small>
 												</div>
 											</template>
 											<template slot="selected-option" slot-scope="option">
-												<div :class="{'txt-muted': option.isdeleted}">
+												<div :class="{'txt-muted': option.istrashed}">
 													<strong>{{ option.displayname }}</strong>
-													<small>{{ option.email }}</small>
 												</div>
 											</template>
 										</v-select>
@@ -178,7 +178,7 @@
 								<em v-bind:class="{ 'show': errors.has('subject') }">{{ errors.first('subject') }}</em>
 							</div>
 							<div class="form-group" v-bind:class="{ 'has-error': errors.has('body') }">
-								<label for="body">Message to <span v-if="message.receiver && rootState == 'view'">{{message.receiver.displayname}}</span></label>
+								<label for="body">Message to <span v-if="message.receiver && rootState == 'view'">{{message.receiver.receiverdisplayname}}</span> <code class="small"><small>{{message.receiver.receiversubjectid}}</small></code></label>
 								<textarea type="text" name="body" id="body" v-model="message.body" v-validate="'required'" class="form-control message-text"></textarea>
 								<em v-bind:class="{ 'show': errors.has('body') }">{{ errors.first('body') }}</em>
 							</div>
@@ -221,10 +221,11 @@
 	<ul class="">
 	<li class="">
 		<div class="px-3 pb-1 pt-3 brd-b">
-			<strong class="txt-black">{{message.sender.displayname}}</strong>
+			<strong class="txt-black">{{message.sender.senderdisplayname}}</strong>
 			<span>{{message.sentat | formatDateTime}}</span>
 			<code class="small"><small>{{message.uuid}}</small></code>
-			<span class="flt-r">To: <strong class="txt-black">{{message.receiver.displayname}}</strong></span>
+			
+			<span class="flt-r"><code class="small"><small>{{message.receiver.receiversubjectid}}</small></code> To: <strong class="txt-black">{{message.receiver.receiverdisplayname}}</strong></span>
 		</div>
 		<div class="px-3 py-2 messages">
 			<!-- <pre>{{message.body}}</pre> -->

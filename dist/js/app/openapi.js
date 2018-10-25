@@ -907,7 +907,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					delete this.parameter["$ref"];
 				}
 				catch (ex) {
-					this.$root.showAlert('Could not find $ref '+this.parameter["$ref"]);
+					this.$toast('warning', {title: 'Could not find $ref '+this.parameter["$ref"], message: 'Could not find $ref '+this.parameter["$ref"], position: 'topRight'});
 				}
 			}
 		}
@@ -1983,7 +1983,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					var result = md.render(str);
 					$('#mdPreviewText').html(result);
 				},
-				showAlert(text, callback) {
+				/*showAlert(text, callback) {
 					$('#alertText').text(text);
 					$('#alert').modal();
 					$('#alert').on('shown.bs.modal', function() {
@@ -1993,7 +1993,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 						if (callback) callback(false);
 						console.log("callback: ", callback);
 					});
-				},
+				},*/
 				showConfirm(title, text, callback) {
 					$('#confirmTitle').text(title);
 					$('#confirmSubtitle').text(text);
@@ -2051,8 +2051,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 							console.log("YAML definition parsed successfully");
 						}
 						catch (ex) {
-							this.showAlert('The definition could not be parsed');
-							// this.$toast('warning', {title: 'The definition could not be parsed', message: 'The definition could not be parsed', position: 'topRight'});
+							this.$toast('warning', {title: 'The definition could not be parsed', message: 'The definition could not be parsed', position: 'topRight'});
 						}
 					}
 					if (schema.openapi && schema.openapi.startsWith('3.0.')) {
@@ -2062,12 +2061,12 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 						this.convertOpenApi2(schema,function(schema){
 							if (schema.openapi && schema.openapi.startsWith('3.0.')) {
 								if (window.localStorage) window.localStorage.setItem('openapi3', JSON.stringify(schema));
-								component.showAlert('Definition successfully converted');
+								component.$toast('warning', {title: 'Definition successfully converted', message: 'Definition successfully converted', position: 'topRight'});
 								component.updateSchema(schema);
 							}
 						});
 					} else {
-						this.showAlert('OpenAPI version must be 2.0 or 3.0.x');
+						this.$toast('warning', {title: 'OpenAPI version must be 2.0 or 3.0.x', message: 'OpenAPI version must be 2.0 or 3.0.x', position: 'topRight'});
 					}
 				},
 				clearSchema(val) {
@@ -2164,7 +2163,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 						},100);	
 					}
 					catch (ex) {
-						this.showAlert(ex);
+						this.$toast('warning', {title: ex, message: ex, position: 'topRight'});
 					}
 				},
 				async loadFromUrlSchema(val, load) {
@@ -2182,12 +2181,13 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					}
 					if (val != '') {
 						const data = await doAjax();
-						var r = true;
+						var r;
 						if (load) {
-							this.beforeCancelApi(load);
+							r = await this.beforeCancelApi();
+						} else {
+							r = true;
 						}
 						if (r) {
-						// if (this.beforeCancelApi(load)) {
 							// console.log("loadFromUrlSchema data: ", data);
 							if (typeof data === 'string') {
 								this.importschema = data;
@@ -2219,7 +2219,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 							this.editorType = 'yaml';
 							output = jsyaml.dump(def);
 						} catch (ex) {
-							this.showAlert(ex.message);
+							this.$toast('warning', {title: ex.message, message: ex.message, position: 'topRight'});
 						}
 					}
 					$('#pretty-'+type).html(output);
@@ -2411,10 +2411,14 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				this.isChanged = false;
 			},
 			async selectApi(item, state) {
-				if (this.beforeCancelApi()) {
+				var cancel = await this.beforeCancelApi();
+				console.log("cancel: ", cancel);
+				if (cancel) {
+				// if (this.beforeCancelApi()) {
 					this.fixProps(item);
 					this.updateSchema(item.openapidocument);
 					this.api = _.cloneDeep(item);
+					console.log("clone this.api: ", this.api);
 					this.selectedApi = _.cloneDeep(this.api);
 					this.$root.setState(state);
 					if (item.isproxyapi) {
@@ -2475,32 +2479,42 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 			isSelectedApi(i) {
 				return i === this.api.uuid;
 			},
-			beforeCancelApi(c) {
+			async beforeCancelConfirm() {
+				return this.$swal({
+					title: 'Are you sure to cancel editing this API?',
+					html: '<pre class="txt-l">' + JSON.stringify(this.changes, null, 2) + '</pre>',
+					type: 'warning',
+					showCancelButton: true,
+					confirmButtonText: 'Yes Cancel it!',
+					cancelButtonText: 'No, Keep it!',
+					showCloseButton: true,
+					// showLoaderOnConfirm: true
+				}).then((result) => {
+					if (result.value) {
+						return result.value;
+					} else {
+						return false;
+					}
+				});
+			},
+			async beforeCancelApi(c) {
 				console.log("beforeCancelApi this.isChanged: ", this.isChanged, Object.keys(this.changes).length, this.changes, "version: ", _.has(this.changes, 'openapidocument.info.version'), this.verChanged);
 				if (this.isChanged && this.rootState != 'init') {
-					this.$swal({
-						title: 'Are you sure to cancel editing this API?',
-						html: '<pre class="txt-l">' + JSON.stringify(this.changes, null, 2) + '</pre>',
-						type: 'warning',
-						showCancelButton: true,
-						confirmButtonText: 'Yes Cancel it!',
-						cancelButtonText: 'No, Keep it!',
-						showCloseButton: true,
-						// showLoaderOnConfirm: true
-					}).then((result) => {
-						if (result.value) {
-							this.cancelApi();
-							return true;
-						} else {
-							return result.value;
-						}
-					});
+					var beforeCancelConfirm = await this.beforeCancelConfirm();
+					if (beforeCancelConfirm) {
+						this.cancelApi();
+						return beforeCancelConfirm;
+					} else {
+						// this.$swal('Cancelled', 'Your file is still intact', 'info');
+						return false;
+					}
 				} else {
 					this.cancelApi();
 					return true;
 				}
 			},
 			cancelApi() {
+				console.log("cancelApi----------------");
 				this.clearTax();
 				this.api = _.cloneDeep(this.newApi);
 				this.clearSchema();
@@ -2588,7 +2602,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				return axios.post(abyss.ajax.validate_oas, spec).then(response => {
 					if (show) {
 						if (response.data) {
-							this.showAlert('VALID');
+							this.$toast('success', {title: 'VALID', message: 'Validation is sucessfull', position: 'topRight'});
 						}
 					}
 					return response;
@@ -2968,7 +2982,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					if (this.$root.rootState != 'init') {
 						this.updateSw();
 						this.verChanged = _.has(this.changes, 'openapidocument.info.version');
-						if (this.verChanged) {
+						if (this.verChanged && this.$root.rootState != 'create') {
+							console.log("this.verChanged: ", this.verChanged);
 							this.$toast('warning', {message: 'You have to save as new API if you change the version', title: 'VERSION CHANGE DETECTED', position: 'bottomRight'});
 						}
 					}

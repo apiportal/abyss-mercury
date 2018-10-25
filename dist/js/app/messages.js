@@ -46,27 +46,27 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 					"crudsubjectid": null,
 					"messagetypeid": null,
 					"parentmessageid": "175a21b0-8a62-40ff-a824-c7b98aa57240",
-                    "ownersubjectid": null,
-                    "conversationid": 0,
-                    "folder": "Sent",
-                    "sender": {
-                        "sendersubjectid": null,
-                        "senderorganizationid": null,
-                        "sendersubjecttypeid": null,
-                        "senderdisplayname": null,
-                        "senderpicture": null
-                        //,"senderorganizationname": null
-                    },
-                    "receiver": {
-                        "receiversubjectid": null,
-                        "receiverorganizationid": null,
-                        "receiversubjecttypeid": null,
-                        "receiverdisplayname": null,
-                        "receiverpicture": null
+					"ownersubjectid": null,
+					"conversationid": 0,
+					"folder": "Sent",
+					"sender": {
+						"sendersubjectid": null,
+						"senderorganizationid": null,
+						"sendersubjecttypeid": null,
+						"senderdisplayname": null,
+						"senderpicture": null
+						//,"senderorganizationname": null
+					},
+					"receiver": {
+						"receiversubjectid": null,
+						"receiverorganizationid": null,
+						"receiversubjecttypeid": null,
+						"receiverdisplayname": null,
+						"receiverpicture": null
 						//,"receiverorganizationname": null
-                    },
+					},
 					"subject": null,
-                    "bodycontenttype": "application/text",
+					"bodycontenttype": "application/text",
 					"body": null,
 					"priority": "Normal",
 					"isstarred": false,
@@ -74,7 +74,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 					// "sentat": null,
 					"sentat": moment.utc('1900-01-01').toISOString(),
 					"readat": moment.utc('1900-01-01').toISOString(),
-                    "istrashed": false,
+					"istrashed": false,
 					messageType: null,
 					receiverx: null,
 				},
@@ -114,11 +114,11 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 				// console.log("this.filt.fval: ", this.filt.fval);
 				// console.log("this.filt.fkey: ", this.filt.fkey);
 				if (this.filt.fval == 'Sent') {
-					messageList = messageList.filter((item) => (item.children && !item.isdeleted) || (item[this.filt.fkey] == this.filt.fval) && !item.isdeleted );
-				} else if (this.filt.fkey == 'isdeleted') {
-					messageList = messageList.filter((item) => item[this.filt.fkey] == this.filt.fval && item.isdeleted == true );
+					messageList = messageList.filter((item) => (item.children && !item.istrashed) || (item[this.filt.fkey] == this.filt.fval) && !item.istrashed );
+				} else if (this.filt.fkey == 'istrashed') {
+					messageList = messageList.filter((item) => item[this.filt.fkey] == this.filt.fval && item.istrashed == true );
 				} else if (this.filt.fval == 'Inbox') {
-					messageList = messageList.filter((item) => (item.children && !item.isdeleted) || item[this.filt.fkey] == this.filt.fval && !item.isdeleted );
+					messageList = messageList.filter((item) => (item.children && !item.istrashed) || item[this.filt.fkey] == this.filt.fval && !item.istrashed );
 					// messageList = messageList.filter((item) => (item.children && item.folder == 'Sent' && !item.isdeleted) || item[this.filt.fkey] == this.filt.fval && !item.isdeleted );
 					// messageList = messageList.filter((item) => (item.lastMessage && item.lastMessage.sendersubjectid != this.$root.rootData.user.uuid && item.folder == 'Sent' && !item.isdeleted) || item[this.filt.fkey] == this.filt.fval && !item.isdeleted );
 				} else if (this.filt.fval == '') {
@@ -198,7 +198,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 					console.log("view: ", this.viewMessage);
 					if (this.viewMessage.lastMessage.sender.sendersubjectid == this.$root.rootData.user.uuid) {
 						this.message.receiverx = this.viewMessage.lastMessage.receiverx;
-						this.message.receiver.receiversubjectid = this.viewMessage.lastMessage.receiversubjectid;
+						this.message.receiver = this.viewMessage.lastMessage.receiver;
 						console.log("my message: ", this.viewMessage);
 					} else {
 						if (!this.viewMessage.lastMessage.isread) {
@@ -211,7 +211,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 						}
 						this.message.messagetypeid = this.viewMessage.lastMessage.messagetypeid;
 						this.message.receiverx = this.viewMessage.lastMessage.senderx;
-						this.message.receiver.receiversubjectid = this.viewMessage.lastMessage.sender.sendersubjectid;
+						this.message.receiver = this.viewMessage.lastMessage.sender;
 						this.message.subject = this.viewMessage.lastMessage.subject;
 						this.message.parentmessageid = this.viewMessage.lastMessage.uuid;
 					}
@@ -225,16 +225,16 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 			fixProps(item) {
 				this.fillProps(item);
 				if (item.conversationid == null) {
-                    Vue.set(item,'conversationid', 0);
+					Vue.set(item, 'conversationid', 0);
 				}
 				if (item.ownersubjectid == null) {
-                    Vue.set(item,'ownersubjectid', this.$root.rootData.user.uuid);
+					Vue.set(item, 'ownersubjectid', this.$root.rootData.user.uuid);
 				}
 				if (item.sender.sendersubjectid == null) {
 					Vue.set(item,'sender.sendersubjectid',this.$root.rootData.user.uuid);
 				}
 				if (item.sender.senderorganizationid == null) {
-                    Vue.set(item,'sender.senderorganizationid',this.$root.abyssOrgId); //User's Org Id
+					Vue.set(item, 'sender.senderorganizationid', this.$root.abyssOrgId); //User's Org Id
 				}
 				if (item.readat == null) {
 					Vue.set(item,'readat', moment.utc('1900-01-01').toISOString());
@@ -256,8 +256,13 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 			},
 			async deleteMessage(item) {
 				console.log("delete: ", item);
-				await this.deleteItem(abyss.ajax.messages, item, true);
-				this.getPage();
+				// await this.deleteItem(abyss.ajax.messages, item, true);
+				item.istrashed = true;
+				var res = await this.editItem( abyss.ajax.messages, item.uuid, this.deleteProps(item), this.messageList );
+				if (res) {
+					item.istrashed = res.istrashed;
+				}
+				// this.getPage();
 			},
 			async markAsStarred(item) {
 				this.fixProps(item);
@@ -270,6 +275,11 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 			},
 			setReceiver(filter) {
 				if (filter != null) {
+					console.log("filter: ", filter);
+					// for (var key in filter) {
+						filter['displayname'] = this.message.receiver.receiverdisplayname;
+						filter['uuid'] = this.message.receiver.receiversubjectid;
+					// }
 					Vue.set( this.message, 'receiver.receiversubjectid', filter.uuid );
 				}
 			},
@@ -358,6 +368,10 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 				this.paginate = this.makePaginate(this.messageList);
 				this.isLoading = false;
 				this.preload();
+				// XSS test
+				this.$toast('warning', {title: 'aaaaaaa &#x3C;img src=&#x22;http://unsplash.it/100/100?random&#x22; onclick=&#x22;alert(true);&#x22; /&#x3E;', message: '99999999 <script>alert("xss")</script>', position: 'topRight', timeout: false, closeOnClick: false});
+				// this.$toast('warning', {title: 'aaaaaaa &lt;img src=&quot;http://unsplash.it/100/100?random&quot; onclick=&quot;alert(true);&quot; /&gt;', message: '99999999 <script>alert("xss")</script>', position: 'topRight', timeout: false, closeOnClick: false});
+				// this.$toast('info', {title: 'aaaaaaa <img src="http://unsplash.it/100/100?random" onclick="alert(true);" />', message: '99999999 <script>alert("xss")</script>', position: 'topRight', timeout: false, closeOnClick: false});
 			},
 			findUnread(obj, key) {
 				if (_.has(obj, key)){
