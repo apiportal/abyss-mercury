@@ -92,14 +92,14 @@
 						</td>
 						<td class="td-message-folder"><span class="badge badge-outline">{{message.folder}}</span></td>
 						<td class="txt-truncate" v-on:click="selectViewMessage(message, index);">
-							<span class="td-name txt-black" v-if="message.folder == 'Inbox' && filt.fval != 'Sent'">From: {{message.sender.senderdisplayname}}</span>
-							<span class="td-name txt-black" v-if="message.folder == 'Inbox' && filt.fval == 'Sent'">To: {{message.sender.senderdisplayname}}</span>
-							<span class="td-name txt-black" v-if="message.folder == 'Sent' || message.folder == 'Draft'">To: {{message.receiver.receiverdisplayname}}</span>
+							<span class="td-name txt-black" v-if="message.folder == 'Inbox' && filt.fval != 'Sent'">From: {{message.sender.displayname}}</span>
+							<span class="td-name txt-black" v-if="message.folder == 'Inbox' && filt.fval == 'Sent'">To: {{message.sender.displayname}}</span>
+							<span class="td-name txt-black" v-if="message.folder == 'Sent' || message.folder == 'Draft'">To: {{message.receiver.displayname}}</span>
 							<span class="pr-3 d-inline-block">{{message.subject}}</span>
-							<small class="txt-muted">{{message.lastMessage.body | truncate(75)}}</small>
+							<small class="txt-muted">{{message.body | truncate(75)}}</small>
 						</td>
 						<td class="td-datetime txt-r" v-on:click="selectViewMessage(message, index);">
-							<small v-if="message.folder != 'Draft' && !message.istrashed">{{message.lastMessage.sentat | formatDateTime}}</small>
+							<small v-if="message.folder != 'Draft' && !message.istrashed">{{message.sentat | formatDateTime}}</small>
 							<small v-if="message.folder == 'Draft' && !message.istrashed">{{message.updated | formatDateTime}}</small>
 							<!-- <small v-if="message.istrashed">{{message.deleted | formatDateTime}}</small> -->
 						</td>
@@ -178,7 +178,7 @@
 								<em v-bind:class="{ 'show': errors.has('subject') }">{{ errors.first('subject') }}</em>
 							</div>
 							<div class="form-group" v-bind:class="{ 'has-error': errors.has('body') }">
-								<label for="body">Message to <span v-if="message.receiver && rootState == 'view'">{{message.receiver.receiverdisplayname}}</span> <code class="small"><small>{{message.receiver.receiversubjectid}}</small></code></label>
+								<label for="body">Message to <span v-if="message.receiver && rootState == 'view'">{{message.receiver.displayname}}</span> <code class="small"><small>{{message.receiver.subjectid}}</small></code></label>
 								<textarea type="text" name="body" id="body" v-model="message.body" v-validate="'required'" class="form-control message-text"></textarea>
 								<em v-bind:class="{ 'show': errors.has('body') }">{{ errors.first('body') }}</em>
 							</div>
@@ -221,11 +221,11 @@
 	<ul class="">
 	<li class="">
 		<div class="px-3 pb-1 pt-3 brd-b">
-			<strong class="txt-black">{{message.sender.senderdisplayname}}</strong>
+			<strong class="txt-black">{{message.sender.displayname}}</strong>
 			<span>{{message.sentat | formatDateTime}}</span>
 			<code class="small"><small>{{message.uuid}}</small></code>
 			
-			<span class="flt-r"><code class="small"><small>{{message.receiver.receiversubjectid}}</small></code> To: <strong class="txt-black">{{message.receiver.receiverdisplayname}}</strong></span>
+			<span class="flt-r"><code class="small"><small>{{message.receiver.subjectid}}</small></code> To: <strong class="txt-black">{{message.receiver.displayname}}</strong></span>
 		</div>
 		<div class="px-3 py-2 messages">
 			<!-- <pre>{{message.body}}</pre> -->
