@@ -91,19 +91,23 @@
 							<i class="fas fa-star txt-orange" v-if="message.isstarred"></i>
 						</td>
 						<td class="td-message-folder"><span class="badge badge-outline">{{message.folder}}</span></td>
-						<td class="txt-truncate" v-on:click="selectViewMessage(message, index);">
+						<td class="txt-truncate" v-on:click="selectMessage(message, index);">
 							<span class="td-name txt-black" v-if="message.folder == 'Inbox' && filt.fval != 'Sent'">From: {{message.sender.displayname}}</span>
 							<span class="td-name txt-black" v-if="message.folder == 'Inbox' && filt.fval == 'Sent'">To: {{message.sender.displayname}}</span>
 							<span class="td-name txt-black" v-if="message.folder == 'Sent' || message.folder == 'Draft'">To: {{message.receiver.displayname}}</span>
 							<span class="pr-3 d-inline-block">{{message.subject}}</span>
 							<small class="txt-muted">{{message.body | truncate(75)}}</small>
+							<div>
+								<code class="small txt-green"><small>SENDER: {{message.sender.subjectid}}</small></code>
+								<code class="small txt-blue"><small>RECEIVER: {{message.receiver.subjectid}}</small></code>
+							</div>
 						</td>
-						<td class="td-datetime txt-r" v-on:click="selectViewMessage(message, index);">
+						<td class="td-datetime txt-r" v-on:click="selectMessage(message, index);">
 							<small v-if="message.folder != 'Draft' && !message.istrashed">{{message.sentat | formatDateTime}}</small>
 							<small v-if="message.folder == 'Draft' && !message.istrashed">{{message.updated | formatDateTime}}</small>
 							<!-- <small v-if="message.istrashed">{{message.deleted | formatDateTime}}</small> -->
 						</td>
-						<td class="td-message-type txt-r" v-on:click="selectViewMessage(message, index);"><span class="badge txt-white" :class="'badge-' + message.messageType.uuid">{{message.messageType.name}}</span></td>
+						<td class="td-message-type txt-r" v-on:click="selectMessage(message, index);"><span class="badge txt-white" :class="'badge-' + message.messageType.uuid">{{message.messageType.name}}</span></td>
 						<td class="td-min txt-c cursor-pointer" v-on:click="deleteMessage(message, index)" v-bind:class="{'tr-deleted': message.istrashed }">
 							<i class="fa fa-trash-alt"></i>
 						</td>
@@ -111,7 +115,7 @@
 				</table>
 			</section>
 			<transition name="fade">
-			<div class="preview-test-overlay" v-on:click="$emit('set-state', 'init');cancelMessage()" v-if="rootState != 'init'"></div>
+			<div class="preview-test-overlay" v-on:click="$emit('set-state', 'init'); cancelMessage()" v-if="rootState != 'init'"></div>
 			</transition>
 			<transition name="slide">
 			<div class="preview-test" v-if="rootState != 'init'">
@@ -124,8 +128,7 @@
 						<span v-if="rootState == 'reply'">Reply Message</span>
 						<span v-if="rootState == 'create'">New Message</span>
 						<span v-if="rootState == 'edit'">Edit Message</span>
-						<!-- <small><code class="txt-green"><small>{{viewMessage.uuid}}</small></code></small> -->
-						<small><code class="txt-blue"><small>{{message.parentmessageid}}</small></code></small>
+						<small v-if="rootState == 'view'" class="opaque"><code class="txt-pink"><small>{{viewMessage.uuid}}</small></code></small>
 					</h5>
 				</div>
 				<div class="legal-text">
@@ -138,14 +141,16 @@
 								</h6>
 								<span class="badge txt-white ml-auto" :class="'badge-' + viewMessage.messageType.uuid">{{viewMessage.messageType.name}}</span>
 							</div>
-							<message-tree :message="viewMessage"></message-tree>
+							<!-- <div v-for="(message, index) in messageList" v-bind:key="message.uuid"> -->
+							<ul>
+								<message-tree :message="m" v-for="(m, index) in sortByNested(this.sortTree, messageList)" v-bind:key="m.uuid" v-if="m.conversationid == viewMessage.conversationid"></message-tree>
+							</ul>
 						</div>
-						<div class="p-3" v-if="rootState == 'create' || rootState == 'edit' || rootState == 'view'">
+						<div class="p-3">
 							<input type="text" name="parentmessageid" id="parentmessageid" v-model="message.parentmessageid" class="form-control hide">
 							<div class="row">
 								<div class="col-sm-6">
 									<div class="form-group v-select-color-purple" v-if="rootState != 'view'" v-bind:class="{ 'has-error': errors.has('receiver') }">
-									<!-- <div class="form-group v-select-color-purple" v-bind:class="{ 'has-error': errors.has('receiver') }"> -->
 										<label>To</label>
 										<v-select label="displayname" :filterable="false" :options="$root.userOptions" @search="$root.getUserOptions" v-model="message.receiver" v-validate="'required'" name="receiver" @input="setReceiver">
 											<span slot="no-options"></span>
@@ -178,7 +183,7 @@
 								<em v-bind:class="{ 'show': errors.has('subject') }">{{ errors.first('subject') }}</em>
 							</div>
 							<div class="form-group" v-bind:class="{ 'has-error': errors.has('body') }">
-								<label for="body">Message to <span v-if="message.receiver && rootState == 'view'">{{message.receiver.displayname}}</span> <code class="small"><small>{{message.receiver.subjectid}}</small></code></label>
+								<label for="body">Message to <span v-if="message.receiver && rootState == 'view'">{{message.receiver.displayname}} <code class="small"><small>{{message.receiver.subjectid}}</small></code></span></label>
 								<textarea type="text" name="body" id="body" v-model="message.body" v-validate="'required'" class="form-control message-text"></textarea>
 								<em v-bind:class="{ 'show': errors.has('body') }">{{ errors.first('body') }}</em>
 							</div>
@@ -189,9 +194,6 @@
 									<label for="priority"></label>
 								</span>
 							</div>
-							<!-- <pre>{{stringifyMessage}}</pre> -->
-							<!-- <pre>{{this.viewMessage}}</pre> -->
-							<!-- <pre>{{this.message}}</pre> -->
 						</div>
 					</div>
 				</div>
@@ -204,13 +206,12 @@
 
 				<button type="button" class="btn btn-green btn-xl btn-circle" v-if="rootState != 'init' && rootState != 'create'" v-on:click="deleteMessage(message)" title="DELETE MESSAGE"><i class="fas fa-trash"></i></button>
 
-				<button type="button" class="btn btn-primary btn-xl btn-circle" v-if="rootState == 'create' || rootState == 'view'"  v-on:click="messageAction('create')" title="SAVE AS DRAFT"><i class="fas fa-save"></i></button>
-
 				<button type="button" class="btn btn-primary btn-xl btn-circle" v-if="rootState == 'edit'"  v-on:click="messageAction('edit')" title="SAVE MESSAGE"><i class="fas fa-save"></i></button>
 
 				<button type="button" class="btn btn-pink btn-xl btn-circle" v-if="rootState != 'init' && rootState != 'view'" v-on:click="messageAction('send')" title="SEND MESSAGE"><i class="fas fa-share"></i></button>
 
-				<!-- <button type="button" class="btn btn-primary btn-xl btn-circle" v-if="rootState == 'view'"  v-on:click="messageAction('edit')" title="FORWARD MESSAGE"><i class="fas fa-forward"></i></button> -->
+				<button type="button" class="btn btn-primary btn-xl btn-circle" v-if="rootState == 'create' || rootState == 'view'"  v-on:click="messageAction('add')" title="SAVE AS DRAFT"><i class="fas fa-save"></i></button>
+
 				<button type="button" class="btn btn-pink btn-xl btn-circle" v-if="rootState == 'view'" v-on:click="messageAction('send')" title="REPLY MESSAGE"><i class="fas fa-reply"></i></button>
 			</div>
 		</div>
@@ -218,22 +219,22 @@
 	</main>
 </div>
 <div type="text/x-template" class="hide" id="message-tree">
-	<ul class="">
+	<!-- <ul class=""> -->
 	<li class="">
 		<div class="px-3 pb-1 pt-3 brd-b">
 			<strong class="txt-black">{{message.sender.displayname}}</strong>
 			<span>{{message.sentat | formatDateTime}}</span>
-			<code class="small"><small>{{message.uuid}}</small></code>
-			
-			<span class="flt-r"><code class="small"><small>{{message.receiver.subjectid}}</small></code> To: <strong class="txt-black">{{message.receiver.displayname}}</strong></span>
+			<code class="small txt-green"><small>SENDER: {{message.sender.subjectid}}</small></code>
+			<span class="flt-r"><code class="small txt-blue"><small>{{message.receiver.subjectid}}</small></code> To: <strong class="txt-black">{{message.receiver.displayname}}</strong></span>
 		</div>
 		<div class="px-3 py-2 messages">
+			<code class="small"><small>{{message.uuid}}</small></code>
 			<!-- <pre>{{message.body}}</pre> -->
 			<div v-html="markdownMessage"></div>
 		</div>
-		<message-tree :message="message.children" v-if="message.children"></message-tree>
+		<!-- <message-tree :message="message.children" v-if="message.children"></message-tree> -->
 	</li>
-	</ul>
+	<!-- </ul> -->
 </div>
 <script src="/dist/js/plugins/markdown-it.min.js"></script>
 <script id="reqVue" data-module="messages" data-main="/dist/js/main" src="/dist/js/lib/require.min.js"></script>
