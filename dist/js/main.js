@@ -42,6 +42,10 @@ require.config({
 		"highcharts": "plugins/Highcharts",
 		"sweetalert2": "plugins/sweetalert2.min",
 		"sweetalert2-css": "plugins/sweetalert2.min.css?noext",
+		"turndown": "plugins/turndown.umd",
+		"medium-editor": "plugins/medium-editor.min",
+		"medium-editor-markdown": "plugins/me-markdown.standalone.min",
+		"medium-editor-css": "plugins/medium-editor.min.css?noext",
 		//// comps ////
 		"vuedraggable": "comps/vuedraggable",
 		"vee-validate": "comps/vee-validate.min",
@@ -54,6 +58,7 @@ require.config({
 		"vue-dropzone-css": "comps/vue2Dropzone.css?noext",
 		// "vue-izitoast": "comps/vue-izitoast.min",
 		"vue-izitoast": "comps/vue-my-izitoast",
+		"vue-medium-editor": "comps/vueMediumEditor.min",
 		// "ace-init": "scripts/ace",
 		//// init ////
 		"config": "config",

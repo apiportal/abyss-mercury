@@ -165,8 +165,9 @@ const MyToaster = {
 			require(['izitoast'],function(iziToast){
 				iziToast.settings(defs);
 			});
-			var encoded = encodeURI(methodOptions);
-			// this.toast(type, encoded);
+			// var encoded = encodeURI(methodOptions);
+			methodOptions.title = _.escape(methodOptions.title);
+			methodOptions.message = _.escape(methodOptions.message);
 			this.toast(type, methodOptions);
 		}
 	}

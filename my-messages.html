@@ -80,7 +80,7 @@
 						</template>
 					</v-select>
 				</div>
-				<table class="table table-hover table-bordered table-edge message">
+				<table class="table table-hover table-edge message">
 					<tr v-for="(message, index) in filteredMessages" v-bind:key="message.uuid" v-bind:class="{'fnt-bold txt-black': myReadeds(message), 'active': isSelected(index)}">
 						<td class="td-min txt-c">
 							<i class="fas fa-bookmark txt-grey" v-if="message.priority != 'Important'"></i>
@@ -92,13 +92,17 @@
 						</td>
 						<td class="td-message-folder"><span class="badge badge-outline">{{message.folder}}</span></td>
 						<td class="txt-truncate" v-on:click="selectMessage(message, index);">
-							<span class="td-name txt-black" v-if="message.folder == 'Inbox' && filt.fval != 'Sent'">From: {{message.sender.displayname}}</span>
-							<span class="td-name txt-black" v-if="message.folder == 'Inbox' && filt.fval == 'Sent'">To: {{message.sender.displayname}}</span>
-							<span class="td-name txt-black" v-if="message.folder == 'Sent' || message.folder == 'Draft'">To: {{message.receiver.displayname}}</span>
-							<span class="pr-3 d-inline-block">{{message.subject}}</span>
-							<small class="txt-muted">{{message.body | truncate(75)}}</small>
-							<div>
+							<span class="td-name txt-black d-inline-block txt-line-px" v-if="message.folder == 'Inbox' && filt.fval != 'Sent'">From: {{message.sender.displayname}}</span>
+							<span class="td-name txt-black d-inline-block txt-line-px" v-if="message.folder == 'Inbox' && filt.fval == 'Sent'">To: {{message.sender.displayname}}</span>
+							<span class="td-name txt-black d-inline-block txt-line-px" v-if="message.folder == 'Sent' || message.folder == 'Draft'">To: {{message.receiver.displayname}}</span>
+							<div data-xxx="$root.abyssSandbox" class="sandbox-item">
 								<code class="small txt-green"><small>SENDER: {{message.sender.subjectid}}</small></code>
+							</div>
+						</td>
+						<td class="txt-truncate" v-on:click="selectMessage(message, index);">
+							<span class="pr-1 d-inline-block txt-line-px">{{message.subject}}</span>
+							<small class="txt-muted">{{message.body | truncate(75)}}</small>
+							<div data-xxx="$root.abyssSandbox" class="sandbox-item">
 								<code class="small txt-blue"><small>RECEIVER: {{message.receiver.subjectid}}</small></code>
 							</div>
 						</td>
@@ -182,9 +186,18 @@
 								<input type="text" name="subject" id="subject" v-model="message.subject" v-validate="'required'" class="form-control">
 								<em v-bind:class="{ 'show': errors.has('subject') }">{{ errors.first('subject') }}</em>
 							</div>
-							<div class="form-group" v-bind:class="{ 'has-error': errors.has('body') }">
+							<div class="position-relative mb-3 messages" v-bind:class="{ 'has-error': errors.has('body') }">
+								<!-- <div v-html="message.html"></div> -->
 								<label for="body">Message to <span v-if="message.receiver && rootState == 'view'">{{message.receiver.displayname}} <code class="small"><small>{{message.receiver.subjectid}}</small></code></span></label>
-								<textarea type="text" name="body" id="body" v-model="message.body" v-validate="'required'" class="form-control message-text"></textarea>
+								<medium-editor ref="editor" :text='message.html' :options='editorOptions' v-on:edit='onEdit' custom-tag='div'></medium-editor>
+								<div class="fow mt-3 d-none">
+									<div class="fol">
+										<textarea type="text" name="body" id="body" v-model.lazy="message.body" v-validate="'required'" class="form-control message-text code" v-on:change="toHtml($event.target.value)"></textarea>
+									</div>
+									<div class="fol">
+										<textarea type="text" v-model="message.html" class="form-control message-text code" v-on:change="toMarkdown($event.target.value)"></textarea>
+									</div>
+								</div>
 								<em v-bind:class="{ 'show': errors.has('body') }">{{ errors.first('body') }}</em>
 							</div>
 							<div class="form-group form-inline" v-if="rootState != 'view'">
@@ -204,15 +217,15 @@
 
 				<button type="button" class="btn btn-secondary btn-xl btn-circle" v-if="rootState != 'init'" v-on:click="$emit('set-state', 'init'); cancelMessage()" title="CANCEL MESSAGE"><i class="fas fa-times"></i></button>
 
-				<button type="button" class="btn btn-green btn-xl btn-circle" v-if="rootState != 'init' && rootState != 'create'" v-on:click="deleteMessage(message)" title="DELETE MESSAGE"><i class="fas fa-trash"></i></button>
+				<button type="button" class="btn btn-secondary btn-xl btn-circle" v-if="rootState != 'init' && rootState != 'create'" v-on:click="deleteMessage(message)" title="DELETE MESSAGE"><i class="far fa-trash-alt"></i></button>
 
-				<button type="button" class="btn btn-primary btn-xl btn-circle" v-if="rootState == 'edit'"  v-on:click="messageAction('edit')" title="SAVE MESSAGE"><i class="fas fa-save"></i></button>
+				<button type="button" class="btn btn-secondary btn-xl btn-circle" v-if="rootState == 'edit'"  v-on:click="messageAction('edit')" title="SAVE MESSAGE"><i class="far fa-save"></i></button>
 
-				<button type="button" class="btn btn-pink btn-xl btn-circle" v-if="rootState != 'init' && rootState != 'view'" v-on:click="messageAction('send')" title="SEND MESSAGE"><i class="fas fa-share"></i></button>
+				<button type="button" class="btn btn-secondary btn-xl btn-circle" v-if="rootState == 'create' || rootState == 'view'"  v-on:click="messageAction('add')" title="SAVE AS DRAFT"><i class="far fa-save"></i></button>
 
-				<button type="button" class="btn btn-primary btn-xl btn-circle" v-if="rootState == 'create' || rootState == 'view'"  v-on:click="messageAction('add')" title="SAVE AS DRAFT"><i class="fas fa-save"></i></button>
+				<button type="button" class="btn btn-green btn-xl btn-circle" v-if="rootState != 'init' && rootState != 'view'" v-on:click="messageAction('send')" title="SEND MESSAGE"><i class="fas fa-share"></i></button>
 
-				<button type="button" class="btn btn-pink btn-xl btn-circle" v-if="rootState == 'view'" v-on:click="messageAction('send')" title="REPLY MESSAGE"><i class="fas fa-reply"></i></button>
+				<button type="button" class="btn btn-green btn-xl btn-circle" v-if="rootState == 'view'" v-on:click="messageAction('send')" title="REPLY MESSAGE"><i class="fas fa-reply"></i></button>
 			</div>
 		</div>
 	</my-messages>
@@ -237,6 +250,7 @@
 	<!-- </ul> -->
 </div>
 <script src="/dist/js/plugins/markdown-it.min.js"></script>
+<script src="/dist/js/plugins/medium-editor.min.js"></script>
 <script id="reqVue" data-module="messages" data-main="/dist/js/main" src="/dist/js/lib/require.min.js"></script>
 </body>
 </html>

@@ -1,5 +1,7 @@
-define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-select'], function(abyss, Vue, axios, VeeValidate, _, moment, VueSelect) {
+define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-select', 'vue-medium-editor', 'turndown', 'css!medium-editor-css', 'medium-editor-markdown'], function(abyss, Vue, axios, VeeValidate, _, moment, VueSelect, vueMediumEditor, turndown) {
 	Vue.component('v-select', VueSelect.VueSelect);
+	Vue.component('medium-editor', vueMediumEditor.default);
+	
 	Vue.component('message-tree', {
 		template:'#message-tree',
 		props: ['message'],
@@ -64,8 +66,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 					},
 					"receiver": null,
 					"subject": null,
-					"bodycontenttype": "application/text",
-					"body": null,
+					"bodycontenttype": "application/text", // 'text/plain', text/markdown
+					"body": '',
 					"priority": "Normal",
 					"isstarred": false,
 					"isread": false,
@@ -73,6 +75,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 					"readat": moment.utc('1900-01-01').toISOString(),
 					"istrashed": false,
 					messageType: null,
+					html: '',
 				},
 				viewMessage: null,
 				selectedMessage: {},
@@ -86,7 +89,28 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 					fkey: 'folder',
 					fval: 'Inbox'
 				},
-				fff: '',
+				editorOptions: {
+					buttonLabels: 'fontawesome',
+					// toolbar: {buttons: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'bold', 'italic', 'underline', 'anchor', 'quote', 'unorderedlist', 'orderedlist', 'indent', 'outdent', 'pre', 'removeFormat']},
+					toolbar: {buttons: ['h4', 'h5', 'h6', 'bold', 'italic', 'underline', 'quote', 'unorderedlist', 'orderedlist', 'indent', 'outdent', 'pre', 'removeFormat']},
+					disableExtraSpaces: true,
+					targetBlank: true,
+					autoLink: true,
+					paste: {
+						/* This example includes the default options for paste,
+						   if nothing is passed this is what it used */
+						forcePlainText: false,
+						cleanPastedHTML: true,
+						cleanReplacements: [],
+						cleanAttrs: ['class', 'style', 'dir'],
+						cleanTags: ['meta'],
+						unwrapTags: []
+					},
+					// extensions: {
+					// 	'imageDragging': {}
+					// }
+				},
+				md: window.markdownit(),
 				end: []
 			};
 		},
@@ -102,8 +126,85 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 				}
 				return this.sortByNested(this.sort, messageList);
 			},
+			htmlMessage: {
+				get() {
+					var md = window.markdownit();
+					return md.render(this.message.body);
+				},
+				set(newValue) {
+					return newValue;
+				}
+			},
+			// <script> alert('adsdsds'); </script>
 		},
 		methods: {
+			onEdit(txt) {
+				var text = txt.api.origElements;
+				// console.log("txt, txt.event.bubbles: ", txt, txt.event.bubbles);
+				if (txt.event.bubbles) {
+					// $(text).find('pre:not(:has(code))').each(function(index, el) {
+					// 	console.log("el: ", el);
+					// 	$(el).wrapInner( "<code></code>")
+					// });
+					var preTags = $(text).find('pre:not(:has(code))');
+					preTags.wrapInner( "<code></code>")
+
+					var ulTags = $(text).find('ul');
+					if (ulTags.parent().is("p")) {
+						ulTags.unwrap();
+					}
+					var olTags = $(text).find('ol');
+					if (olTags.parent().is("p")) {
+						olTags.unwrap();
+					}
+					var liTags = $(text).find('li');
+					liTags.find('br:last-child').remove();
+
+					var ulFix = $(text).find('li + ul');
+					ulFix.prev('li').append(ulFix);
+
+					var ulFix = $(text).find('li + ul');
+					ulFix.prev('li').append(ulFix);
+
+					var olFix = $(text).find('li + ol');
+					olFix.prev('li').append(olFix);
+
+					// $('b').contents().unwrap().wrap('<strong/>');
+					// $('i').contents().unwrap().wrap('<em/>');
+
+					$(text).find('b').replaceWith(function(){
+						return $("<strong />").append($(this).contents());
+					});
+					$(text).find('i').replaceWith(function(){
+						return $("<em />").append($(this).contents());
+					});
+					//pTags.wrap("<div></div>");
+				}
+				this.message.html = text.innerHTML;
+				// this.toMarkdown(this.message.html);
+				this.toMarkdown(text.innerHTML);
+			},
+			toHtml(text) {
+				console.log("text: ", text);
+				// var md = window.markdownit();
+				this.message.html = this.md.render(text);
+				// this.message.body = md.render(text);
+			},
+			toMarkdown(text) {
+				var TurndownService = require('turndown');
+				var turndownService = new TurndownService({
+					headingStyle: 'atx', // setext
+					hr: '* * *',
+					bulletListMarker: '*', // -, +, or *
+					codeBlockStyle: 'indented', // indented or fenced
+					fence: '```', // ``` or ~~~
+					emDelimiter: '_', // _ or *
+					strongDelimiter: '**', // ** or __
+					linkStyle: 'inlined', // inlined or referenced
+					linkReferenceStyle: 'full', // full, collapsed, or shortcut
+				});
+				this.message.body = turndownService.turndown(text);
+			},
 			// filterApis $root.filterApis(group, 'group')
 			filterMessages(v, k) {
 				Vue.set( this.filt, 'fkey', k );
@@ -148,20 +249,23 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 				this.selected = null;
 			},
 			async selectMessage(item, i) {
-				if (item.folder == 'Draft' || !item.sentat || item.sentat == '1900-01-01T00:00:00.000Z' ) {
+				// if (item.folder == 'Draft' || !item.sentat || item.sentat == '1900-01-01T00:00:00.000Z' ) {
+				if (item.folder == 'Draft') {
 					// this.fixProps(item);
 					this.selectedMessage = _.cloneDeep(item);
 					this.message = item;
 					this.selected = i;
 					this.$emit('set-state', 'edit');
 					console.log("editdraft: ", this.message);
+					this.toHtml(this.message.body);
 				} else {
 					// this.selectedMessage = _.cloneDeep(item);
 					this.viewMessage = item;
 					console.log("view: ", this.viewMessage);
 					if (this.viewMessage.sender.subjectid == this.$root.rootData.user.uuid) {
 						this.message = _.cloneDeep(this.viewMessage);
-						this.message.body = null;
+						this.message.body = '';
+						this.message.html = '';
 						console.log("my message: ", JSON.stringify(this.message, null, '\t'));
 					} else {
 						if (!this.viewMessage.isread) {
@@ -177,9 +281,10 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 						this.message = _.cloneDeep(this.viewMessage);
 						this.message.receiver = message.sender;
 						this.message.sender = message.receiver;
-						this.message.body = null;
-						console.log("message2: ", JSON.stringify(message, null, '\t'));
-						console.log("message: ", JSON.stringify(this.message, null, '\t'));
+						this.message.body = '';
+						this.message.html = '';
+						// console.log("message2: ", JSON.stringify(message, null, '\t'));
+						// console.log("message: ", JSON.stringify(this.message, null, '\t'));
 					}
 					this.selected = i;
 					this.$emit('set-state', 'view');
@@ -227,6 +332,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 			deleteProps(obj) {
 				var item = this.cleanProps(obj);
 				Vue.delete(item, 'messageType');
+				Vue.delete(item, 'html');
 				Vue.delete(item.receiver, 'uuid');
 				return item;
 			},
@@ -266,7 +372,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 				if (result) {
 					if (act === 'send') {
 						this.message.isread = false;
-						if (this.message.folder == 'Draft' || !this.message.sentat || this.message.sentat == '1900-01-01T00:00:00.000Z') {
+						// if (this.message.folder == 'Draft' || !this.message.sentat || this.message.sentat == '1900-01-01T00:00:00.000Z') {
+						if (this.message.folder == 'Draft') {
 							this.message.folder = 'Sent';
 							this.message.sentat = moment.utc().toISOString();
 							this.message.readat = moment.utc('1900-01-01').toISOString();
