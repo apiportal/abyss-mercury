@@ -190,7 +190,7 @@
 								<!-- <div v-html="message.html"></div> -->
 								<label for="body">Message to <span v-if="message.receiver && rootState == 'view'">{{message.receiver.displayname}} <code class="small"><small>{{message.receiver.subjectid}}</small></code></span></label>
 								<medium-editor ref="editor" :text='message.html' :options='editorOptions' v-on:edit='onEdit' custom-tag='div'></medium-editor>
-								<div class="fow mt-3 d-none">
+								<div class="fow mt-3">
 									<div class="fol">
 										<textarea type="text" name="body" id="body" v-model.lazy="message.body" v-validate="'required'" class="form-control message-text code" v-on:change="toHtml($event.target.value)"></textarea>
 									</div>
@@ -250,7 +250,6 @@
 	<!-- </ul> -->
 </div>
 <script src="/dist/js/plugins/markdown-it.min.js"></script>
-<script src="/dist/js/plugins/medium-editor.min.js"></script>
 <script id="reqVue" data-module="messages" data-main="/dist/js/main" src="/dist/js/lib/require.min.js"></script>
 </body>
 </html>

@@ -248,6 +248,12 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 					return response.data[0].response;
 				});
 			},
+			editBulkItems(url, items) {
+				return axios.put(url, items).then(response => {
+					console.log("editBulkItems: ", url, response);
+					return response.data[0];
+				});
+			},
 			editItem(url, id, item, arr) {
 				return axios.put(url + '/' + id, item).then(response => {
 					console.log("editItem: ", url, response);

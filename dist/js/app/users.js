@@ -343,12 +343,12 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 
 				this.userList = _.map(userList, o => _.extend({permissionfilter: true, groupfilter: true, userfilter: true}, o));
 				this.userList.forEach(async (value, key) => {
-					var flt = await this.getList(abyss.ajax.subject_memberships_subject + value.uuid);
-					if (flt) {
-						var grpusr = _.filter(this.groupOptions, (v) => _.includes( flt.map(e => e.subjectgroupid), v.uuid)) ;
-						Vue.set(value, 'membershiplist', flt);
-						Vue.set(value, 'groups', grpusr);
-						Vue.set(value, 'groupslist', grpusr.map(e => e.firstname).join(', '));
+					var membershiplist = await this.getList(abyss.ajax.subject_memberships_subject + value.uuid);
+					if (membershiplist) {
+						var groups = _.filter(this.groupOptions, (v) => _.includes( membershiplist.map(e => e.subjectgroupid), v.uuid)) ;
+						Vue.set(value, 'membershiplist', membershiplist);
+						Vue.set(value, 'groups', groups);
+						Vue.set(value, 'groupslist', groups.map(e => e.firstname).join(', '));
 					} else {
 						Vue.set(value, 'membershiplist', []);
 						Vue.set(value, 'groups', []);

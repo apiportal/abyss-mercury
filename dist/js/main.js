@@ -44,7 +44,7 @@ require.config({
 		"sweetalert2-css": "plugins/sweetalert2.min.css?noext",
 		"turndown": "plugins/turndown.umd",
 		"medium-editor": "plugins/medium-editor.min",
-		"medium-editor-markdown": "plugins/me-markdown.standalone.min",
+		// "medium-editor-markdown": "plugins/me-markdown.standalone.min",
 		"medium-editor-css": "plugins/medium-editor.min.css?noext",
 		//// comps ////
 		"vuedraggable": "comps/vuedraggable",
@@ -94,6 +94,8 @@ require.config({
 		'vue-snotify': ['Vue'],
 		'vue-dropzone': ['dropzone'],
 		'vue-cookie': ['tiny-cookie'],
+		// 'vue-medium-editor': ['medium-editor'],
+		// 'medium-editor-markdown': ['vue-medium-editor'],
 		'dropdown': ['jquery', 'bootstrap'],
 		'dropzone': { exports: 'Dropzone'},
 		'moment': { exports: 'moment'},

@@ -1,4 +1,4 @@
-define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-select', 'vue-medium-editor', 'turndown', 'css!medium-editor-css', 'medium-editor-markdown'], function(abyss, Vue, axios, VeeValidate, _, moment, VueSelect, vueMediumEditor, turndown) {
+define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-select', 'vue-medium-editor', 'turndown', 'css!medium-editor-css'], function(abyss, Vue, axios, VeeValidate, _, moment, VueSelect, vueMediumEditor, turndown) {
 	Vue.component('v-select', VueSelect.VueSelect);
 	Vue.component('medium-editor', vueMediumEditor.default);
 	
