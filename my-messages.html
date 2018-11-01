@@ -26,41 +26,51 @@
 								<li :class="{'active': filt.fval == 'Inbox'}">
 									<a href="#" v-on:click="filterMessages('Inbox', 'folder')"> <i class="fa fa-fw fa-inbox mr-2"></i>
 										Inbox
-										<!-- <span class="badge badge-pill badge-outline flt-r">2</span> -->
+										<span v-html="getNo('Inbox', 'folder')"></span>
 									</a>
 								</li>
 								<li :class="{'active': filt.fval == 'Sent'}">
 									<a href="#" v-on:click="filterMessages('Sent', 'folder')"> <i class="fa fa-fw fa-envelope mr-2"></i>
 										Sent
+										<span v-html="getNo('Sent', 'folder')"></span>
 									</a>
 								</li>
 								<li :class="{'active': filt.fval == 'Important'}">
 									<a href="#" v-on:click="filterMessages('Important', 'priority')">
 										<i class="fa fa-fw fa-bookmark mr-2"></i>
 										Important
+										<span v-html="getNo('Important', 'priority')"></span>
 									</a>
 								</li>
 								<li :class="{'active': filt.fkey == 'isstarred'}">
 									<a href="#" v-on:click="filterMessages(true, 'isstarred')">
 										<i class="fa fa-fw fa-star mr-2"></i>
 										Starred
+										<span v-html="getNo(true, 'isstarred')"></span>
 									</a>
 								</li>
 								<li :class="{'active': filt.fval == 'Draft'}">
 									<a href="#" v-on:click="filterMessages('Draft', 'folder')">
 										<i class="fa fa-fw fa-folder mr-2"></i>
 										Drafts
-										<!-- <span class="badge badge-pill badge-outline flt-r">20</span> -->
+										<span v-html="getNo('Draft', 'folder')"></span>
 									</a>
 								</li>
 								<li :class="{'active': filt.fkey == 'istrashed'}">
-									<a href="#" v-on:click="filterMessages(true, 'istrashed')"> <i class="fa fa-fw fa-trash mr-2"></i> Trash </a>
+									<a href="#" v-on:click="filterMessages(true, 'istrashed')">
+										<i class="fa fa-fw fa-trash mr-2"></i>
+										Trash 
+										<span v-html="getNo(true, 'istrashed')"></span>
+									</a>
 								</li>
 							</ul>
 							<h6 class="p-3">Message Categories</h6>
 							<ul class="nav">
 								<li v-for="(type, index) in messageTypes" :class="{'active': filt.fval == type.uuid}">
-									<a href="#" :title="type.description" v-on:click="filterMessages(type.uuid, 'messagetypeid')"><i class="fas fa-fw fa-stop mr-2" :class="'label-' + type.uuid"></i>{{type.name}}</a>
+									<a href="#" :title="type.description" v-on:click="filterMessages(type.uuid, 'messagetypeid')"><i class="fas fa-fw fa-stop mr-2" :class="'label-' + type.uuid"></i>{{type.name}}
+										<!-- <span class="badge badge-pill badge-outline flt-r" v-if="getNo(type.uuid, 'messagetypeid') != 0">{{getNo(type.uuid, 'messagetypeid')}}</span> -->
+										<span v-html="getNo(type.uuid, 'messagetypeid')"></span>
+									</a>
 								</li>
 							</ul>
 						</div>
@@ -80,8 +90,31 @@
 						</template>
 					</v-select>
 				</div>
+				<table class="table table-edge message m-0">
+					<tr>
+						<td class="td-min td-check txt-c">
+							<span class="checkbox m-0">
+								<input type="checkbox" name="checkAll" id="checkAll" v-on:change="checkAll" v-model="allChecked">
+								<label class="p-0" for="checkAll"></label>
+							</span>
+						</td>
+						<td>
+							<a href="#" class="d-inline-block txt-line-px pl-1 pr-2" v-on:click="setIsRead(false)"><i class="fas fa-fw fa-envelope"></i> Mark as Unread</a>
+							<a href="#" class="d-inline-block txt-line-px pl-1 pr-2" v-on:click="setIsRead(true)"><i class="fas fa-fw fa-envelope-open-text"></i> Mark as Read</a>
+							<a href="#" class="d-inline-block txt-line-px pl-1 pr-2" v-on:click="setIsTrashed(true)" v-if="filt.fkey != 'istrashed'"><i class="fas fa-fw fa-trash-alt"></i> Move to trash</a>
+							<a href="#" class="d-inline-block txt-line-px pl-1 pr-2" v-on:click="setIsTrashed(false)" v-if="filt.fkey == 'istrashed'"><i class="fas fa-fw fa-undo"></i> Recover</a>
+							<a href="#" class="d-inline-block txt-line-px pl-1 pr-2" v-on:click="deleteTrashed()" v-if="filt.fkey == 'istrashed'"><i class="fas fa-fw fa-trash-alt"></i> Delete Permanently</a>
+						</td>
+					</tr>
+				</table>
 				<table class="table table-hover table-edge message">
 					<tr v-for="(message, index) in filteredMessages" v-bind:key="message.uuid" v-bind:class="{'fnt-bold txt-black': myReadeds(message), 'active': isSelected(index)}">
+						<td class="td-min td-check txt-c">
+							<span class="checkbox m-0">
+								<input type="checkbox" name="messagecheck" :id="'message'+message.uuid" v-on:click="checkMessage" v-model="checkedMessages" :value="message">
+								<label class="p-0" :for="'message'+message.uuid"></label>
+							</span>
+						</td>
 						<td class="td-min txt-c">
 							<i class="fas fa-bookmark txt-grey" v-if="message.priority != 'Important'"></i>
 							<i class="fas fa-bookmark txt-orange" v-if="message.priority == 'Important'"></i>
@@ -111,10 +144,10 @@
 							<small v-if="message.folder == 'Draft' && !message.istrashed">{{message.updated | formatDateTime}}</small>
 							<!-- <small v-if="message.istrashed">{{message.deleted | formatDateTime}}</small> -->
 						</td>
-						<td class="td-message-type txt-r" v-on:click="selectMessage(message, index);"><span class="badge txt-white" :class="'badge-' + message.messageType.uuid">{{message.messageType.name}}</span></td>
-						<td class="td-min txt-c cursor-pointer" v-on:click="deleteMessage(message, index)" v-bind:class="{'tr-deleted': message.istrashed }">
+						<td class="td-message-type txt-r pr-3" v-on:click="selectMessage(message, index);"><span class="badge txt-white" :class="'badge-' + message.messageType.uuid">{{message.messageType.name}}</span></td>
+						<!-- <td class="td-min txt-c cursor-pointer" v-on:click="trashMessage(message, index)" v-bind:class="{'tr-deleted': message.istrashed }">
 							<i class="fa fa-trash-alt"></i>
-						</td>
+						</td> -->
 					</tr>
 				</table>
 			</section>
@@ -132,7 +165,7 @@
 						<span v-if="rootState == 'reply'">Reply Message</span>
 						<span v-if="rootState == 'create'">New Message</span>
 						<span v-if="rootState == 'edit'">Edit Message</span>
-						<small v-if="rootState == 'view'" class="opaque"><code class="txt-pink"><small>{{viewMessage.uuid}}</small></code></small>
+						<small v-if="rootState == 'view'" class="opaque sandbox-item"><code class="txt-pink"><small>{{viewMessage.uuid}}</small></code></small>
 					</h5>
 				</div>
 				<div class="legal-text">
@@ -188,7 +221,7 @@
 							</div>
 							<div class="position-relative mb-3 messages" v-bind:class="{ 'has-error': errors.has('body') }">
 								<!-- <div v-html="message.html"></div> -->
-								<label for="body">Message to <span v-if="message.receiver && rootState == 'view'">{{message.receiver.displayname}} <code class="small"><small>{{message.receiver.subjectid}}</small></code></span></label>
+								<label for="body">Message to <span v-if="message.receiver && rootState == 'view'">{{message.receiver.displayname}} <code class="small sandbox-item"><small>{{message.receiver.subjectid}}</small></code></span></label>
 								<medium-editor ref="editor" :text='message.html' :options='editorOptions' v-on:edit='onEdit' custom-tag='div'></medium-editor>
 								<div class="fow mt-3">
 									<div class="fol">
@@ -217,15 +250,17 @@
 
 				<button type="button" class="btn btn-secondary btn-xl btn-circle" v-if="rootState != 'init'" v-on:click="$emit('set-state', 'init'); cancelMessage()" title="CANCEL MESSAGE"><i class="fas fa-times"></i></button>
 
-				<button type="button" class="btn btn-secondary btn-xl btn-circle" v-if="rootState != 'init' && rootState != 'create'" v-on:click="deleteMessage(message)" title="DELETE MESSAGE"><i class="far fa-trash-alt"></i></button>
+				<button type="button" class="btn btn-secondary btn-xl btn-circle" v-if="rootState != 'init' && rootState != 'create' && filt.fkey != 'istrashed'" v-on:click="trashMessage(message)" title="MOVE TO TRASH"><i class="far fa-trash-alt"></i></button>
+
+				<button type="button" class="btn btn-secondary btn-xl btn-circle" v-if="rootState != 'init' && rootState != 'create' && filt.fkey == 'istrashed'" v-on:click="deleteMessage(message)" title="DELETE PERMANENTLY"><i class="fas fa-trash-alt"></i></button>
 
 				<button type="button" class="btn btn-secondary btn-xl btn-circle" v-if="rootState == 'edit'"  v-on:click="messageAction('edit')" title="SAVE MESSAGE"><i class="far fa-save"></i></button>
 
-				<button type="button" class="btn btn-secondary btn-xl btn-circle" v-if="rootState == 'create' || rootState == 'view'"  v-on:click="messageAction('add')" title="SAVE AS DRAFT"><i class="far fa-save"></i></button>
+				<button type="button" class="btn btn-secondary btn-xl btn-circle" v-if="rootState == 'create' || rootState == 'view' && filt.fkey != 'istrashed'"  v-on:click="messageAction('add')" title="SAVE AS DRAFT"><i class="far fa-save"></i></button>
 
-				<button type="button" class="btn btn-green btn-xl btn-circle" v-if="rootState != 'init' && rootState != 'view'" v-on:click="messageAction('send')" title="SEND MESSAGE"><i class="fas fa-share"></i></button>
+				<button type="button" class="btn btn-green btn-xl btn-circle" v-if="rootState != 'init' && rootState != 'view'" v-on:click="messageAction('send')" title="SEND MESSAGE"><i class="far fa-paper-plane"></i></button>
 
-				<button type="button" class="btn btn-green btn-xl btn-circle" v-if="rootState == 'view'" v-on:click="messageAction('send')" title="REPLY MESSAGE"><i class="fas fa-reply"></i></button>
+				<button type="button" class="btn btn-green btn-xl btn-circle" v-if="rootState == 'view'" v-on:click="messageAction('send')" title="REPLY MESSAGE"><i class="far fa-paper-plane"></i></button>
 			</div>
 		</div>
 	</my-messages>
@@ -237,11 +272,11 @@
 		<div class="px-3 pb-1 pt-3 brd-b">
 			<strong class="txt-black">{{message.sender.displayname}}</strong>
 			<span>{{message.sentat | formatDateTime}}</span>
-			<code class="small txt-green"><small>SENDER: {{message.sender.subjectid}}</small></code>
-			<span class="flt-r"><code class="small txt-blue"><small>{{message.receiver.subjectid}}</small></code> To: <strong class="txt-black">{{message.receiver.displayname}}</strong></span>
+			<code class="small txt-green sandbox-item"><small>SENDER: {{message.sender.subjectid}}</small></code>
+			<span class="flt-r"><code class="small txt-blue sandbox-item"><small>{{message.receiver.subjectid}}</small></code> To: <strong class="txt-black">{{message.receiver.displayname}}</strong></span>
 		</div>
 		<div class="px-3 py-2 messages">
-			<code class="small"><small>{{message.uuid}}</small></code>
+			<code class="small sandbox-item"><small>{{message.uuid}}</small></code>
 			<!-- <pre>{{message.body}}</pre> -->
 			<div v-html="markdownMessage"></div>
 		</div>

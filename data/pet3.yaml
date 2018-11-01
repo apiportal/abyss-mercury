@@ -2,7 +2,7 @@ openapi: 3.0.0
 # Added by API Auto Mocking Plugin
 servers:
   - description: SwaggerHub API Auto Mocking
-    url: https://virtserver.swaggerhub.com/monasdyas4/pet3/1.0.0
+    url: https://www.example.com
 info:
   description: |
     This is a sample Petstore server.  You can find

@@ -13,8 +13,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 		computed : {
 			markdownMessage(str) {
 				var md = window.markdownit();
-				// var result = md.render(str);
-				// $('#mdPreviewText').html(result);
 				return md.render(this.message.body);
 			},
 		},
@@ -97,8 +95,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 					targetBlank: true,
 					autoLink: true,
 					paste: {
-						/* This example includes the default options for paste,
-						   if nothing is passed this is what it used */
 						forcePlainText: false,
 						cleanPastedHTML: true,
 						cleanReplacements: [],
@@ -111,6 +107,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 					// }
 				},
 				md: window.markdownit(),
+				allChecked: false,
+				checkedMessages: [],
 				end: []
 			};
 		},
@@ -118,26 +116,36 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 			filteredMessages() {
 				var messageList = this.messageList;
 				if (this.filt.fkey == 'istrashed') {
+					// messageList = messageList.filter((item) => item[this.filt.fkey] == this.filt.fval && item.istrashed == true && !item.isdeleted );
 					messageList = messageList.filter((item) => item[this.filt.fkey] == this.filt.fval && item.istrashed == true );
 				} else if (this.filt.fval == '') {
-					messageList = messageList;
+					messageList = messageList.filter((item) => !item.isdeleted );
 				} else {
-					messageList = messageList.filter((item) => item[this.filt.fkey] == this.filt.fval && !item.istrashed );
+					messageList = messageList.filter((item) => item[this.filt.fkey] == this.filt.fval && !item.istrashed && !item.isdeleted );
 				}
 				return this.sortByNested(this.sort, messageList);
 			},
-			htmlMessage: {
-				get() {
-					var md = window.markdownit();
-					return md.render(this.message.body);
-				},
-				set(newValue) {
-					return newValue;
-				}
-			},
-			// <script> alert('adsdsds'); </script>
 		},
 		methods: {
+			getNo(val, key) {
+				var messageList = this.messageList;
+				if (key == 'istrashed') {
+					// return this.messageList.filter((item) => item[key] == val && !item.isread && item.istrashed && !item.isdeleted ).length;
+					var tno = this.messageList.filter((item) => item[key] == val && !item.isread && item.istrashed && !item.isdeleted );
+					if (tno.length) {
+						return '<span class="badge badge-pill badge-outline flt-r">' + tno.length + '</span>';
+					} else {
+						return;
+					}
+				} else {
+					var eno = this.messageList.filter((item) => item[key] == val && !item.isread && !item.istrashed && !item.isdeleted );
+					if (eno.length) {
+						return '<span class="badge badge-pill badge-outline flt-r">' + eno.length + '</span>';
+					} else {
+						return;
+					}
+				}
+			},
 			onEdit(txt) {
 				var text = txt.api.origElements;
 				// console.log("txt, txt.event.bubbles: ", txt, txt.event.bubbles);
@@ -185,7 +193,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 				this.toMarkdown(text.innerHTML);
 			},
 			toHtml(text) {
-				console.log("text: ", text);
+				// console.log("text: ", text);
 				// var md = window.markdownit();
 				this.message.html = this.md.render(text);
 				// this.message.body = md.render(text);
@@ -209,10 +217,11 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 			filterMessages(v, k) {
 				Vue.set( this.filt, 'fkey', k );
 				Vue.set( this.filt, 'fval', v );
+				this.checkedMessages = [];
 				// this.getList(abyss.ajax.my_messages_drafts + this.$root.rootData.user.uuid)
 			},
 			myReadeds(item) {
-				if (!item.isread && item.sender.subjectid != this.$root.rootData.user.uuid) {
+				if (!item.isread) {
 					return true;
 				} else {
 					return false;
@@ -235,6 +244,40 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 				loading(true);
 				this.messageOptions = await this.getList(abyss.ajax.messages + '?likename=' + search);
 				loading(false);
+			},
+			async setIsRead(read) {
+				if (this.checkedMessages.length) {
+					var bulkObj = {};
+					for (var item of this.checkedMessages) {
+						item.isread = read;
+						bulkObj[item.uuid] = this.deleteProps(item);
+					}
+					console.log("bulkObj: ", bulkObj);
+					await this.editBulkItems(abyss.ajax.messages, bulkObj);
+				}
+			},
+			async setIsTrashed(trashed) {
+				if (this.checkedMessages.length) {
+					var bulkObj = {};
+					for (var item of this.checkedMessages) {
+						item.istrashed = trashed;
+						bulkObj[item.uuid] = this.deleteProps(item);
+					}
+					console.log("bulkObj: ", bulkObj);
+					await this.editBulkItems(abyss.ajax.messages, bulkObj);
+				}
+			},
+			checkAll() {
+				this.checkedMessages = [];
+				console.log("this.allChecked: ", this.allChecked);
+				if (this.allChecked) {
+					for (item in this.filteredMessages) {
+						this.checkedMessages.push(this.filteredMessages[item]);
+					}
+				}
+			},
+			checkMessage() {
+				this.allChecked = false;
 			},
 			selectType(typ) {
 				var type = this.messageTypes.find((el) => el.uuid === typ );
@@ -262,20 +305,20 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 					// this.selectedMessage = _.cloneDeep(item);
 					this.viewMessage = item;
 					console.log("view: ", this.viewMessage);
+					if (!this.viewMessage.isread) {
+						var read = this.viewMessage;
+						read.readat = moment.utc().toISOString();
+						read.isread = true;
+						console.log("read: ", this.deleteProps(read));
+						// console.log("read: ", JSON.stringify(this.deleteProps(read), null, '\t'));
+						await this.editItem( abyss.ajax.messages, read.uuid, this.deleteProps(read), this.messageList );
+					}
 					if (this.viewMessage.sender.subjectid == this.$root.rootData.user.uuid) {
 						this.message = _.cloneDeep(this.viewMessage);
 						this.message.body = '';
 						this.message.html = '';
 						console.log("my message: ", JSON.stringify(this.message, null, '\t'));
 					} else {
-						if (!this.viewMessage.isread) {
-							var read = this.viewMessage;
-							read.readat = moment.utc().toISOString();
-							read.isread = true;
-							console.log("read: ", this.deleteProps(read));
-							// console.log("read: ", JSON.stringify(this.deleteProps(read), null, '\t'));
-							await this.editItem( abyss.ajax.messages, read.uuid, this.deleteProps(read), this.messageList );
-						}
 						const message = _.cloneDeep(this.viewMessage);
 						// this.message = message;
 						this.message = _.cloneDeep(this.viewMessage);
@@ -336,12 +379,26 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 				Vue.delete(item.receiver, 'uuid');
 				return item;
 			},
+			async deleteTrashed() {
+				if (this.checkedMessages.length) {
+					for (var item of this.checkedMessages) {
+						console.log("item: ", item);
+						// await this.deleteMessage(item);
+					}
+				}
+			},
 			async deleteMessage(item) {
 				console.log("delete: ", item);
-				// await this.deleteItem(abyss.ajax.messages, item, true);
-				// item.istrashed = true;
-				// this.getPage();
-				item.istrashed = !item.istrashed;
+				var del = await this.deleteItem(abyss.ajax.messages, item, true);
+				if (del) {
+					item.isdeleted = true;
+					// this.getPage();
+				}
+			},
+			async trashMessage(item) {
+				console.log("trash: ", item);
+				// item.istrashed = !item.istrashed;
+				item.istrashed = true;
 				var res = await this.editItem( abyss.ajax.messages, item.uuid, this.deleteProps(item), this.messageList );
 				if (res) {
 					item.istrashed = res.istrashed;
@@ -370,35 +427,28 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 			async messageAction(act) {
 				var result = await this.$validator.validateAll();
 				if (result) {
+					this.message.isread = true;
+					this.message.readat = moment.utc().toISOString();
 					if (act === 'send') {
-						this.message.isread = false;
+						this.message.folder = 'Sent';
+						this.message.sentat = moment.utc().toISOString();
 						// if (this.message.folder == 'Draft' || !this.message.sentat || this.message.sentat == '1900-01-01T00:00:00.000Z') {
 						if (this.message.folder == 'Draft') {
-							this.message.folder = 'Sent';
-							this.message.sentat = moment.utc().toISOString();
-							this.message.readat = moment.utc('1900-01-01').toISOString();
 							this.editMessage(this.message, act);
 						} else {
 							await this.fixProps(this.message);
-							this.message.folder = 'Sent';
-							this.message.sentat = moment.utc().toISOString();
-							this.message.readat = moment.utc('1900-01-01').toISOString();
 							this.addMessage(this.message, act);
 						}
 					}
 					if (act === 'add') {
 						this.message.folder = 'Draft';
-						this.message.isread = false;
 						this.message.sentat = moment.utc('1900-01-01').toISOString();
-						this.message.readat = moment.utc('1900-01-01').toISOString();
 						await this.fixProps(this.message);
 						this.addMessage(this.message, act);
 					}
 					if (act === 'edit') {
 						this.message.folder = 'Draft';
-						this.message.isread = false;
 						this.message.sentat = moment.utc('1900-01-01').toISOString();
-						this.message.readat = moment.utc('1900-01-01').toISOString();
 						this.editMessage(this.message, act);
 					}
 				}
@@ -423,7 +473,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 					this.getPage();
 				}
 			},
-			async fixMessage() {
+			/*async fixMessage() {
 				var msg = {
 					uuid: "9c5892cd-9d3f-47d3-a0ce-8a75005bf958",
 					organizationid: "89db8aca-51b3-435b-a79d-e1f4067d2076",
@@ -468,7 +518,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 				if (item) {
 					this.getPage();
 				}
-			},
+			},*/
 			async setGetPage() {
 				this.messageList.forEach(async (value, key) => {
 					if (!value.parentmessageid ) {
@@ -480,7 +530,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 			},
 			async getPage(p, d) {
 				// var message_list = this.getList(abyss.ajax.my_messages + this.$root.rootData.user.uuid);
-				// var message_drafts = this.getList(abyss.ajax.my_messages_drafts + this.$root.rootData.user.uuid);
 				var message_list = this.getList(abyss.ajax.messages_of_subject); // + this.$root.rootData.user.uuid);
 				var message_types = this.getList(abyss.ajax.message_types);
 				var [messageList, messageTypes] = await Promise.all([message_list, message_types]);
@@ -491,10 +540,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 				this.paginate = this.makePaginate(this.messageList);
 				this.isLoading = false;
 				this.preload();
-				// XSS test
-				// this.$toast('warning', {title: 'aaaaaaa &#x3C;img src=&#x22;http://unsplash.it/100/100?random&#x22; onclick=&#x22;alert(true);&#x22; /&#x3E;', message: '99999999 <script>alert("xss")</script>', position: 'topRight', timeout: false, closeOnClick: false});
-				// this.$toast('warning', {title: 'aaaaaaa &lt;img src=&quot;http://unsplash.it/100/100?random&quot; onclick=&quot;alert(true);&quot; /&gt;', message: '99999999 <script>alert("xss")</script>', position: 'topRight', timeout: false, closeOnClick: false});
-				// this.$toast('info', {title: 'aaaaaaa <img src="http://unsplash.it/100/100?random" onclick="alert(true);" />', message: '99999999 <script>alert("xss")</script>', position: 'topRight', timeout: false, closeOnClick: false});
 			},
 		},
 		created() {
