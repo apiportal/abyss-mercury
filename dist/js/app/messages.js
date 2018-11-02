@@ -371,6 +371,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 					var org = await this.getItem(abyss.ajax.organizations_list, r.organizationid);
 					Vue.set( item.receiver, 'organizationname', org.name );
 				}
+                if (item.receiver.picture == null) {
+                	Vue.set( item.receiver, 'picture', "");
+                }
 			},
 			deleteProps(obj) {
 				var item = this.cleanProps(obj);
