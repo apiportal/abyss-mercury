@@ -617,6 +617,19 @@
 								</api-requestbody>
 							</div>
 						</article>
+						<article class="field-controls field-level-0" data-id="parameters">
+							<div class="field-sum">
+								<a class="field-link nav-caret" data-toggle="collapse" data-target="#parameters" aria-controls="parameters">
+									<h6 class="d-block"><i class="fa fa-fw fa-question"></i> Parameters <span class="badge badge-pill badge-outline flt-r" v-if="getObjCount(openapi.components.parameters) > 0">{{getObjCount(openapi.components.parameters)}}</span></h6>
+								</a>
+								<span class="ficon-act ficon-act-abs" v-if="getObjCount(openapi.components.parameters) < 1">
+									<a title="Add Parameter" v-on:click="addParameter(openapi.components.parameters, Object)"><i class="fas fa-lg fa-plus"></i></a>
+								</span>
+							</div>
+							<div id="parameters" class="collapse field-color-grey field-level-1 field-tabs">
+								<api-parameter :parameter="parameter" :index="index" :openapi="openapi" :params="openapi.components.parameters" :type="Object" v-for="(parameter,item,index) in openapi.components.parameters" :key="index" :item="item"></api-parameter>
+							</div>
+						</article>
 					</form>
 				</div>
 			</aside>

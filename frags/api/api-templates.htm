@@ -105,9 +105,9 @@
 				<li v-bind:id="'method_parameters_'+_uid" class="collapse field-tabs">
 					<h6 class="field-header">Parameters</h6>
 					<div class="ficon-act ficon-act-link" v-if="method.parameters.length==0">
-						<a class="w-100" v-on:click="addParameter()">Create Parameter <i class="fa fa-fw fa-plus"></i></a>
+						<a class="w-100" v-on:click="addParameter(method.parameters, Array)">Create Parameter <i class="fa fa-fw fa-plus"></i></a>
 					</div>
-					<api-parameter :parameter="parameter" :index="index" :openapi="openapi" v-for="(parameter,index) in method.parameters" :key="index"></api-parameter>
+					<api-parameter :parameter="parameter" :index="index" :openapi="openapi" :params="method.parameters" :type="Array" v-for="(parameter,index) in method.parameters" :key="index"></api-parameter>
 				</li>
 			</ul>
 			<ul class="field-controls" data-id="Responses">
@@ -207,7 +207,7 @@
 					<div class="ficon-act ficon-act-link" v-if="!method.links || Object.keys(method.links).length == 0">
 						<a class="w-100" v-on:click="addLink()">Create Link <i class="fa fa-fw fa-plus"></i></a>
 					</div>
-					<api-parameter :parameter="parameter" :index="index" :openapi="openapi" v-for="(parameter,index) in method.links" :key="index"></api-parameter>
+					<api-parameter :parameter="parameter" :index="index" :openapi="openapi" :params="method.links" :type="Array" v-for="(parameter,index) in method.links" :key="index"></api-parameter>
 				</li>
 			</ul>
 		</article>
@@ -215,67 +215,88 @@
 	<div th:fragment="parameter" id="template-parameter">
 		<article class="field-controls">
 			<div class="field-sum">
-				<a class="field-link" data-toggle="collapse" title="Toggle parameter" :data-target="hashUid">
-					<strong class="fnt-black">{{parameter.name}}</strong>
+				<a class="field-link" v-if="type == Array" data-toggle="collapse" title="Toggle parameter" :data-target="hashUid">
+					<!-- <strong class="fnt-black" v-if="!parameter.$ref">{{parameter.name}}</strong> -->
+					<strong class="fnt-black d-block">{{parameterName}}</strong>
+					<small class="d-block txt-break txt-line" v-if="parameter.$ref">{{parameter.$ref}}</small>
+				</a>
+				<a class="field-link" v-if="type == Object" data-toggle="collapse" title="Toggle parameter" :data-target="hashUid" v-bind:data-param="'#/components/parameters/'+item">
+					<strong class="fnt-black d-block">{{item}}</strong>
+					<small>NAME: {{parameter.name}}</small>
 				</a>
 				<div class="ficon-actions dropdown dropdown-hover">
 					<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
 					<ul class="dropdown-menu dropdown-menu-right" role="menu">
-						<li><a v-on:click="addParameter()"><i class="fa fa-fw fa-plus"></i> Add parameter</a></li>
-						<li><a v-on:click="duplicateParameter(parameter)"><i class="fa fa-fw fa-copy"></i> Duplicate parameter</a></li>
+						<li><a v-on:click="addParameter(params, type)"><i class="fa fa-fw fa-plus"></i> Add parameter</a></li>
+						<li><a v-on:click="duplicateParameter(params, parameter, type)"><i class="fa fa-fw fa-copy"></i> Duplicate parameter</a></li>
 						<li><a :title="schemaTooltip" v-on:click="mixEditSchema(parameter, 'schema', openapi)"><i class="fa fa-fw fa-edit"></i> {{schemaTooltip}}</a></li>
-						<li><a v-on:click="removeParameter()"><i class="fa fa-fw fa-trash-alt"></i> Remove parameter</a></li>
+						<li><a v-on:click="removeParameter(params, index, type, item)"><i class="fa fa-fw fa-trash-alt"></i> Remove parameter</a></li>
 					</ul>
 				</div>
 			</div>
 			<div class="collapse field-controls" v-bind:id="_uid">
 				<div class="field-acc">
-					<div class="form-group">
-						<label>Parameter Name</label>
-						<input class="form-control" placeholder="Required" v-model.lazy="parameter.name" required>
-					</div>
-					<div class="form-group">
-						<label>Description</label>
-						<a class="flt-r" title="Preview markdown" v-on:click="markdownPreview()"><i class="fa fa-check-circle"></i></a>
-						<textarea v-model.lazy="parameter.description" :id="descId" class="form-control"></textarea>
-					</div>
-					<div class="form-group">
-						<label>Location</label>
-						<select class="form-control" v-model="effectiveIn" required>
-							<option value="path">Path</option>
-							<option value="query">Query</option>
-							<option value="header">Header</option>
-							<option value="cookie">Cookie</option>
+					<div class="form-group" v-if="type == Array">
+						<label>$ref</label>
+						<select class="form-control" v-model="parameter.$ref" v-on:change="selectRefParameter($event.target.value, parameter)">
+							<option value="None">None</option>
+							<optgroup label="$Ref: parameters">
+								<option v-for="(param,key,index) in openapi.components.parameters" :value="'#/components/parameters/'+key">#/components/parameters/{{key}}</option>
+							</optgroup>
 						</select>
 					</div>
-					<div class="fow form-row">
-						<div class="fol-3 form-group">
-							<label>Required</label>
-							<span class="switch switch-primary ml-auto">
-								<input type="checkbox" :id="'paramRequired_'+_uid" v-model="effectiveRequired" :disabled="effectiveIn == 'path' ? true : false">
-								<label :for="'paramRequired_'+_uid"></label>
-							</span>
+					<div v-if="!parameter.$ref">
+						<div class="form-group" v-if="type == Object">
+							<label>Parameter Key</label>
+							<input class="form-control" placeholder="Required" v-model.lazy="parameterKey" required>
 						</div>
-						<div class="fol-6 form-group txt-c" v-if="parameter.in == 'query'">
-							<label>Allow Empty Value</label>
-							<span class="switch switch-primary ml-auto">
-								<input type="checkbox" :id="'paramEmpty_'+_uid" v-model="parameter.allowEmptyValue">
-								<label :for="'paramEmpty_'+_uid"></label>
-							</span>
+						<div class="form-group">
+							<label>Parameter Name</label>
+							<input class="form-control" placeholder="Required" v-model.lazy="parameter.name" required>
 						</div>
-						<div class="fol-3 txt-r form-group">
-							<label>Deprecated</label>
-							<span class="switch switch-primary ml-auto">
-								<input type="checkbox" :id="'paramDeprecated_'+_uid" v-model="parameter.deprecated">
-								<label :for="'paramDeprecated_'+_uid"></label>
-							</span>
+						<div class="form-group">
+							<label>Description</label>
+							<a class="flt-r" title="Preview markdown" v-on:click="markdownPreview()"><i class="fa fa-check-circle"></i></a>
+							<textarea v-model.lazy="parameter.description" :id="descId" class="form-control"></textarea>
 						</div>
+						<div class="form-group">
+							<label>Location</label>
+							<select class="form-control" v-model="effectiveIn" required>
+								<option value="path">Path</option>
+								<option value="query">Query</option>
+								<option value="header">Header</option>
+								<option value="cookie">Cookie</option>
+							</select>
+						</div>
+						<div class="fow form-row">
+							<div class="fol-3 form-group">
+								<label>Required</label>
+								<span class="switch switch-primary ml-auto">
+									<input type="checkbox" :id="'paramRequired_'+_uid" v-model="effectiveRequired" :disabled="effectiveIn == 'path' ? true : false">
+									<label :for="'paramRequired_'+_uid"></label>
+								</span>
+							</div>
+							<div class="fol-6 form-group txt-c" v-if="parameter.in == 'query'">
+								<label>Allow Empty Value</label>
+								<span class="switch switch-primary ml-auto">
+									<input type="checkbox" :id="'paramEmpty_'+_uid" v-model="parameter.allowEmptyValue">
+									<label :for="'paramEmpty_'+_uid"></label>
+								</span>
+							</div>
+							<div class="fol-3 txt-r form-group">
+								<label>Deprecated</label>
+								<span class="switch switch-primary ml-auto">
+									<input type="checkbox" :id="'paramDeprecated_'+_uid" v-model="parameter.deprecated">
+									<label :for="'paramDeprecated_'+_uid"></label>
+								</span>
+							</div>
+						</div>
+						<div class="form-group pt-0" v-if="!isComplex()">
+							<label>Example</label>
+							<input class="form-control" v-model.lazy="parameter.example">
+						</div>
+						<api-items :openapi="openapi" :child="parameter.schema" :name="'parameter'+_uid" :level="0"></api-items>
 					</div>
-					<div class="form-group pt-0" v-if="!isComplex()">
-						<label>Example</label>
-						<input class="form-control" v-model.lazy="parameter.example">
-					</div>
-					<api-items :openapi="openapi" :child="parameter.schema" :name="'parameter'+_uid" :level="0"></api-items>
 				</div>
 			</div>
 		</article>
@@ -295,12 +316,9 @@
 				</div>
 			</div>
 			<div v-bind:id="'components_requestBodies_'+requestName+'_'+bindex+'_'+_uid" class="collapse field-acc">
-				<div class="form-group" v-if="!response.$ref">
-					<label>Name</label>
-					<input class="form-control" v-model.lazy="requestName">
-				</div>
+				<!-- <div class="form-group" v-if="single"> -->
 				<div class="form-group">
-					<label v-on:click="openRef(response.$ref)">$ref: {{response.$ref}}</label>
+					<label class="d-block txt-break txt-line" v-on:click="openRef(response.$ref)">$ref: {{response.$ref}}</label>
 					<select class="form-control" v-model="response.$ref" v-on:change="selectRefResponse($event.target.value, response)">
 						<option value="None">None</option>
 						<optgroup label="$Ref: requestBodies">
@@ -308,18 +326,24 @@
 						</optgroup>
 					</select>
 				</div>
-				<div class="form-group" v-if="!response.$ref">
-					<label>Description</label>
-					<textarea class="form-control" v-model.lazy="response.description"></textarea>
+				<div v-if="!response.$ref">
+					<div class="form-group" v-if="!single">
+						<label>Name</label>
+						<input class="form-control" v-model.lazy="requestName">
+					</div>
+					<div class="form-group">
+						<label>Description</label>
+						<textarea class="form-control" v-model.lazy="response.description"></textarea>
+					</div>
+					<div class="form-group form-inline">
+						<label class="">Required</label>
+						<span class="switch switch-primary ml-auto">
+							<input type="checkbox" :id="'response'+_uid" v-model="response.required">
+							<label :for="'response'+_uid"></label>
+						</span>
+					</div>
+					<api-mediatype :openapi="openapi" v-for="(content, mediatype) in response.content" :content="content" :key="mediatype" :mediatype="mediatype" :container="response"></api-mediatype>
 				</div>
-				<div class="form-group form-inline" v-if="!response.$ref">
-					<label class="">Required</label>
-					<span class="switch switch-primary ml-auto">
-						<input type="checkbox" :id="'response'+_uid" v-model="response.required">
-						<label :for="'response'+_uid"></label>
-					</span>
-				</div>
-				<api-mediatype :openapi="openapi" v-for="(content, mediatype) in response.content" :content="content" :key="mediatype" :mediatype="mediatype" :container="response"></api-mediatype>
 			</div>
 		</div>
 	</div>
@@ -328,7 +352,7 @@
 			<div class="field-sum">
 				<a class="field-link" data-toggle="collapse" v-bind:data-target="'#responses'+_uid" v-bind:aria-controls="'responses'+_uid">
 					<strong class="fnt-bold d-block">{{statusCode}}</strong>
-					<small v-if="response.$ref">{{response.$ref}}</small>
+					<small class="d-block txt-break txt-line" v-if="response.$ref">{{response.$ref}}</small>
 				</a>
 				<div class="ficon-actions dropdown dropdown-hover">
 					<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
