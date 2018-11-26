@@ -31,6 +31,11 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 			};
 		},
 		computed: {
+			filteredApps : {
+				get() {
+					return _.reject(this.$root.appList, { contracts: [ { apiid: this.api.uuid, isdeleted: false } ]});
+				}
+			},
 			apiEnvironment : {
 				get() {
 					if (this.api.issandbox) {
@@ -141,6 +146,20 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 			};
 		},
 		methods: {
+			activated(act) {
+				if (act) {
+					return 'ACTIVATED'
+				} else {
+					return 'NOT ACTIVATED'
+				}
+			},
+			sandbox(sand) {
+				if (sand) {
+					return 'SANDBOX';
+				} else {
+					return 'LIVE';
+				}
+			},
 			regenPass(numLc, numUc, numDigits, numSpecial) {
 				Vue.set(this.app, 'password',this.generatePassword(numLc, numUc, numDigits, numSpecial));
 			},
@@ -226,7 +245,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 				Vue.delete(item, 'lastauthenticatedat');
 				Vue.delete(item, 'lastfailedloginat');
 				Vue.delete(item, 'appUser');
-				Vue.delete(item, 'subscriptions');
+				Vue.delete(item, 'contracts');
 				Vue.delete(item, 'resource');
 				Vue.delete(item, 'permission');
 				Vue.delete(item, 'accessToken');
@@ -238,17 +257,21 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 				var deleteConfirm = await this.deleteConfirm();
 				if (deleteConfirm) {
 					item.contracts.forEach(async (con, k) => {
-						var del = await this.deleteItem(abyss.ajax.resources, con.resource, false);
-						if (del) {
+						var delCon = await this.deleteItem(abyss.ajax.resources, con.resource, false);
+						if (delCon) {
 							await this.deleteItem(abyss.ajax.contracts, con, false);
 						}
-					});
-					item.subscriptions.forEach(async (sub, k) => {
-						var del = await this.deleteItem(abyss.ajax.resource_access_tokens, sub.accessToken, false);
-						if (del) {
-							await this.deleteItem(abyss.ajax.permission_list, sub, false);
+						var delSub = await this.deleteItem(abyss.ajax.resource_access_tokens, con.subscription.accessToken, false);
+						if (delSub) {
+							await this.deleteItem(abyss.ajax.permission_list, con.subscription, false);
 						}
 					});
+					// item.contracts.subscriptions.forEach(async (sub, k) => {
+					// 	var del = await this.deleteItem(abyss.ajax.resource_access_tokens, sub.accessToken, false);
+					// 	if (del) {
+					// 		await this.deleteItem(abyss.ajax.permission_list, sub, false);
+					// 	}
+					// });
 					var delTok = await this.deleteItem(abyss.ajax.resource_access_tokens, item.permission.accessToken, false);
 					if (delTok) {
 						var delPer = await this.deleteItem(abyss.ajax.permission_list, item.permission, false);

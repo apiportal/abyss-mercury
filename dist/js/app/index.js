@@ -67,6 +67,11 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 			};
 		},
 		computed: {
+			filteredApps : {
+				get() {
+					return _.reject(this.$root.appList, { contracts: [ { apiid: this.api.uuid, isdeleted: false } ]});
+				}
+			},
 			apiEnvironment : {
 				get() {
 					if (this.api.issandbox) {
@@ -123,20 +128,20 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 		computed : {},
 		methods : {
 			async getApisSharedWithMe() {
-				var permission_my_apis = this.getList(abyss.ajax.permission_my_apis + this.$root.rootData.user.uuid);
+				// var permission_my_apis = this.getList(abyss.ajax.permission_my_apis + this.$root.rootData.user.uuid);
 				var permissions_app = this.getList(abyss.ajax.permissions_app + this.$root.rootData.user.uuid);
 				var apis_shared_with_me = this.getList(abyss.ajax.apis_shared_with_me + this.$root.rootData.user.uuid);
-				var [myApiSubscriptions, permissionsSharedWithMe, apisSharedWithMe] = await Promise.all([permission_my_apis, permissions_app, apis_shared_with_me]);
+				var [permissionsSharedWithMe, apisSharedWithMe] = await Promise.all([permissions_app, apis_shared_with_me]);
 				this.permissionsSharedWithMe = permissionsSharedWithMe.filter( (el) => !el.isdeleted );
-				this.myApiSubscriptions = myApiSubscriptions.filter((el) => el.resourceactionid === abyss.defaultIds.invokeApi );
+				// this.myApiSubscriptions = myApiSubscriptions.filter((el) => el.resourceactionid === abyss.defaultIds.invokeApi );
 				this.apisSharedWithMe = _.uniqBy(apisSharedWithMe, 'uuid');
 				for (var item of this.apisSharedWithMe) {
-					Vue.set(item, 'subscriptions', []);
+					// Vue.set(item, 'subscriptions', []);
 					await this.getResources(item, 'API', item.openapidocument.info.title + ' ' + item.openapidocument.info.version, item.openapidocument.info.description);
-					var subs = this.myApiSubscriptions.filter((el) => el.resourceid === item.resource.uuid );
-					if (subs) {
-						item.subscriptions = subs;
-					}
+					// var subs = this.myApiSubscriptions.filter((el) => el.resourceid === item.resource.uuid );
+					// if (subs) {
+					// 	item.subscriptions = subs;
+					// }
 					var perms = this.permissionsSharedWithMe.filter((el) => el.resourceid === item.resource.uuid );
 
 					if (perms.length) {
@@ -199,12 +204,12 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 				// 2DO ABYSSP-300 "/apis/sharedby/subject" returns 2 same API's if shared read/write
 				this.apisSharedByMe = _.uniqBy(apisSharedByMe, 'uuid');
 				for (var item of this.apisSharedByMe) {
-					Vue.set(item, 'subscriptions', []);
+					// Vue.set(item, 'subscriptions', []);
 					await this.getResources(item, 'API', item.openapidocument.info.title + ' ' + item.openapidocument.info.version, item.openapidocument.info.description);
-					var subs = this.myApiSubscriptions.filter((el) => el.resourceid === item.resource.uuid );
+					/*var subs = this.myApiSubscriptions.filter((el) => el.resourceid === item.resource.uuid );
 					if (subs) {
 						item.subscriptions = subs;
-					}
+					}*/
 					var perms = this.permissionsSharedByMe.filter((el) => el.resourceid === item.resource.uuid );
 
 					if (perms.length) {
@@ -243,39 +248,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 			this.isLoading = false;
 			this.preload('.shared-by-bar');
 			console.log("shared-by: ");
-		},
-	});
-	Vue.component('xxxxx', {
-		template:'#xxxxx',
-		mixins: [mixWidgets],
-		props: [ 'index', 'data', 'color' ],
-		data() {
-			return {
-				isLoading: true,
-				apisSharedWithMe: [],
-				myApiSubscriptions: [],
-				permissionsSharedWithMe: [],
-			};
-		},
-		computed : {},
-		methods : {
-			async xxx() {
-				var permission_my_apis = this.getList(abyss.ajax.permission_my_apis + this.$root.rootData.user.uuid);
-				var permissions_app = this.getList(abyss.ajax.permissions_app + this.$root.rootData.user.uuid);
-				var apis_shared_with_me = this.getList(abyss.ajax.apis_shared_with_me + this.$root.rootData.user.uuid);
-				var [myApiSubscriptions, permissionsSharedWithMe, apisSharedWithMe] = await Promise.all([permission_my_apis, permissions_app, apis_shared_with_me]);
-				this.permissionsSharedWithMe = permissionsSharedWithMe.filter( (el) => !el.isdeleted );
-				this.myApiSubscriptions = myApiSubscriptions.filter((el) => el.resourceactionid === abyss.defaultIds.invokeApi );
-				this.apisSharedWithMe = _.uniqBy(apisSharedWithMe, 'uuid');
-				for (var item of this.yyy) {
-					
-				}
-			},
-		},
-		async created() {
-			await this.xxx();
-			this.isLoading = false;
-			this.preload('.uuu');
 		},
 	});
 	Vue.component('widget-controls', {
@@ -443,7 +415,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 				},
 				myProxyApiList: [],
 				myBusinessApiList: [],
-				mySubscriptions: 0,
 				chartOptions: {
 					chart: {
 						type: 'pie'
@@ -500,11 +471,10 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 			return {
 				isLoading: true,
 				sortApp: {
-					key: 'subscriptions',
+					key: 'contracts',
 					type: Array,
 					order: 'desc'
 				},
-				mySubscriptions: 0,
 				chartOptions: {
 					chart: {
 						type: 'pie'
@@ -531,11 +501,11 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 			},
 		},
 		async created() {
-			// await this.getMyApps(true);
+			// await this.getMyAppList('dashboard');
 			if (this.data.chart) {
-				var mySubscriptions = this.$root.appList.filter((el) => el.subscriptionsCount !== 0 );
+				var mySubscriptions = this.$root.appList.filter((el) => el.contracts.length !== 0 );
 				this.chartOptions.chart = this.data.chart;
-				this.chartOptions.series[0].data = _.map(mySubscriptions, v => ({"y":v.subscriptionsCount, "id":v.uuid, "name":v.firstname}));
+				this.chartOptions.series[0].data = _.map(mySubscriptions, v => ({"y":v.contracts.length, "id":v.uuid, "name":v.firstname}));
 			}
 			this.isLoading = false;
 			this.preload('.my-apps-bar');
@@ -736,7 +706,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 		},
 		async created() {
 			this.$emit('set-page', 'index', 'init');
-			await this.getMyApps(true);
+			await this.getMyAppList('dashboard');
 			this.widgets = await this.getList(abyss.ajax.widgets);
 			// var dashboards = await this.getList(abyss.ajax.dashboards + abyss.defaultIds.organization);
 			this.dashboards = await this.getList(abyss.ajax.dashboards);

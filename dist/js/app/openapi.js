@@ -1415,7 +1415,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				return {};
 			}
 		});
-// ■■■■■■■■ api-srvvar ■■■■■■■■ //
+// ■■■■■■■■ api-servers ■■■■■■■■ //
 	Vue.component('api-servers', {
 		mixins: [mixOas],
 		props: ["server", "sindex", "servers"],
@@ -1627,6 +1627,11 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 			};
 		},
 		computed: {
+			filteredApps : {
+				get() {
+					return _.reject(this.$root.appList, { contracts: [ { apiid: this.api.uuid, isdeleted: false } ]});
+				}
+			},
 			apiEnvironment : {
 				get() {
 					if (this.api.issandbox) {
@@ -3030,7 +3035,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				});
 				this.paginate = this.makePaginate(this.myApiList);
 				this.preload();
-				this.getMyApps();
+				this.getMyAppList();
 				this.$root.getYamls();
 				this.initSwagger();
 			},

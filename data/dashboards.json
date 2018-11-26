@@ -143,6 +143,17 @@
 				"color": "orange",
 				"chart": null,
 				"order": 3
+			},
+			{
+				"uuid": "66f83423-11d0-42bf-93bd-be4c9015ebc9",
+				"title": "My APPS & Subscriptions",
+				"size": "2/3",
+				"color": "cyan",
+				"chart": {
+					"name": "Pie Chart",
+					"type": "pie"
+				},
+				"order": 4
 			}
 		]
 	},

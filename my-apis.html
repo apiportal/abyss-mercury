@@ -303,7 +303,7 @@
 								</div>
 								<div class="form-group v-select-color-pink v-select-inline" v-if="rootState == 'edit'">
 									<label for="group">Add Group:</label>
-									<v-select label="name" multiple taggable :filterable="true" :options="$root.rootData.myApiGroupList" v-model="api.groups" :on-change="fixGroup"></v-select>
+									<v-select label="name" multiple taggable :filterable="true" :options="groupOptions" @search="getGroupOptions" v-model="api.groups" :on-change="fixGroup"></v-select>
 								</div>
 							</div>
 						</article>

@@ -116,7 +116,7 @@
 <div class="hide">
 	<div id="my-apps-subscriptions">
 		<div class="card dash-card-2" v-if="!isLoading">
-			<div class="card-title handle txt-white" :class="'bg-'+data.color"><h6 class="txt-white d-flex">{{data.title}} <span class="mx-2">{{$root.appList.length}}</span> / <span class="mx-2">{{mySubscriptions}}</span></h6><widget-controls :data="data"></widget-controls></div>
+			<div class="card-title handle txt-white" :class="'bg-'+data.color"><h6 class="txt-white d-flex">{{data.title}} <span class="mx-2">{{$root.appList.length}}</span> / <span class="mx-2">{{$root.myTotalSubscriptions}}</span></h6><widget-controls :data="data"></widget-controls></div>
 			<div class="fow">
 				<div class="fol-sm" v-if="data.chart">
 					<highcharts v-if="data.chart" :options="chartOptions"></highcharts>
@@ -124,7 +124,7 @@
 				<div class="fol-sm">
 					<div class="card-scroll">
 						<div class="my-apps-bar">
-							<div v-for="(app, index) in sortByNested(sortApp, $root.appList)" v-if="app.subscriptions" class="brd-b brd-0-last field-controls">
+							<div v-for="(app, index) in sortByNested(sortApp, $root.appList)" v-if="app.contracts" class="brd-b brd-0-last field-controls">
 								<a class="nav-link d-block" v-on:click="getMyAppDetail(app,index,true);" :class="{'is-deleted': app.isdeleted}">
 									<div class="">										
 										<i class="fas fa-check-circle txt-green" title="Active" v-if="!app.isdeleted"></i>
@@ -133,8 +133,8 @@
 									</div>
 									<div>
 										<div class="d-flex txt-uppercase flt-r small txt-muted">
-											<span v-if="!app.isdeleted" :title="app.updated | formatDateTime">
-												{{app.created | formatDateTime}}
+											<span v-if="!app.isdeleted" :title="app.created | formatDateTime">
+												{{app.updated | formatDateTime}}
 											</span>
 											<span class="ml-auto txt-r" v-if="app.isdeleted">
 												{{app.deleted | formatDateTime}}
@@ -142,11 +142,11 @@
 										</div>
 									</div>
 									<code class="d-block txt-line small txt-blue"><small>{{app.uuid}}</small></code>
-									<div v-if="app.contracts"><small class="txt-uppercase">Subscriptions:</small> <strong class="txt-black">{{app.subscriptionsCount}}</strong></div>
+									<div v-if="app.contracts"><small class="txt-uppercase">Subscriptions:</small> <strong class="txt-black">{{app.contracts.length}}</strong></div>
 									<ol class="small pl-3">
-										<li v-for="(sub, index) in app.subscriptions">
-											<strong>{{sub.apiName}}</strong> by <span>{{sub.apiOwner}}</span>
-											<div>{{sub.effectivestartdate | formatDate}} - {{sub.effectiveenddate | formatDate}}</div>
+										<li v-for="(con, index) in app.contracts">
+											<strong>{{con.apiName}}</strong> by <span>{{con.apiOwnerName}}</span>
+											<div>{{con.subscription.effectivestartdate | formatDate}} - {{con.subscription.effectiveenddate | formatDate}}</div>
 										</li>
 									</ol>
 								</a>

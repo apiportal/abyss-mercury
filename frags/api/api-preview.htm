@@ -73,14 +73,14 @@
 								</p>
 								<div>{{api.openapidocument.info.description | truncate(75)}}</div>
 								<button class="btn btn-sm btn-outline-purple btn-block my-3" v-if="$root.pageCurrent != 'my-apis'" v-on:click="testApi(api.openapidocument);">Test API</button>
-								<!-- <p v-if="$root.abyssSandbox">{{api.filteredApps.length}} / {{$root.appList.length}}</p> -->
+								<!-- <p v-if="$root.abyssSandbox">{{filteredApps.length}} / {{$root.appList.length}}</p> -->
 								<div v-if="api.isproxyapi">
-									<div v-if="$root.appList.length > 0 && api.filteredApps.length > 0">
+									<div v-if="$root.appList.length > 0 && filteredApps.length > 0">
 										<div class="form-group mt-2" v-bind:class="{ 'has-error': errors.has('appid') }">
 											<label>Select APP</label>
 											<select class="form-control" name="appid" id="appid" v-model="api.selectedApp" v-on:change="selectAppToSubscribe(api.selectedApp)" v-validate="'required'">
 												<!-- <option v-for="(app,index) in $root.appList" :value="app">{{app.firstname}} - {{myAppsEnvironment(app)}}</option> -->
-												<option v-for="(app,index) in api.filteredApps" :value="app" v-if="!app.isdeleted">{{app.firstname}} - {{myAppsEnvironment(app)}}</option>
+												<option v-for="(app,index) in filteredApps" :value="app" v-if="!app.isdeleted">{{app.firstname}} - {{myAppsEnvironment(app)}}</option>
 											</select>
 											<em v-bind:class="{ 'show': errors.has('appid') }">{{ errors.first('appid') }}</em>
 										</div>
@@ -150,7 +150,7 @@
 								<a class="d-block" data-toggle="collapse" v-bind:data-target="'#con'+index" v-bind:aria-controls="'con'+index">
 									<small class="flt-r txt-uppercase mt-1 txt-green">{{con.contractStateName}}</small>
 									<h5 class=""><i class="fas fa-fw fa-cubes"></i> {{con.contractApp}}</h5>
-									<p class="sandbox-item"><code class="d-block small txt-cyan"><small>{{con.contractAppId}}</small></code></p>
+									<p class="sandbox-item"><code class="d-block small txt-cyan"><small>{{con.subjectid}}</small></code></p>
 									<p><strong class="lbl">license</strong> {{con.contractLicenseName}}</p>
 									<p class="sandbox-item small"><strong class="lbl">Subscriber</strong> {{con.contractPerson}}</p>
 								</a>
@@ -216,7 +216,7 @@
 								<div class="fow brd-t" v-if="api.isproxyapi">
 									<div class="fol-sm-4 p-0 column-width preview--scroll shadow-xs" v-for="(license, index) in api.licenses">
 										<!-- <div class="ficon-actions dropdown dropdown-hover" v-if="$root.pageCurrent != 'my-apps'"> -->
-										<div class="ficon-actions dropdown dropdown-hover" v-if="$root.appList.length > 0 && api.filteredApps.length > 0">
+										<div class="ficon-actions dropdown dropdown-hover" v-if="$root.appList.length > 0 && filteredApps.length > 0">
 											<span class="switch switch-primary">
 												<input type="radio" :id="'isactive'+index" v-model="api.selectedLicense" :value="license.uuid">
 												<label :for="'isactive'+index"></label>

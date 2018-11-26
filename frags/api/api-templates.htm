@@ -733,7 +733,7 @@
 								<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
 								<ul class="dropdown-menu dropdown-menu-right" role="menu" data-dropdown-in="slideInRight" data-dropdown-out="slideOutRight">
 									<li><a v-on:click="$parent.selectApi(proxy, 'edit')"><i class="fas fa-edit"></i>Edit</a></li>
-									<li><a href="$parent.selectApi(proxy, 'preview')"><i class="fas fa-file-alt"></i>Preview</a></li>
+									<li><a v-on:click="$parent.selectApi(proxy, 'preview')"><i class="fas fa-file-alt"></i>Preview</a></li>
 								</ul>
 							</div>
 							{{proxy.openapidocument.info.title}}

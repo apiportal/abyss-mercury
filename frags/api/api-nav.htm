@@ -5,46 +5,22 @@
 		<li v-if="pagecurrent != 'explore'">
 			<a class="nav-caret" data-toggle="collapse" v-bind:data-target="'#'+name+'apiGroups'" v-bind:aria-controls="name+'apiGroups'">Groups</a>
 			<ul v-bind:id="name+'apiGroups'" class="collapse">
-				<!-- <li v-if="pagecurrent != 'explore'"><a data-toggle="modal" data-target="#taxModal" v-on:click="setTax('add', 'Group', 'apiGroupList')"><i class="fas fa-fw fa-plus-square"></i>ADD GROUP</a></li> -->
-				<li class="action" v-for="(group, index) in sortBy(sort, $root.rootData[mygroups])" v-bind:key="group.uuid" v-bind:class="{'txt-muted': group.isdeleted}">
-					<!-- <div class="nav-actions dropdown dropdown-hover" v-if="pagecurrent != 'explore'">
-						<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
-						<ul class="dropdown-menu" role="menu" data-dropdown-in="slideInLeft" data-dropdown-out="slideOutLeft">
-							<li><a data-toggle="modal" data-target="#taxModal" v-on:click="setTax('edit', 'Group', 'apiGroupList', group)"><i class="fas fa-edit"></i>Edit</a></li>
-							<li><a v-on:click="deleteTax('apiGroupList', mygroups, group)"><i class="fas fa-trash-alt"></i>Delete</a></li>
-						</ul>
-					</div> -->
-					<a :title="group.uuid" v-on:click="$root.filterApis(group, 'group')"><i class="fas fa-fw fa-object-group txt-pink"></i>{{group.name}}<span class="badge badge-pill badge-outline">{{group.count}}</span></a></li>
+				<li class="action" v-for="(group, index) in sortBy(sort, apiGroupList)" v-bind:key="group.uuid" v-bind:class="{'txt-muted': group.isdeleted}">
+					<a :title="group.uuid" v-on:click="filterApis(group, 'group')"><i class="fas fa-fw fa-object-group txt-pink"></i>{{group.name}}<span class="badge badge-pill badge-outline">{{group.count}}</span></a></li>
 			</ul>
 		</li>
 		<li>
 			<a class="nav-caret" data-toggle="collapse" v-bind:data-target="'#'+name+'apiTags'" v-bind:aria-controls="name+'apiTags'">Tags</a>
 			<ul v-bind:id="name+'apiTags'" class="collapse">
-				<!-- <li v-if="pagecurrent != 'explore'"><a data-toggle="modal" data-target="#taxModal" v-on:click="setTax('add', 'Tag', 'apiTagList')"><i class="fas fa-fw fa-plus-square"></i>ADD TAG</a></li> -->
-				<li class="action" v-for="(tag, index) in sortBy(sort, $root.rootData[mytags])" v-bind:key="tag.uuid" v-bind:class="{'txt-muted': tag.isdeleted}">
-					<!-- <div class="nav-actions dropdown dropdown-hover" v-if="pagecurrent != 'explore'">
-						<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
-						<ul class="dropdown-menu" role="menu" data-dropdown-in="slideInLeft" data-dropdown-out="slideOutLeft">
-							<li><a data-toggle="modal" data-target="#taxModal" v-on:click="setTax('edit', 'Tag', 'apiTagList', tag)"><i class="fas fa-edit"></i>Edit</a></li>
-							<li><a v-on:click="deleteTax('apiTagList', mytags, tag)"><i class="fas fa-trash-alt"></i>Delete</a></li>
-						</ul>
-					</div> -->
-					<a :title="tag.uuid" v-on:click="$root.filterApis(tag, 'tag')"><i class="fas fa-fw fa-stop txt-purple"></i>{{tag.name}}<span class="badge badge-pill badge-outline">{{tag.count}}</span></a></li>
+				<li class="action" v-for="(tag, index) in sortBy(sort, apiTagList)" v-bind:key="tag.uuid" v-bind:class="{'txt-muted': tag.isdeleted}">
+					<a :title="tag.uuid" v-on:click="filterApis(tag, 'tag')"><i class="fas fa-fw fa-stop txt-purple"></i>{{tag.name}}<span class="badge badge-pill badge-outline">{{tag.count}}</span></a></li>
 			</ul>
 		</li>
 		<li>
 			<a class="nav-caret" data-toggle="collapse" v-bind:data-target="'#'+name+'apiCategories'" v-bind:aria-controls="name+'apiCategories'">Categories</a>
 			<ul v-bind:id="name+'apiCategories'" class="collapse">
-				<!-- <li v-if="pagecurrent != 'explore'"><a data-toggle="modal" data-target="#taxModal" v-on:click="setTax('add', 'Category', 'apiCategoryList')"><i class="fas fa-fw fa-plus-square"></i>ADD CATEGORY</a></li> -->
-				<li class="action" v-for="(category, index) in sortBy(sort, $root.rootData[mycategories])" v-bind:key="category.uuid" v-bind:class="{'txt-muted': category.isdeleted}">
-					<!-- <div class="nav-actions dropdown dropdown-hover" v-if="pagecurrent != 'explore'">
-						<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
-						<ul class="dropdown-menu" role="menu" data-dropdown-in="slideInLeft" data-dropdown-out="slideOutLeft">
-							<li><a data-toggle="modal" data-target="#taxModal" v-on:click="setTax('edit', 'Category', 'apiCategoryList', category)"><i class="fas fa-edit"></i>Edit</a></li>
-							<li><a v-on:click="deleteTax('apiCategoryList', mycategories, category)"><i class="fas fa-trash-alt"></i>Delete</a></li>
-						</ul>
-					</div> -->
-					<a :title="category.uuid" v-on:click="$root.filterApis(category, 'category')"><i class="fas fa-fw fa-stop txt-green"></i>{{category.name}}<span class="badge badge-pill badge-outline">{{category.count}}</span></a></li>
+				<li class="action" v-for="(category, index) in sortBy(sort, apiCategoryList)" v-bind:key="category.uuid" v-bind:class="{'txt-muted': category.isdeleted}">
+					<a :title="category.uuid" v-on:click="filterApis(category, 'category')"><i class="fas fa-fw fa-stop txt-green"></i>{{category.name}}<span class="badge badge-pill badge-outline">{{category.count}}</span></a></li>
 			</ul>
 		</li>
 		<li v-if="pagecurrent != 'explore'">

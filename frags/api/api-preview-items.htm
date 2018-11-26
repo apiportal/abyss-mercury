@@ -18,19 +18,10 @@
 			<strong class="lbl">subjectpermissionid</strong> 
 			<code class="d-block txt-line small txt-blue"><small>{{con.subscription.accessToken.subjectpermissionid}}</small></code>
 		</p>
-		<p class="sandbox-item" v-if="$root.abyssSandbox">
-			<strong class="lbl">resourcetypeid</strong> 
-			<code class="d-block txt-line small txt-blue"><small>{{con.subscription.accessToken.resourcetypeid}}</small></code>
-		</p>
-		<p class="sandbox-item" v-if="$root.abyssSandbox">
-			<strong class="lbl">resourcerefid</strong> 
-			<code class="d-block txt-line small txt-blue"><small>{{con.subscription.accessToken.resourcerefid}}</small></code>
-		</p>
 	</div>
 	<p class="small"><strong class="lbl">contract</strong> {{con.name}}</p>
 	<p class="sandbox-item" v-if="$root.abyssSandbox">
 		<code class="d-block small txt-green"><small>{{con.uuid}}</small></code>
-		<code v-if="con.resource" class="d-block small txt-orange"><small>{{con.resource.uuid}}</small></code>
 	</p>
 	<div class="fow form--row small">
 		<p class="fol-6"><strong class="lbl">environment</strong> {{con.environment}}</p>
@@ -43,8 +34,8 @@
 		<p class="fol-6"><strong class="lbl">Start Date</strong> {{con.subscription.effectivestartdate | formatDate}}</p>
 		<p class="fol-6"><strong class="lbl">End Date</strong> {{con.subscription.effectiveenddate | formatDate}}</p>
 	</div>
-	<p class="" v-if="con.subscribed"><button class="btn btn-sm btn-cyan btn-block" v-on:click="unsubscribeFromApi(con)">Unsubscribe</button></p>
-	<p class="" v-if="!con.subscribed && !con.isdeleted"><button class="btn btn-sm btn-cyan btn-block" v-on:click="unsubscribeFromApi(con)">Terminate Subscription</button></p>
+	<p class="" v-if="con.subscribedByMe || $root.pageCurrent === 'my-apps'"><button class="btn btn-sm btn-cyan btn-block" v-on:click="unsubscribeFromApi(con)">Unsubscribe</button></p>
+	<p class="" v-if="!con.subscribedByMe && $root.pageCurrent != 'my-apps' && !con.isdeleted"><button class="btn btn-sm btn-cyan btn-block" v-on:click="unsubscribeFromApi(con)">Terminate Subscription</button></p>
 </div>
 
 <div class="px-3 pt-3" th:fragment="apiLicense">
