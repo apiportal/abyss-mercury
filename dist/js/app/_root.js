@@ -1,4 +1,4 @@
-define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izitoast', 'sweetalert2', 'vue-izitoast', 'css!sweetalert2-css'], function (abyss, Vue, axios, VeeValidate, VueCookie, moment, iziToast, swal) {
+define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izitoast', 'sweetalert2', 'vue-izitoast', 'css!sweetalert2-css', 'vue!organization-tree'], function (abyss, Vue, axios, VeeValidate, VueCookie, moment, iziToast, swal) {
 // ■■■■■■■■ AXIOS ■■■■■■■■ //
 	axios.defaults.headers.common['Accept'] = 'application/json';
 	axios.defaults.headers.common['Content-Type'] = 'application/json';
@@ -989,7 +989,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 		}
 	});
 	Vue.component('my-organizations', {
-		template: '#tree-menu',
 		props: ['org', 'index', 'orgs', 'title', 'deforg', 'col'],
 		data() {
 			return {

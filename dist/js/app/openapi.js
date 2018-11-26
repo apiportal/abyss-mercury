@@ -1512,6 +1512,24 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				return {};
 			}
 		});
+// ■■■■■■■■ api-limits ■■■■■■■■ //
+	Vue.component('api-limits', {
+		template: '#template-limits',
+		mixins: [mixOas],
+		props: ['api', 'limits'],
+		computed: {
+			
+		},
+		methods: {
+			
+		},
+		data() {
+			return {};
+		},
+		created() {
+		},
+		
+	});
 // ■■■■■■■■ my-api-list ■■■■■■■■ //
 	Vue.component('my-api-list', {
 		mixins: [mixOas],
@@ -1839,7 +1857,16 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					"groups": [],
 					"categories": [],
 					"proxies": [],
-					"specs": null
+					"specs": null,
+					"limits": {
+						quota: null,
+						quoteUnit: 'Hits/Day',
+						rateLimit: null,
+						throttling: null,
+						circuitThreshold: null,
+						circuitSampleSize: null,
+						circuitReturn: null,
+					},
 				},
 				tagsAdd: [],
 				groupsAdd: [],
@@ -2427,6 +2454,17 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				}
 				if (item.organizationid == null) {
 					Vue.set(item,'organizationid',this.$root.abyssOrgId);
+				}
+				if (!item.limits) {
+					Vue.set( item, 'limits', {
+						quota: null,
+						quoteUnit: 'Hits/Day',
+						rateLimit: null,
+						throttling: null,
+						circuitThreshold: null,
+						circuitSampleSize: null,
+						circuitReturn: null,
+					} );
 				}
 				if (item.isproxyapi) {
 					Vue.set(item.openapidocument, 'servers', [{url: this.$root.abyssGatewayUrl + '/' + item.uuid}]);

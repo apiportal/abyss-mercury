@@ -24,7 +24,7 @@
 			<ul class="right-sidebar nicescroll-bar pa-0">
 				<li><button type="button" class="close organizations_panel_btn" v-on:click="$root.cancelRightSidebar()">×</button><h5 class="mb-0 py-2 px-3">Organizations</h5></li>
 				<li v-if="!$root.isLoading && showOrganizations">
-					<my-organizations v-if="org.organizationid == defaultOrganization.uuid" :key="org.uuid" v-for="(org,index) in sortByNested(sortOrg, $root.rootData.user.organizations)" :org="org" :index="index" :orgs="$root.rootData.user.organizations" :deforg="defaultOrganization" title="edit" col="root" inline-template>
+					<!-- <my-organizations v-if="org.organizationid == defaultOrganization.uuid" :key="org.uuid" v-for="(org,index) in sortByNested(sortOrg, $root.rootData.user.organizations)" :org="org" :index="index" :orgs="$root.rootData.user.organizations" :deforg="defaultOrganization" title="edit" col="root" inline-template>
 						<div class="field-controls">
 							<div th:replace="webroot/frags/layout/modal.htm :: organizations"></div>
 							<my-organizations v-if="sorg.organizationid == org.uuid" :key="sorg.uuid" v-for="(sorg,index) in $root.rootData.user.organizations" :org="sorg" :index="index" :orgs="$root.rootData.user.organizations" :deforg="deforg" title="edit" col="sub1" inline-template>
@@ -43,7 +43,9 @@
 						<div class="field-controls">
 							<div th:replace="webroot/frags/layout/modal.htm :: organizations"></div>
 						</div>
-					</my-organizations>
+					</my-organizations> -->
+					<organization-tree v-if="org.organizationid == defaultOrganization.uuid" :key="org.uuid" v-for="(org,index) in sortByNested(sortOrg, $root.rootData.user.organizations)" :org="org" :index="index" :orgs="$root.rootData.user.organizations" :deforg="defaultOrganization" title="edit" col="root"></organization-tree>
+					<organization-tree v-for="(org,index) in newOrganization" :key="org.uuid" :org="org" :index="index" :orgs="$root.rootData.user.organizations" :deforg="defaultOrganization" title="add" col="add"></organization-tree>
 				</li>
 			</ul>
 		</div>

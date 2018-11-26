@@ -744,5 +744,46 @@
 		</ul>
 		</li>
 	</div>
+	<div th:fragment="limits" id="template-limits">
+		<div class="">
+			<div class="form-group">
+				<label>Quota</label>
+				<div class="fow">
+					<div class="fol-8 pr-0"><input type="number" class="form-control" v-model.number.lazy="limits.quota"></div>
+					<div class="fol-4 pl-0">
+						<select class="form-control" v-model.lazy="limits.quoteUnit">
+							<option value="Hits/Minute">Hits/Minute</option>
+							<option value="Hits/Hour">Hits/Hour</option>
+							<option value="Hits/Day">Hits/Day</option>
+							<option value="Hits/Year">Hits/Year</option>
+						</select>
+					</div>
+				</div>
+			</div>
+			<div class="form-group">
+				<label>Rate Limiting Calls/Sec</label>
+				<input type="number" class="form-control" v-model.number.lazy="limits.rateLimit">
+			</div>
+			<div class="form-group">
+				<label>Throttling</label>
+				<input type="number" class="form-control" v-model.number.lazy="limits.throttling">
+			</div>
+			<div class="form-group">
+				<h6>Circuit Breaker</h6>
+			</div>
+			<div class="form-group">
+				<label>Trigger threshold percentage</label>
+				<input type="number" class="form-control" v-model.number.lazy="limits.circuitThreshold" step=".01">
+			</div>
+			<div class="form-group">
+				<label>Sample size (requests)</label>
+				<input type="number" class="form-control" v-model.number.lazy="limits.circuitSampleSize">
+			</div>
+			<div class="form-group">
+				<label>Return to service in (s)</label>
+				<input type="number" class="form-control" v-model.number.lazy="limits.circuitReturn">
+			</div>
+		</div>
+	</div>
 </body>
 </html>

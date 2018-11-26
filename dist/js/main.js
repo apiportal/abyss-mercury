@@ -60,6 +60,8 @@ require.config({
 		"vue-izitoast": "comps/vue-my-izitoast",
 		"vue-medium-editor": "comps/vueMediumEditor.min",
 		// "ace-init": "scripts/ace",
+		//// components ////
+		"organization-tree": "app/partials/OrganizationTree.htm?noext",
 		//// init ////
 		"config": "config",
 		"global": "/global",
