@@ -1,4 +1,4 @@
-define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(abyss, Vue, axios, VeeValidate, _, moment) {
+define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue!json-form'], function(abyss, Vue, axios, VeeValidate, _, moment) {
 	Vue.component('api-policies', {
 		props: {
 			rootState: { type: String }
@@ -39,6 +39,13 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 			selectType(typ) {
 				var type = this.policyTypes.find((el) => el.uuid === typ );
 				Vue.set(this.policy,'policyinstance',type.template);
+			},
+			addItemToConfig(item, arr) {
+				newItem = _.cloneDeep(item);
+				arr.push(newItem);
+			},
+			removeItemToConfig(index, arr) {
+				arr.splice(index,1);
 			},
 			cancelPolicy() {
 				var index = this.policyList.indexOf(this.policy);
@@ -106,6 +113,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 					this.getResources(value, 'POLICY', value.name, value.description);
 				});
 				Vue.set( this, 'policyTypes', policyTypes );
+				console.log("policyTypes: ", policyTypes);
 			},
 		},
 		created() {

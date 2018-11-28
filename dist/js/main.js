@@ -62,6 +62,7 @@ require.config({
 		// "ace-init": "scripts/ace",
 		//// components ////
 		"organization-tree": "app/partials/OrganizationTree.htm?noext",
+		"json-form": "app/partials/JsonForm.htm?noext",
 		//// init ////
 		"config": "config",
 		"global": "/global",
