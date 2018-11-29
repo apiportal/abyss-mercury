@@ -94,7 +94,8 @@ define(['global'], function(abyss){
 		policies: '/policies',
 		subject_policies_list: '/policies/subject/',
 		// https://dev2.apiportal.com/abyss/openapi/PolicyType.yaml
-		policy_types: '/policy-types',
+		// policy_types: '/policy-types',
+		policy_types: '/data/policyTypes.json',
 		// https://dev2.apiportal.com/abyss/openapi/License.yaml
 		licenses: '/licenses',
 		subject_licenses_list: '/licenses/subject/',
@@ -213,6 +214,7 @@ define(['global'], function(abyss){
 		monasdyas: '89db8aca-51b3-435b-a79d-e1f4067d2076',
 		org: 'monasdyas',
 	}
+	// console.log("abyssAllDataList: ", abyssAllDataList);
 	return {
 		name: 'Abyss Api Portal',
 		version: 'V.0.0',
