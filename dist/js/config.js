@@ -94,8 +94,7 @@ define(['global'], function(abyss){
 		policies: '/policies',
 		subject_policies_list: '/policies/subject/',
 		// https://dev2.apiportal.com/abyss/openapi/PolicyType.yaml
-		// policy_types: '/policy-types',
-		policy_types: '/data/policyTypes.json',
+		policy_types: '/policy-types',
 		// https://dev2.apiportal.com/abyss/openapi/License.yaml
 		licenses: '/licenses',
 		subject_licenses_list: '/licenses/subject/',
@@ -201,8 +200,8 @@ define(['global'], function(abyss){
 		abyssDataList.widgets = '/data/widgets.json';
 		abyssDataList.dashboards = '/data/dashboards.json';
 		abyssDataList.messages_old = '/data/messages.json';
-		abyssDataList.policy_types = '/data/policyTypes.json';
 	}
+		abyssDataList.policy_types = '/data/policyTypes.json';
 	var abyssAllDataList = Object.assign(abyssJsonList, abyssDataList);
 	// console.log("abyssAllDataList: ", abyssAllDataList);
 	var testerList = {
