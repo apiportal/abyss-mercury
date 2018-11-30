@@ -62,6 +62,8 @@ require.config({
 		// "ace-init": "scripts/ace",
 		//// components ////
 		"organization-tree": "app/partials/OrganizationTree.htm?noext",
+		"schema-template-form": "app/partials/SchemaTemplateForm.htm?noext",
+		"openapi-schema-item": "app/partials/OpenapiSchemaItem.htm?noext",
 		"json-form": "app/partials/JsonForm.htm?noext",
 		//// init ////
 		"config": "config",

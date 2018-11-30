@@ -120,10 +120,15 @@
 						</div>
 						<div class="form-group " v-bind:class="{ 'has-error': errors.has('type') }">
 							<label>Directory Type</label>
-							<select class="form-control" name="type" id="type" v-model="directory.directorytypeid" v-validate="'required'">
+							<select class="form-control" name="type" id="type" v-model="directory.directorytypeid" v-validate="'required'" v-on:change="getTemplate($event.target.value)">
 								<option v-for="(type,index) in directoryTypes" :value="type.uuid">{{type.typename}}</option>
 							</select>
 							<em v-bind:class="{ 'show': errors.has('type') }">{{ errors.first('type') }}</em>
+						</div>
+						<div class="form-group" v-bind:class="{ 'has-error': errors.has('attributes') }" v-if="$root.abyssSandbox">
+							<label for="attributes">Attributes:</label>
+							<textarea type="text" name="attributes" id="attributes" v-model.lazy="stringifyAttribute" v-validate="'required'" class="form-control"></textarea>
+							<em v-bind:class="{ 'show': errors.has('attributes') }">{{ errors.first('attributes') }}</em>
 						</div>
 						<div class="form-group d-flex justify-content-between">
 							<button type="button" class="btn btn-secondary btn-rounded" v-on:click="$emit('set-state', 'init'); cancelDirectory()">CANCEL</button>
@@ -133,37 +138,19 @@
 					</div>
 				</div>
 			</aside>
-			<aside class="column column-aside manage-column" v-if="directory.directorytypeid == '11da556e-7c89-481b-80cf-6df70cb90d9e'">
+			<aside class="column column-aside manage-column" v-if="template">
 				<div class="nicescroll-bar">
 					<div class="clearfix brd-b column-header column-min-button">
-						<h5 class="column-header-title">Configure</h5>
+						<h5 class="column-header-title">Configure Directory</h5>
 					</div>
-					<article class="field-controls field-level-0" data-id="Servers">
-						<div class="field-sum">
-							<a class="field-link nav-caret" data-toggle="collapse" data-target="#server" aria-controls="server">
-								<h6 class="d-block">Server Settings</h6>
-							</a>
-						</div>
-						<div id="server" class="collapse field-tabs field-acc">
-							<div class="form-group">
-								<label>Name</label>
-								<input class="form-control" v-model="directory.directoryattributes.servers">
+					<div class="p-3">
+						<div v-for="(cv, ck, ci) in template.components.schemas">
+							<h6 class="pb-2" v-if="$root.abyssSandbox">{{ck}} <small>{{cv.type}}</small></h6>
+							<div v-for="(pv, pk, pi) in cv.properties">
+								<schema-template-form :v="pv" :k="pk" :i="pi" :req="cv.required"></schema-template-form>
 							</div>
 						</div>
-					</article>
-					<article class="field-controls field-level-0" data-id="Schema">
-						<div class="field-sum">
-							<a class="field-link nav-caret" data-toggle="collapse" data-target="#schema" aria-controls="schema">
-								<h6 class="d-block">LDAP Schema</h6>
-							</a>
-						</div>
-						<div id="schema" class="collapse field-tabs field-acc">
-							<div class="form-group">
-								<label>Name</label>
-								<input class="form-control" v-model="directory.directoryattributes.schema">
-							</div>
-						</div>
-					</article>
+					</div>
 				</div>
 			</aside>
 			<aside class="column column-aside manage-column column-minimize">

@@ -1,4 +1,4 @@
-define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(abyss, Vue, axios, VeeValidate, _, moment) {
+define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue!schema-template-form'], function(abyss, Vue, axios, VeeValidate, _, moment) {
 	Vue.component('directory-types', {
 		props: ['t','index', 'orgoptions'],
 		data() {
@@ -10,9 +10,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 					return JSON.stringify(this.t.attributetemplate, null, '\t');
 				},
 				set(newVal) {
-					console.log("newVal: ", newVal);
 					this.t.attributetemplate = JSON.parse(newVal);
-					console.log("this.t.attributetemplate: ", this.t.attributetemplate);
 				}
 			},
 		},
@@ -86,6 +84,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 					"typename": "newType",
 					"description": "",
 				},
+				template: null,
 				selectedDirectory: {},
 				newDirectory: {},
 				directoryList: [],
@@ -94,7 +93,21 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 				end: []
 			};
 		},
+		computed: {
+			stringifyAttribute : {
+				get() {
+					return JSON.stringify(this.directory.directoryattributes, null, '\t');
+				},
+				set(newVal) {
+					this.directory.directoryattributes = JSON.parse(newVal);
+				}
+			},
+		},
 		methods: {
+			getTemplate(typ) {
+				var type = this.directoryTypes.find((el) => el.uuid === typ );
+				this.template = _.cloneDeep(type.attributetemplate);
+			},
 			addType() {
 				var ttt = _.findIndex(this.directoryTypes, function(o) { return o.typename == 'newType'; });
 				if (ttt == -1) {
@@ -137,11 +150,13 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 				this.directory = _.cloneDeep(this.newDirectory);
 				this.selectedDirectory = _.cloneDeep(this.newDirectory);
 				this.selected = null;
+				this.template = null;
 			},
 			selectDirectory(item, i) {
 				this.fixProps(item);
 				this.selectedDirectory = _.cloneDeep(item);
 				this.directory = item;
+				this.getTemplate(this.directory.directorytypeid);
 				this.selected = i;
 			},
 			isSelected(i) {
@@ -171,12 +186,14 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 						await this.addItem(abyss.ajax.subject_directories_list, this.deleteProps(this.directory), this.directoryList);
 						this.$emit('set-state', 'init');
 						this.directory = _.cloneDeep(this.newDirectory);
+						this.template = null;
 					}
 					if (act === 'edit') {
 						await this.editItem( abyss.ajax.subject_directories_list, this.directory.uuid, this.deleteProps(this.directory), this.directoryList );
 						this.$emit('set-state', 'init');
 						this.directory = _.cloneDeep(this.newDirectory);
 						this.selected = null;
+						this.template = null;
 					}
 				}
 			},
@@ -188,6 +205,13 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 				Vue.set( this, 'directoryList', directoryList );
 				Vue.set( this, 'directoryTypes', directoryTypes );
 				Vue.set( this, 'orgOptions', orgOptions );
+				//
+				/*var directoryTemplate = await this.getList(abyss.ajax.directory_template);
+				console.log("directoryTemplate: ", directoryTemplate);
+				for (var item of directoryTypes) {
+					Vue.set( item, 'attributetemplate', directoryTemplate );
+				}*/
+				//
 				this.paginate = this.makePaginate(this.directoryList);
 				this.preload();
 			},

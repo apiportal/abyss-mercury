@@ -1,0 +1,81 @@
+<template>
+	<div>
+		<div class="form-group" v-if="(v.type == 'string' || v.type == 'integer' || v.type == 'number') && !v.enum" v-bind:class="{ 'has-error': errors.has(k + i) }">
+			<label :for="k + i">{{v.description}}</label>
+			<input class="form-control" :type="format" :name="k + i" v-model="value" v-if="v.type == 'string'" :placeholder="v.example" v-validate="isReq">
+			<input class="form-control" type="number" :name="k + i" v-model="value" v-if="v.type == 'integer'" :placeholder="v.example" v-validate="isReq">
+			<!-- <input class="form-control" type="number" :name="k + i" step=".01" v-model.number="value" v-if="v.type == 'integer'" :required="isReq"> -->
+		</div>
+		<div class="form-group" v-if="(v.type == 'string' || v.type == 'integer' || v.type == 'number') && v.enum" v-bind:class="{ 'has-error': errors.has(k + i) }">
+			<label :for="k + i">{{v.description}}:</label>
+			<select class="form-control" :name="k + i" :id="k + i" v-model="value" v-validate="isReq">
+				<option v-for="(e, index) in v.enum" :value="e">{{e}}</option>
+			</select>
+		</div>
+		<div class="form-group form-inline" v-if="v.type == 'boolean'">
+			<label class="d-block">{{v.description}}:</label>
+			<span class="switch switch-primary ml-auto">
+				<input type="checkbox" :name="k + i" :id="k + i" v-model="value" checked>
+				<label :for="k + i"></label>
+			</span>
+		</div>
+		<div class="form-group v-select-20 v-select-small" v-if="v.type == 'array'">
+			<label>{{v.description}}:</label>
+			<v-select multiple :options="v.enum" v-model="value" v-validate="isReq">
+				<!-- <template slot="selected-option" slot-scope="option">
+					<div class="'badge-'+option.name">{{option.name}}</div>
+				</template> -->
+			</v-select>
+		</div>
+	</div>
+</template>
+
+<script>
+    define(['Vue', 'vue-select', 'vee-validate'], function(Vue, VueSelect, VeeValidate) {
+    	Vue.component('v-select', VueSelect.VueSelect);
+		Vue.component("schema-template-form", {
+			template: template,
+			props: ['req', 'v', 'k', 'i'],
+			inject: ['$validator'],
+			data() {
+				return {
+					isLoading: true,
+				};
+			},
+			computed: {
+				value : {
+					get() {
+						if (!this.$parent.directory.directoryattributes[this.k]) {
+							Vue.set( this.$parent.directory.directoryattributes, this.k, this.v['x-value'] );
+							return this.v['x-value'];
+						} else {
+							return this.$parent.directory.directoryattributes[this.k];
+						}
+					},
+					set(newVal) {
+						this.v['x-value'] = newVal;
+						this.$parent.directory.directoryattributes[this.k] = newVal;
+					}
+				},
+				isReq() {
+					if (this.req.includes(this.k)) {
+						return 'required';
+					} else {
+						return '';
+					}
+				},
+				format() {
+					if (this.v.format == 'password') {
+						return 'password';
+					} else {
+						return 'text';
+					}
+				}
+			},
+			methods : {
+			},
+			created() {
+			},
+		});
+    });
+</script>
