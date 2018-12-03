@@ -109,111 +109,113 @@
 				</div>
 			</section>
 			<aside class="column column-aside add-column">
-				<div class="nicescroll-bar">
-					<div class="clearfix brd-b column-header column-min-button">
-						<h5 class="column-header-title" >
-						<span v-if="rootState == 'add'">Add New Permission</span>
-						<span v-if="rootState == 'edit'">Edit Permission</span>
-						</h5>
-					</div>
-					<div class="p-3">
-						<div class="form-group" v-bind:class="{ 'has-error': errors.has('name') }">
-							<label for="name">Permission Name:</label>
-							<input type="text" name="name" id="name" v-model="permission.permission" v-validate="'required|min:2'" class="form-control">
-							<em v-bind:class="{ 'show': errors.has('name') }">{{ errors.first('name') }}</em>
-						</div>
-						<div class="form-group" v-bind:class="{ 'has-error': errors.has('description') }">
-							<label for="description">Description:</label>
-							<textarea type="text" name="description" id="description" v-model="permission.description" v-validate="'required'" class="form-control"></textarea>
-							<em v-bind:class="{ 'show': errors.has('description') }">{{ errors.first('description') }}</em>
-						</div>
-						<div class="form-group " v-bind:class="{ 'has-error': errors.has('organization') }">
-							<label>Organization Id</label>
-							<select class="form-control" name="organization" id="organization" v-model="permission.organizationid" v-validate="'required'">
-								<option v-for="(org,index) in orgOptions" :value="org.uuid">{{org.name}}</option>
-							</select>
-							<em v-bind:class="{ 'show': errors.has('organization') }">{{ errors.first('organization') }}</em>
-						</div>
-						<div class="form-group " v-bind:class="{ 'has-error': errors.has('accessManager') }">
-							<label>Access Manager</label>
-							<select class="form-control" name="accessManager" id="accessManager" v-model="permission.accessmanagerid" v-validate="'required'">
-								<option v-for="(am,index) in accessManagerOptions" :value="am.uuid">{{am.accessmanagername}}</option>
-							</select>
-							<em v-bind:class="{ 'show': errors.has('accessManager') }">{{ errors.first('accessManager') }}</em>
-						</div>
-						<div class="form-group " v-bind:class="{ 'has-error': errors.has('resourceType') }">
-							<label>Resource Type</label>
-							<!-- <select class="form-control" name="resourceType" id="resourceType" v-model="permission.resource.resourceType" v-validate="'required'">
-								<option v-for="(rt,index) in $root.rootData.resourceTypes" :value="rt">{{rt.type}}</option>
-							</select> -->
-							<select class="form-control" name="resourceType" id="resourceType" v-model="permission.resource.resourcetypeid" v-validate="'required'">
-								<option v-for="(rt,index) in $root.rootData.resourceTypes" :value="rt.uuid">{{rt.type}}</option>
-							</select>
-							<em v-bind:class="{ 'show': errors.has('resourceType') }">{{ errors.first('resourceType') }}</em>
-						</div>
-						<div class="form-group " v-bind:class="{ 'has-error': errors.has('resource') }">
-							<label>Resource</label>
-							<!-- <select class="form-control" name="resource" id="resource" v-model="permission.resourceid" v-validate="'required'">
-								<option v-for="(rs,index) in resourceOptions" v-if="rs.resourcetypeid == permission.resource.resourceType.uuid" :value="rs.uuid">{{rs.resourcename}}</option>
-							</select> -->
-							<select class="form-control" name="resource" id="resource" v-model="permission.resourceid" v-validate="'required'">
-								<option v-for="(rs,index) in resourceOptions" v-if="rs.resourcetypeid == permission.resource.resourcetypeid" :value="rs.uuid">{{rs.resourcename}}</option>
-							</select>
-							<em v-bind:class="{ 'show': errors.has('resource') }">{{ errors.first('resource') }}</em>
-						</div>
-						<div class="form-group " v-bind:class="{ 'has-error': errors.has('resourceAction') }">
-							<label>Resource Action</label>
-							<!-- <select class="form-control" name="resourceAction" id="resourceAction" v-model="permission.resourceactionid" v-validate="'required'">
-								<option v-for="(ra,index) in resourceActionOptions" v-if="ra.resourcetypeid == permission.resource.resourceType.uuid" :value="ra.uuid">{{ra.actionname}} - {{ra.description}}</option>
-							</select> -->
-							<select class="form-control" name="resourceAction" id="resourceAction" v-model="permission.resourceactionid" v-validate="'required'">
-								<option v-for="(ra,index) in resourceActionOptions" v-if="ra.resourcetypeid == permission.resource.resourcetypeid" :value="ra.uuid">{{ra.actionname}} - {{ra.description}}</option>
-							</select>
-							<em v-bind:class="{ 'show': errors.has('resourceAction') }">{{ errors.first('resourceAction') }}</em>
-						</div>
-						<div class="form-group " v-bind:class="{ 'has-error': errors.has('subject') }">
-							<label>Subject</label>
-							<select class="form-control" name="subject" id="subject" v-model="permission.subjectid" v-validate="'required'">
-								<!-- <option v-for="(sb,index) in filteredSubjects" :value="sb.uuid">{{sb.displayname}}</option> -->
-								<optgroup v-if="!showAppListOnly" label="GROUPS">
-									<option v-for="(sb,index) in groupOptions" :value="sb.uuid">{{sb.displayname}}</option>
-								</optgroup>
-								<optgroup v-if="!showAppListOnly" label="USERS">
-									<option v-for="(sb,index) in userOptions" :value="sb.uuid">{{sb.displayname}}</option>
-								</optgroup>
-								<optgroup v-if="showAppListOnly" label="APPS">
-									<option v-for="(sb,index) in appOptions" :value="sb.uuid">{{sb.displayname}}</option>
-								</optgroup>
-							</select>
-							<em v-bind:class="{ 'show': errors.has('subject') }">{{ errors.first('subject') }}</em>
-						</div>
-						<div class="form-group form-inline">
-							<label class="d-block">Enabled</label>
-							<span class="switch switch-primary ml-auto">
-								<input type="checkbox" name="isactive" id="isactive" v-model="permission.isactive" checked>
-								<label for="isactive"></label>
-							</span>
-						</div>
-						<div class="form-group form-group-date" v-bind:class="{ 'has-error': errors.has('effectivestartdate') }">
-							<label class="">Effective From</label>
-							<div class="input-group w-100">
-								<date-picker name="effectivestartdate" v-model="permission.effectivestartdate" :config="dateConfig" v-validate="'required'"></date-picker>
-								<span class="input-group-addon"><i class="fa fa-calendar-alt"></i></span>
+				<div class="clearfix brd-b column-header column-min-button">
+					<h5 class="column-header-title" >
+					<span v-if="rootState == 'add'">Add New Permission</span>
+					<span v-if="rootState == 'edit'">Edit Permission</span>
+					</h5>
+				</div>
+				<div class="column-content">
+					<div class="nicescroll-bar">
+						<div class="p-3">
+							<div class="form-group" v-bind:class="{ 'has-error': errors.has('name') }">
+								<label for="name">Permission Name:</label>
+								<input type="text" name="name" id="name" v-model="permission.permission" v-validate="'required|min:2'" class="form-control">
+								<em v-bind:class="{ 'show': errors.has('name') }">{{ errors.first('name') }}</em>
 							</div>
-							<em v-bind:class="{ 'show': errors.has('effectivestartdate') }">{{ errors.first('effectivestartdate') }}</em>
-						</div>
-						<div class="form-group" v-bind:class="{ 'has-error': errors.has('effectiveenddate') }">
-							<label class="">Effective To</label>
-							<div class="input-group w-100">
-								<date-picker name="effectiveenddate" v-model="permission.effectiveenddate" :config="dateConfig" v-validate="'required'"></date-picker>
-								<span class="input-group-addon"><i class="fa fa-calendar-alt"></i></span>
+							<div class="form-group" v-bind:class="{ 'has-error': errors.has('description') }">
+								<label for="description">Description:</label>
+								<textarea type="text" name="description" id="description" v-model="permission.description" v-validate="'required'" class="form-control"></textarea>
+								<em v-bind:class="{ 'show': errors.has('description') }">{{ errors.first('description') }}</em>
 							</div>
-							<em v-bind:class="{ 'show': errors.has('effectiveenddate') }">{{ errors.first('effectiveenddate') }}</em>
-						</div>
-						<div class="form-group d-flex justify-content-between">
-							<button type="button" class="btn btn-secondary btn-rounded" v-on:click="$emit('set-state', 'init'); cancelPermission()">CANCEL</button>
-							<button type="button" class="btn btn-primary btn-rounded" v-if="rootState == 'add'" v-on:click="permissionAction('add')">ADD</button>
-							<button type="button" class="btn btn-primary btn-rounded" v-if="rootState == 'edit'" v-on:click="permissionAction('edit')">SAVE</button>
+							<div class="form-group " v-bind:class="{ 'has-error': errors.has('organization') }">
+								<label>Organization Id</label>
+								<select class="form-control" name="organization" id="organization" v-model="permission.organizationid" v-validate="'required'">
+									<option v-for="(org,index) in orgOptions" :value="org.uuid">{{org.name}}</option>
+								</select>
+								<em v-bind:class="{ 'show': errors.has('organization') }">{{ errors.first('organization') }}</em>
+							</div>
+							<div class="form-group " v-bind:class="{ 'has-error': errors.has('accessManager') }">
+								<label>Access Manager</label>
+								<select class="form-control" name="accessManager" id="accessManager" v-model="permission.accessmanagerid" v-validate="'required'">
+									<option v-for="(am,index) in accessManagerOptions" :value="am.uuid">{{am.accessmanagername}}</option>
+								</select>
+								<em v-bind:class="{ 'show': errors.has('accessManager') }">{{ errors.first('accessManager') }}</em>
+							</div>
+							<div class="form-group " v-bind:class="{ 'has-error': errors.has('resourceType') }">
+								<label>Resource Type</label>
+								<!-- <select class="form-control" name="resourceType" id="resourceType" v-model="permission.resource.resourceType" v-validate="'required'">
+									<option v-for="(rt,index) in $root.rootData.resourceTypes" :value="rt">{{rt.type}}</option>
+								</select> -->
+								<select class="form-control" name="resourceType" id="resourceType" v-model="permission.resource.resourcetypeid" v-validate="'required'">
+									<option v-for="(rt,index) in $root.rootData.resourceTypes" :value="rt.uuid">{{rt.type}}</option>
+								</select>
+								<em v-bind:class="{ 'show': errors.has('resourceType') }">{{ errors.first('resourceType') }}</em>
+							</div>
+							<div class="form-group " v-bind:class="{ 'has-error': errors.has('resource') }">
+								<label>Resource</label>
+								<!-- <select class="form-control" name="resource" id="resource" v-model="permission.resourceid" v-validate="'required'">
+									<option v-for="(rs,index) in resourceOptions" v-if="rs.resourcetypeid == permission.resource.resourceType.uuid" :value="rs.uuid">{{rs.resourcename}}</option>
+								</select> -->
+								<select class="form-control" name="resource" id="resource" v-model="permission.resourceid" v-validate="'required'">
+									<option v-for="(rs,index) in resourceOptions" v-if="rs.resourcetypeid == permission.resource.resourcetypeid" :value="rs.uuid">{{rs.resourcename}}</option>
+								</select>
+								<em v-bind:class="{ 'show': errors.has('resource') }">{{ errors.first('resource') }}</em>
+							</div>
+							<div class="form-group " v-bind:class="{ 'has-error': errors.has('resourceAction') }">
+								<label>Resource Action</label>
+								<!-- <select class="form-control" name="resourceAction" id="resourceAction" v-model="permission.resourceactionid" v-validate="'required'">
+									<option v-for="(ra,index) in resourceActionOptions" v-if="ra.resourcetypeid == permission.resource.resourceType.uuid" :value="ra.uuid">{{ra.actionname}} - {{ra.description}}</option>
+								</select> -->
+								<select class="form-control" name="resourceAction" id="resourceAction" v-model="permission.resourceactionid" v-validate="'required'">
+									<option v-for="(ra,index) in resourceActionOptions" v-if="ra.resourcetypeid == permission.resource.resourcetypeid" :value="ra.uuid">{{ra.actionname}} - {{ra.description}}</option>
+								</select>
+								<em v-bind:class="{ 'show': errors.has('resourceAction') }">{{ errors.first('resourceAction') }}</em>
+							</div>
+							<div class="form-group " v-bind:class="{ 'has-error': errors.has('subject') }">
+								<label>Subject</label>
+								<select class="form-control" name="subject" id="subject" v-model="permission.subjectid" v-validate="'required'">
+									<!-- <option v-for="(sb,index) in filteredSubjects" :value="sb.uuid">{{sb.displayname}}</option> -->
+									<optgroup v-if="!showAppListOnly" label="GROUPS">
+										<option v-for="(sb,index) in groupOptions" :value="sb.uuid">{{sb.displayname}}</option>
+									</optgroup>
+									<optgroup v-if="!showAppListOnly" label="USERS">
+										<option v-for="(sb,index) in userOptions" :value="sb.uuid">{{sb.displayname}}</option>
+									</optgroup>
+									<optgroup v-if="showAppListOnly" label="APPS">
+										<option v-for="(sb,index) in appOptions" :value="sb.uuid">{{sb.displayname}}</option>
+									</optgroup>
+								</select>
+								<em v-bind:class="{ 'show': errors.has('subject') }">{{ errors.first('subject') }}</em>
+							</div>
+							<div class="form-group form-inline">
+								<label class="d-block">Enabled</label>
+								<span class="switch switch-primary ml-auto">
+									<input type="checkbox" name="isactive" id="isactive" v-model="permission.isactive" checked>
+									<label for="isactive"></label>
+								</span>
+							</div>
+							<div class="form-group form-group-date" v-bind:class="{ 'has-error': errors.has('effectivestartdate') }">
+								<label class="">Effective From</label>
+								<div class="input-group w-100">
+									<date-picker name="effectivestartdate" v-model="permission.effectivestartdate" :config="dateConfig" v-validate="'required'"></date-picker>
+									<span class="input-group-addon"><i class="fa fa-calendar-alt"></i></span>
+								</div>
+								<em v-bind:class="{ 'show': errors.has('effectivestartdate') }">{{ errors.first('effectivestartdate') }}</em>
+							</div>
+							<div class="form-group" v-bind:class="{ 'has-error': errors.has('effectiveenddate') }">
+								<label class="">Effective To</label>
+								<div class="input-group w-100">
+									<date-picker name="effectiveenddate" v-model="permission.effectiveenddate" :config="dateConfig" v-validate="'required'"></date-picker>
+									<span class="input-group-addon"><i class="fa fa-calendar-alt"></i></span>
+								</div>
+								<em v-bind:class="{ 'show': errors.has('effectiveenddate') }">{{ errors.first('effectiveenddate') }}</em>
+							</div>
+							<div class="form-group d-flex justify-content-between">
+								<button type="button" class="btn btn-secondary btn-rounded" v-on:click="$emit('set-state', 'init'); cancelPermission()">CANCEL</button>
+								<button type="button" class="btn btn-primary btn-rounded" v-if="rootState == 'add'" v-on:click="permissionAction('add')">ADD</button>
+								<button type="button" class="btn btn-primary btn-rounded" v-if="rootState == 'edit'" v-on:click="permissionAction('edit')">SAVE</button>
+							</div>
 						</div>
 					</div>
 				</div>

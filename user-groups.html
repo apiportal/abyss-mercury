@@ -104,110 +104,116 @@
 				</div>
 			</section>
 			<aside class="column column-aside add-column">
-				<div class="nicescroll-bar">
-					<div class="clearfix brd-b column-header column-min-button">
-						<h5 class="column-header-title" >
-						<span v-if="rootState == 'add'">Add New Group</span>
-						<span v-if="rootState == 'edit'">Edit Group</span>
-						</h5>
-					</div>
-					<div class="p-3">
-						<div class="form-group" v-bind:class="{ 'has-error': errors.has('firstname') }">
-							<label for="firstname">Group Name:</label>
-							<input type="text" name="firstname" id="firstname" v-model="group.firstname" v-validate="'required|min:2|alpha_spaces'" class="form-control">
-							<em v-bind:class="{ 'show': errors.has('firstname') }">{{ errors.first('firstname') }}</em>
-						</div>
-						<div class="form-group" v-bind:class="{ 'has-error': errors.has('description') }">
-							<label for="description">Decription:</label>
-							<textarea type="text" name="description" id="description" v-model="group.description" v-validate="'required'" class="form-control"></textarea>
-							<em v-bind:class="{ 'show': errors.has('description') }">{{ errors.first('description') }}</em>
-						</div>
-						<div class="form-group form-group-date" v-bind:class="{ 'has-error': errors.has('effectivestartdate') }">
-							<label class="">Effective From</label>
-							<div class="input-group w-100">
-								<date-picker name="effectivestartdate" v-model="group.effectivestartdate" :config="dateConfig" v-validate="'required'"></date-picker>
-								<span class="input-group-addon"><i class="fa fa-calendar-alt"></i></span>
+				<div class="clearfix brd-b column-header column-min-button">
+					<h5 class="column-header-title" >
+					<span v-if="rootState == 'add'">Add New Group</span>
+					<span v-if="rootState == 'edit'">Edit Group</span>
+					</h5>
+				</div>
+				<div class="column-content">
+					<div class="nicescroll-bar">
+						<div class="p-3">
+							<div class="form-group" v-bind:class="{ 'has-error': errors.has('firstname') }">
+								<label for="firstname">Group Name:</label>
+								<input type="text" name="firstname" id="firstname" v-model="group.firstname" v-validate="'required|min:2|alpha_spaces'" class="form-control">
+								<em v-bind:class="{ 'show': errors.has('firstname') }">{{ errors.first('firstname') }}</em>
 							</div>
-							<em v-bind:class="{ 'show': errors.has('effectivestartdate') }">{{ errors.first('effectivestartdate') }}</em>
-						</div>
-						<div class="form-group" v-bind:class="{ 'has-error': errors.has('effectiveenddate') }">
-							<label class="">Effective To</label>
-							<div class="input-group w-100">
-								<date-picker name="effectiveenddate" v-model="group.effectiveenddate" :config="dateConfig" v-validate="'required'"></date-picker>
-								<span class="input-group-addon"><i class="fa fa-calendar-alt"></i></span>
+							<div class="form-group" v-bind:class="{ 'has-error': errors.has('description') }">
+								<label for="description">Decription:</label>
+								<textarea type="text" name="description" id="description" v-model="group.description" v-validate="'required'" class="form-control"></textarea>
+								<em v-bind:class="{ 'show': errors.has('description') }">{{ errors.first('description') }}</em>
 							</div>
-							<em v-bind:class="{ 'show': errors.has('effectiveenddate') }">{{ errors.first('effectiveenddate') }}</em>
-						</div>
-						<div class="form-group ">
-							<span class="checkbox">
-								<input type="checkbox" name="isenabled" id="isenabled" v-model="group.isenabled">
-								<label for="isenabled">Enabled</label>
-							</span>
-						</div>
-						<div class="form-group d-flex justify-content-between">
-							<button type="button" class="btn btn-secondary btn-rounded" v-on:click="$emit('set-state', 'init'); cancelGroup()">CANCEL</button>
-							<button type="button" class="btn btn-primary btn-rounded" v-if="rootState == 'add'" v-on:click="groupAction('add')">ADD GROUP</button>
-							<button type="button" class="btn btn-primary btn-rounded" v-if="rootState == 'edit'" v-on:click="groupAction('edit')">SAVE</button>
+							<div class="form-group form-group-date" v-bind:class="{ 'has-error': errors.has('effectivestartdate') }">
+								<label class="">Effective From</label>
+								<div class="input-group w-100">
+									<date-picker name="effectivestartdate" v-model="group.effectivestartdate" :config="dateConfig" v-validate="'required'"></date-picker>
+									<span class="input-group-addon"><i class="fa fa-calendar-alt"></i></span>
+								</div>
+								<em v-bind:class="{ 'show': errors.has('effectivestartdate') }">{{ errors.first('effectivestartdate') }}</em>
+							</div>
+							<div class="form-group" v-bind:class="{ 'has-error': errors.has('effectiveenddate') }">
+								<label class="">Effective To</label>
+								<div class="input-group w-100">
+									<date-picker name="effectiveenddate" v-model="group.effectiveenddate" :config="dateConfig" v-validate="'required'"></date-picker>
+									<span class="input-group-addon"><i class="fa fa-calendar-alt"></i></span>
+								</div>
+								<em v-bind:class="{ 'show': errors.has('effectiveenddate') }">{{ errors.first('effectiveenddate') }}</em>
+							</div>
+							<div class="form-group ">
+								<span class="checkbox">
+									<input type="checkbox" name="isenabled" id="isenabled" v-model="group.isenabled">
+									<label for="isenabled">Enabled</label>
+								</span>
+							</div>
+							<div class="form-group d-flex justify-content-between">
+								<button type="button" class="btn btn-secondary btn-rounded" v-on:click="$emit('set-state', 'init'); cancelGroup()">CANCEL</button>
+								<button type="button" class="btn btn-primary btn-rounded" v-if="rootState == 'add'" v-on:click="groupAction('add')">ADD GROUP</button>
+								<button type="button" class="btn btn-primary btn-rounded" v-if="rootState == 'edit'" v-on:click="groupAction('edit')">SAVE</button>
+							</div>
 						</div>
 					</div>
 				</div>
 			</aside>
 			<aside class="column column-aside permissions-column">
-				<div class="nicescroll-bar">
-					<div class="clearfix brd-b column-header column-min-button">
-						<h5 class="column-header-title">Group Management</h5>
-					</div>
-					<div class="p-3">
-						<div class="form-group " v-bind:class="{ 'has-error': errors.has('orgid') }">
-							<label>Organization Id</label>
-							<select class="form-control" name="orgid" id="orgid" v-model="group.organizationid" v-validate="'required'">
-								<!-- <option v-for="(org,index) in orgOptions" :value="org.organizationid">{{org.name}}</option> -->
-								<option v-for="(org,index) in orgOptions" :value="org.uuid">{{org.name}}</option>
-							</select>
-							<em v-bind:class="{ 'show': errors.has('orgid') }">{{ errors.first('orgid') }}</em>
-						</div>
-						<div class="form-group " v-bind:class="{ 'has-error': errors.has('dirid') }">
-							<label>Directory</label>
-							<select class="form-control" name="dirid" id="dirid" v-model="group.subjectdirectoryid" v-validate="'required'">
-								<option v-for="(dir,index) in directoryOptions" :value="dir.uuid">{{dir.directoryname}}</option>
-							</select>
-							<em v-bind:class="{ 'show': errors.has('dirid') }">{{ errors.first('dirid') }}</em>
-						</div>
-						<div class="form-group v-select-color-green">
-							<label>Permissions</label>
-							<v-select label="permission" multiple :filterable="false" :options="permissionOptions" v-model="group.permissions" :on-change="setGroupPermissions">
-								<span slot="no-options"></span>
-							</v-select>
+				<div class="clearfix brd-b column-header column-min-button">
+					<h5 class="column-header-title">Group Management</h5>
+				</div>
+				<div class="column-content">
+					<div class="nicescroll-bar">
+						<div class="p-3">
+							<div class="form-group " v-bind:class="{ 'has-error': errors.has('orgid') }">
+								<label>Organization Id</label>
+								<select class="form-control" name="orgid" id="orgid" v-model="group.organizationid" v-validate="'required'">
+									<!-- <option v-for="(org,index) in orgOptions" :value="org.organizationid">{{org.name}}</option> -->
+									<option v-for="(org,index) in orgOptions" :value="org.uuid">{{org.name}}</option>
+								</select>
+								<em v-bind:class="{ 'show': errors.has('orgid') }">{{ errors.first('orgid') }}</em>
+							</div>
+							<div class="form-group " v-bind:class="{ 'has-error': errors.has('dirid') }">
+								<label>Directory</label>
+								<select class="form-control" name="dirid" id="dirid" v-model="group.subjectdirectoryid" v-validate="'required'">
+									<option v-for="(dir,index) in directoryOptions" :value="dir.uuid">{{dir.directoryname}}</option>
+								</select>
+								<em v-bind:class="{ 'show': errors.has('dirid') }">{{ errors.first('dirid') }}</em>
+							</div>
+							<div class="form-group v-select-color-green">
+								<label>Permissions</label>
+								<v-select label="permission" multiple :filterable="false" :options="permissionOptions" v-model="group.permissions" :on-change="setGroupPermissions">
+									<span slot="no-options"></span>
+								</v-select>
+							</div>
 						</div>
 					</div>
 				</div>
 			</aside>
 			<aside class="column column-aside users-column">
-				<div class="nicescroll-bar">
-					<div class="clearfix brd-b column-header column-min-button">
-						<h5 class="column-header-title">Add Users to this group</h5>
-					</div>
-					<div class="p-3">
-						<div class="form-group v-select-color-purple">
-							<v-select label="displayname" multiple :filterable="false" :options="userOptions" @search="getUserOptions" v-model="group.users" :on-change="setGroupUsers">
-								<span slot="no-options"></span>
-								<template slot="option" slot-scope="option">
-									<div :class="{'txt-muted': option.isdeleted}">
-										<strong>{{ option.firstname }} {{ option.lastname }}</strong>
-										<div>{{ option.displayname }}</div>
-										<small>{{ option.email }}</small>
-										<code class="d-block small"><small>{{option.uuid}}</small></code>
-									</div>
-								</template>
-								<template slot="selected-option" slot-scope="option">
-									<div :class="{'txt-muted': option.isdeleted}">
-										<strong>{{ option.firstname }} {{ option.lastname }}</strong>
-										<div>{{ option.displayname }}</div>
-										<small>{{ option.email }}</small>
-										<code class="d-block small"><small>{{option.uuid}}</small></code>
-									</div>
-								</template>
-							</v-select>
+				<div class="clearfix brd-b column-header column-min-button">
+					<h5 class="column-header-title">Add Users to this group</h5>
+				</div>
+				<div class="column-content">
+					<div class="nicescroll-bar">
+						<div class="p-3">
+							<div class="form-group v-select-color-purple">
+								<v-select label="displayname" multiple :filterable="false" :options="userOptions" @search="getUserOptions" v-model="group.users" :on-change="setGroupUsers">
+									<span slot="no-options"></span>
+									<template slot="option" slot-scope="option">
+										<div :class="{'txt-muted': option.isdeleted}">
+											<strong>{{ option.firstname }} {{ option.lastname }}</strong>
+											<div>{{ option.displayname }}</div>
+											<small>{{ option.email }}</small>
+											<code class="d-block small"><small>{{option.uuid}}</small></code>
+										</div>
+									</template>
+									<template slot="selected-option" slot-scope="option">
+										<div :class="{'txt-muted': option.isdeleted}">
+											<strong>{{ option.firstname }} {{ option.lastname }}</strong>
+											<div>{{ option.displayname }}</div>
+											<small>{{ option.email }}</small>
+											<code class="d-block small"><small>{{option.uuid}}</small></code>
+										</div>
+									</template>
+								</v-select>
+							</div>
 						</div>
 					</div>
 				</div>

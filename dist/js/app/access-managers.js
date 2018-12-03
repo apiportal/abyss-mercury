@@ -1,4 +1,4 @@
-define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(abyss, Vue, axios, VeeValidate, _, moment) {
+define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue!schema-template-form'], function(abyss, Vue, axios, VeeValidate, _, moment) {
 	Vue.component('access-manager-types', {
 		props: ['t','index', 'orgoptions'],
 		data() {
@@ -81,6 +81,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 					"description": "",
 					"attributetemplate": {},
 				},
+				template: null,
 				selectedAccessManager: {},
 				newAccessManager: {},
 				accessManagerList: [],
@@ -102,7 +103,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 		methods: {
 			getTemplate(typ) {
 				var type = this.accessManagerTypes.find((el) => el.uuid === typ );
-				Vue.set(this.accessManager, 'accessmanagerattributes', type.attributetemplate);
+				this.template = _.cloneDeep(type.attributetemplate);
+				// Vue.set(this.accessManager, 'accessmanagerattributes', type.attributetemplate);
 			},
 			addType() {
 				var ttt = _.findIndex(this.accessManagerTypes, function(o) { return o.typename === 'newType'; });
@@ -147,11 +149,13 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 				this.accessManager = _.cloneDeep(this.newAccessManager);
 				this.selectedAccessManager = _.cloneDeep(this.newAccessManager);
 				this.selected = null;
+				this.template = null;
 			},
 			selectAccessManager(item, i) {
 				this.fixProps(item);
 				this.selectedAccessManager = _.cloneDeep(item);
 				this.accessManager = item;
+				this.getTemplate(this.accessManager.accessmanagertypeid);
 				this.selected = i;
 			},
 			isSelected(i) {
@@ -176,12 +180,14 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment'], function(
 						await this.addItem(abyss.ajax.access_managers, this.deleteProps(this.accessManager), this.accessManagerList);
 						this.$emit('set-state', 'init');
 						this.accessManager = _.cloneDeep(this.newAccessManager);
+						this.template = null;
 					}
 					if (act === 'edit') {
 						await this.editItem( abyss.ajax.access_managers, this.accessManager.uuid, this.deleteProps(this.accessManager), this.accessManagerList );
 						this.$emit('set-state', 'init');
 						this.accessManager = _.cloneDeep(this.newAccessManager);
 						this.selected = null;
+						this.template = null;
 					}
 				}
 			},

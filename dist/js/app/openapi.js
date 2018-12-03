@@ -1031,6 +1031,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					} else if (newVal == 'string' || newVal == 'integer' || newVal == 'number' || newVal == 'boolean') {
 						Vue.delete(this.child, '$ref');
 						Vue.delete(this.child, 'items');
+						Vue.delete(this.child, 'properties');
 						Vue.delete(this.child, 'uniqueItems');
 						Vue.delete(this.child, 'minItems');
 						Vue.delete(this.child, 'maxItems');
@@ -1043,11 +1044,13 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 									delete this.child[p];
 								}
 							}
+						Vue.delete(this.child, 'properties');
 						Vue.delete(this.child, 'items');
 						Vue.delete(this.child, 'uniqueItems');
 						Vue.delete(this.child, 'minItems');
 						Vue.delete(this.child, 'maxItems');
 					}
+					Vue.delete(this.child, 'format');
 				}
 			},
 			effectiveFormats : {

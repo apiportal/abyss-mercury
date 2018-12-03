@@ -94,79 +94,81 @@
 				</div>
 			</section>
 			<aside class="column column-aside add-column">
-				<div class="nicescroll-bar">
-					<div class="clearfix brd-b column-header column-min-button">
-						<h5 class="column-header-title" v-if="rootState == 'init' || rootState == 'add'">Add New App</h5>
-						<h5 class="column-header-title" v-if="rootState == 'edit'">Edit App</h5>
-					</div>
-					<div class="p-3">
-						<div class="form-group" v-bind:class="{ 'has-error': errors.has('firstname') }">
-							<label for="firstname">APP Name:</label>
-							<input type="text" name="firstname" id="firstname" v-model="app.firstname" v-validate="'required'" class="form-control">
-							<em v-bind:class="{ 'show': errors.has('firstname') }">{{ errors.first('firstname') }}</em>
-						</div>
-						<div class="form-group" v-bind:class="{ 'has-error': errors.has('description') }">
-							<label for="description">Description:</label>
-							<textarea name="description" id="description" v-model="app.description" v-validate="'required'" class="form-control"></textarea>
-							<em v-bind:class="{ 'show': errors.has('description') }">{{ errors.first('description') }}</em>
-						</div>
-						<div class="form-group form-inline">
-							<label class="d-block">Activate APP</label>
-							<span class="switch switch-primary ml-auto">
-								<input type="checkbox" name="isactived" id="isactived" v-model="app.isactived" checked>
-								<label for="isactived"></label>
-							</span>
-						</div>
-						<div class="form-group" v-bind:class="{ 'has-error': errors.has('url') }">
-							<label for="url">Url:</label>
-							<input type="text" name="url" id="url" v-model="app.url" class="form-control" v-validate="'url'">
-							<em v-bind:class="{ 'show': errors.has('url') }">{{ errors.first('url') }}</em>
-						</div>
-						<div class="form-group form-inline">
-							<label class="d-block">issandbox</label>
-							<span class="switch switch-primary ml-auto">
-								<input type="checkbox" name="issandbox" id="issandbox" v-model="app.issandbox" checked>
-								<label for="issandbox"></label>
-							</span>
-						</div>
-						<div class="form-group " v-bind:class="{ 'has-error': errors.has('orgid') }">
-							<label>Organization Id</label>
-							<select class="form-control" name="orgid" id="orgid" v-model="app.organizationid" v-validate="'required'">
-								<!-- <option v-for="(org,index) in orgOptions" :value="org.organizationid">{{org.name}}</option> -->
-								<option v-for="(org,index) in orgOptions" :value="org.uuid">{{org.name}}</option>
-							</select>
-							<em v-bind:class="{ 'show': errors.has('orgid') }">{{ errors.first('orgid') }}</em>
-						</div>
-						<div class="form-group " v-bind:class="{ 'has-error': errors.has('dirid') }">
-							<label>Directory</label>
-							<select class="form-control" name="dirid" id="dirid" v-model="app.subjectdirectoryid" v-validate="'required'">
-								<option v-for="(dir,index) in directoryOptions" :value="dir.uuid">{{dir.directoryname}}</option>
-							</select>
-							<em v-bind:class="{ 'show': errors.has('dirid') }">{{ errors.first('dirid') }}</em>
-						</div>
-						<div v-if="rootState == 'edit' && showSecretAndKey">
-						<!-- <div class="clearfix"> -->
-							<div class="form-group txt-c" v-if="app.password && app.uuid"><a class="btn btn-block btn-sm btn-green js-copy" data-clipboard-targets="#appkey,#appsecret">Copy APP Key & APP Secret</a></div>
-							<div class="form-group">
-								<label class="clearfix d-block" for="appkey">App Key:</label>
-								<input type="text" name="appkey" id="appkey" :value="app.uuid" class="form-control" readonly="">
+				<div class="clearfix brd-b column-header column-min-button">
+					<h5 class="column-header-title" v-if="rootState == 'init' || rootState == 'add'">Add New App</h5>
+					<h5 class="column-header-title" v-if="rootState == 'edit'">Edit App</h5>
+				</div>
+				<div class="column-content">
+					<div class="nicescroll-bar">
+						<div class="p-3">
+							<div class="form-group" v-bind:class="{ 'has-error': errors.has('firstname') }">
+								<label for="firstname">APP Name:</label>
+								<input type="text" name="firstname" id="firstname" v-model="app.firstname" v-validate="'required'" class="form-control">
+								<em v-bind:class="{ 'show': errors.has('firstname') }">{{ errors.first('firstname') }}</em>
 							</div>
-							<div class="form-group js-showpass" v-bind:class="{ 'has-error': errors.has('appsecret') }">
-								<label class="clearfix d-block" for="password">App Secret: <a class="flt-r txt-link" v-on:click="regenPass(4,4,4,4)">
-									<span v-if="!preventCancel">Regenerate</span> 
-									<span v-if="preventCancel">Generate</span> 
-								APP Secret</a></label>
-								<div class="input-group">
-									<input type="password" name="appsecret" id="appsecret" v-model="app.password" v-validate="preventCancel ? 'required|min:8|password_strength' : ''" class="form-control">
-									<a class="txt-link js-eye input-group-addon"><i class="fas fa-eye"></i></a>
+							<div class="form-group" v-bind:class="{ 'has-error': errors.has('description') }">
+								<label for="description">Description:</label>
+								<textarea name="description" id="description" v-model="app.description" v-validate="'required'" class="form-control"></textarea>
+								<em v-bind:class="{ 'show': errors.has('description') }">{{ errors.first('description') }}</em>
+							</div>
+							<div class="form-group form-inline">
+								<label class="d-block">Activate APP</label>
+								<span class="switch switch-primary ml-auto">
+									<input type="checkbox" name="isactived" id="isactived" v-model="app.isactived" checked>
+									<label for="isactived"></label>
+								</span>
+							</div>
+							<div class="form-group" v-bind:class="{ 'has-error': errors.has('url') }">
+								<label for="url">Url:</label>
+								<input type="text" name="url" id="url" v-model="app.url" class="form-control" v-validate="'url'">
+								<em v-bind:class="{ 'show': errors.has('url') }">{{ errors.first('url') }}</em>
+							</div>
+							<div class="form-group form-inline">
+								<label class="d-block">issandbox</label>
+								<span class="switch switch-primary ml-auto">
+									<input type="checkbox" name="issandbox" id="issandbox" v-model="app.issandbox" checked>
+									<label for="issandbox"></label>
+								</span>
+							</div>
+							<div class="form-group " v-bind:class="{ 'has-error': errors.has('orgid') }">
+								<label>Organization Id</label>
+								<select class="form-control" name="orgid" id="orgid" v-model="app.organizationid" v-validate="'required'">
+									<!-- <option v-for="(org,index) in orgOptions" :value="org.organizationid">{{org.name}}</option> -->
+									<option v-for="(org,index) in orgOptions" :value="org.uuid">{{org.name}}</option>
+								</select>
+								<em v-bind:class="{ 'show': errors.has('orgid') }">{{ errors.first('orgid') }}</em>
+							</div>
+							<div class="form-group " v-bind:class="{ 'has-error': errors.has('dirid') }">
+								<label>Directory</label>
+								<select class="form-control" name="dirid" id="dirid" v-model="app.subjectdirectoryid" v-validate="'required'">
+									<option v-for="(dir,index) in directoryOptions" :value="dir.uuid">{{dir.directoryname}}</option>
+								</select>
+								<em v-bind:class="{ 'show': errors.has('dirid') }">{{ errors.first('dirid') }}</em>
+							</div>
+							<div v-if="rootState == 'edit' && showSecretAndKey">
+							<!-- <div class="clearfix"> -->
+								<div class="form-group txt-c" v-if="app.password && app.uuid"><a class="btn btn-block btn-sm btn-green js-copy" data-clipboard-targets="#appkey,#appsecret">Copy APP Key & APP Secret</a></div>
+								<div class="form-group">
+									<label class="clearfix d-block" for="appkey">App Key:</label>
+									<input type="text" name="appkey" id="appkey" :value="app.uuid" class="form-control" readonly="">
 								</div>
-								<em v-bind:class="{ 'show': errors.has('appsecret') }">{{ errors.first('appsecret') }}</em>
+								<div class="form-group js-showpass" v-bind:class="{ 'has-error': errors.has('appsecret') }">
+									<label class="clearfix d-block" for="password">App Secret: <a class="flt-r txt-link" v-on:click="regenPass(4,4,4,4)">
+										<span v-if="!preventCancel">Regenerate</span> 
+										<span v-if="preventCancel">Generate</span> 
+									APP Secret</a></label>
+									<div class="input-group">
+										<input type="password" name="appsecret" id="appsecret" v-model="app.password" v-validate="preventCancel ? 'required|min:8|password_strength' : ''" class="form-control">
+										<a class="txt-link js-eye input-group-addon"><i class="fas fa-eye"></i></a>
+									</div>
+									<em v-bind:class="{ 'show': errors.has('appsecret') }">{{ errors.first('appsecret') }}</em>
+								</div>
 							</div>
-						</div>
-						<div class="form-group d-flex justify-content-between">
-							<button type="button" class="btn btn-secondary btn-rounded" v-on:click="cancelApp()">CANCEL</button>
-							<button type="button" class="btn btn-primary btn-rounded" v-if="rootState == 'add'" v-on:click="appAction('add')">ADD APP</button>
-							<button type="button" class="btn btn-primary btn-rounded" v-if="rootState == 'edit'" v-on:click="appAction('edit')">SAVE</button>
+							<div class="form-group d-flex justify-content-between">
+								<button type="button" class="btn btn-secondary btn-rounded" v-on:click="cancelApp()">CANCEL</button>
+								<button type="button" class="btn btn-primary btn-rounded" v-if="rootState == 'add'" v-on:click="appAction('add')">ADD APP</button>
+								<button type="button" class="btn btn-primary btn-rounded" v-if="rootState == 'edit'" v-on:click="appAction('edit')">SAVE</button>
+							</div>
 						</div>
 					</div>
 				</div>

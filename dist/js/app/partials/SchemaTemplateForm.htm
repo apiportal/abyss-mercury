@@ -1,33 +1,57 @@
 <template>
-	<div>
+	<article>
 		<div class="form-group" v-if="(v.type == 'string' || v.type == 'integer' || v.type == 'number') && !v.enum" v-bind:class="{ 'has-error': errors.has(k + i) }">
-			<label :for="k + i">{{v.description}}</label>
+			<label :for="k + i">{{label}}</label>
 			<input class="form-control" :type="format" :name="k + i" v-model="value" v-if="v.type == 'string'" :placeholder="v.example" v-validate="isReq">
-			<input class="form-control" type="number" :name="k + i" v-model="value" v-if="v.type == 'integer'" :placeholder="v.example" v-validate="isReq">
+			<input class="form-control" type="number" :name="k + i" v-model="value" v-if="v.type == 'integer' || v.type == 'number'" :placeholder="v.example" v-validate="isReq">
 			<!-- <input class="form-control" type="number" :name="k + i" step=".01" v-model.number="value" v-if="v.type == 'integer'" :required="isReq"> -->
 		</div>
 		<div class="form-group" v-if="(v.type == 'string' || v.type == 'integer' || v.type == 'number') && v.enum" v-bind:class="{ 'has-error': errors.has(k + i) }">
-			<label :for="k + i">{{v.description}}:</label>
+			<label :for="k + i">{{label}}:</label>
 			<select class="form-control" :name="k + i" :id="k + i" v-model="value" v-validate="isReq">
 				<option v-for="(e, index) in v.enum" :value="e">{{e}}</option>
 			</select>
 		</div>
 		<div class="form-group form-inline" v-if="v.type == 'boolean'">
-			<label class="d-block">{{v.description}}:</label>
+			<label class="d-block">{{label}}:</label>
 			<span class="switch switch-primary ml-auto">
 				<input type="checkbox" :name="k + i" :id="k + i" v-model="value" checked>
 				<label :for="k + i"></label>
 			</span>
 		</div>
-		<div class="form-group v-select-20 v-select-small" v-if="v.type == 'array'">
-			<label>{{v.description}}:</label>
-			<v-select multiple :options="v.enum" v-model="value" v-validate="isReq">
+		<div class="form-group v-select-small" v-if="v.type == 'array' && v.items.type != 'object'">
+			<label>{{label}}:</label>
+			<v-select multiple :options="v.items.enum" v-model="value" v-validate="isReq">
 				<!-- <template slot="selected-option" slot-scope="option">
 					<div class="'badge-'+option.name">{{option.name}}</div>
 				</template> -->
 			</v-select>
 		</div>
-	</div>
+		<div class="form-group" v-if="v.type == 'object'">
+			<h6 class="pb-2">{{label}}</h6>
+			<!-- {{attr[k]}} -->
+			<div v-for="(sv, sk, si) in v.properties">
+				<schema-template-form :v="sv" :k="sk" :i="si" :req="v.required" :attr="attr[k]" :child="true"></schema-template-form>
+			</div>
+		</div>
+		<div class="form-group" v-if="v.type == 'array' && v.items.type == 'object'">
+			<h6 class="pb--2">{{label}}</h6>
+			<!-- {{attr[k]}} -->
+			<div class="fow brd-b pt-3 position-relative" v-for="(sub, subindex) in attr[k]">
+				<div class="ficon-actions dropdown dropdown-hover">
+					<button type="button" data-toggle="dropdown" aria-expanded="false" class="dropdown-toggle"><i class="fas fa-ellipsis-h"></i></button>
+					<ul role="menu" class="dropdown-menu dropdown-menu-right">
+						<li><a title="Add" v-on:click="addItemToConfig(sub, attr[k])"><i class="fa fa-fw fa-plus"></i> Add Item</a></li>
+						<li><a title="Remove" v-if="subindex != 0" v-on:click="removeItemToConfig(subindex, attr[k])"><i class="fa fa-fw fa-trash-alt"></i> Remove Item</a></li>
+					</ul>
+				</div>
+				<div class="fol-sm" v-for="(subv, subk, subi) in sub">
+					<!-- {{sub}}<br>{{subk}}: <br><strong>{{subv}}</strong> - <br>{{v.items.properties[subk]}} -->
+					<schema-template-form :v="v.items.properties[subk]" :k="subk" :i="subindex" :req="v.items.required" :attr="sub" :child="true"></schema-template-form>
+				</div>
+			</div>
+		</div>
+	</article>
 </template>
 
 <script>
@@ -35,7 +59,7 @@
     	Vue.component('v-select', VueSelect.VueSelect);
 		Vue.component("schema-template-form", {
 			template: template,
-			props: ['req', 'v', 'k', 'i'],
+			props: ['req', 'attr', 'child', 'v', 'k', 'i'],
 			inject: ['$validator'],
 			data() {
 				return {
@@ -45,20 +69,34 @@
 			computed: {
 				value : {
 					get() {
-						if (!this.$parent.directory.directoryattributes[this.k]) {
-							Vue.set( this.$parent.directory.directoryattributes, this.k, this.v['x-value'] );
-							return this.v['x-value'];
+						if (!this.attr[this.k]) {
+							Vue.set( this.attr, this.k, this.v.example );
+							return this.v.example;
 						} else {
-							return this.$parent.directory.directoryattributes[this.k];
+							return this.attr[this.k];
 						}
 					},
 					set(newVal) {
-						this.v['x-value'] = newVal;
-						this.$parent.directory.directoryattributes[this.k] = newVal;
+						this.v.example = newVal;
+						this.attr[this.k] = newVal;
+					}
+				},
+				label() {
+					if (this.v.description) {
+						return this.v.description;
+					} else {
+						return this.k;
+					}
+				},
+				isSubBool() {
+					if (this.child) {
+						return 'fol-6';
+					} else {
+						return 'form-inline';
 					}
 				},
 				isReq() {
-					if (this.req.includes(this.k)) {
+					if (this.req && this.req.includes(this.k)) {
 						return 'required';
 					} else {
 						return '';
@@ -73,8 +111,29 @@
 				}
 			},
 			methods : {
+				addItemToConfig(item, arr) {
+					newItem = _.cloneDeep(item);
+					arr.push(newItem);
+				},
+				removeItemToConfig(index, arr) {
+					arr.splice(index,1);
+				},
 			},
 			created() {
+				if (!this.attr[this.k]) {
+					if (this.v.type == 'object') {
+						Vue.set( this.attr, this.k, {} );
+					} else if (this.v.type == 'array' && this.v.items.type == 'object') {
+						Vue.set( this.attr, this.k, [] );
+						var obj = {};
+						for (var key in this.v.items.properties) {
+							Vue.set( obj, key, this.v.items.properties[key].example );
+						}
+						this.attr[this.k].push(obj);
+					} else {
+						Vue.set( this.attr, this.k, this.v.example );
+					}
+				}
 			},
 		});
     });

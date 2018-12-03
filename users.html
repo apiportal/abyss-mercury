@@ -135,113 +135,117 @@
 				</div>
 			</section>
 			<aside class="column column-aside add-column">
-				<div class="nicescroll-bar">
-					<div class="clearfix brd-b column-header column-min-button">
-						<h5 class="column-header-title" v-if="rootState == 'init' || rootState == 'add'">Add New User</h5>
-						<h5 class="column-header-title" v-if="rootState == 'edit'">Edit User</h5>
-					</div>
-					<div class="p-3">
-						<div class="form-group" v-bind:class="{ 'has-error': errors.has('firstname') }">
-							<label for="firstname">First Name:</label>
-							<input type="text" name="firstname" id="firstname" v-model="user.firstname" v-validate="'required|min:2|alpha_spaces'" class="form-control">
-							<em v-bind:class="{ 'show': errors.has('firstname') }">{{ errors.first('firstname') }}</em>
-						</div>
-						<div class="form-group" v-bind:class="{ 'has-error': errors.has('lastname') }">
-							<label for="lastname">Last Name:</label>
-							<input type="text" name="lastname" id="lastname" v-model="user.lastname" v-validate="'required|min:2|alpha_spaces'" class="form-control">
-							<em v-bind:class="{ 'show': errors.has('lastname') }">{{ errors.first('lastname') }}</em>
-						</div>
-						<div class="form-group" v-bind:class="{ 'has-error': errors.has('subjectname') }">
-							<label for="subjectname">UserName:</label>
-							<input type="text" name="subjectname" id="subjectname" v-model="user.subjectname" v-validate="{required: true, regex: /^[0-9A-Z_@.-]*$/i, min: 3}" class="form-control">
-							<em v-bind:class="{ 'show': errors.has('subjectname') }">{{ errors.first('subjectname') }}</em>
-						</div>
-						<div class="form-group" v-bind:class="{ 'has-error': errors.has('displayname') }">
-							<label for="displayname">Display Name:</label>
-							<input type="text" name="displayname" id="displayname" v-model="user.displayname" v-validate="{required: true, alpha_spaces: true, min: 3, max: 30}" class="form-control">
-							<em v-bind:class="{ 'show': errors.has('displayname') }">{{ errors.first('displayname') }}</em>
-						</div>
-						<div class="form-group" v-bind:class="{ 'has-error': errors.has('email') }">
-							<label for="email">Email:</label>
-							<input type="text" name="email" id="email" v-model="user.email" v-validate="'required|email'" class="form-control">
-							<em v-bind:class="{ 'show': errors.has('email') }">{{ errors.first('email') }}</em>
-						</div>
-						<div class="form-group">
-							<label for="url">Url:</label>
-							<input type="text" name="url" id="url" v-model="user.url" class="form-control">
-						</div>
-						<p v-if="rootState == 'edit'"><a class="txt-link" v-on:click="resetPassword = !resetPassword">Reset Password</a></p>
-						<div v-show="rootState == 'add' || resetPassword">
-							<div class="form-group js-showpass" v-bind:class="{ 'has-error': errors.has('password') }">
-								<label class="clearfix d-block" for="password">Password: <a class="flt-r txt-link" v-on:click="regenPass()">Regenerate Password</a></label>
-								<div class="input-group">
-									<input type="password" name="password" id="password" v-model="user.password" v-validate="rootState == 'add' ? 'required|min:8|password_strength' : ''" class="form-control">
-									<a class="txt-link js-eye input-group-addon"><i class="fas fa-eye"></i></a>
+				<div class="clearfix brd-b column-header column-min-button">
+					<h5 class="column-header-title" v-if="rootState == 'init' || rootState == 'add'">Add New User</h5>
+					<h5 class="column-header-title" v-if="rootState == 'edit'">Edit User</h5>
+				</div>
+				<div class="column-content">
+					<div class="nicescroll-bar">
+						<div class="p-3">
+							<div class="form-group" v-bind:class="{ 'has-error': errors.has('firstname') }">
+								<label for="firstname">First Name:</label>
+								<input type="text" name="firstname" id="firstname" v-model="user.firstname" v-validate="'required|min:2|alpha_spaces'" class="form-control">
+								<em v-bind:class="{ 'show': errors.has('firstname') }">{{ errors.first('firstname') }}</em>
+							</div>
+							<div class="form-group" v-bind:class="{ 'has-error': errors.has('lastname') }">
+								<label for="lastname">Last Name:</label>
+								<input type="text" name="lastname" id="lastname" v-model="user.lastname" v-validate="'required|min:2|alpha_spaces'" class="form-control">
+								<em v-bind:class="{ 'show': errors.has('lastname') }">{{ errors.first('lastname') }}</em>
+							</div>
+							<div class="form-group" v-bind:class="{ 'has-error': errors.has('subjectname') }">
+								<label for="subjectname">UserName:</label>
+								<input type="text" name="subjectname" id="subjectname" v-model="user.subjectname" v-validate="{required: true, regex: /^[0-9A-Z_@.-]*$/i, min: 3}" class="form-control">
+								<em v-bind:class="{ 'show': errors.has('subjectname') }">{{ errors.first('subjectname') }}</em>
+							</div>
+							<div class="form-group" v-bind:class="{ 'has-error': errors.has('displayname') }">
+								<label for="displayname">Display Name:</label>
+								<input type="text" name="displayname" id="displayname" v-model="user.displayname" v-validate="{required: true, alpha_spaces: true, min: 3, max: 30}" class="form-control">
+								<em v-bind:class="{ 'show': errors.has('displayname') }">{{ errors.first('displayname') }}</em>
+							</div>
+							<div class="form-group" v-bind:class="{ 'has-error': errors.has('email') }">
+								<label for="email">Email:</label>
+								<input type="text" name="email" id="email" v-model="user.email" v-validate="'required|email'" class="form-control">
+								<em v-bind:class="{ 'show': errors.has('email') }">{{ errors.first('email') }}</em>
+							</div>
+							<div class="form-group">
+								<label for="url">Url:</label>
+								<input type="text" name="url" id="url" v-model="user.url" class="form-control">
+							</div>
+							<p v-if="rootState == 'edit'"><a class="txt-link" v-on:click="resetPassword = !resetPassword">Reset Password</a></p>
+							<div v-show="rootState == 'add' || resetPassword">
+								<div class="form-group js-showpass" v-bind:class="{ 'has-error': errors.has('password') }">
+									<label class="clearfix d-block" for="password">Password: <a class="flt-r txt-link" v-on:click="regenPass()">Regenerate Password</a></label>
+									<div class="input-group">
+										<input type="password" name="password" id="password" v-model="user.password" v-validate="rootState == 'add' ? 'required|min:8|password_strength' : ''" class="form-control">
+										<a class="txt-link js-eye input-group-addon"><i class="fas fa-eye"></i></a>
+									</div>
+									<em v-bind:class="{ 'show': errors.has('password') }">{{ errors.first('password') }}</em>
 								</div>
-								<em v-bind:class="{ 'show': errors.has('password') }">{{ errors.first('password') }}</em>
+								<div class="form-group ">
+									<span class="checkbox checkbox-primary">
+										<input type="checkbox" name="notify" id="notify" v-model="user.notify">
+										<label for="notify">Send Notificaiton</label>
+									</span>
+								</div>
 							</div>
-							<div class="form-group ">
-								<span class="checkbox checkbox-primary">
-									<input type="checkbox" name="notify" id="notify" v-model="user.notify">
-									<label for="notify">Send Notificaiton</label>
-								</span>
+							<p v-if="rootState == 'add'">This user will be able to change her password after first login</p>
+							<div class="form-group d-flex justify-content-between">
+								<button type="button" class="btn btn-secondary btn-rounded" v-on:click="$emit('set-state', 'init'); cancelUser()">CANCEL</button>
+								<button type="button" class="btn btn-primary btn-rounded" v-if="rootState == 'add'" v-on:click="userAction('add')">ADD USER</button>
+								<button type="button" class="btn btn-primary btn-rounded" v-if="rootState == 'edit'" v-on:click="userAction('edit')">SAVE</button>
 							</div>
-						</div>
-						<p v-if="rootState == 'add'">This user will be able to change her password after first login</p>
-						<div class="form-group d-flex justify-content-between">
-							<button type="button" class="btn btn-secondary btn-rounded" v-on:click="$emit('set-state', 'init'); cancelUser()">CANCEL</button>
-							<button type="button" class="btn btn-primary btn-rounded" v-if="rootState == 'add'" v-on:click="userAction('add')">ADD USER</button>
-							<button type="button" class="btn btn-primary btn-rounded" v-if="rootState == 'edit'" v-on:click="userAction('edit')">SAVE</button>
 						</div>
 					</div>
 				</div>
 			</aside>
 			<aside class="column column-aside permissions-column">
-				<div class="nicescroll-bar">
-					<div class="clearfix brd-b column-header column-min-button">
-						<h5 class="column-header-title">User Management</h5>
-					</div>
-					<div class="p-3">
-						<div class="form-group " v-bind:class="{ 'has-error': errors.has('organization') }">
-							<label>Organization Id</label>
-							<select class="form-control" name="organization" id="organization" v-model="user.organizationid" v-validate="'required'">
-								<!-- <option v-for="(org,index) in orgOptions" :value="org.organizationid">{{org.name}}</option> -->
-								<option v-for="(org,index) in orgOptions" :value="org.uuid">{{org.name}}</option>
-							</select>
-							<em v-bind:class="{ 'show': errors.has('organization') }">{{ errors.first('organization') }}</em>
+				<div class="clearfix brd-b column-header column-min-button">
+					<h5 class="column-header-title">User Management</h5>
+				</div>
+				<div class="column-content">
+					<div class="nicescroll-bar">
+						<div class="p-3">
+							<div class="form-group " v-bind:class="{ 'has-error': errors.has('organization') }">
+								<label>Organization Id</label>
+								<select class="form-control" name="organization" id="organization" v-model="user.organizationid" v-validate="'required'">
+									<!-- <option v-for="(org,index) in orgOptions" :value="org.organizationid">{{org.name}}</option> -->
+									<option v-for="(org,index) in orgOptions" :value="org.uuid">{{org.name}}</option>
+								</select>
+								<em v-bind:class="{ 'show': errors.has('organization') }">{{ errors.first('organization') }}</em>
+							</div>
+							<div class="form-group " v-bind:class="{ 'has-error': errors.has('dirid') }">
+								<label>Directory</label>
+								<select class="form-control" name="dirid" id="dirid" v-model="user.subjectdirectoryid" v-validate="'required'">
+									<option v-for="(dir,index) in directoryOptions" :value="dir.uuid">{{dir.directoryname}}</option>
+								</select>
+								<em v-bind:class="{ 'show': errors.has('dirid') }">{{ errors.first('dirid') }}</em>
+							</div>
+							<div class="form-group">
+								<label for="description">Description:</label>
+								<textarea type="text" name="description" id="description" v-model="user.description" class="form-control"></textarea>
+							</div>
+							<div class="form-group v-select-color-pink">
+								<label>Add User to Group:</label>
+								<!-- <v-select label="firstname" multiple :filterable="false" :options="groupOptions" @search="getGroupOptions" v-model="user.groups"> -->
+								<v-select label="firstname" multiple :filterable="false" :options="groupOptions" v-model="user.groups" :on-change="setUserGroups">
+									<span slot="no-options"></span>
+									<template slot="option" slot-scope="option">
+										<div>{{ option.firstname }}</div>
+										<code class="d-block small"><small>{{option.uuid}}</small></code>
+									</template>
+									<template slot="selected-option" slot-scope="option">
+										<div>{{ option.firstname }}</div>
+										<code class="d-block small"><small>{{option.uuid}}</small></code>
+									</template>
+								</v-select>
+							</div>
+							<!-- <div class="form-group v-select-color-green">
+								<label>Assign Permission to User:</label>
+								<v-select label="permission" multiple :filterable="false" :options="permissionOptions" v-model="user.permissions" :on-change="setUserPermissions">
+									<span slot="no-options"></span>
+								</v-select>
+							</div> -->
 						</div>
-						<div class="form-group " v-bind:class="{ 'has-error': errors.has('dirid') }">
-							<label>Directory</label>
-							<select class="form-control" name="dirid" id="dirid" v-model="user.subjectdirectoryid" v-validate="'required'">
-								<option v-for="(dir,index) in directoryOptions" :value="dir.uuid">{{dir.directoryname}}</option>
-							</select>
-							<em v-bind:class="{ 'show': errors.has('dirid') }">{{ errors.first('dirid') }}</em>
-						</div>
-						<div class="form-group">
-							<label for="description">Description:</label>
-							<textarea type="text" name="description" id="description" v-model="user.description" class="form-control"></textarea>
-						</div>
-						<div class="form-group v-select-color-pink">
-							<label>Add User to Group:</label>
-							<!-- <v-select label="firstname" multiple :filterable="false" :options="groupOptions" @search="getGroupOptions" v-model="user.groups"> -->
-							<v-select label="firstname" multiple :filterable="false" :options="groupOptions" v-model="user.groups" :on-change="setUserGroups">
-								<span slot="no-options"></span>
-								<template slot="option" slot-scope="option">
-									<div>{{ option.firstname }}</div>
-									<code class="d-block small"><small>{{option.uuid}}</small></code>
-								</template>
-								<template slot="selected-option" slot-scope="option">
-									<div>{{ option.firstname }}</div>
-									<code class="d-block small"><small>{{option.uuid}}</small></code>
-								</template>
-							</v-select>
-						</div>
-						<!-- <div class="form-group v-select-color-green">
-							<label>Assign Permission to User:</label>
-							<v-select label="permission" multiple :filterable="false" :options="permissionOptions" v-model="user.permissions" :on-change="setUserPermissions">
-								<span slot="no-options"></span>
-							</v-select>
-						</div> -->
 					</div>
 				</div>
 			</aside>

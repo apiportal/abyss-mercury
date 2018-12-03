@@ -1,4 +1,4 @@
-define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue!json-form'], function(abyss, Vue, axios, VeeValidate, _, moment) {
+define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue!schema-template-form'], function(abyss, Vue, axios, VeeValidate, _, moment) {
 	Vue.component('api-policies', {
 		props: {
 			rootState: { type: String }
@@ -28,6 +28,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue!json-
 					"typeid": null,
 					"policyinstance": {},
 				},
+				template: null,
 				selectedPolicy: {},
 				newPolicy: {},
 				policyList: [],
@@ -35,10 +36,27 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue!json-
 				end: []
 			};
 		},
+		computed: {
+			stringifyAttribute : {
+				get() {
+					return JSON.stringify(this.policy.policyinstance, null, '\t');
+				},
+				set(newVal) {
+					this.policy.policyinstance = JSON.parse(newVal);
+				}
+			},
+		},
 		methods: {
-			selectType(typ) {
+			getTemplate(typ) {
 				var type = this.policyTypes.find((el) => el.uuid === typ );
-				Vue.set(this.policy,'policyinstance',type.template);
+				this.template = _.cloneDeep(type.template);
+				// Vue.set(this.policy,'policyinstance',type.template);
+				Vue.set(this.policy.policyinstance, 'info', {} );
+				Vue.set(this.policy.policyinstance.info, 'type', this.template.info['x-type'] );
+				Vue.set(this.policy.policyinstance.info, 'subType', this.template.info['x-subType'] );
+				Vue.delete(this.policy.policyinstance, 'configuration');
+				// Vue.set(this.policy.policyinstance.info, 'title', this.template.info.title );
+				// Vue.set(this.policy.policyinstance.info, 'description', this.template.info.description );
 			},
 			addItemToConfig(item, arr) {
 				newItem = _.cloneDeep(item);
@@ -53,11 +71,13 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue!json-
 				this.policy = _.cloneDeep(this.newPolicy);
 				this.selectedPolicy = _.cloneDeep(this.newPolicy);
 				this.selected = null;
+				this.template = null;
 			},
 			selectPolicy(item, i) {
 				this.fixProps(item);
 				this.selectedPolicy = _.cloneDeep(item);
 				this.policy = item;
+				this.getTemplate(this.policy.typeid);
 				this.selected = i;
 			},
 			isSelected(i) {
@@ -91,6 +111,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue!json-
 						await this.createResource(resAdd, 'POLICY', resAdd.name, resAdd.description);
 						this.$emit('set-state', 'init');
 						this.policy = _.cloneDeep(this.newPolicy);
+						this.template = null;
 					}
 					if (act === 'edit') {
 						var resEdit = await this.editItem( abyss.ajax.policies, this.policy.uuid, this.deleteProps(this.policy), this.policyList );
@@ -99,6 +120,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue!json-
 						this.$emit('set-state', 'init');
 						this.policy = _.cloneDeep(this.newPolicy);
 						this.selected = null;
+						this.template = null;
 					}
 				}
 			},

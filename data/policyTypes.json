@@ -13,99 +13,119 @@
 		"subtype": "Throttling",
 		"template": {
 			"info": {
-				"type": "Limits",
 				"title": "Apply Throttling Policy Template",
-				"subType": "Throttling",
+				"x-type": "Limits",
+				"version": "0.0.3",
+				"x-subType": "Throttling",
 				"description": "Abyss Platform Throttling Policy Template"
 			},
-			"configuration": {
-				"delaytimeinmilliseconds": {
-					"value": "10000",
-					"schema": {
-						"type": "integer",
-						"format": "int32",
-						"default": "10000",
-						"maximum": "10000",
-						"minimum": "0"
-					},
-					"required": true,
-					"description": "Delay Time in Milliseconds"
-				},
-				"delayattempts": {
-					"value": "5",
-					"schema": {
-						"type": "integer",
-						"format": "int32",
-						"default": "5",
-						"maximum": "5",
-						"minimum": "0"
-					},
-					"required": true,
-					"description": "Delay Attempts"
-				},
-				"limits": {
-					"schema": {
-						"type": "group",
-						"default": [
-							{
-								"item": {
-									"numberofreqs": {
-										"value": "90",
-										"schema": {
-											"type": "integer",
-											"format": "int32",
-											"default": "90",
-											"maximum": "1000",
-											"minimum": "0"
-										},
-										"required": true,
-										"description": "Number of Reqs"
-									},
-									"timeperiod": {
-										"value": "2",
-										"schema": {
-											"type": "integer",
-											"format": "int32",
-											"default": "2",
-											"maximum": "1000",
-											"minimum": "0"
-										},
-										"required": true,
-										"description": "Time Period"
-									},
-									"logLevel": {
-										"value": "timeunit",
-										"schema": {
-											"enum": ["Millisecond", "Second", "Minute", "Hour", "Day", "Week", "Month", "Year"],
-											"type": "string",
-											"default": "Day"
-										},
-										"required": true,
-										"description": "Time Unit"
-									}
-								}
+			"paths": {
+				"/dummy/": {
+					"get": {
+						"summary": "dummy",
+						"responses": {
+							"default": {
+								"description": "dummy"
 							}
-						]
-					},
-					"description": "Limits"
-				},
-				"methods": {
-					"value": ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "HEAD", "TRACE", "CONNECT"],
-					"schema": {
-						"enum": ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "HEAD", "TRACE", "CONNECT"],
-						"type": "array",
-						"default": ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "HEAD", "TRACE", "CONNECT"]
-					},
-					"required": true,
-					"description": "Methods"
+						},
+						"description": "dummy"
+					}
 				}
 			},
-			"openApiPolicy": "0.0.4",
-			"openApiLifeCycle": {
-				"onProxyRequest": true,
-				"onProxyResponse": false,
-				"onBusinessRequest": false,
-				"onBusinessResponse": false
+			"openapi": "3.0.1",
+			"components": {
+				"schemas": {
+					"AuthorizationConfiguration": {
+						"type": "object",
+						"required": ["delaytimeinmilliseconds", "delayattempts"],
+						"properties": {
+							"delaytimeinmilliseconds": {
+								"type": "integer",
+								"format": "int32",
+								"example": "10000",
+								"maximum": "10000",
+								"minimum": "0",
+								"description": "Delay Time in Milliseconds"
+							},
+							"delayattempts": {
+								"type": "integer",
+								"format": "int32",
+								"example": "5",
+								"maximum": "5",
+								"minimum": "0",
+								"description": "Delay Attempts"
+							},
+							"limits": {
+								"type": "array",
+								"items": {
+									"type": "object",
+									"required": ["numberofreqs", "timeperiod", "logLevel"],
+									"properties": {
+										"numberofreqs": {
+											"type": "integer",
+											"format": "int32",
+											"example": "90",
+											"maximum": "1000",
+											"minimum": "0",
+											"description": "Number of Reqs"
+										},
+										"timeperiod": {
+											"type": "integer",
+											"format": "int32",
+											"example": "2",
+											"maximum": "1000",
+											"minimum": "0",
+											"description": "Time Period"
+										},
+										"logLevel": {
+											"enum": ["Millisecond", "Second", "Minute", "Hour", "Day", "Week", "Month", "Year"],
+											"type": "string",
+											"example": "Day",
+											"description": "Time Unit"
+										}
+									}
+								}
+							},
+							"methods": {
+								"type": "array",
+								"items": {
+									"type": "string",
+									"example": "GET",
+									"enum": ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "HEAD", "TRACE", "CONNECT"]
+								},
+								"description": "Methods"
+							},
+							"openApiLifeCycle": {
+								"type": "object",
+								"required": ["onProxyRequest", "onProxyResponse", "onBusinessRequest", "onBusinessResponse"],
+								"properties": {
+									"onProxyRequest": {
+										"type": "boolean",
+										"example": true,
+										"description": "Policy Active On Proxy Request"
+									},
+									"onProxyResponse": {
+										"type": "boolean",
+										"example": false,
+										"description": "Policy Active On Proxy Response"
+									},
+									"onBusinessRequest": {
+										"type": "boolean",
+										"example": false,
+										"description": "Policy Active On Business Request"
+									},
+									"onBusinessResponse": {
+										"type": "boolean",
+										"example": false,
+										"description": "Policy Active On Business Response"
+									}
+								},
+								"description": "Open API Life Cycle"
+							}
+						},
+						"description": "Authorization Configuration"
+					}
+				}
 			}
 		}
 	},
@@ -123,31 +143,71 @@
 		"subtype": "Anonymity Validation",
 		"template": {
 			"info": {
-				"type": "Privacy",
 				"title": "Privacy Policy Template",
-				"subType": "Anonymity Validation",
+				"x-type": "Privacy",
+				"version": "0.0.3",
+				"x-subType": "Anonymity Validation",
 				"description": "Abyss Platform Privacy Policy Template"
 			},
-			"configuration": {
-				"minimumEquivalanceClassSize": {
-					"value": "2147483647",
-					"schema": {
-						"type": "integer",
-						"format": "int32",
-						"default": "2147483647",
-						"maximum": "2147483647",
-						"minimum": "0"
-					},
-					"required": true,
-					"description": "Parameter k of k-anonymity"
+			"paths": {
+				"/dummy/": {
+					"get": {
+						"summary": "dummy",
+						"responses": {
+							"default": {
+								"description": "dummy"
+							}
+						},
+						"description": "dummy"
+					}
 				}
 			},
-			"openApiPolicy": "0.0.4",
-			"openApiLifeCycle": {
-				"onProxyRequest": true,
-				"onProxyResponse": false,
-				"onBusinessRequest": false,
-				"onBusinessResponse": false
+			"openapi": "3.0.1",
+			"components": {
+				"schemas": {
+					"AuthorizationConfiguration": {
+						"type": "object",
+						"required": ["minimumEquivalanceClassSize"],
+						"properties": {
+							"minimumEquivalanceClassSize": {
+								"type": "integer",
+								"format": "int32",
+								"example": "2147483647",
+								"maximum": "2147483647",
+								"minimum": "0",
+								"description": "Parameter k of k-anonymity"
+							},
+							"openApiLifeCycle": {
+								"type": "object",
+								"required": ["onProxyRequest", "onProxyResponse", "onBusinessRequest", "onBusinessResponse"],
+								"properties": {
+									"onProxyRequest": {
+										"type": "boolean",
+										"example": true,
+										"description": "Policy Active On Proxy Request"
+									},
+									"onProxyResponse": {
+										"type": "boolean",
+										"example": false,
+										"description": "Policy Active On Proxy Response"
+									},
+									"onBusinessRequest": {
+										"type": "boolean",
+										"example": false,
+										"description": "Policy Active On Business Request"
+									},
+									"onBusinessResponse": {
+										"type": "boolean",
+										"example": false,
+										"description": "Policy Active On Business Response"
+									}
+								},
+								"description": "Open API Life Cycle"
+							}
+						},
+						"description": "Authorization Configuration"
+					}
+				}
 			}
 		}
 	},
@@ -165,29 +225,69 @@
 		"subtype": "Logging",
 		"template": {
 			"info": {
-				"type": "Operational",
 				"title": "Logging Policy Template",
-				"subType": "Logging",
+				"x-type": "Operational",
+				"version": "0.0.3",
+				"x-subType": "Logging",
 				"description": "Abyss Platform Logging Policy Template"
 			},
-			"configuration": {
-				"logLevel": {
-					"value": "INFO",
-					"schema": {
-						"enum": ["ALL", "TRACE", "DEBUG", "INFO", "WARN", "ERROR", "FATAL", "OFF"],
-						"type": "string",
-						"default": "ERROR"
-					},
-					"required": true,
-					"description": "is User Authorization Active"
+			"paths": {
+				"/dummy/": {
+					"get": {
+						"summary": "dummy",
+						"responses": {
+							"default": {
+								"description": "dummy"
+							}
+						},
+						"description": "dummy"
+					}
 				}
 			},
-			"openApiPolicy": "0.0.4",
-			"openApiLifeCycle": {
-				"onProxyRequest": true,
-				"onProxyResponse": false,
-				"onBusinessRequest": false,
-				"onBusinessResponse": false
+			"openapi": "3.0.1",
+			"components": {
+				"schemas": {
+					"AuthorizationConfiguration": {
+						"type": "object",
+						"required": ["logLevel"],
+						"properties": {
+							"logLevel": {
+								"enum": ["ALL", "TRACE", "DEBUG", "INFO", "WARN", "ERROR", "FATAL", "OFF"],
+								"type": "string",
+								"example": "INFO",
+								"description": "is User Authorization Active"
+							},
+							"openApiLifeCycle": {
+								"type": "object",
+								"required": ["onProxyRequest", "onProxyResponse", "onBusinessRequest", "onBusinessResponse"],
+								"properties": {
+									"onProxyRequest": {
+										"type": "boolean",
+										"example": true,
+										"description": "Policy Active On Proxy Request"
+									},
+									"onProxyResponse": {
+										"type": "boolean",
+										"example": false,
+										"description": "Policy Active On Proxy Response"
+									},
+									"onBusinessRequest": {
+										"type": "boolean",
+										"example": false,
+										"description": "Policy Active On Business Request"
+									},
+									"onBusinessResponse": {
+										"type": "boolean",
+										"example": false,
+										"description": "Policy Active On Business Response"
+									}
+								},
+								"description": "Open API Life Cycle"
+							}
+						},
+						"description": "Authorization Configuration"
+					}
+				}
 			}
 		}
 	}, 
@@ -205,39 +305,161 @@
 		"subtype": "API Authorization",
 		"template": {
 			"info": {
-				"type": "Service",
 				"title": "API Authorization Policy Template",
-				"subType": "API Authorization",
+				"x-type": "Service",
+				"version": "0.0.3",
+				"x-subType": "API Authorization",
 				"description": "Abyss Platform API Authorization Policy Template"
 			},
-			"configuration": {
-				"appAuthorization": {
-					"value": "Abyss Access Manager",
-					"schema": {
-						"enum": ["OFF", "Abyss Access Manager"],
-						"type": "string",
-						"default": "Abyss Access Manager"
-					},
-					"required": true,
-					"description": "App Access Manager"
-				},
-				"userAuthorization": {
-					"value": "OFF",
-					"schema": {
-						"enum": ["OFF", "Abyss Access Manager"],
-						"type": "string",
-						"default": "OFF"
-					},
-					"required": true,
-					"description": "User Access Manager"
+			"paths": {
+				"/dummy/": {
+					"get": {
+						"summary": "dummy",
+						"responses": {
+							"default": {
+								"description": "dummy"
+							}
+						},
+						"description": "dummy"
+					}
 				}
 			},
-			"openApiPolicy": "0.0.4",
-			"openApiLifeCycle": {
-				"onProxyRequest": true,
-				"onProxyResponse": false,
-				"onBusinessRequest": false,
-				"onBusinessResponse": false
+			"openapi": "3.0.1",
+			"components": {
+				"schemas": {
+					"AuthorizationConfiguration": {
+						"type": "object",
+						"required": ["appAuthorization", "userAuthorization"],
+						"properties": {
+							"appAuthorization": {
+								"enum": ["OFF", "Abyss Access Manager"],
+								"type": "string",
+								"example": "Abyss Access Manager",
+								"description": "App Access Manager"
+							},
+							"userAuthorization": {
+								"enum": ["OFF", "Abyss Access Manager"],
+								"type": "string",
+								"example": "OFF",
+								"description": "User Access Manager"
+							},
+							"openApiLifeCycle": {
+								"type": "object",
+								"required": ["onProxyRequest", "onProxyResponse", "onBusinessRequest", "onBusinessResponse"],
+								"properties": {
+									"onProxyRequest": {
+										"type": "boolean",
+										"example": true,
+										"description": "Policy Active On Proxy Request"
+									},
+									"onProxyResponse": {
+										"type": "boolean",
+										"example": false,
+										"description": "Policy Active On Proxy Response"
+									},
+									"onBusinessRequest": {
+										"type": "boolean",
+										"example": false,
+										"description": "Policy Active On Business Request"
+									},
+									"onBusinessResponse": {
+										"type": "boolean",
+										"example": false,
+										"description": "Policy Active On Business Response"
+									}
+								},
+								"description": "Open API Life Cycle"
+							}
+						},
+						"description": "Authorization Configuration"
+					}
+				}
+			}
+		}
+	},
+	{
+		"uuid": "db8b4ada-efc5-47bd-9fc1-1988149e7a59",
+		"organizationid": "3c65fafc-8f3a-4243-9c4e-2821aa32d293",
+		"created": "2018-11-30T18:09:36.66613Z",
+		"updated": "2018-11-30T18:09:36.66613Z",
+		"deleted": null,
+		"isdeleted": false,
+		"crudsubjectid": "e20ca770-3c44-4a2d-b55d-2ebcaa0536bc",
+		"name": "API Authorization Policy Template 2",
+		"description": "Abyss Platform API Authorization Policy Template 2",
+		"type": "Service2",
+		"subtype": "API Authorization 2",
+		"template": {
+			"info": {
+				"title": "API Authorization Policy Template",
+				"x-type": "Service",
+				"version": "0.0.3",
+				"x-subType": "API Authorization",
+				"description": "Abyss Platform API Authorization Policy Template"
+			},
+			"paths": {
+				"/dummy/": {
+					"get": {
+						"summary": "dummy",
+						"responses": {
+							"default": {
+								"description": "dummy"
+							}
+						},
+						"description": "dummy"
+					}
+				}
+			},
+			"openapi": "3.0.1",
+			"components": {
+				"schemas": {
+					"AuthorizationConfiguration": {
+						"type": "object",
+						"required": ["appAuthorization", "userAuthorization"],
+						"properties": {
+							"appAuthorization": {
+								"enum": ["OFF", "Abyss Access Manager"],
+								"type": "string",
+								"example": "Abyss Access Manager",
+								"description": "App Access Manager"
+							},
+							"userAuthorization": {
+								"enum": ["OFF", "Abyss Access Manager"],
+								"type": "string",
+								"example": "OFF",
+								"description": "User Access Manager"
+							},
+							"openApiLifeCycle": {
+								"type": "object",
+								"required": ["onProxyRequest", "onProxyResponse", "onBusinessRequest", "onBusinessResponse"],
+								"properties": {
+									"onProxyRequest": {
+										"type": "boolean",
+										"example": true,
+										"description": "Policy Active On Proxy Request"
+									},
+									"onProxyResponse": {
+										"type": "boolean",
+										"example": false,
+										"description": "Policy Active On Proxy Response"
+									},
+									"onBusinessRequest": {
+										"type": "boolean",
+										"example": false,
+										"description": "Policy Active On Business Request"
+									},
+									"onBusinessResponse": {
+										"type": "boolean",
+										"example": false,
+										"description": "Policy Active On Business Response"
+									}
+								},
+								"description": "Open API Life Cycle"
+							}
+						},
+						"description": "Authorization Configuration"
+					}
+				}
 			}
 		}
 	}
