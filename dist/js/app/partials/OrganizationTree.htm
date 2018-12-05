@@ -49,7 +49,7 @@
 				</div>
 			</div>
 		</div>
-		<organization-tree v-if="sorg.organizationid == org.uuid" :key="sorg.uuid" v-for="(sorg,sindex) in $root.rootData.user.organizations" :org="sorg" :index="sindex" :orgs="orgs" :deforg="deforg" title="edit" :col="'sub'+sindex"></organization-tree>
+		<organization-tree v-if="sorg.organizationid == org.uuid && deforg.uuid != org.uuid" :key="sorg.uuid" v-for="(sorg,sindex) in $root.rootData.user.organizations" :org="sorg" :index="sindex" :orgs="orgs" :deforg="deforg" title="edit" :col="'sub'+sindex"></organization-tree>
 	</div>
 </template>
 

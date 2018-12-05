@@ -208,13 +208,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue!schem
 				Vue.set( this, 'directoryList', directoryList );
 				Vue.set( this, 'directoryTypes', directoryTypes );
 				Vue.set( this, 'orgOptions', orgOptions );
-				//
-				/*var directoryTemplate = await this.getList(abyss.ajax.directory_template);
-				console.log("directoryTemplate: ", directoryTemplate);
-				for (var item of directoryTypes) {
-					Vue.set( item, 'attributetemplate', directoryTemplate );
-				}*/
-				//
 				this.paginate = this.makePaginate(this.directoryList);
 				this.preload();
 			},

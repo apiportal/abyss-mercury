@@ -193,6 +193,11 @@
 										</select>
 										<em v-bind:class="{ 'show': errors.has('organization') }">{{ errors.first('organization') }}</em>
 									</div>
+									<div class="form-group" v-bind:class="{ 'has-error': errors.has('template') }">
+										<label for="template">Template:</label>
+										<textarea type="text" name="template" id="template" v-model.lazy="stringifyTemplate" v-validate="'required'" class="form-control"></textarea>
+										<em v-bind:class="{ 'show': errors.has('template') }">{{ errors.first('template') }}</em>
+									</div>
 									<div class="form-group d-flex justify-content-center">
 										<button type="button" class="btn btn-secondary btn-rounded mr-auto" v-if="!t.uuid" v-on:click="cancelAddType(t)">CANCEL</button>
 										<button type="button" class="btn btn-primary btn-rounded" v-if="!t.uuid" v-on:click="saveAddType(t)">ADD</button>

@@ -117,6 +117,69 @@
 					</div>
 				</div>
 			</aside>
+			<aside class="column column-aside manage-column column-minimize">
+				<div class="clearfix brd-b column-header column-min-button">
+					<h5 class="column-header-title">Policy Types</h5>
+				</div>
+				<div class="column-content">
+					<div class="nicescroll-bar">
+						<policy-types v-for="(t,index) in policyTypes" :key="t.uuid" :t="t" :index="index" :orgoptions="orgOptions" inline-template>
+							<article class="field-controls field-color-grey field-level-1" :class="{'is-deleted': t.isdeleted}">
+								<div class="field-sum">
+									<a class="field-link nav-caret" data-toggle="collapse" v-bind:data-target="'#t'+index" v-bind:aria-controls="'t'+index">
+										<strong class="fnt-bold">{{t.name}}</strong>
+									</a>
+									<div class="ficon-actions dropdown dropdown-hover">
+										<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
+										<ul class="dropdown-menu dropdown-menu-right" role="menu">
+											<li><a title="Add Policy Type" v-on:click="addType()"><i class="fas fa-lg fa-plus"></i> Add Policy Type</a></li>
+											<li><a title="Remove Policy Type" v-on:click="deleteType(t, index)"><i class="fa fa-trash-alt"></i> Remove Policy Type</a></li>
+										</ul>
+									</div>
+								</div>
+								<div v-bind:id="'t'+index" class="collapse field-acc">
+									<div class="form-group" v-bind:class="{ 'has-error': errors.has('name') }">
+										<label>Name</label>
+										<input class="form-control" name="name" v-model="t.name" v-validate="'required'">
+										<em v-bind:class="{ 'show': errors.has('name') }">{{ errors.first('name') }}</em>
+									</div>
+									<div class="form-group" v-bind:class="{ 'has-error': errors.has('type') }">
+										<label>Type</label>
+										<input class="form-control" name="type" v-model="t.type" v-validate="'required'">
+										<em v-bind:class="{ 'show': errors.has('type') }">{{ errors.first('type') }}</em>
+									</div>
+									<div class="form-group" v-bind:class="{ 'has-error': errors.has('subtype') }">
+										<label>Sub Type</label>
+										<input class="form-control" name="subtype" v-model="t.subtype" v-validate="'required'">
+										<em v-bind:class="{ 'show': errors.has('subtype') }">{{ errors.first('subtype') }}</em>
+									</div>
+									<div class="form-group">
+										<label>Description</label>
+										<textarea class="form-control" name="description" v-model="t.description"></textarea>
+									</div>
+									<div class="form-group" v-bind:class="{ 'has-error': errors.has('organization') }">
+										<label>Organization Id</label>
+										<select class="form-control" name="organization" v-model="t.organizationid" v-validate="'required'">
+											<option v-for="(org,index) in orgoptions" :value="org.uuid">{{org.name}}</option>
+										</select>
+										<em v-bind:class="{ 'show': errors.has('organization') }">{{ errors.first('organization') }}</em>
+									</div>
+									<div class="form-group" v-bind:class="{ 'has-error': errors.has('template') }">
+										<label for="template">Template:</label>
+										<textarea type="text" name="template" id="template" v-model.lazy="stringifyTemplate" v-validate="'required'" class="form-control"></textarea>
+										<em v-bind:class="{ 'show': errors.has('template') }">{{ errors.first('template') }}</em>
+									</div>
+									<div class="form-group d-flex justify-content-center">
+										<button type="button" class="btn btn-secondary btn-rounded mr-auto" v-if="!t.uuid" v-on:click="cancelAddType(t)">CANCEL</button>
+										<button type="button" class="btn btn-primary btn-rounded" v-if="!t.uuid" v-on:click="saveAddType(t)">ADD</button>
+										<button type="button" class="btn btn-primary btn-rounded" v-if="t.uuid" v-on:click="saveType(t)">SAVE</button>
+									</div>
+								</div>
+							</article>
+						</policy-types>
+					</div>
+				</div>
+			</aside>
 			<div class="btn-float-br btn-float-under">
 				<button class="btn btn-xl btn-green btn-circle" v-on:click="$emit('set-state', 'add', 'init')" title="ADD NEW POLICY "><i class="fas fa-plus"></i></button>
 			</div>

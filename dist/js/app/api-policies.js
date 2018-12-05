@@ -1,4 +1,45 @@
 define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue!schema-template-form'], function(abyss, Vue, axios, VeeValidate, _, moment) {
+	Vue.component('policy-types', {
+		props: ['t','index', 'orgoptions'],
+		data() {
+			return {};
+		},
+		computed: {
+			stringifyTemplate : {
+				get() {
+					return JSON.stringify(this.t.template, null, '\t');
+				},
+				set(newVal) {
+					this.t.template = JSON.parse(newVal);
+				}
+			},
+		},
+		methods: {
+			addType() {
+				this.$parent.addType();
+			},
+			cancelAddType(t) {
+				this.$parent.cancelAddType(t);
+			},
+			saveAddType(t) {
+				this.$validator.validateAll().then((result) => {
+					if (result) {
+						this.$parent.saveAddType(t);
+					}
+				});
+			},
+			saveType(item) {
+				this.$validator.validateAll().then((result) => {
+					if (result) {
+						this.$parent.saveType(item);
+					}
+				});
+			},
+			deleteType(item) {
+				this.$parent.deleteType(item);
+			},
+		}
+	});
 	Vue.component('api-policies', {
 		props: {
 			rootState: { type: String }
@@ -33,6 +74,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue!schem
 				newPolicy: {},
 				policyList: [],
 				policyTypes: [],
+				orgOptions: [],
 				end: []
 			};
 		},
@@ -66,6 +108,50 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue!schem
 			},
 			removeItemToConfig(index, arr) {
 				arr.splice(index,1);
+			},
+			addType() {
+				var ttt = _.findIndex(this.policyTypes, function(o) { return o.typename == 'newType'; });
+				if (ttt == -1) {
+					var newType = _.cloneDeep(this.policyType);
+					this.policyTypes.push(newType);
+				}
+				var i = this.policyTypes.length - 1;
+				setTimeout(() => {
+					$('#t'+i).collapse('show');
+				},0);
+			},
+			cancelAddType(t) {
+				var index = this.policyTypes.indexOf(t);
+				this.policyTypes.splice(index, 1);
+			},
+			async saveAddType(item) {
+				this.fixProps(item);
+				await this.addItem( abyss.ajax.policy_types, this.deleteProps(item), this.policyTypes );
+				this.cancelAddType(item);
+				this.$emit('set-state', 'init');
+			},
+			async saveType(item) {
+				await this.editItem( abyss.ajax.policy_types, item.uuid, this.deleteProps(item), this.policyTypes );
+				this.$emit('set-state', 'init');
+			},
+			async deleteType(item) {
+				await this.deleteItem(abyss.ajax.policy_types, item, true);
+			},
+			getTypeName(typ) {
+				var type = this.policyTypes.find((el) => el.uuid == typ );
+				if (type) {
+					return type.type;
+				} else {
+					return false;
+				}
+			},
+			getSubTypeName(typ) {
+				var type = this.policyTypes.find((el) => el.uuid == typ );
+				if (type) {
+					return type.subtype;
+				} else {
+					return false;
+				}
 			},
 			cancelPolicy() {
 				var index = this.policyList.indexOf(this.policy);
@@ -129,8 +215,10 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue!schem
 			async getPage(p, d) {
 				var subject_policies_list = this.getList(abyss.ajax.subject_policies_list + this.$root.rootData.user.uuid);
 				var policy_types = this.getList(abyss.ajax.policy_types);
-				var [policyList, policyTypes] = await Promise.all([subject_policies_list, policy_types]);
+				var organizations_list = this.getList(abyss.ajax.organizations_list);
+				var [policyList, policyTypes, orgOptions] = await Promise.all([subject_policies_list, policy_types, organizations_list]);
 				Vue.set( this, 'policyList', policyList );
+				Vue.set( this, 'orgOptions', orgOptions );
 				this.paginate = this.makePaginate(this.policyList);
 				this.preload();
 				this.policyList.forEach((value, key) => {
