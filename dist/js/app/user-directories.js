@@ -104,7 +104,10 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue!schem
 			},
 		},
 		methods: {
-			getTemplate(typ) {
+			getTemplate(typ, clear) {
+				if (clear) {
+					Vue.set(this.directory, 'directoryattributes', {} );
+				}
 				var type = this.directoryTypes.find((el) => el.uuid === typ );
 				this.template = _.cloneDeep(type.attributetemplate);
 			},

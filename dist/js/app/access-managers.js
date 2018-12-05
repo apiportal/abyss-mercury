@@ -101,10 +101,12 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue!schem
 			},
 		},
 		methods: {
-			getTemplate(typ) {
+			getTemplate(typ, clear) {
+				if (clear) {
+					Vue.set(this.accessManager, 'accessmanagerattributes', {} );
+				}
 				var type = this.accessManagerTypes.find((el) => el.uuid === typ );
 				this.template = _.cloneDeep(type.attributetemplate);
-				// Vue.set(this.accessManager, 'accessmanagerattributes', type.attributetemplate);
 			},
 			addType() {
 				var ttt = _.findIndex(this.accessManagerTypes, function(o) { return o.typename === 'newType'; });

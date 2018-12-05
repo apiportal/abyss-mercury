@@ -71,8 +71,10 @@
 					get() {
 						if (!this.attr[this.k]) {
 							Vue.set( this.attr, this.k, this.v.example );
+							// console.log("cget-: ", this.k, this.attr[this.k]);
 							return this.v.example;
 						} else {
+							// console.log("chas-: ", this.k, this.attr[this.k]);
 							return this.attr[this.k];
 						}
 					},
@@ -118,22 +120,37 @@
 				removeItemToConfig(index, arr) {
 					arr.splice(index,1);
 				},
+				fixConfig(when) {
+					if (!this.attr[this.k]) {
+						if (this.v.type == 'object') {
+							Vue.set( this.attr, this.k, {} );
+							for (var key in this.v.properties) {
+								Vue.set( this.attr[this.k], key, this.v.properties[key].example );
+							}
+						} else if (this.v.type == 'array' && this.v.items.type != 'object') {
+							Vue.set( this.attr, this.k, [] );
+							this.attr[this.k].push(this.v.items.example);
+						} else if (this.v.type == 'array' && this.v.items.type == 'object') {
+							Vue.set( this.attr, this.k, [] );
+							var obj = {};
+							for (var key in this.v.items.properties) {
+								Vue.set( obj, key, this.v.items.properties[key].example );
+							}
+							this.attr[this.k].push(obj);
+						} else {
+							Vue.set( this.attr, this.k, this.v.example );
+						}
+						// console.log(when, ": ", this.v.type, this.k, this.attr[this.k]);
+					}
+				},
 			},
 			created() {
-				if (!this.attr[this.k]) {
-					if (this.v.type == 'object') {
-						Vue.set( this.attr, this.k, {} );
-					} else if (this.v.type == 'array' && this.v.items.type == 'object') {
-						Vue.set( this.attr, this.k, [] );
-						var obj = {};
-						for (var key in this.v.items.properties) {
-							Vue.set( obj, key, this.v.items.properties[key].example );
-						}
-						this.attr[this.k].push(obj);
-					} else {
-						Vue.set( this.attr, this.k, this.v.example );
-					}
-				}
+				this.fixConfig('created');
+			},
+			watch: {
+				'attr'() {
+					this.fixConfig('watch');
+				},
 			},
 		});
     });

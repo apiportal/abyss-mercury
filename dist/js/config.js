@@ -167,7 +167,6 @@ define(['global'], function(abyss){
 		preferences: '/preferences.json',
 		widgets: '/widgets.json',
 		dashboards: '/dashboards.json',
-		policy_types: '/policyTypes.json',
 	};
 
 	/*if (isAbyssSandbox === true) {
@@ -201,7 +200,6 @@ define(['global'], function(abyss){
 		abyssDataList.dashboards = '/data/dashboards.json';
 		abyssDataList.messages_old = '/data/messages.json';
 	}
-		abyssDataList.policy_types = '/data/policyTypes.json';
 	var abyssAllDataList = Object.assign(abyssJsonList, abyssDataList);
 	// console.log("abyssAllDataList: ", abyssAllDataList);
 	var testerList = {

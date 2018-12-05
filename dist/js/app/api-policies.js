@@ -47,10 +47,12 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue!schem
 			},
 		},
 		methods: {
-			getTemplate(typ) {
+			getTemplate(typ, clear) {
+				if (clear) {
+					Vue.set(this.policy, 'policyinstance', {} );
+				}
 				var type = this.policyTypes.find((el) => el.uuid === typ );
 				this.template = _.cloneDeep(type.template);
-				// Vue.set(this.policy,'policyinstance',type.template);
 				Vue.set(this.policy.policyinstance, 'info', {} );
 				Vue.set(this.policy.policyinstance.info, 'type', this.template.info['x-type'] );
 				Vue.set(this.policy.policyinstance.info, 'subType', this.template.info['x-subType'] );
