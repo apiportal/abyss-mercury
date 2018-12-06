@@ -27,7 +27,7 @@
 						<label>Parent Organization</label>
 						<select class="form-control" name="organization" v-model="org.organizationid" v-validate="'required'">
 							<option :value="deforg.uuid">{{deforg.name}}</option>
-							<option v-for="(o,index) in orgs" :value="o.uuid" v-if="o.uuid != org.uuid">{{o.name}}</option>
+							<option v-for="(o,index) in orgs" :value="o.uuid" v-if="o.uuid != org.uuid && o.uuid != deforg.uuid">{{o.name}}</option>
 						</select>
 						<em v-bind:class="{ 'show': errors.has('organization') }">{{ errors.first('organization') }}</em>
 					</div>

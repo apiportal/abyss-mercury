@@ -1021,8 +1021,15 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 			searchAll: "",
 			searchResults: null,
 			searchPaginate: null,
+			searchSize: 10,
+			searchPath: '/*,-configuration-audit,-.*,-temperature,-metricbeat*/_search',
 			sort: {
 				key: 'name',
+				type: String,
+				order: 'asc'
+			},
+			sortSearch: {
+				key: '_source.@timestamp',
 				type: String,
 				order: 'asc'
 			},
@@ -1100,11 +1107,11 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 			setSearchPaginate(data, p) {
 				console.log("data: ", data);
 				let total = data.hits.total;
-				let size = 100;
+				let size = this.searchSize;
 				// let pages = total / size;
 				let pages = Math.ceil(total / size);
-				let first = p === 0;
-				let last = p === pages - 1;
+				let first = p == 0;
+				let last = p == pages - 1;
 				console.log("p, pages: ", p, pages);
 				let paginate = {
 					pages: [],
@@ -1126,7 +1133,22 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 					return response;
 				});
 			},
+			changeSearchSize(size) {
+				this.searchSize = size;
+				this.onSearchAll(0);
+			},
+			changeSearchPath(path) {
+				this.searchPath = path;
+				if (this.searchAll != '') {
+					this.onSearchAll(0);
+				}
+			},
 			onSearchAll(p) {
+				console.log("p, this.searchAll: ", p, this.searchAll);
+				var no = p;
+				if (p > 0) {
+					no = p * this.searchSize;
+				}
 				var vm = this;
 				var searchAll = {
 					"query": {
@@ -1134,11 +1156,11 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 							"query": this.searchAll
 						}
 					},
-					"from": p,
-					"size": 100
+					"from": no,
+					"size": this.searchSize
 				};
 				$.ajax({
-					url: abyss.abyssSearch,
+					url: abyss.abyssSearch + this.searchPath,
 					type:"POST",
 					contentType: 'application/json',
 					// accept: 'application/json',
@@ -1155,6 +1177,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 							UI.navhorz.init();
 						});
 					}
+				});
+				vm.$nextTick(() => {
+					$('.search-results .collapse').collapse('hide');
 				});
 			},
 			// ■■■■■■■■ searchUsers ■■■■■■■■ //

@@ -42,49 +42,50 @@
 		</div>
 		<div id="mobile_only_nav" class="mobile-only-nav align-items-center">
 			<small>{{abyssVersion | formatDateTime}}</small>
-			<form id="search_form" role="search" class="top-nav-search fol" v-on:submit.prevent="onSearchAll(0)">
+			<form id="search_form" role="search" class="top-nav-search fol d-flex" v-on:submit.prevent="onSearchAll(0)">
 				<div class="input-group">
 					<input type="text" name="example-input1-group2" class="form-control" placeholder="Search" v-model="searchAll">
 					<span class="input-group-btn">
 					<button type="button" class="btn btn-default" data-target="#search_form" data-toggle="collapse" aria-label="Close" aria-expanded="true"><i class="fas fa-search"></i></button>
 					</span>
 				</div>
+				<div class="input-group">
+					<select class="form-control w-auto ml-2" v-model="searchPath" v-on:change="changeSearchPath($event.target.value)">
+						<option value="/*,-configuration-audit,-.*,-temperature,-metricbeat*/_search">Search All</option>
+						<option value="/*,-logs*,-configuration-audit,-.*,-temperature,-metricbeat*/_search">Search All No Logs</option>
+						<option value="/api*/_search">Search APIs</option>
+						<option value="/contract*/_search">Search Contracts</option>
+						<option value="/message*/_search">Search Messages</option>
+						<option value="/organization*/_search">Search Organizations</option>
+						<option value="/policy*/_search">Search Policies</option>
+						<option value="/resource*/_search">Search Resources</option>
+						<option value="/subject*/_search">Search Subjects</option>
+						<option value="/logs*/_search">Search Logs</option>
+					</select>
+				</div>
 			</form>
 			<ul class="nav navbar-right top-nav">
 				<li>
-					<a href="/abyss/messages"><i class="fas fa-envelope top-nav-icon"></i></a>
+					<a href="/abyss/my-messages"><i class="fas fa-envelope top-nav-icon"></i></a>
 				</li>
 				<li class="dropdown alert-drp">
-					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fas fa-bell top-nav-icon"></i><span class="top-nav-icon-badge">5</span></a>
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fas fa-bell top-nav-icon"></i><span class="top-nav-icon-badge">0</span></a>
 					<ul class="dropdown-menu alert-dropdown" data-dropdown-in="bounceIn" data-dropdown-out="bounceOut">
 						<li class="nav-item brd-b">
 							<div class="clearfix">
-							<a class="txt-item flt-r" href="#"> clear all</a>
+							<a class="txt-item disabled txt-muted flt-r" href="#">Clear All</a>
 							<h6 class="m-0">Notifications</h6>
 							</div>
 						</li>
-						<li class="nav-item brd-b">
-							<div class="clearfix"><small class="flt-r">2pm</small><div class="txt-truncate">New subscription created</div></div>
+						<li class="nav-item brd-b txt-c">
+							<div class="clearfix"><div class="txt-truncate txt-black">No Notifications</div></div>
+						</li>
+						<!-- <li class="nav-item brd-b">
+							<div class="clearfix"><small class="flt-r">2pm</small><div class="txt-truncate fnt-bold txt-black">New subscription created</div></div>
 							<small class="d-block txt-truncate">Your customer subscribed for the basic plan. The customer will pay $25 per md-block onth.</small>
-						</li>
-						<li class="nav-item brd-b">
-							<div class="clearfix"><small class="flt-r">1pm</small><div class="txt-truncate txt-warning">Server #2 not responding</div></div>
-							<small class="d-block txt-truncate">Some technical error occurred needs to be resolved.</small>
-						</li>
-						<li class="nav-item brd-b">
-							<div class="clearfix"><small class="flt-r">4pm</small><div class="txt-truncate">2 new messages</div></div>
-							<small class="d-block txt-truncate"> The last payment for your G Suite Basic subscription failed.</small>
-						</li>
-						<li class="nav-item brd-b">
-							<div class="clearfix"><small class="flt-r">1pm</small><div class="txt-truncate">Sandy Doe</div></div>
-							<small class="d-block txt-truncate">Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, ad-block dipisci velit</small>
-						</li>
-						<li class="nav-item brd-b">
-							<div class="clearfix"><small class="flt-r">1pm</small><div class="txt-truncate txt-danger">99% server space occupied.</div></div>
-							<small class="d-block txt-truncate">consectetur, adipisci velit.</small>
-						</li>
-						<li class="">
-							<a class="d-block txt-c read-all" href="javascript:void(0)">Read all</a>
+						</li> -->
+						<li class="disabled">
+							<a class="d-block txt-c read-all" href="javascript:void(0)">Read All</a>
 						</li>
 					</ul>
 				</li>
@@ -98,7 +99,7 @@
 							<a href="#" v-on:click="$root.editProfile()" class="profile_panel_btn"><i class="fas fa-user"></i><span>My Profile</span></a>
 						</li>
 						<li>
-							<a href="/abyss/messages"><i class="fas fa-envelope"></i><span>Inbox</span></a>
+							<a href="/abyss/my-messages"><i class="fas fa-envelope"></i><span>Inbox</span></a>
 						</li>
 						<li>
 							<a href="#" id="setting_panel_btn"><i class="fas fa-cog"></i><span>Settings</span></a>
