@@ -870,10 +870,14 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 					this.$root.setState('init');
 				}
 			},
-			async regenerateApisAccessToken(con) {
+			async regenerateApisAccessToken(con, appid) {
 				var del = await this.deleteItem(abyss.ajax.resource_access_tokens, con.subscription.accessToken, false);
 				if (del) {
 					await this.createAccessTokens(con.apiid, 'API', con.subscription);
+					if (this.$root.pageCurrent == 'my-apps') {
+						var app = this.$root.appList.find( (item) => item.uuid == appid );
+						Vue.set( app, 'expiredCount', app.contracts.filter( (item) => item.subscription.accessToken.isexpired ).length );
+					}
 					this.$toast('success', {title: 'ACCESS TOKEN REGENERATED', message: 'Your Access Token successfully', position: 'topRight'});
 				}
 			},
@@ -915,6 +919,11 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 					});
 					window.swUi = swUi;
 				});
+			},
+			changeLogs(id, path) {
+				this.$root.searchAll = id;
+				this.$root.searchPath = path;
+				this.$root.onSearchAll(0);
 			},
 			// ■■■■■■■■ Props ■■■■■■■■ //
 			fillProps(item) {
@@ -1156,6 +1165,12 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 					console.log("response: ", response);
 					return response;
 				});
+			},
+			cancelSearch() {
+				this.searchResults = null;
+				this.searchPaginate = null;
+				this.searchAll = '';
+				this.searchPath = '/*,-configuration-audit,-.*,-temperature,-metricbeat*/_search';
 			},
 			changeSearchSize(size) {
 				this.searchSize = size;

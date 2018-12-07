@@ -109,7 +109,7 @@
 	</div>
 	<div th:fragment="searchAll">
 		<transition name="fade">
-		<div class="preview-test-overlay" v-on:click="searchResults = null;searchPaginate = null;" v-if="$root.searchResults"></div>
+		<div class="preview-test-overlay" v-on:click="cancelSearch()" v-if="$root.searchResults"></div>
 		</transition>
 		<transition name="slide">
 		<div class="preview-test" v-if="$root.searchResults">
@@ -131,7 +131,7 @@
 				</select>
 				<small>items per page</small>
 				<div class="column--header-button ml-auto">
-					<button type="button" class="close" v-on:click="searchResults = null;searchPaginate = null;">×</button>
+					<button type="button" class="close" v-on:click="cancelSearch()">×</button>
 				</div>
 			</div>
 			<div class="search-results">

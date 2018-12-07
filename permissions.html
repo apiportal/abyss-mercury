@@ -37,6 +37,7 @@
 							<th class="td-datetime-x" v-bind:class="sort.order" v-on:click="sortList(sort, 'created', Date)">Created / Updated / Deleted</th>
 							<th class="td-action-1"></th>
 							<th class="td-action-1"></th>
+							<th class="td-action-1"></th>
 						</tr>
 						<tr v-for="(permission, index) in sortByNested(sort, permissionList)" v-bind:key="permission.uuid" v-bind:class="{'active': isSelected(index), 'tr-deleted': permission.isdeleted}">
 							<td class="txt-c">
@@ -96,6 +97,9 @@
 									<strong class="small">DELETED:</strong>
 									<small>{{permission.deleted | formatDateTime}}</small>
 								</div>
+							</td>
+							<td class="td-action-1">
+								<a class="btn btn-xl txt-link btn-square" title="CHANGE LOGS" v-on:click="changeLogs(permission.uuid, '/subjectpermission*/_search');"><i class="fa fa-search"></i></a>
 							</td>
 							<td class="td-action-1">
 								<a class="btn btn-xl txt-link btn-square" title="EDIT PERMISSION" v-on:click="$emit('set-state', 'edit'); selectPermission(permission, index);"><i class="fas fa-edit"></i></a>

@@ -56,6 +56,7 @@
 							<th class="td-long"></th>
 							<th class="td-action-1"></th>
 							<th class="td-action-1"></th>
+							<th class="td-action-1"></th>
 						</tr>
 						<tr v-for="(user, index) in sortByNested(sort, userList)" v-bind:key="user.uuid" v-bind:class="{'active': isSelected(index), 'tr-deleted': user.isdeleted}" v-if="user.groupfilter && user.permissionfilter">
 							<td class="txt-c">
@@ -127,6 +128,9 @@
 									<strong class="small">PERMISSIONS:</strong>
 									<small class="ml--auto">{{getPermissionName(user.uuid)}}</small>
 								</div> -->
+							</td>
+							<td class="td-action-1">
+								<a class="btn btn-xl txt-link btn-square" title="CHANGE LOGS" v-on:click="changeLogs(user.uuid, '/subject*/_search');"><i class="fa fa-search"></i></a>
 							</td>
 							<td class="td-action-1">
 								<a class="btn btn-xl txt-link btn-square" title="EDIT USER" v-on:click="$emit('set-state', 'edit'); selectUser(user, index);"><i class="fas fa-edit"></i></a>

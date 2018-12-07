@@ -649,6 +649,7 @@
 				<li><a v-on:click="$parent.selectApi(api, 'edit')"><i class="fas fa-edit"></i>Edit</a></li>
 				<li><a v-on:click="previewApi(api)"><i class="fas fa-search-plus"></i>Preview</a></li>
 				<li v-if="!api.isproxyapi"><a v-on:click="$parent.createProxy(api)"><i class="fas fa-code-branch"></i>Create Proxy</a></li>
+				<li><a v-on:click="changeLogs(api.uuid, '/api*/_search');"><i class="fa fa-search"></i> Change Logs</a></li>
 				<li class="dropdown-header brd-b txt-c brd-t">ENVIRONMENT</li>
 				<li class="fow txt-c">
 					<!-- <a class="fol-6" v-bind:class="{'active': api.islive}" v-on:click="$parent.apiChangeEnvironment(api, 'islive')">Live</a> -->

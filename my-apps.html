@@ -63,6 +63,7 @@
 									<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
 									<ul class="dropdown-menu dropdown-menu-right" role="menu">
 										<li><a title="EDIT APP" v-on:click="$emit('set-state', 'edit'); selectApp(app, index);"><i class="fa fa-pencil"></i> EDIT APP</a></li>
+										<li><a title="CHANGE LOGS" v-on:click="changeLogs(app.uuid, '/subject*/_search');"><i class="fa fa-search"></i> CHANGE LOGS</a></li>
 										<li><a class="" title="DELETE APP" v-on:click="deleteApp(app, index)"><i class="fa fa-trash-alt"></i> DELETE APP</a></li>
 									</ul>
 								</div>

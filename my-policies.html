@@ -30,6 +30,7 @@
 							<th class="td-datetime-x" v-bind:class="sort.order" v-on:click="sortList(sort, 'created', Date)">Created / Updated / Deleted</th>
 							<th class="td-action-1"></th>
 							<th class="td-action-1"></th>
+							<th class="td-action-1"></th>
 						</tr>
 						<tr v-for="(policy, index) in sortByNested(sort, policyList)" v-bind:key="policy.uuid" v-bind:class="{'active': isSelected(index), 'tr-deleted': policy.isdeleted}">
 							<td class="txt-c">
@@ -56,6 +57,9 @@
 									<strong class="small">DELETED:</strong>
 									<small>{{policy.deleted | formatDateTime}}</small>
 								</div>
+							</td>
+							<td class="td-action-1">
+								<a class="btn btn-xl txt-link btn-square" title="CHANGE LOGS" v-on:click="changeLogs(policy.uuid, '/policy*/_search');"><i class="fa fa-search"></i></a>
 							</td>
 							<td class="td-action-1">
 								<a class="btn btn-xl txt-link btn-square" title="EDIT POLICY" v-on:click="$emit('set-state', 'edit'); selectPolicy(policy, index);"><i class="fas fa-edit"></i></a>

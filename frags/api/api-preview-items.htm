@@ -6,7 +6,7 @@
 		<p class="small txt-break mb-1"><strong class="lbl">API Access Token</strong>
 			<span :class="{'txt-red': con.subscription.accessToken.isexpired}">{{con.subscription.accessToken.token}}</span>
 		</p>
-		<p><button class="btn btn-sm btn-outline-blue btn-block" :class="{'btn-outline-red': con.subscription.accessToken.isexpired}" v-on:click="regenerateApisAccessToken(con)">REGENERATE ACCESS TOKEN</button></p>
+		<p><button class="btn btn-sm btn-outline-blue btn-block" :class="{'btn-outline-red': con.subscription.accessToken.isexpired}" v-on:click="regenerateApisAccessToken(con, con.subjectid)">REGENERATE ACCESS TOKEN</button></p>
 		<p class="small txt-break"><strong class="lbl">Expire date</strong> {{con.subscription.accessToken.expiredate | formatDateTimeSec}}
 		</p>
 		<p class="sandbox-item" v-if="$root.abyssSandbox">

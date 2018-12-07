@@ -46,6 +46,7 @@
 									<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
 									<ul class="dropdown-menu dropdown-menu-right" role="menu">
 										<li><a title="EDIT LICENSE" v-on:click="$emit('set-state', 'edit'); selectLicense(license, index);"><i class="fa fa-plus"></i> EDIT LICENSE</a></li>
+										<li><a title="CHANGE LOGS" v-on:click="changeLogs(license.uuid, '/license*/_search');"><i class="fa fa-search"></i> CHANGE LOGS</a></li>
 										<li><a class="" title="DELETE LICENSE" v-on:click="deleteLicense(license, index)"><i class="fa fa-trash-alt"></i> DELETE LICENSE</a></li>
 									</ul>
 								</div>
