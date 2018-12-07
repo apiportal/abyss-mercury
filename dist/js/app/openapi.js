@@ -1160,20 +1160,20 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					this.action = true;
 				} else if (e == 'qid') {
 					Vue.set(prv, 'action', 'generalize');
-					Vue.delete(prv, 'matchPattern');
-					Vue.delete(prv, 'maskPattern');
+					//Vue.delete(prv, 'matchPattern');
+					//Vue.delete(prv, 'maskPattern');
 					this.generalizationLevel = true;
 					this.action = true;
 				}
 			},
 			privacyAction(e, prv) {
 				if (e == 'remove') {
-					Vue.delete(prv, 'matchPattern');
+					//Vue.delete(prv, 'matchPattern');
 					Vue.delete(prv, 'maskPattern');
 					Vue.delete(prv, 'generalizationLevel');
 					this.generalizationLevel = false;
 					this.maskPattern = false;
-					this.matchPattern = false;
+					this.matchPattern = true;
 				} else if (e == 'mask') {
 					Vue.delete(prv, 'generalizationLevel');
 					this.generalizationLevel = false;
