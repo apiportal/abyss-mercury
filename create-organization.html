@@ -20,7 +20,7 @@
 		</div>
 		<div class="form-group" v-bind:class="{ 'has-error': errors.has('url') }">
 			<label for="url">Url</label>
-			<input type="text" name="url" id="url" class="form-control" placeholder="" v-validate="'required|url'">
+			<input type="text" name="url" id="url" class="form-control" placeholder="">
 			<em v-bind:class="{ 'show': errors.has('url') }">{{ errors.first('url') }}</em>
 		</div>
 		<div class="form-group txt-c">
