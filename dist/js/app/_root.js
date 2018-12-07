@@ -63,6 +63,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 		return Promise.reject(error);
 	});
 // ■■■■■■■■ PLUGINS ■■■■■■■■ //
+	Vue.prototype.$eventHub = new Vue();
 	// Window.Vue = Vue;
 	// Window.Vue.use(VueIziToast);
 	// Vue.prototype.$toast = VueIziToast;
@@ -376,6 +377,13 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 				var res = await this.getItem(abyss.ajax.resource_access_tokens_permission , subs.uuid);
 				if (res) {
 					Vue.set(subs, 'accessToken', res );
+					//token//////////////
+					var now = moment.utc();
+					if (moment(subs.accessToken.expiredate).isBefore(moment.utc())) {
+						Vue.set(subs.accessToken, 'isexpired', true );
+					} else {
+						Vue.set(subs.accessToken, 'isexpired', false );
+					}
 					if (subs.isdeleted) {
 						if (!subs.accessToken.isdeleted) {
 							await this.deleteItem(abyss.ajax.resource_access_tokens, subs.accessToken, false);
@@ -711,6 +719,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 							await this.getAccessTokens(cont.subscription.resource.resourcerefid, 'API', cont.subscription);
 						}
 					}
+					Vue.set( res, 'expiredCount', res.contracts.filter( (item) => item.subscription.accessToken.isexpired ).length );
 					/*if (res.subscriptions.length > 0) {
 						for (var sub of res.subscriptions) {
 							var resource = await this.getItem(abyss.ajax.resources, sub.resourceid);
@@ -797,7 +806,11 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 					}
 					if (delCon) {
 						this.$toast('success', {title: 'UNSUBSCRIBED', message: 'You have unsubscribed from API successfully', position: 'topRight'});
-						this.getMyAppList();
+						if (this.$root.pageCurrent == 'index') {
+							this.$eventHub.$emit('reload');
+						} else {
+							this.getMyAppList();
+						}
 						this.$root.setState('init');
 					}
 				}
@@ -849,8 +862,19 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 						}
 					};*/
 					this.$toast('success', {title: 'Successful Contract', message: 'Contract of ' + this.api.selectedApp.firstname + ' APP to ' + this.api.openapidocument.info.title + ' API', position: 'topLeft'});
-					this.getMyAppList();
+					if (this.$root.pageCurrent == 'index') {
+						this.$eventHub.$emit('reload');
+					} else {
+						this.getMyAppList();
+					}
 					this.$root.setState('init');
+				}
+			},
+			async regenerateApisAccessToken(con) {
+				var del = await this.deleteItem(abyss.ajax.resource_access_tokens, con.subscription.accessToken, false);
+				if (del) {
+					await this.createAccessTokens(con.apiid, 'API', con.subscription);
+					this.$toast('success', {title: 'ACCESS TOKEN REGENERATED', message: 'Your Access Token successfully', position: 'topRight'});
 				}
 			},
 			// ■■■■■■■■ testapi ■■■■■■■■ //
@@ -1318,8 +1342,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 				var permission = {
 					organizationid: this.$root.abyssOrgId,
 					crudsubjectid: this.$root.rootData.user.uuid,
-					permission: 'Token Permission of ' + this.$root.rootData.user.subjectname + ' USER',
-					description: 'Token Permission of ' + this.$root.rootData.user.subjectname + ' USER',
+					permission: 'Token Permission of ' + this.$root.rootData.user.displayname + ' USER',
+					description: 'Token Permission of ' + this.$root.rootData.user.displayname + ' USER',
 					effectivestartdate: moment.utc().toISOString(),
 					effectiveenddate: moment.utc().add(1, 'years').toISOString(),
 					subjectid: this.$root.rootData.user.uuid,
@@ -1452,6 +1476,11 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 							var sortToken = _.orderBy(fixToken, 'created', 'desc');
 							// console.log("sortToken: ", sortToken);
 							Vue.set( this.rootData.user.permission, 'accessToken', sortToken[0] );
+							if (moment(this.rootData.user.permission.accessToken.expiredate).isBefore(moment.utc())) {
+								Vue.set(this.rootData.user.permission.accessToken, 'isexpired', true );
+							} else {
+								Vue.set(this.rootData.user.permission.accessToken, 'isexpired', false );
+							}
 							for (var i = 1; i < sortToken.length; i++) {
 								// console.log("sortToken[i].created: ", sortToken[i].created);
 								await this.deleteItem(abyss.ajax.resource_access_tokens, sortToken[i], false);

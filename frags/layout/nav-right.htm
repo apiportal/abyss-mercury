@@ -86,14 +86,14 @@
 							<input type="text" name="description" id="description" v-model="$root.rootData.user.description" class="form-control">
 						</div>
 						<div class="form-group" v-if="$root.rootData.user.permission">
-							<label>Your Access Token:</label>
-							<p class="txt-break">{{$root.rootData.user.permission.accessToken.token}}</p>
+							<label>Your Access Token: <small>{{$root.rootData.user.permission.accessToken.expiredate | formatDateTimeSec}}</small></label>
+							<p class="txt-break" :class="{'txt-red': $root.rootData.user.permission.accessToken.isexpired}">{{$root.rootData.user.permission.accessToken.token}}</p>
 						</div>
 						<div class="form-group" v-if="!$root.rootData.user.permission">
 							<button class="btn btn-sm btn-outline-blue btn-block" v-on:click="$root.createUserPermAndToken()">CREATE ACCESS TOKEN</button>
 						</div>
 						<div class="form-group" v-if="$root.rootData.user.permission">
-							<button class="btn btn-sm btn-outline-blue btn-block" v-on:click="$root.recreateUserPermAndToken()">REGENERATE ACCESS TOKEN</button>
+							<button class="btn btn-sm btn-outline-blue btn-block" :class="{'btn-outline-red': $root.rootData.user.permission.accessToken.isexpired}" v-on:click="$root.recreateUserPermAndToken()">REGENERATE ACCESS TOKEN</button>
 						</div>
 						<div class="form-group d-flex justify-content-between">
 							<button type="button" class="btn btn-secondary btn-rounded profile_panel_btn" v-on:click="$root.cancelRightSidebar()">CANCEL</button>

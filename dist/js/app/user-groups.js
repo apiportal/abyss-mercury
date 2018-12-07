@@ -282,6 +282,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 				Vue.delete(item, 'lastauthenticatedat');
 				Vue.delete(item, 'lastfailedloginat');
 
+				Vue.delete(item, 'organization');
 				Vue.delete(item, 'users');
 				Vue.delete(item, 'membershiplist');
 				Vue.delete(item, 'userList');
@@ -370,6 +371,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 				this.userList = userList.filter( (item) => !item.isdeleted );
 				this.memberOptions = memberOptions.filter( (item) => !item.isdeleted );
 				this.permissionOptions = permissionOptions;
+				this.orgOptions = orgOptions.filter( (item) => !item.isdeleted );
 
 				// this.groupList = _.map(groupList, o => _.extend({users: []}, o));
 				this.groupList = _.map(groupList, o => _.extend({permissionfilter: true, groupfilter: true, userfilter: true}, o));
@@ -379,9 +381,10 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 					Vue.set(value, 'membershiplist', flt);
 					Vue.set(value, 'users', grpusr);
 					Vue.set(value, 'userCount', grpusr.length);
+					var org = this.orgOptions.find((item) => item.uuid == value.organizationid );
+					Vue.set(value, 'organization', org);
 				});
 
-				this.orgOptions = orgOptions.filter( (item) => !item.isdeleted );
 				this.paginate = this.makePaginate(this.groupList);
 				this.preload();
 			},

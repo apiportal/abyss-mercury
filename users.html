@@ -51,12 +51,13 @@
 							<th class="td-name" v-bind:class="sort.order" v-on:click="sortList(sort, 'displayname', String)">Display Name</th>
 							<th class="td-datetime-x" v-bind:class="sort.order" v-on:click="sortList(sort, 'created', Date)">Created / Updated / Deleted</th>
 							<th class="td-datetime" v-bind:class="sort.order" v-on:click="sortList(sort, 'totallogincount', Number)">Logins</th>
-							<th class="td-datetime" v-bind:class="sort.order" v-on:click="sortList(sort, 'failedlogincount', Number)">Failed Logins</th>
+							<!-- <th class="td-datetime" v-bind:class="sort.order" v-on:click="sortList(sort, 'failedlogincount', Number)">Failed Logins</th> -->
+							<th class="td-name" v-bind:class="sort.order" v-on:click="sortList(sort, 'organization.name', String)">Organization</th>
 							<th class="td-long"></th>
 							<th class="td-action-1"></th>
 							<th class="td-action-1"></th>
 						</tr>
-						<tr v-for="(user, index) in sortBy(sort, userList)" v-bind:key="user.uuid" v-bind:class="{'active': isSelected(index), 'tr-deleted': user.isdeleted}" v-if="user.groupfilter && user.permissionfilter">
+						<tr v-for="(user, index) in sortByNested(sort, userList)" v-bind:key="user.uuid" v-bind:class="{'active': isSelected(index), 'tr-deleted': user.isdeleted}" v-if="user.groupfilter && user.permissionfilter">
 							<td class="txt-c">
 								<i class="fas fa-circle" title="Not Activated" v-if="!user.isactivated"></i>
 								<i class="fas fa-check-circle txt-green" title="Activated" v-if="user.isactivated"></i>
@@ -95,8 +96,8 @@
 									</div>
 									<strong class="ml-auto">{{user.totallogincount}}</strong>
 								</div>
-							</td>
-							<td>
+							<!-- </td>
+							<td> -->
 								<div class="d-flex align-items-center">
 									<div class="d-block small">
 										<strong class="d-block">LAST FAILED</strong>
@@ -107,6 +108,14 @@
 							</td>
 							<td>
 								<div class="">
+									<strong class="small">ORGANIZATION:</strong>
+									<small class="ml--auto">{{user.organization.name}}</small>
+								</div>
+								<div class="">
+									<strong class="small">DIRECTORY:</strong>
+									<small class="ml--auto">{{getDirName(user.subjectdirectoryid)}}</small>
+								</div>
+								<div class="">
 									<strong class="small">GROUP:</strong>
 									<small v-for="(u, index) in user.groups">
 										{{u.firstname}}<span v-if="index != (user.groups.length - 1)">, </span>
@@ -114,14 +123,10 @@
 									<!-- <small class="ml--auto">{{getGroupName(user.uuid)}}</small> -->
 									<!-- <small class="ml--auto">{{user.groupslist}}</small> -->
 								</div>
-								<div class="">
+								<!-- <div class="">
 									<strong class="small">PERMISSIONS:</strong>
 									<small class="ml--auto">{{getPermissionName(user.uuid)}}</small>
-								</div>
-								<div class="">
-									<strong class="small">DIRECTORY:</strong>
-									<small class="ml--auto">{{getDirName(user.subjectdirectoryid)}}</small>
-								</div>
+								</div> -->
 							</td>
 							<td class="td-action-1">
 								<a class="btn btn-xl txt-link btn-square" title="EDIT USER" v-on:click="$emit('set-state', 'edit'); selectUser(user, index);"><i class="fas fa-edit"></i></a>

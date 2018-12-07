@@ -116,7 +116,11 @@
 <div class="hide">
 	<div id="my-apps-subscriptions">
 		<div class="card dash-card-2" v-if="!isLoading">
-			<div class="card-title handle txt-white" :class="'bg-'+data.color"><h6 class="txt-white d-flex">{{data.title}} <span class="mx-2">{{$root.appList.length}}</span> / <span class="mx-2">{{$root.myTotalSubscriptions}}</span></h6><widget-controls :data="data"></widget-controls></div>
+			<div class="card-title d-flex handle txt-white" :class="'bg-'+data.color">
+				<h6 class="txt-white d-flex">{{data.title}} <span class="mx-2">{{$root.appList.length}}</span> / <span class="mx-2">{{$root.myTotalSubscriptions}}</span></h6>
+				<button type="button" class="txt-white ml-auto mr-6" v-on:click="reload()"><i class="fas fa-redo-alt" :class="{'fa-spin': isReloading}"></i></button>
+				<widget-controls :data="data"></widget-controls>
+			</div>
 			<div class="fow">
 				<div class="fol-sm" v-if="data.chart">
 					<highcharts v-if="data.chart" :options="chartOptions"></highcharts>
@@ -159,7 +163,11 @@
 	</div>
 	<div id="my-business-apis">
 		<div class="card dash-card-2" v-if="!isLoading">
-			<div class="card-title handle txt-white" :class="'bg-'+data.color"><h6 class="txt-white d-flex">{{data.title}} <span class="mx-2">{{myBusinessApiList.length}}</span></h6><widget-controls :data="data"></widget-controls></div>
+			<div class="card-title d-flex handle txt-white" :class="'bg-'+data.color">
+				<h6 class="txt-white d-flex">{{data.title}} <span class="mx-2">{{myBusinessApiList.length}}</span></h6>
+				<button type="button" class="txt-white ml-auto mr-6" v-on:click="reload()"><i class="fas fa-redo-alt" :class="{'fa-spin': isReloading}"></i></button>
+				<widget-controls :data="data"></widget-controls>
+			</div>
 			<div class="fow">
 				<div class="fol-sm" v-if="data.chart">
 					<highcharts v-if="data.chart" :options="chartOptions"></highcharts>
@@ -178,7 +186,11 @@
 	</div>
 	<div id="my-proxy-apis">
 		<div class="card dash-card-2" v-if="!isLoading">
-			<div class="card-title handle txt-white" :class="'bg-'+data.color"><h6 class="txt-white d-flex">{{data.title}} <span class="mx-2">{{myProxyApiList.length}}</span> / <span class="mx-2">{{mySubscribersCount}}</span></h6><widget-controls :data="data"></widget-controls></div>
+			<div class="card-title d-flex handle txt-white" :class="'bg-'+data.color">
+				<h6 class="txt-white d-flex">{{data.title}} <span class="mx-2">{{myProxyApiList.length}}</span> / <span class="mx-2">{{mySubscribersCount}}</span></h6>
+				<button type="button" class="txt-white ml-auto mr-6" v-on:click="reload()"><i class="fas fa-redo-alt" :class="{'fa-spin': isReloading}"></i></button>
+				<widget-controls :data="data"></widget-controls>
+			</div>
 			<div class="fow">
 				<div class="fol-sm" v-if="data.chart">
 					<highcharts v-if="data.chart" :options="chartOptions"></highcharts>
@@ -186,7 +198,7 @@
 				<div class="fol-sm">
 					<div class="card-scroll">
 						<div class="my-proxy-bar">
-							<api-list v-for="(api, index) in sortByNested(sortProxy, myProxyApiList)" :api="api" :index="index" :subs="true" :business="true" :key="api.uuid" inline-template>
+							<api-list v-for="(api, index) in myProxyApiList" :api="api" :index="index" :subs="true" :business="true" :key="api.uuid" inline-template>
 								<div th:replace="webroot/frags/api/api-preview.htm :: apiDash"></div>
 							</api-list>
 						</div>
@@ -197,7 +209,11 @@
 	</div>
 	<div id="apis-shared-with-me">
 		<div class="card dash-card" v-if="!isLoading">
-			<div class="card-title handle" :class="'bg-'+data.color"><h6 class="txt-white">{{data.title}} <span class="mx-2">{{apisSharedWithMe.length}}</span></h6><widget-controls :data="data"></widget-controls></div>
+			<div class="card-title d-flex handle" :class="'bg-'+data.color">
+				<h6 class="txt-white">{{data.title}} <span class="mx-2">{{apisSharedWithMe.length}}</span></h6>
+				<button type="button" class="txt-white ml-auto mr-6" v-on:click="reload()"><i class="fas fa-redo-alt" :class="{'fa-spin': isReloading}"></i></button>
+				<widget-controls :data="data"></widget-controls>
+			</div>
 			<div class="card-scroll">
 				<div class="shared-with-bar">
 					<api-list v-for="(api, index) in apisSharedWithMe" :api="api" :index="index" :key="api.uuid" :subs="false" :business="false" inline-template>
@@ -209,8 +225,9 @@
 	</div>
 	<div id="apis-shared-by-me">
 		<div class="card dash-card" v-if="!isLoading">
-			<div class="card-title handle" :class="'bg-'+data.color">
+			<div class="card-title d-flex handle" :class="'bg-'+data.color">
 				<h6 class="txt-white">{{data.title}} <span class="mx-2">{{apisSharedByMe.length}}</span></h6>
+				<button type="button" class="txt-white ml-auto mr-6" v-on:click="reload()"><i class="fas fa-redo-alt" :class="{'fa-spin': isReloading}"></i></button>
 				<widget-controls :data="data"></widget-controls>
 			</div>
 			<div class="card-scroll">
@@ -256,7 +273,7 @@
 						<option value="2/3">2/3</option>
 					</select>
 				</li>
-				<li class="p-2" v-if="$parent.data.chart">
+				<li class="p-2" v-if="$parent.chartOptions">
 					<label>Change Chart Type</label>
 					<select v-model="$parent.data.chart" class="form-control" v-on:change="redraw($event.target.value);$parent.$parent.$parent.saveDash()">
 						<option :value="null">None</option>

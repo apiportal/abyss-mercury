@@ -120,6 +120,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 		data() {
 			return {
 				isLoading: true,
+				isReloading: false,
 				apisSharedWithMe: [],
 				myApiSubscriptions: [],
 				permissionsSharedWithMe: [],
@@ -172,6 +173,11 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 				}
 				this.apisSharedWithMe = this.apisSharedWithMe.filter((el) => !el.isShareDeleted );
 			},
+			async reload() {
+				this.isReloading = true;
+				await this.getApisSharedWithMe();
+				this.isReloading = false;
+			},
 		},
 		async created() {
 			await this.getApisSharedWithMe();
@@ -187,6 +193,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 		data() {
 			return {
 				isLoading: true,
+				isReloading: false,
 				apisSharedByMe: [],
 				myApiSubscriptions: [],
 				permissionsSharedByMe: [],
@@ -242,6 +249,11 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 					// }
 				}
 			},
+			async reload() {
+				this.isReloading = true;
+				await this.getApisSharedByMe();
+				this.isReloading = false;
+			},
 		},
 		async created() {
 			await this.getApisSharedByMe();
@@ -291,6 +303,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 		data() {
 			return {
 				isLoading: true,
+				isReloading: false,
 				sort: {
 					key: 'uuid',
 					type: String,
@@ -362,7 +375,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 
 				var [myApiSubscriptions, myProxyApiList, myBusinessApiList] = await Promise.all([permission_my_apis, my_proxy_api_list, my_business_api_list]);
 
-				this.myApiSubscriptions = myApiSubscriptions.filter((el) => el.resourceactionid === abyss.defaultIds.invokeApi );
+				this.myApiSubscriptions = myApiSubscriptions.filter((el) => el.resourceactionid === abyss.defaultIds.invokeApi && !el.isdeleted );
 				this.myBusinessApiList = myBusinessApiList;
 				this.myProxyApiList = myProxyApiList;
 				this.mySubscribersCount = this.myApiSubscriptions.length;
@@ -382,15 +395,26 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 					Vue.set(item, 'subjectName', subjectName.displayname);
 					Vue.set(item, 'subjectOwner', subjectOwner.displayname);
 				}
+				this.myProxyApiList = _.orderBy(this.myProxyApiList, (item) => { return item.subscriptions.length; }, 'desc');
+			},
+			async reload() {
+				this.isReloading = true;
+				await this.getProxyApis();
+				this.chart();
+				this.isReloading = false;
+			},
+			chart() {
+				if (this.data.chart) {
+					var mySubscribers = this.myProxyApiList.filter((el) => el.subscriptionsCount !== 0 );
+					this.chartOptions.chart = this.data.chart;
+					this.chartOptions.series[0].data = _.map(mySubscribers, v => ({"y":v.subscriptionsCount, "id":v.uuid, "name":v.openapidocument.info.title}));
+				}
 			},
 		},
 		async created() {
+			this.$eventHub.$on('reload', this.reload);
 			await this.getProxyApis();
-			if (this.data.chart) {
-				var mySubscribers = this.myProxyApiList.filter((el) => el.subscriptionsCount !== 0 );
-				this.chartOptions.chart = this.data.chart;
-				this.chartOptions.series[0].data = _.map(mySubscribers, v => ({"y":v.subscriptionsCount, "id":v.uuid, "name":v.openapidocument.info.title}));
-			}
+			this.chart();
 			this.isLoading = false;
 			this.preload('.my-proxy-bar');
 			console.log("my-proxy-apis: ");
@@ -403,6 +427,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 		data() {
 			return {
 				isLoading: true,
+				isReloading: false,
 				sort: {
 					key: 'uuid',
 					type: String,
@@ -450,14 +475,23 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 					}
 				}
 			},
+			async reload() {
+				this.isReloading = true;
+				await this.getBusinessApis();
+				this.chart();
+				this.isReloading = false;
+			},
+			chart() {
+				if (this.data.chart) {
+					var myBusinessApis = this.myBusinessApiList.filter((el) => el.proxies.length !== 0 );
+					this.chartOptions.chart = this.data.chart;
+					this.chartOptions.series[0].data = _.map(myBusinessApis, v => ({"y":v.proxies.length, "id":v.uuid, "name":v.openapidocument.info.title}));
+				}
+			},
 		},
 		async created() {
 			await this.getBusinessApis();
-			if (this.data.chart) {
-				var myBusinessApis = this.myBusinessApiList.filter((el) => el.proxies.length !== 0 );
-				this.chartOptions.chart = this.data.chart;
-				this.chartOptions.series[0].data = _.map(myBusinessApis, v => ({"y":v.proxies.length, "id":v.uuid, "name":v.openapidocument.info.title}));
-			}
+			this.chart();
 			this.isLoading = false;
 			this.preload('.my-business-bar');
 			console.log("my-business-apis: ");
@@ -470,6 +504,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 		data() {
 			return {
 				isLoading: true,
+				isReloading: false,
 				sortApp: {
 					key: 'contracts',
 					type: Array,
@@ -494,19 +529,24 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 		},
 		computed : {},
 		methods : {
-			async xxx() {
-				for (var item of this.yyy) {
-					
+			async reload() {
+				this.isReloading = true;
+				await this.getMyAppList('dashboard');
+				this.chart();
+				this.isReloading = false;
+			},
+			chart() {
+				if (this.data.chart) {
+					var mySubscriptions = this.$root.appList.filter((el) => el.contracts.length !== 0 );
+					this.chartOptions.chart = this.data.chart;
+					this.chartOptions.series[0].data = _.map(mySubscriptions, v => ({"y":v.contracts.length, "id":v.uuid, "name":v.firstname}));
 				}
 			},
 		},
 		async created() {
+			this.$eventHub.$on('reload', this.reload);
 			// await this.getMyAppList('dashboard');
-			if (this.data.chart) {
-				var mySubscriptions = this.$root.appList.filter((el) => el.contracts.length !== 0 );
-				this.chartOptions.chart = this.data.chart;
-				this.chartOptions.series[0].data = _.map(mySubscriptions, v => ({"y":v.contracts.length, "id":v.uuid, "name":v.firstname}));
-			}
+			this.chart();
 			this.isLoading = false;
 			this.preload('.my-apps-bar');
 			console.log("my-apps-subscriptions: ");

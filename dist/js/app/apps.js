@@ -249,6 +249,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 				Vue.delete(item, 'resource');
 				Vue.delete(item, 'permission');
 				Vue.delete(item, 'accessToken');
+				Vue.delete(item, 'expiredCount');
 				item.effectivestartdate = moment.utc(this.app.effectivestartdate).toISOString();
 				item.effectiveenddate = moment.utc(this.app.effectiveenddate).toISOString();
 				return item;
@@ -310,6 +311,13 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 					return true;
 				}*/
 				return true;
+			},
+			async regenerateAppsAccessToken() {
+				var del = await this.deleteItem(abyss.ajax.resource_access_tokens, this.app.permission.accessToken, false);
+				if (del) {
+					await this.createAccessTokens(this.app.uuid, 'APP', this.app.permission);
+					this.$toast('success', {title: 'ACCESS TOKEN REGENERATED', message: 'Your Access Token successfully', position: 'topRight'});
+				}
 			},
 			async appAction(act) {
 				var result = await this.$validator.validateAll();

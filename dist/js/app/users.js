@@ -259,6 +259,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 				Vue.delete(item, 'lastauthenticatedat');
 				Vue.delete(item, 'lastfailedloginat');
 
+				Vue.delete(item, 'organization');
 				Vue.delete(item, 'groups');
 				Vue.delete(item, 'membershiplist');
 				Vue.delete(item, 'groupslist');
@@ -340,7 +341,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 				this.groupOptions = groupOptions;
 				this.memberOptions = memberOptions;
 				this.permissionOptions = permissionOptions;
-
+				this.orgOptions = orgOptions;
 				this.userList = _.map(userList, o => _.extend({permissionfilter: true, groupfilter: true, userfilter: true}, o));
 				this.userList.forEach(async (value, key) => {
 					var membershiplist = await this.getList(abyss.ajax.subject_memberships_subject + value.uuid);
@@ -354,9 +355,10 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 						Vue.set(value, 'groups', []);
 						Vue.set(value, 'groupslist', '');
 					}
+					var org = this.orgOptions.find((item) => item.uuid == value.organizationid );
+					Vue.set(value, 'organization', org);
 				});
 				
-				this.orgOptions = orgOptions;
 				this.paginate = this.makePaginate(this.userList);
 				this.preload();
 			},
