@@ -56,7 +56,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 					"secondaryemail": null,
 					"effectivestartdate": moment.utc().format('YYYY-MM-DD HH:mm:ss'),
 					"effectiveenddate": moment.utc().add(50, 'years').format('YYYY-MM-DD HH:mm:ss'),
-					"password": null,
+					"password": 'temppassword',
 					"picture": null,
 					"totallogincount": null,
 					"failedlogincount": null,
