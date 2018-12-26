@@ -209,7 +209,10 @@ define(['global'], function(abyss){
 		faber: 'c053c421-cb53-4ceb-acd0-a77c1f65438b',
 		abyss: '3c65fafc-8f3a-4243-9c4e-2821aa32d293',
 		monasdyas: '89db8aca-51b3-435b-a79d-e1f4067d2076',
+		himalaya: '2f0680b1-7ce3-4246-95a2-ae133e384512',
+		ihsan: '9adac0e8-5f5b-4612-97dc-5bb6ab9de4ce',
 		org: 'monasdyas',
+		orgabyss: 'abyss',
 	}
 	// console.log("abyssAllDataList: ", abyssAllDataList);
 	return {
@@ -225,11 +228,14 @@ define(['global'], function(abyss){
 		abyssCredentials: abyssCredentials,
 		abyssSearch: abyssSearch,
 		ajax: abyssAllDataList,
-		echoPost: 'http://192.168.10.38:11080/post',
+		echoPost: httpBinUrl,
 		sandbox: {
 			session: 'a51666ff540afd276ebd145681808149',
 			// userId: testerList.faik,
 			// orgId: testerList.abyss,
+			// userId: testerList.ihsan,
+			// orgId: testerList.abyss,
+			// orgName: testerList.orgabyss,
 			userId: testerList.ilkiz,
 			orgId: testerList.monasdyas,
 			orgName: testerList.org,

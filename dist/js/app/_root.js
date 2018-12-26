@@ -701,7 +701,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 						var organization = this.$root.rootData.user.organizations.find( (e) => e.uuid == res.organizationid );
 						Vue.set(res, 'organization', organization.name );
 					}
-					var permissions_app = this.getList(abyss.ajax.permissions_app + res.uuid);
+					// var permissions_app = this.getList(abyss.ajax.permissions_app + res.uuid);
+					var permissions_app = this.getList(abyss.ajax.permissions_subject + res.uuid);
 					var contracts_app = this.getList(abyss.ajax.contracts_app + res.uuid);
 					var [subscriptions, contracts] = await Promise.all([permissions_app, contracts_app]);
 					subscriptions = subscriptions.filter((el) => el.resourceactionid === abyss.defaultIds.invokeApi && el.isdeleted === false );
