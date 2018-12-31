@@ -53,7 +53,6 @@
 							<th class="td-datetime" v-bind:class="sort.order" v-on:click="sortList(sort, 'totallogincount', Number)">Logins</th>
 							<!-- <th class="td-datetime" v-bind:class="sort.order" v-on:click="sortList(sort, 'failedlogincount', Number)">Failed Logins</th> -->
 							<th class="td-name" v-bind:class="sort.order" v-on:click="sortList(sort, 'organization.name', String)">Organization</th>
-							<th class="td-long"></th>
 							<th class="td-action-1"></th>
 							<th class="td-action-1"></th>
 							<th class="td-action-1"></th>
@@ -108,7 +107,7 @@
 								</div>
 							</td>
 							<td>
-								<div class="">
+								<div class="" v-if="user.organization">
 									<strong class="small">ORGANIZATION:</strong>
 									<small class="ml--auto">{{user.organization.name}}</small>
 								</div>
