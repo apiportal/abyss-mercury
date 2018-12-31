@@ -1773,9 +1773,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				tagOptions: [],
 				groupOptions: [],
 				stateOptions: [],
-
 				dropSpecsOptions: {
-					url: abyss.echoPost,
+					url: abyss.echoPost + 'post',
 					method: 'post',
 					uploadMultiple: false,
 					maxFiles: 1,
@@ -1790,7 +1789,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					}
 				},
 				dropImageOptions: {
-					url: abyss.echoPost,
+					url: abyss.echoPost + 'post',
 					method: 'post',
 					uploadMultiple: false,
 					maxFiles: 1,
