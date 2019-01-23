@@ -577,7 +577,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 					draggable: '.card-item',
 					animation: 150,
 				},
-				preferences: [],
 				dashboards: [],
 				end: []
 			};
@@ -590,7 +589,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 			},
 			activeDashboard: {
 				get() {
-					return this.dashboards.find((el) => el.uuid === this.preferences.activedashboardid );
+					return this.dashboards.find((el) => el.uuid === this.$root.preferences.activedashboardid );
 				},
 				set(newVal) {
 					this.getPage();
@@ -627,41 +626,58 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 			},
 			deleteWidget(item) {
 				// var index = this.activeDashboard.widgets.indexOf(item);
-				var index = _.findIndex(this.activeDashboard.widgets, { 'uuid': item.uuid })
+				var index = _.findIndex(this.activeDashboard.widgets, { 'uuid': item.uuid });
 				this.activeDashboard.widgets.splice(index, 1);
 				this.saveDash();
 			},
 			deleteProps(obj) {
-				var item = this.cleanProps(obj);
-				Vue.delete(item, 'comp');
+				// var item = this.cleanProps(obj);
+				var item = _.cloneDeep(obj);
 				if (item.widgets) {
 					for (var wgt of item.widgets) {
 						Vue.delete( wgt, 'comp' );
+						Vue.delete(wgt, 'created');
+						Vue.delete(wgt, 'updated');
+						Vue.delete(wgt, 'deleted');
+						Vue.delete(wgt, 'isdeleted');
+						Vue.delete(wgt, 'organizationid');
+						Vue.delete(wgt, 'crudsubjectid');
 					}
 				}
 				return item;
 			},
 			savePref() {
-				console.log("savePref: ", this.deleteProps(this.preferences));
-				// var item = await this.editItem( abyss.ajax.preferences, this.preferences.uuid, this.deleteProps(this.preferences) );
+				console.log("savePref: ", this.$root.preferences);
+				window.localStorage.setItem('preferences', JSON.stringify(this.$root.preferences));
 			},
 			saveDash() {
-				console.log("saveDash: ", this.deleteProps(this.activeDashboard));
-				// var item = await this.editItem( abyss.ajax.dashboarda, this.activeDashboard.uuid, this.deleteProps(this.activeDashboard) );
+				console.log("this.activeDashboard: ", this.activeDashboard);
+				// var item = this.dashboards.find((el) => el.uuid === this.activeDashboard.uuid )
+				var items = _.cloneDeep(this.dashboards);
+				for (var dash of items) {
+					for (var wgt of dash.widgets) {
+						Vue.delete( wgt, 'comp' );
+						Vue.delete(wgt, 'created');
+						Vue.delete(wgt, 'updated');
+						Vue.delete(wgt, 'deleted');
+						Vue.delete(wgt, 'isdeleted');
+						Vue.delete(wgt, 'organizationid');
+						Vue.delete(wgt, 'crudsubjectid');
+					}
+				}
+				console.log("dashs: ", items);
+				window.localStorage.setItem('dashboards', JSON.stringify(this.dashboards));
+				this.savePref();
 			},
-			addDash(dash) {
-				console.log("addDash: ", this.deleteProps(dash));
-				// var item = await this.addItem(abyss.ajax.dashboarda, this.deleteProps(dash), this.dashboarda);
-				// if (item) {
-					this.dashboards.push(dash); //
-					this.activateDashboard(dash);
-				// }
+			addDash(item) {
+				this.dashboards.push(this.deleteProps(item)); //
+				this.activateDashboard(item);
+				this.saveDash();
 			},
 			copyDashboard(c) {
 				var item = _.cloneDeep(c);
 				Vue.set( item, 'name', item.name + ' Copy' );
 				Vue.set( item, 'uuid', this.uuidv4() ); // del
-				console.log("item: ", item);
 				this.addDash(item);
 			},
 			deleteDashboard(item) {
@@ -675,14 +691,16 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 					if (this.myDashboards.length) {
 						this.activateDashboard(this.myDashboards[0])
 					} else {
-						this.createDashboard('a657b478-55d3-42ea-a7b1-e3cbb8210296');
+						// this.createDashboard('a657b478-55d3-42ea-a7b1-e3cbb8210296');
+						this.createDashboard('ca099337-95ac-4bde-9ec0-4634db46055e');
 					}
+					this.saveDash();
 				// }
 			},
 			activateDashboard(item) {
-				Vue.set( this.preferences, 'activedashboardid', item.uuid );
-				this.savePref();
+				Vue.set( this.$root.preferences, 'activedashboardid', item.uuid );
 				Vue.set( this, 'activeDashboard', item );
+				this.savePref();
 				console.log("this.activeDashboard.widgets: ", this.activeDashboard.widgets);
 			},
 			createDashboard(ev) {
@@ -691,6 +709,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 					Vue.set( newDash, 'uuid', this.uuidv4() ); // del
 					Vue.set( newDash, 'crudsubjectid', this.$root.rootData.user.uuid ); // del
 					this.addDash(newDash);
+					this.savePref();
 				}
 			},
 			selectWidgets() {
@@ -730,13 +749,19 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 				}
 			},
 			async getPage(p, d) {
-				var inc = _.filter(this.widgets, (v) => _.includes( this.activeDashboard.widgets.map(e => e.uuid), v.uuid));
-				var exc = _.reject(this.widgets, (v) => _.includes( this.activeDashboard.widgets.map(e => e.uuid), v.uuid));
-				for (var item of inc) {
-					Vue.set( item, 'isactive', true );
-				}
-				for (var item of exc) {
-					Vue.set( item, 'isactive', false );
+				if (this.activeDashboard.widgets.length) {
+					var inc = _.filter(this.widgets, (v) => _.includes( this.activeDashboard.widgets.map(e => e.uuid), v.uuid));
+					var exc = _.reject(this.widgets, (v) => _.includes( this.activeDashboard.widgets.map(e => e.uuid), v.uuid));
+					for (var item of inc) {
+						Vue.set( item, 'isactive', true );
+					}
+					for (var item of exc) {
+						Vue.set( item, 'isactive', false );
+					}
+				} else {
+					for (var item of this.widgets) {
+						Vue.set( item, 'isactive', false );
+					}
 				}
 				_.merge( this.activeDashboard.widgets, _.map( inc, ( obj ) => {
 				    return _.pick( obj, 'uuid', 'comp' );
@@ -749,11 +774,12 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 			await this.getMyAppList('dashboard');
 			this.widgets = await this.getList(abyss.ajax.widgets);
 			// var dashboards = await this.getList(abyss.ajax.dashboards + abyss.defaultIds.organization);
-			this.dashboards = await this.getList(abyss.ajax.dashboards);
-			// var preferences = await this.getItem(abyss.ajax.preferences, this.$root.rootData.user.uuid);
-			var preferences = await this.getList(abyss.ajax.preferences);
-			console.log("preferences: ", preferences);
-			this.preferences = preferences[0];
+			var dashboards = JSON.parse(window.localStorage.getItem('dashboards'));
+			if (!dashboards) {
+				dashboards = await this.getList(abyss.ajax.dashboards);
+				window.localStorage.setItem('dashboards', JSON.stringify(dashboards));
+			}
+			this.dashboards = dashboards;
 			await this.getPage(1);
 			this.isLoading = false;
 			this.preload();

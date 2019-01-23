@@ -35,8 +35,8 @@
 								<a v-on:click="deleteDashboard(activeDashboard)" href="#"><i class="fa fa-trash-alt"></i> Delete Dashboard</a>
 							</li>
 							<li class="dropdown-header brd-b txt-c brd-t">MY DASHBOARDS</li>
-							<!-- <li class="dropdown-item" v-for="(d, index) in preferences.dashboards" :class="{'active': d.isactive}"> -->
-							<li class="dropdown-item" v-if="d.crudsubjectid == $root.rootData.user.uuid" v-for="(d, index) in dashboards" :class="{'active': d.uuid == preferences.activedashboardid}">
+							<!-- <li class="dropdown-item" v-for="(d, index) in $root.preferences.dashboards" :class="{'active': d.isactive}"> -->
+							<li class="dropdown-item" v-if="d.crudsubjectid == $root.rootData.user.uuid" v-for="(d, index) in dashboards" :class="{'active': d.uuid == $root.preferences.activedashboardid}">
 								<a v-on:click="activateDashboard(d)" :title="d.uuid" href="#">{{d.name}}</a>
 							</li>
 							<li class="dropdown-header brd-b txt-c brd-t"><i class="fa fa-plus"></i> CREATE NEW DASHBOARD</li>

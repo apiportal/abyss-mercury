@@ -1134,6 +1134,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 				readonly: true,
 			},
 			myTotalSubscriptions: 0,
+			preferences: {},
 			end: []
 		},
 		methods: {
@@ -1464,6 +1465,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 				await this.getMyUserGroup(id);
 				await this.getMyUserPerm(id);
 				await this.getOrganizations(id);
+				await this.getMyPreferences();
 			},
 			async getMyUserGroup() {
 				Vue.set(this.rootData.user, 'groups', [] );
@@ -1515,6 +1517,23 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 			async getYamls() {
 				var abyssYamlList = await this.getList(abyss.ajax.api_yaml_list);
 				Vue.set(this.$root, 'abyssYamlList', _.sortBy(abyssYamlList));
+			},
+			async getMyPreferences() {
+				var preferences = JSON.parse(window.localStorage.getItem('preferences'));
+				if (!preferences) {
+					preferences = await this.getList(abyss.ajax.preferences);
+					window.localStorage.setItem('preferences', JSON.stringify(preferences));
+				}
+				this.preferences = preferences;
+				this.darkSide();
+			},
+			darkSide() {
+				if(this.$root.preferences.uisettings.darksidebar) {
+					$('body').addClass("dark-nav");
+				} else {
+					$('body').removeClass("dark-nav");
+				}
+				window.localStorage.setItem('preferences', JSON.stringify(this.$root.preferences));
 			},
 		},
 		computed: {

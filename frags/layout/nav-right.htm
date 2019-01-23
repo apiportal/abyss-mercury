@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <body>
 	<div class="right-sidebars" th:fragment="navRight">
-		<div class="setting-panel">
+		<div class="setting-panel" v-if="$root.preferences.uisettings">
 			<ul class="right-sidebar nicescroll-bar pa-0">
 				<li><button type="button" class="close" id="setting_panel_btn">×</button><h5 class="mb-0 py-2 px-3">Settings</h5></li>
 				<li>
@@ -11,8 +11,8 @@
 							<div class="d-flex align-items-center">
 								<span class="switch-txt">Dark Sidebar</span>
 								<span class="switch switch-dark ml-auto">
-									<input type="checkbox" name="darkSidebar" id="darkSidebar">
-									<label for="darkSidebar"></label>
+									<input type="checkbox" name="darkSidebarSwitch" id="darkSidebarSwitch" v-model="$root.preferences.uisettings.darksidebar" v-on:change="darkSide()">
+									<label for="darkSidebarSwitch"></label>
 								</span>
 							</div>
 						</li>
