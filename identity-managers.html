@@ -24,7 +24,7 @@
 							<th class="td-name" v-bind:class="sort.order" v-on:click="sortList(sort, 'directorytypeid', String)">Type</th>
 							<th class="td-bool" v-bind:class="sort.order" v-on:click="sortList(sort, 'directorypriorityorder', Number)">Order</th>
 							<th class="td-bool" v-on:click="sortList(sort, 'istemplate', Boolean)">istemplate</th>
-							<th class="td-datetime">Syncronization</th>
+							<th class="td-datetime" v-bind:class="sort.order" v-on:click="sortList(sort, 'lastsyncronizedat', Date)">Syncronization</th>
 							<th class="td-datetime-x" v-bind:class="sort.order" v-on:click="sortList(sort, 'created', Date)">Created / Updated / Deleted</th>
 							<th class="td-action-1"></th>
 							<th class="td-action-1"></th>

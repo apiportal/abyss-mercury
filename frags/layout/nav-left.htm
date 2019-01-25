@@ -65,7 +65,7 @@
 			<li v-if="pageCurrent == 'my-apis'">
 				<a class="nav-caret" data-toggle="collapse" data-target="#platform_dr" aria-controls="platform_dr"><i class="fas fa-fw fa-file"></i><span class="right-nav-text">Platform APIs</span></a>
 				<ul id="platform_dr" class="collapse">
-					<li v-for="(y, index) in abyssYamlList"><a v-on:click="$root.$refs.refMyApis.loadFromUrlSchema(abyssYamlLocation + '/' + y, true)">{{y}}</a>
+					<li v-for="(y, index) in abyssYamlList" v-if="y != 'AbyssSecuritySchemes.yaml' && y != 'ApisOfSubject.yaml'"><a v-on:click="$root.$refs.refMyApis.loadFromUrlSchema(abyssYamlLocation + '/' + y, true)">{{y}}</a>
 					</li>
 				</ul>
 			</li>

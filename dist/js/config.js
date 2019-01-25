@@ -232,7 +232,6 @@ define(['global'], function(abyss){
 		sandbox: {
 			session: 'a51666ff540afd276ebd145681808149',
 			// userId: testerList.faik,
-			// orgId: testerList.abyss,
 			// userId: testerList.ihsan,
 			// orgId: testerList.abyss,
 			// orgName: testerList.orgabyss,

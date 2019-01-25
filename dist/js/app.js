@@ -436,7 +436,7 @@ define(['config', 'jquery', 'izitoast', 'bootstrap', 'domready'], function(confi
 							}
 							$(this).addClass('active');
 							$(this).parents('li').addClass('active');
-							$(this).parent().parent('.collapse').collapse('show');
+							$(this).parent().parents('.collapse').collapse('show');
 						}
 					} else {
 						$('nav li a[href="/"]').parent().addClass('active');

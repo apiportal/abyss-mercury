@@ -44,7 +44,7 @@
 					</div>
 					<table class="table table-hover table-bordered table-edge">
 						<tr>
-							<th class="td-bool" v-bind:class="sort.order" v-on:click="sortList(sort, 'isenabled', Boolean)">Status</th>
+							<th class="td-bool" v-bind:class="sort.order" v-on:click="sortList(sort, 'isactivated', Boolean)">Status</th>
 							<th class="td-name" v-bind:class="sort.order" v-on:click="sortList(sort, 'firstname', String)">Group Name</th>
 							<th class="td-number" v-bind:class="sort.order" v-on:click="sortList(sort, 'userCount', Number)">Users</th>
 							<th class="td-datetime-x" v-bind:class="sort.order" v-on:click="sortList(sort, 'created', Date)">Created / Updated / Deleted</th>
@@ -57,8 +57,8 @@
 						</tr>
 						<tr v-for="(group, index) in sortByNested(sort, groupList)" v-bind:key="group.uuid" v-bind:class="{'active': isSelected(index), 'tr-deleted': group.isdeleted}" v-if="group.userfilter && group.permissionfilter">
 							<td class="txt-c">
-								<i class="fas fa-circle" title="Not Enabled" v-if="!group.isenabled"></i>
-								<i class="fas fa-check-circle txt-green" title="Enabled" v-if="group.isenabled"></i>
+								<i class="fas fa-circle" title="Not Enabled" v-if="!group.isactivated"></i>
+								<i class="fas fa-check-circle txt-green" title="Enabled" v-if="group.isactivated"></i>
 								<i class="fas fa-times-circle txt-red" title="Deleted" v-if="group.isdeleted"></i>
 							</td>
 							<td>
@@ -149,8 +149,8 @@
 							</div>
 							<div class="form-group ">
 								<span class="checkbox">
-									<input type="checkbox" name="isenabled" id="isenabled" v-model="group.isenabled">
-									<label for="isenabled">Enabled</label>
+									<input type="checkbox" name="isactivated" id="isactivated" v-model="group.isactivated">
+									<label for="isactivated">Enabled</label>
 								</span>
 							</div>
 							<div class="form-group d-flex justify-content-between">
