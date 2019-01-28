@@ -77,79 +77,81 @@
 					</div>
 				</div>
 			</aside>
-			<section class="column column-main">
-				<div class="bg-white">
-					<v-select label="subject" :filterable="true" :options="messageOptions" @search="getMessageOptions" :on-change="filterMessage" placeholder="Search Messages by Subject">
-						<span slot="no-options"></span>
-						<template slot="option" slot-scope="option">
-							<div><strong class="txt-black">{{ option.subject }}</strong> <small class="txt-muted">{{ option.sentat | formatDateTime }}</small></div>
-							<small class="d-block txt-truncate">{{option.body | truncate(75)}}</small>
-						</template>
-						<template slot="selected-option" slot-scope="option">
-							<div><strong class="txt-black">{{ option.subject }}</strong> <small class="txt-muted">{{ option.sentat | formatDateTime }}</small></div>
-						</template>
-					</v-select>
+			<section class="column column-main column-main-fixed">
+				<div class="w-100">
+					<div class="bg-white">
+						<v-select label="subject" :filterable="true" :options="messageOptions" @search="getMessageOptions" :on-change="filterMessage" placeholder="Search Messages by Subject">
+							<span slot="no-options"></span>
+							<template slot="option" slot-scope="option">
+								<div><strong class="txt-black">{{ option.subject }}</strong> <small class="txt-muted">{{ option.sentat | formatDateTime }}</small></div>
+								<small class="d-block txt-truncate">{{option.body | truncate(75)}}</small>
+							</template>
+							<template slot="selected-option" slot-scope="option">
+								<div><strong class="txt-black">{{ option.subject }}</strong> <small class="txt-muted">{{ option.sentat | formatDateTime }}</small></div>
+							</template>
+						</v-select>
+					</div>
+					<table class="table table-edge message m-0">
+						<tr>
+							<td class="td-min td-check txt-c">
+								<span class="checkbox m-0">
+									<input type="checkbox" name="checkAll" id="checkAll" v-on:change="checkAll" v-model="allChecked">
+									<label class="p-0" for="checkAll"></label>
+								</span>
+							</td>
+							<td>
+								<a href="#" class="d-inline-block txt-line-px pl-1 pr-2" v-on:click="setIsRead(false)"><i class="fas fa-fw fa-envelope"></i> Mark as Unread</a>
+								<a href="#" class="d-inline-block txt-line-px pl-1 pr-2" v-on:click="setIsRead(true)"><i class="fas fa-fw fa-envelope-open-text"></i> Mark as Read</a>
+								<a href="#" class="d-inline-block txt-line-px pl-1 pr-2" v-on:click="setIsTrashed(true)" v-if="filt.fkey != 'istrashed'"><i class="fas fa-fw fa-trash-alt"></i> Move to trash</a>
+								<a href="#" class="d-inline-block txt-line-px pl-1 pr-2" v-on:click="setIsTrashed(false)" v-if="filt.fkey == 'istrashed'"><i class="fas fa-fw fa-undo"></i> Recover</a>
+								<a href="#" class="d-inline-block txt-line-px pl-1 pr-2" v-on:click="deleteTrashed()" v-if="filt.fkey == 'istrashed'"><i class="fas fa-fw fa-trash-alt"></i> Delete Permanently</a>
+							</td>
+						</tr>
+					</table>
+					<table class="table table-hover table-edge message">
+						<tr v-for="(message, index) in filteredMessages" v-bind:key="message.uuid" v-bind:class="{'fnt-bold txt-black': myReadeds(message), 'active': isSelected(index)}">
+							<td class="td-min td-check txt-c">
+								<span class="checkbox m-0">
+									<input type="checkbox" name="messagecheck" :id="'message'+message.uuid" v-on:click="checkMessage" v-model="checkedMessages" :value="message">
+									<label class="p-0" :for="'message'+message.uuid"></label>
+								</span>
+							</td>
+							<td class="td-min txt-c">
+								<i class="fas fa-bookmark txt-grey" v-if="message.priority != 'Important'"></i>
+								<i class="fas fa-bookmark txt-orange" v-if="message.priority == 'Important'"></i>
+							</td>
+							<td class="td-min txt-c cursor-pointer" v-on:click="markAsStarred(message)">
+								<i class="fas fa-star txt-grey" v-if="!message.isstarred"></i>
+								<i class="fas fa-star txt-orange" v-if="message.isstarred"></i>
+							</td>
+							<td class="td-message-folder"><span class="badge badge-outline">{{message.folder}}</span></td>
+							<td class="txt--truncate" v-on:click="selectMessage(message, index);">
+								<span class="td-name txt-black d-inline-block txt-line-px" v-if="message.folder == 'Inbox' && filt.fval != 'Sent'">From: {{message.sender.displayname}}</span>
+								<span class="td-name txt-black d-inline-block txt-line-px" v-if="message.folder == 'Inbox' && filt.fval == 'Sent'">To: {{message.sender.displayname}}</span>
+								<span class="td-name txt-black d-inline-block txt-line-px" v-if="message.folder == 'Sent' || message.folder == 'Draft'">To: {{message.receiver.displayname}}</span>
+								<div data-xxx="$root.abyssSandbox" class="sandbox-item">
+									<code class="small txt-green"><small>SENDER: {{message.sender.subjectid}}</small></code>
+								</div>
+							</td>
+							<td class="txt--truncate" v-on:click="selectMessage(message, index);">
+								<span class="pr-1 d-inline-block txt-line-px">{{message.subject}}</span>
+								<small class="txt-muted">{{message.body | truncate(75)}}</small>
+								<div data-xxx="$root.abyssSandbox" class="sandbox-item">
+									<code class="small txt-blue"><small>RECEIVER: {{message.receiver.subjectid}}</small></code>
+								</div>
+							</td>
+							<td class="td-datetime txt-r" v-on:click="selectMessage(message, index);">
+								<small v-if="message.folder != 'Draft' && !message.istrashed">{{message.sentat | formatDateTime}}</small>
+								<small v-if="message.folder == 'Draft' && !message.istrashed">{{message.updated | formatDateTime}}</small>
+								<!-- <small v-if="message.istrashed">{{message.deleted | formatDateTime}}</small> -->
+							</td>
+							<td class="td-message-type txt-r pr-3" v-on:click="selectMessage(message, index);"><span class="badge txt-white" :class="'badge-' + message.messageType.uuid">{{message.messageType.name}}</span></td>
+							<!-- <td class="td-min txt-c cursor-pointer" v-on:click="trashMessage(message, index)" v-bind:class="{'tr-deleted': message.istrashed }">
+								<i class="fa fa-trash-alt"></i>
+							</td> -->
+						</tr>
+					</table>
 				</div>
-				<table class="table table-edge message m-0">
-					<tr>
-						<td class="td-min td-check txt-c">
-							<span class="checkbox m-0">
-								<input type="checkbox" name="checkAll" id="checkAll" v-on:change="checkAll" v-model="allChecked">
-								<label class="p-0" for="checkAll"></label>
-							</span>
-						</td>
-						<td>
-							<a href="#" class="d-inline-block txt-line-px pl-1 pr-2" v-on:click="setIsRead(false)"><i class="fas fa-fw fa-envelope"></i> Mark as Unread</a>
-							<a href="#" class="d-inline-block txt-line-px pl-1 pr-2" v-on:click="setIsRead(true)"><i class="fas fa-fw fa-envelope-open-text"></i> Mark as Read</a>
-							<a href="#" class="d-inline-block txt-line-px pl-1 pr-2" v-on:click="setIsTrashed(true)" v-if="filt.fkey != 'istrashed'"><i class="fas fa-fw fa-trash-alt"></i> Move to trash</a>
-							<a href="#" class="d-inline-block txt-line-px pl-1 pr-2" v-on:click="setIsTrashed(false)" v-if="filt.fkey == 'istrashed'"><i class="fas fa-fw fa-undo"></i> Recover</a>
-							<a href="#" class="d-inline-block txt-line-px pl-1 pr-2" v-on:click="deleteTrashed()" v-if="filt.fkey == 'istrashed'"><i class="fas fa-fw fa-trash-alt"></i> Delete Permanently</a>
-						</td>
-					</tr>
-				</table>
-				<table class="table table-hover table-edge message">
-					<tr v-for="(message, index) in filteredMessages" v-bind:key="message.uuid" v-bind:class="{'fnt-bold txt-black': myReadeds(message), 'active': isSelected(index)}">
-						<td class="td-min td-check txt-c">
-							<span class="checkbox m-0">
-								<input type="checkbox" name="messagecheck" :id="'message'+message.uuid" v-on:click="checkMessage" v-model="checkedMessages" :value="message">
-								<label class="p-0" :for="'message'+message.uuid"></label>
-							</span>
-						</td>
-						<td class="td-min txt-c">
-							<i class="fas fa-bookmark txt-grey" v-if="message.priority != 'Important'"></i>
-							<i class="fas fa-bookmark txt-orange" v-if="message.priority == 'Important'"></i>
-						</td>
-						<td class="td-min txt-c cursor-pointer" v-on:click="markAsStarred(message)">
-							<i class="fas fa-star txt-grey" v-if="!message.isstarred"></i>
-							<i class="fas fa-star txt-orange" v-if="message.isstarred"></i>
-						</td>
-						<td class="td-message-folder"><span class="badge badge-outline">{{message.folder}}</span></td>
-						<td class="txt-truncate" v-on:click="selectMessage(message, index);">
-							<span class="td-name txt-black d-inline-block txt-line-px" v-if="message.folder == 'Inbox' && filt.fval != 'Sent'">From: {{message.sender.displayname}}</span>
-							<span class="td-name txt-black d-inline-block txt-line-px" v-if="message.folder == 'Inbox' && filt.fval == 'Sent'">To: {{message.sender.displayname}}</span>
-							<span class="td-name txt-black d-inline-block txt-line-px" v-if="message.folder == 'Sent' || message.folder == 'Draft'">To: {{message.receiver.displayname}}</span>
-							<div data-xxx="$root.abyssSandbox" class="sandbox-item">
-								<code class="small txt-green"><small>SENDER: {{message.sender.subjectid}}</small></code>
-							</div>
-						</td>
-						<td class="txt-truncate" v-on:click="selectMessage(message, index);">
-							<span class="pr-1 d-inline-block txt-line-px">{{message.subject}}</span>
-							<small class="txt-muted">{{message.body | truncate(75)}}</small>
-							<div data-xxx="$root.abyssSandbox" class="sandbox-item">
-								<code class="small txt-blue"><small>RECEIVER: {{message.receiver.subjectid}}</small></code>
-							</div>
-						</td>
-						<td class="td-datetime txt-r" v-on:click="selectMessage(message, index);">
-							<small v-if="message.folder != 'Draft' && !message.istrashed">{{message.sentat | formatDateTime}}</small>
-							<small v-if="message.folder == 'Draft' && !message.istrashed">{{message.updated | formatDateTime}}</small>
-							<!-- <small v-if="message.istrashed">{{message.deleted | formatDateTime}}</small> -->
-						</td>
-						<td class="td-message-type txt-r pr-3" v-on:click="selectMessage(message, index);"><span class="badge txt-white" :class="'badge-' + message.messageType.uuid">{{message.messageType.name}}</span></td>
-						<!-- <td class="td-min txt-c cursor-pointer" v-on:click="trashMessage(message, index)" v-bind:class="{'tr-deleted': message.istrashed }">
-							<i class="fa fa-trash-alt"></i>
-						</td> -->
-					</tr>
-				</table>
 			</section>
 			<transition name="fade">
 			<div class="preview-test-overlay" v-on:click="$emit('set-state', 'init'); cancelMessage()" v-if="rootState != 'init'"></div>

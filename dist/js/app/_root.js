@@ -1226,7 +1226,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 			// ■■■■■■■■ searchUsers ■■■■■■■■ //
 			async getUserOptions(search, loading) {
 				loading(true);
-				this.$root.userOptions = await this.getList(abyss.ajax.user_list + '?likename=' + search);
+				// this.$root.userOptions = await this.getList(abyss.ajax.user_list + '?likename=' + search);
+				var userOptions = await this.getList(abyss.ajax.user_list + '?likename=' + search);
+				this.$root.userOptions = userOptions.filter( (item) => !item.isdeleted );
 				loading(false);
 			},
 			async deleteSharedApi(item, conf, list){

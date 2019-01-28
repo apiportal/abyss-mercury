@@ -433,14 +433,19 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 					this.message.isread = true;
 					this.message.readat = moment.utc().toISOString();
 					if (act === 'send') {
-						this.message.folder = 'Sent';
-						this.message.sentat = moment.utc().toISOString();
 						// if (this.message.folder == 'Draft' || !this.message.sentat || this.message.sentat == '1900-01-01T00:00:00.000Z') {
+						// console.log("this.message.folder: ", this.message.folder);
 						if (this.message.folder == 'Draft') {
+							this.message.folder = 'Sent';
+							this.message.sentat = moment.utc().toISOString();
 							this.editMessage(this.message, act);
+							// console.log("Draft: ", this.message);
 						} else {
 							await this.fixProps(this.message);
+							this.message.folder = 'Sent';
+							this.message.sentat = moment.utc().toISOString();
 							this.addMessage(this.message, act);
+							// console.log("not Draft: ", this.message);
 						}
 					}
 					if (act === 'add') {
