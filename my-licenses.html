@@ -122,7 +122,7 @@
 										</p>
 									</div>
 									<div class="fol-sm-4 small">
-										<strong class="d-block py-2 brd-b row txt-c">Legal Aggreement</strong>
+										<strong class="d-block py-2 brd-b row txt-c">Legal Agreement</strong>
 										<h6 class="mt-2">
 											{{license.licensedocument.legal.name}}
 										</h6>
@@ -258,7 +258,7 @@
 								<em v-bind:class="{ 'show': errors.has('slasupportHours') }">{{ errors.first('slasupportHours') }}</em>
 							</div>
 							<div class="form-group" v-bind:class="{ 'has-error': errors.has('slaavailability') }">
-								<label for="slaavailability">Ailability:</label>
+								<label for="slaavailability">Availability:</label>
 								<input type="text" name="slaavailability" id="slaavailability" v-model="license.licensedocument.sla.availability" v-validate="'required'" class="form-control">
 								<em v-bind:class="{ 'show': errors.has('slaavailability') }">{{ errors.first('slaavailability') }}</em>
 							</div>
@@ -285,12 +285,12 @@
 						<div class="p-3">
 							<div v-if="license.licensedocument.info">
 								<div class="form-group" v-bind:class="{ 'has-error': errors.has('legalname') }">
-									<label for="legalname">Legal Aggrement Name:</label>
+									<label for="legalname">Legal Agreement Name:</label>
 									<input type="text" name="legalname" id="legalname" v-model="license.licensedocument.legal.name" v-validate="'required'" class="form-control">
 									<em v-bind:class="{ 'show': errors.has('legalname') }">{{ errors.first('legalname') }}</em>
 								</div>
 								<div class="form-group" v-bind:class="{ 'has-error': errors.has('legaldescription') }">
-									<label for="legaldescription">Legal Aggrement Description:</label>
+									<label for="legaldescription">Legal Agreement Description:</label>
 									<textarea type="text" name="legaldescription" id="legaldescription" v-model="license.licensedocument.legal.description" v-validate="'required'" class="form-control"></textarea>
 									<em v-bind:class="{ 'show': errors.has('legaldescription') }">{{ errors.first('legaldescription') }}</em>
 								</div>
@@ -310,7 +310,7 @@
 									</select>
 								</div>
 								<div class="form-group" v-bind:class="{ 'has-error': errors.has('legallink') }">
-									<label for="legallink">Legal Aggrement Link:</label>
+									<label for="legallink">Legal Agreement Link:</label>
 									<input type="text" name="legallink" id="legallink" v-model="license.licensedocument.legal.link" v-validate="'required'" class="form-control">
 									<em v-bind:class="{ 'show': errors.has('legallink') }">{{ errors.first('legallink') }}</em>
 								</div>
