@@ -151,7 +151,7 @@
 								<!-- <select class="form-control" name="resourceType" id="resourceType" v-model="permission.resource.resourceType" v-validate="'required'">
 									<option v-for="(rt,index) in $root.rootData.resourceTypes" :value="rt">{{rt.type}}</option>
 								</select> -->
-								<select class="form-control" name="resourceType" id="resourceType" v-model="permission.resource.resourcetypeid" v-validate="'required'">
+								<select class="form-control" name="resourceType" id="resourceType" v-on:change="resourceTypeChange($event.target.value)" v-model="permission.resource.resourcetypeid" v-validate="'required'">
 									<option v-for="(rt,index) in $root.rootData.resourceTypes" :value="rt.uuid">{{rt.type}}</option>
 								</select>
 								<em v-bind:class="{ 'show': errors.has('resourceType') }">{{ errors.first('resourceType') }}</em>

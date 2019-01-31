@@ -40,7 +40,7 @@
 								<div>{{ option.openapidocument.info.title }} <small class="txt-muted">{{ option.openapidocument.info.version }}</small></div>
 							</template>
 						</v-select>
-						<ul class="nav flex-column nav-controls nav-controls-first column-space">
+						<ul class="nav flex-column nav-controls nav-controls-first column-space api-list-business">
 							<my-api-list v-for="(a, index) in sortByNested(sortApi, myApiList)" :api="a" :apilist="myApiList" :openapi="openapi" :lindex="index" :key="a.uuid"></my-api-list>
 						</ul>
 					</div>
@@ -69,7 +69,7 @@
 								<div>{{ option.openapidocument.info.title }} <small class="txt-muted">{{ option.openapidocument.info.version }}</small></div>
 							</template>
 						</v-select>
-						<ul class="nav flex-column nav-controls nav-controls-first column-space">
+						<ul class="nav flex-column nav-controls nav-controls-first column-space api-list-proxy">
 							<my-api-list v-for="(a, index) in sortByNested(sortApi, myProxyList)" :api="a" :apilist="myApiList" :openapi="openapi" :lindex="index" :key="a.uuid"></my-api-list>
 						</ul>
 					</div>
@@ -820,23 +820,31 @@
 			</aside>
 			<section class="column column-main">
 				<div class="choose-spec txt-c init-item">
-					<h4>Register New API</h4>
-					<div class="fow bg-white mb-3">
-						<div class="fol-6 choose">
-							<input type="radio" name="specs" id="scratch" v-on:click="chooseSpec" v-model="api.specs" value="scratch">
-							<label for="scratch"><span><i class="fas fa-code"></i></span>From Scratch</label>
+					<h4 class="mb-3">Register New API</h4>
+					<div class="fow bg-white mb-3 p-3 shadow-sm">
+						<div class="fol-6 p-3">
+							<div class="choose bg-green">
+								<input type="radio" name="specs" id="scratch" v-on:click="chooseSpec" v-model="api.specs" value="scratch">
+								<label for="scratch"><span><i class="fas fa-code"></i></span>From Scratch</label>
+							</div>
 						</div>
-						<div class="fol-6 choose">
-							<input type="radio" name="specs" id="swagger" v-on:click="chooseSpec" v-model="api.specs" value="swagger">
-							<label for="swagger"><span>{...}</span>Swagger</label>
+						<div class="fol-6 p-3">
+							<div class="choose bg-pink">
+								<input type="radio" name="specs" id="swagger" v-on:click="chooseSpec" v-model="api.specs" value="swagger">
+								<label for="swagger"><span>{...}</span>Swagger</label>
+							</div>
 						</div>
-						<div class="fol-6 choose">
-							<input type="radio" name="specs" id="wsdl" v-on:click="chooseSpec" v-model="api.specs" value="wsdl">
-							<label for="wsdl"><span><i class="fas fa-code"></i></span>WSDL</label>
+						<div class="fol-6 p-3">
+							<div class="choose bg-blue disabled">
+								<input type="radio" name="specs" id="wsdl" v-on:click="chooseSpec" v-model="api.specs" value="wsdl" disabled>
+								<label for="wsdl"><span><i class="fas fa-code"></i></span>WSDL</label>
+							</div>
 						</div>
-						<div class="fol-6 choose">
-							<input type="radio" name="specs" id="wadl" v-on:click="chooseSpec" v-model="api.specs" value="wadl">
-							<label for="wadl"><span><i class="fas fa-code"></i></span>WADL</label>
+						<div class="fol-6 p-3">
+							<div class="choose bg-orange disabled">
+								<input type="radio" name="specs" id="wadl" v-on:click="chooseSpec" v-model="api.specs" value="wadl" disabled>
+								<label for="wadl"><span><i class="fas fa-code"></i></span>WADL</label>
+							</div>
 						</div>
 					</div>
 					<!-- <h5>or</h5>

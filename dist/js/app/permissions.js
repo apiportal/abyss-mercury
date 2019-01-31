@@ -191,6 +191,11 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 				this.permissionOptions = await this.getList(abyss.ajax.permission_list + '?likename=' + search);
 				loading(false);
 			},
+			resourceTypeChange(ev) {
+				this.permission.resourceid = null;
+				this.permission.resourceactionid = null;
+				this.permission.subjectid = null;
+			},
 			async setGetPage() {
 				// for (var value of this.permissionList) {
 				this.permissionList.forEach(async (value, key) => {

@@ -697,7 +697,7 @@
 			<small class="txt-muted flt-r">{{api.created | formatDate}}</small>
 			<code class="d-block small" :style="{ 'color': api.color }"><small>{{api.uuid}}</small></code>
 		</a>
-		<ul v-bind:id="'api'+api.uuid" class="collapse clearfix">
+		<ul v-bind:id="'api'+api.uuid" class="collapse clearfix" :data-api="businessapiId">
 			<li>
 				<div class="px-3 txt-dark brd-t">
 					<div class="small pt-2">

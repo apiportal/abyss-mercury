@@ -55,7 +55,7 @@
 	<api-preview :api="$root.previewedApi" ref="refApiPreview" inline-template>
 	<div class="preview-container">
 		<div class="preview-overlay" v-on:click="cancelPreviewApi()"></div>
-		<div class="card preview-item">
+		<div class="card preview-item" v-bind:class="{'preview-business': !api.isproxyapi}">
 			<div class="fow m-0">
 				<div class="fol-12 fol-sm p-0 brd-b brd-sm-b-0 brd-sm-r thumb">
 					<div class="thumb-image" v-if="api.image" :style="{ 'background-image': 'url(' + api.image + ')' }"></div>

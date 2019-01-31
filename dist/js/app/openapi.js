@@ -1610,6 +1610,14 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					}
 				}
 			},
+			businessapiId: {
+				get() {
+					var bapi = this.$parent.myApiList.find((el) => el.uuid == this.api.businessapiid );
+					if (bapi) {
+						return bapi.uuid;
+					}
+				}
+			},
 			compCategoriesToList : {
 				get() {
 					if (this.api.categories != null) {
@@ -2598,7 +2606,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 			async beforeCancelConfirm() {
 				return this.$swal({
 					title: 'Are you sure to cancel editing this API?',
-					html: '<pre class="txt-l">' + JSON.stringify(this.changes, null, 2) + '</pre>',
+					html: '<h6 class="txt-l">Changed Fields:</h6><pre class="txt-l">' + JSON.stringify(this.changes, null, 2) + '</pre>',
 					type: 'warning',
 					showCancelButton: true,
 					confirmButtonText: 'Yes Cancel it!',

@@ -91,7 +91,14 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue!schem
 		methods: {
 			getTemplate(typ, clear) {
 				if (clear) {
-					Vue.set(this.policy, 'policyinstance', {} );
+					Vue.set(this.policy, 'policyinstance', {
+						"openApiLifeCycle": {
+							"onProxyRequest": true,
+							"onProxyResponse": true,
+							"onBusinessRequest": true,
+							"onBusinessResponse": true
+						}
+					} );
 				}
 				var type = this.policyTypes.find((el) => el.uuid === typ );
 				this.template = _.cloneDeep(type.template);

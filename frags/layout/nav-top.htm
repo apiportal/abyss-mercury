@@ -8,34 +8,53 @@
 			</div>	
 			<a id="toggle_nav_btn" class="toggle-left-nav-btn" href="javascript:void(0);"><i class="fas fa-ellipsis-v"></i></a>
 			<a id="toggle_mobile_nav" class="mobile-only-view" href="javascript:void(0);"><i class="fas fa-ellipsis-v"></i></a>
-			<h6 class="m-0">
-				{{abyssOrgName}}
-			</h6>
-			<!-- <div class="breadcrumbs flex-grow">
+			<p class="m-0 d-flex align-items-center" v-if="rootData.user">
+				<!-- {{abyssOrgName}} -->
+				<select class="form-control w-auto" name="organization" v-model="abyssOrgId">
+					<option v-for="(o,index) in $root.rootData.user.organizations" :value="o.uuid">{{o.name}}</option>
+				</select>
+			</p>
+			<div class="breadcrumbs flex-grow">
 				<ol class="breadcrumb" v-if="pageCurrent == 'my-apis'">
-					<li><a href="my-apis.html">My APIs</a></li>
-					<li v-if="rootState == 'edit'"><a href="#">Information</a></li>
-					<li v-if="rootState == 'edit'"><a href="#">Tags & Components</a></li>
-					<li v-if="rootState == 'edit'"><a href="#">Paths</a></li>
-					<li v-if="rootState == 'edit'" class="active"><a href="#">Editor</a></li>
+					<li><a href="/abyss/my-apis">My APIs</a></li>
+					<li v-if="pageCurrent == 'my-apis' && rootState == 'edit'" class="active"><a href="#">{{$root.$refs.refMyApis.api.openapidocument.info.title}}</a></li>
 				</ol>
 				<ol class="breadcrumb" v-if="pageCurrent == 'users'">
-					<li><a href="#">User Management</a></li>
+					<li><a href="#">Identity Management</a></li>
 					<li><a href="/abyss/users">Users</a></li>
 				</ol>
 				<ol class="breadcrumb" v-if="pageCurrent == 'user-groups'">
-					<li><a href="#">User Management</a></li>
-					<li><a href="/abyss/users-groups">User Groups</a></li>
+					<li><a href="#">Identity Management</a></li>
+					<li><a href="/abyss/users-groups">Groups</a></li>
 				</ol>
 				<ol class="breadcrumb" v-if="pageCurrent == 'user-directories'">
-					<li><a href="#">User Management</a></li>
-					<li><a href="/abyss/users-directories">User Directories</a></li>
+					<li><a href="#">Identity Management</a></li>
+					<li><a href="/abyss/identity-managers">Identity Managers</a></li>
 				</ol>
-				<ol class="breadcrumb" v-if="pageCurrent == 'change-password'">
-					<li><a href="#">My Account</a></li>
-					<li><a href="/abyss/change-password">Change Password</a></li>
+				<ol class="breadcrumb" v-if="pageCurrent == 'access-managers'">
+					<li><a href="#">Access Management</a></li>
+					<li><a href="/abyss/access-managers">Access Managers</a></li>
 				</ol>
-			</div> -->
+				<ol class="breadcrumb" v-if="pageCurrent == 'permissions'">
+					<li><a href="#">Access Management</a></li>
+					<li><a href="/abyss/permissions">Permissions</a></li>
+				</ol>
+				<ol class="breadcrumb" v-if="pageCurrent == 'index'">
+					<li><a href="/abyss/index">Dashboard</a></li>
+				</ol>
+				<ol class="breadcrumb" v-if="pageCurrent == 'my-apps'">
+					<li><a href="/abyss/my-apps">My Apps</a></li>
+				</ol>
+				<ol class="breadcrumb" v-if="pageCurrent == 'policies'">
+					<li><a href="/abyss/my-policies">My Policies</a></li>
+				</ol>
+				<ol class="breadcrumb" v-if="pageCurrent == 'licenses'">
+					<li><a href="/abyss/my-licenses">My Licenses</a></li>
+				</ol>
+				<ol class="breadcrumb" v-if="pageCurrent == 'explore'">
+					<li><a href="/abyss/explore">Explore</a></li>
+				</ol>
+			</div>
 		</div>
 		<div id="mobile_only_nav" class="mobile-only-nav align-items-center">
 			<small>{{abyssVersion | formatDateTime}}</small>
@@ -89,7 +108,10 @@
 					</ul>
 				</li>
 				<li class="dropdown auth-drp">
-					<a href="#" class="dropdown-toggle pr-0" data-toggle="dropdown"><img src="/dist/img/avatar.jpg" alt="user_auth" class="user-auth-img img-circle"/><span class="user-online-status"></span></a>
+					<a href="#" class="dropdown-toggle pr-0" data-toggle="dropdown">
+						<span class="mx-1" v-if="$root.rootData.user">{{$root.rootData.user.displayname}}</span>
+						<img src="/dist/img/avatar.jpg" alt="user_auth" class="user-auth-img img-circle"/><span class="user-online-status"></span>
+					</a>
 					<ul class="dropdown-menu user-auth-dropdown" data-dropdown-in="flipInX" data-dropdown-out="flipOutX">
 						<li>
 							<a href="#" v-on:click="$root.listOrganizations()" class="organizations_panel_btn"><i class="fas fa-building"></i><span>My Organizations</span></a>
