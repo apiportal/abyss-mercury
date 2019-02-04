@@ -234,7 +234,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 			deleteProps(obj) {
 				var item = this.cleanProps(obj);
 				// Vue.delete(item, 'password');
-				Vue.delete(item, 'isactivated');
+				// Vue.delete(item, 'isactivated');
 				Vue.delete(item, 'totallogincount');
 				Vue.delete(item, 'failedlogincount');
 				Vue.delete(item, 'invalidpasswordattemptcount');
