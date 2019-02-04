@@ -40,7 +40,7 @@
 								<div>{{ option.openapidocument.info.title }} <small class="txt-muted">{{ option.openapidocument.info.version }}</small></div>
 							</template>
 						</v-select>
-						<ul class="nav flex-column nav-controls nav-controls-first column-space">
+						<ul class="nav flex-column nav-controls nav-controls-first column-space api-list-business">
 							<my-api-list v-for="(a, index) in sortByNested(sortApi, myApiList)" :api="a" :apilist="myApiList" :openapi="openapi" :lindex="index" :key="a.uuid"></my-api-list>
 						</ul>
 					</div>
@@ -69,7 +69,7 @@
 								<div>{{ option.openapidocument.info.title }} <small class="txt-muted">{{ option.openapidocument.info.version }}</small></div>
 							</template>
 						</v-select>
-						<ul class="nav flex-column nav-controls nav-controls-first column-space">
+						<ul class="nav flex-column nav-controls nav-controls-first column-space api-list-proxy">
 							<my-api-list v-for="(a, index) in sortByNested(sortApi, myProxyList)" :api="a" :apilist="myApiList" :openapi="openapi" :lindex="index" :key="a.uuid"></my-api-list>
 						</ul>
 					</div>
@@ -303,7 +303,7 @@
 								</div>
 								<div class="form-group v-select-color-pink v-select-inline" v-if="rootState == 'edit'">
 									<label for="group">Add Group:</label>
-									<v-select label="name" multiple taggable :filterable="true" :options="$root.rootData.myApiGroupList" v-model="api.groups" :on-change="fixGroup"></v-select>
+									<v-select label="name" multiple taggable :filterable="true" :options="groupOptions" @search="getGroupOptions" v-model="api.groups" :on-change="fixGroup"></v-select>
 								</div>
 							</div>
 						</article>
@@ -312,7 +312,7 @@
 			</aside>
 			<aside class="column column-aside edit-column components-column column-minimize">
 				<div class="clearfix column-header column-min-button">
-					<h5 class="column-header-title">Tags & Components</h5>
+					<h5 class="column-header-title">Components & Limits</h5>
 				</div>
 				<div class="column-content">
 					<form class="nicescroll-bar" id="frmSchemas">
@@ -617,6 +617,29 @@
 								</api-requestbody>
 							</div>
 						</article>
+						<article class="field-controls field-level-0" data-id="parameters">
+							<div class="field-sum">
+								<a class="field-link nav-caret" data-toggle="collapse" data-target="#parameters" aria-controls="parameters">
+									<h6 class="d-block"><i class="fa fa-fw fa-question"></i> Parameters <span class="badge badge-pill badge-outline flt-r" v-if="getObjCount(openapi.components.parameters) > 0">{{getObjCount(openapi.components.parameters)}}</span></h6>
+								</a>
+								<span class="ficon-act ficon-act-abs" v-if="getObjCount(openapi.components.parameters) < 1">
+									<a title="Add Parameter" v-on:click="addParameter(openapi.components.parameters, Object)"><i class="fas fa-lg fa-plus"></i></a>
+								</span>
+							</div>
+							<div id="parameters" class="collapse field-color-grey field-level-1 field-tabs">
+								<api-parameter :parameter="parameter" :index="index" :openapi="openapi" :params="openapi.components.parameters" :type="Object" v-for="(parameter,item,index) in openapi.components.parameters" :key="index" :item="item"></api-parameter>
+							</div>
+						</article>
+						<!-- <article class="field-controls field-level-0" data-id="limits">
+							<div class="field-sum">
+								<a class="field-link nav-caret" data-toggle="collapse" data-target="#limits" aria-controls="limits">
+									<h6 class="d-block"><i class="fa fa-fw fa-tachometer-alt"></i> Limits</h6>
+								</a>
+							</div>
+							<div id="limits" class="collapse field-acc field-tabs">
+								<api-limits :api="api" :limits="api.limits"></api-limits>
+							</div>
+						</article> -->
 					</form>
 				</div>
 			</aside>
@@ -685,7 +708,7 @@
 										</p>
 									</div>
 									<div class="small">
-										<h6 class="field-header txt-body row brd-b">Legal Aggreement</h6>
+										<h6 class="field-header txt-body row brd-b">Legal Agreement</h6>
 										<h6 class="mt-2">
 											{{license.licensedocument.legal.name}}
 										</h6>
@@ -797,23 +820,31 @@
 			</aside>
 			<section class="column column-main">
 				<div class="choose-spec txt-c init-item">
-					<h4>Register New API</h4>
-					<div class="fow bg-white mb-3">
-						<div class="fol-6 choose">
-							<input type="radio" name="specs" id="scratch" v-on:click="chooseSpec" v-model="api.specs" value="scratch">
-							<label for="scratch"><span><i class="fas fa-code"></i></span>From Scratch</label>
+					<h4 class="mb-3">Register New API</h4>
+					<div class="fow bg-white mb-3 p-3 shadow-sm">
+						<div class="fol-6 p-3">
+							<div class="choose bg-green">
+								<input type="radio" name="specs" id="scratch" v-on:click="chooseSpec" v-model="api.specs" value="scratch">
+								<label for="scratch"><span><i class="fas fa-code"></i></span>From Scratch</label>
+							</div>
 						</div>
-						<div class="fol-6 choose">
-							<input type="radio" name="specs" id="swagger" v-on:click="chooseSpec" v-model="api.specs" value="swagger">
-							<label for="swagger"><span>{...}</span>Swagger</label>
+						<div class="fol-6 p-3">
+							<div class="choose bg-pink">
+								<input type="radio" name="specs" id="swagger" v-on:click="chooseSpec" v-model="api.specs" value="swagger">
+								<label for="swagger"><span>{...}</span>Swagger</label>
+							</div>
 						</div>
-						<div class="fol-6 choose">
-							<input type="radio" name="specs" id="wsdl" v-on:click="chooseSpec" v-model="api.specs" value="wsdl">
-							<label for="wsdl"><span><i class="fas fa-code"></i></span>WSDL</label>
+						<div class="fol-6 p-3">
+							<div class="choose bg-blue disabled">
+								<input type="radio" name="specs" id="wsdl" v-on:click="chooseSpec" v-model="api.specs" value="wsdl" disabled>
+								<label for="wsdl"><span><i class="fas fa-code"></i></span>WSDL</label>
+							</div>
 						</div>
-						<div class="fol-6 choose">
-							<input type="radio" name="specs" id="wadl" v-on:click="chooseSpec" v-model="api.specs" value="wadl">
-							<label for="wadl"><span><i class="fas fa-code"></i></span>WADL</label>
+						<div class="fol-6 p-3">
+							<div class="choose bg-orange disabled">
+								<input type="radio" name="specs" id="wadl" v-on:click="chooseSpec" v-model="api.specs" value="wadl" disabled>
+								<label for="wadl"><span><i class="fas fa-code"></i></span>WADL</label>
+							</div>
 						</div>
 					</div>
 					<!-- <h5>or</h5>
@@ -871,6 +902,7 @@
 	<div th:replace="webroot/frags/api/api-templates.htm :: items"></div>
 	<div th:replace="webroot/frags/api/api-templates.htm :: mediatype"></div>
 	<div th:replace="webroot/frags/api/api-templates.htm :: list"></div>
+	<div th:replace="webroot/frags/api/api-templates.htm :: limits"></div>
 </div>
 
 <div th:replace="webroot/frags/layout/modal.htm :: schema"></div>

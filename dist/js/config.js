@@ -119,6 +119,7 @@ define(['global'], function(abyss){
 		access_manager_types: '/access-manager-types',
 		// https://dev2.apiportal.com/abyss/openapi/Message.yaml
 		messages: '/messages',
+		messages_of_subject: '/messages/subject/',
 		// https://dev2.apiportal.com/abyss/openapi/MessageType.yaml
 		message_types: '/message-types',
 
@@ -160,11 +161,14 @@ define(['global'], function(abyss){
 
 		businesses_group_subject_aggregate: '/apis/businesses/subject/{uuid}/tags/aggregate/{aggregation}', //2DO https://dev2.apiportal.com/abyss/oapi/apis/businesses/subject/9820d2aa-eb02-4a58-8cc5-8b9a89504df9/tags/aggregate/count
 		businesses_group_subject: '/apis/businesses/subject/{uuid}/tags/', //2DO https://dev2.apiportal.com/abyss/oapi/apis/businesses/subject/9820d2aa-eb02-4a58-8cc5-8b9a89504df9/tags/ ?? GETS ALL APIS
-
 	};
 	var abyssJsonList = {
 		index: '/index.json',
+		preferences: '/preferences.json',
+		widgets: '/widgets.json',
+		dashboards: '/dashboards.json',
 	};
+
 	/*if (isAbyssSandbox === true) {
 		if (location.host == 'local.abyss.com' || location.host == 'localhost:7882' || location.host == 'localhost:7880') {
 			// abyssLocation = 'http://local.abyss.com/000?file=http://local.abyss.com/data';
@@ -191,7 +195,10 @@ define(['global'], function(abyss){
 	}
 	if (isAbyssSandbox === true) {
 		abyssYamlLocation = '/000?file=' + abyssYamlLocation;
-		// abyssDataList.messages = '/data/messages.json';
+		abyssDataList.preferences = '/data/preferences.json';
+		abyssDataList.widgets = '/data/widgets.json';
+		abyssDataList.dashboards = '/data/dashboards.json';
+		abyssDataList.messages_old = '/data/messages.json';
 	}
 	var abyssAllDataList = Object.assign(abyssJsonList, abyssDataList);
 	// console.log("abyssAllDataList: ", abyssAllDataList);
@@ -202,8 +209,12 @@ define(['global'], function(abyss){
 		faber: 'c053c421-cb53-4ceb-acd0-a77c1f65438b',
 		abyss: '3c65fafc-8f3a-4243-9c4e-2821aa32d293',
 		monasdyas: '89db8aca-51b3-435b-a79d-e1f4067d2076',
+		himalaya: '2f0680b1-7ce3-4246-95a2-ae133e384512',
+		ihsan: '9adac0e8-5f5b-4612-97dc-5bb6ab9de4ce',
 		org: 'monasdyas',
+		orgabyss: 'abyss',
 	}
+	// console.log("abyssAllDataList: ", abyssAllDataList);
 	return {
 		name: 'Abyss Api Portal',
 		version: 'V.0.0',
@@ -217,11 +228,13 @@ define(['global'], function(abyss){
 		abyssCredentials: abyssCredentials,
 		abyssSearch: abyssSearch,
 		ajax: abyssAllDataList,
-		echoPost: 'http://192.168.10.38:11080/post',
+		echoPost: httpBinUrl,
 		sandbox: {
 			session: 'a51666ff540afd276ebd145681808149',
 			// userId: testerList.faik,
+			// userId: testerList.ihsan,
 			// orgId: testerList.abyss,
+			// orgName: testerList.orgabyss,
 			userId: testerList.ilkiz,
 			orgId: testerList.monasdyas,
 			orgName: testerList.org,

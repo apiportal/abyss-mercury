@@ -13,28 +13,14 @@
 					<div th:replace="webroot/frags/api/api-nav.htm :: navTax"></div>
 				</api-nav>
 			</li>
-			<!-- <li>
-				<a href="/abyss/my-apis" class="js-collapse-open"><i class="fas fa-fw fa-cube"></i><span class="right-nav-text">My Business APIs</span></a>
-				<button type="button" data-toggle="collapse" data-target="#myApiTax" aria-controls="myApiTax" class="nav-caret" v-if="pageCurrent == 'my-apis'"></button>
-				<api-nav name="myApiTax" mygroups="myBusinessGroups" mycategories="myBusinessCategories" mytags="myBusinessTags" pagecurrent="pageCurrent" v-if="pageCurrent == 'my-apis'" inline-template>
-					<div th:replace="webroot/frags/api/api-nav.htm :: navTax"></div>
-				</api-nav>
-			</li>
-			<li>
-				<a class="js-collapse-open"><i class="fas fa-fw fa-code-branch"></i><span class="right-nav-text">My Proxies</span></a>
-				<button type="button" data-toggle="collapse" data-target="#myProxyTax" aria-controls="myProxyTax" class="nav-caret" v-if="pageCurrent == 'my-apis'"></button>
-				<api-nav name="myProxyTax" mygroups="myProxyGroups" mycategories="myProxyCategories" mytags="myProxyTags" pagecurrent="pageCurrent" v-if="pageCurrent == 'my-apis'" inline-template>
-					<div th:replace="webroot/frags/api/api-nav.htm :: navTax"></div>
-				</api-nav>
-			</li> -->
 			<li>
 				<a href="/abyss/my-apps"><i class="fas fa-fw fa-cubes"></i><span class="right-nav-text">My Apps</span></a>
 			</li>
 			<li>
-				<a href="/abyss/my-licenses"><i class="fas fa-fw fa-certificate"></i><span class="right-nav-text">My Licenses</span></a>
+				<a href="/abyss/my-policies"><i class="fas fa-fw fa-file-powerpoint"></i><span class="right-nav-text">My Policies</span></a>
 			</li>
 			<li>
-				<a href="/abyss/my-policies"><i class="fas fa-fw fa-file-powerpoint"></i><span class="right-nav-text">My Policies</span></a>
+				<a href="/abyss/my-licenses"><i class="fas fa-fw fa-certificate"></i><span class="right-nav-text">My Licenses</span></a>
 			</li>
 			<li>
 				<a href="/abyss/explore" class="js-collapse-open"><i class="fas fa-fw fa-globe"></i><span class="right-nav-text">Explore</span></a>
@@ -50,16 +36,16 @@
 				<a class="nav-caret" data-toggle="collapse" data-target="#id_mng"><i class="fas fa-fw fa-address-card"></i><span class="right-nav-text">Identity Management</span></a>
 				<ul id="id_mng" class="collapse collapse-level-2">
 					<li>
-						<a href="/abyss/identity-managers">Administer Identity Managers</a>
+						<a href="/abyss/identity-managers">Identity Managers</a>
 					</li>
 					<li>
 						<a class="nav-caret" data-toggle="collapse" data-target="#adm_id">Administer Identities</a>
 						<ul id="adm_id" class="collapse collapse-level-3">
 							<li>
-								<a href="/abyss/users">Administer Users</a>
+								<a href="/abyss/users">Users</a>
 							</li>
 							<li>
-								<a href="/abyss/user-groups">Administer Groups</a>
+								<a href="/abyss/user-groups">Groups</a>
 							</li>
 						</ul>
 					</li>
@@ -69,17 +55,17 @@
 				<a class="nav-caret" data-toggle="collapse" data-target="#ac_mng"><i class="fas fa-fw fa-archway"></i><span class="right-nav-text">Access Management</span></a>
 				<ul id="ac_mng" class="collapse collapse-level-2">
 					<li>
-						<a href="/abyss/access-managers">Administer Access Managers</a>
+						<a href="/abyss/access-managers">Access Managers</a>
 					</li>
 					<li>
-						<a href="/abyss/permissions">Administer Permissions</a>
+						<a href="/abyss/permissions">Permissions</a>
 					</li>
 				</ul>
 			</li>
 			<li v-if="pageCurrent == 'my-apis'">
 				<a class="nav-caret" data-toggle="collapse" data-target="#platform_dr" aria-controls="platform_dr"><i class="fas fa-fw fa-file"></i><span class="right-nav-text">Platform APIs</span></a>
 				<ul id="platform_dr" class="collapse">
-					<li v-for="(y, index) in abyssYamlList"><a v-on:click="$root.$refs.refMyApis.loadFromUrlSchema(abyssYamlLocation + '/' + y, true)">{{y}}</a>
+					<li v-for="(y, index) in abyssYamlList" v-if="y != 'AbyssSecuritySchemes.yaml' && y != 'ApisOfSubject.yaml'"><a v-on:click="$root.$refs.refMyApis.loadFromUrlSchema(abyssYamlLocation + '/' + y, true)">{{y}}</a>
 					</li>
 				</ul>
 			</li>

@@ -407,6 +407,15 @@ define(['config', 'jquery', 'izitoast', 'bootstrap', 'domready'], function(confi
 			});
 			$(document).on('show.bs.collapse', '.nav-controls > li .collapse', function (e) {
 				$(this).parent().siblings().children('.collapse').not(this).collapse('hide');
+				if ($(this).parents('.nav-controls').is('.api-list-proxy')) {
+					var api = $('#api' + $(this).data('api'));
+					var item = api.parents('li');
+					var nice = $(api.parents('.nicescroll-bar'));
+					api.collapse('show');
+					setTimeout(function(){
+						nice.animate({scrollTop: item.offset().top - nice.offset().top + nice.scrollTop()});
+					},500);
+				}
 				if ($(this).is('.column-maximize-toggle')) {
 					var targets = $(this).data('targets') || '';
 					$(this).parents('.column').addClass('column-maximize');
@@ -414,6 +423,10 @@ define(['config', 'jquery', 'izitoast', 'bootstrap', 'domready'], function(confi
 				}
 			});
 			$(document).on('hide.bs.collapse', '.nav-controls > li .collapse', function (e) {
+				if ($(this).parents('.nav-controls').is('.api-list-proxy')) {
+					var api = $('#api' + $(this).data('api'));
+					api.collapse('hide');
+				}
 				if ($(this).is('.column-maximize-toggle')) {
 					var targets = $(this).data('targets') || '';
 					$(this).parents('.column').removeClass('column-maximize');
@@ -436,7 +449,7 @@ define(['config', 'jquery', 'izitoast', 'bootstrap', 'domready'], function(confi
 							}
 							$(this).addClass('active');
 							$(this).parents('li').addClass('active');
-							$(this).parent().parent('.collapse').collapse('show');
+							$(this).parent().parents('.collapse').collapse('show');
 						}
 					} else {
 						$('nav li a[href="/"]').parent().addClass('active');

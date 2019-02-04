@@ -67,6 +67,11 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 			};
 		},
 		computed: {
+			filteredApps : {
+				get() {
+					return _.reject(this.$root.appList, { contracts: [ { apiid: this.api.uuid, isdeleted: false } ]});
+				}
+			},
 			apiEnvironment : {
 				get() {
 					if (this.api.issandbox) {
@@ -115,6 +120,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 		data() {
 			return {
 				isLoading: true,
+				isReloading: false,
 				apisSharedWithMe: [],
 				myApiSubscriptions: [],
 				permissionsSharedWithMe: [],
@@ -123,20 +129,20 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 		computed : {},
 		methods : {
 			async getApisSharedWithMe() {
-				var permission_my_apis = this.getList(abyss.ajax.permission_my_apis + this.$root.rootData.user.uuid);
+				// var permission_my_apis = this.getList(abyss.ajax.permission_my_apis + this.$root.rootData.user.uuid);
 				var permissions_app = this.getList(abyss.ajax.permissions_app + this.$root.rootData.user.uuid);
 				var apis_shared_with_me = this.getList(abyss.ajax.apis_shared_with_me + this.$root.rootData.user.uuid);
-				var [myApiSubscriptions, permissionsSharedWithMe, apisSharedWithMe] = await Promise.all([permission_my_apis, permissions_app, apis_shared_with_me]);
+				var [permissionsSharedWithMe, apisSharedWithMe] = await Promise.all([permissions_app, apis_shared_with_me]);
 				this.permissionsSharedWithMe = permissionsSharedWithMe.filter( (el) => !el.isdeleted );
-				this.myApiSubscriptions = myApiSubscriptions.filter((el) => el.resourceactionid === abyss.defaultIds.invokeApi );
+				// this.myApiSubscriptions = myApiSubscriptions.filter((el) => el.resourceactionid === abyss.defaultIds.invokeApi );
 				this.apisSharedWithMe = _.uniqBy(apisSharedWithMe, 'uuid');
 				for (var item of this.apisSharedWithMe) {
-					Vue.set(item, 'subscriptions', []);
+					// Vue.set(item, 'subscriptions', []);
 					await this.getResources(item, 'API', item.openapidocument.info.title + ' ' + item.openapidocument.info.version, item.openapidocument.info.description);
-					var subs = this.myApiSubscriptions.filter((el) => el.resourceid === item.resource.uuid );
-					if (subs) {
-						item.subscriptions = subs;
-					}
+					// var subs = this.myApiSubscriptions.filter((el) => el.resourceid === item.resource.uuid );
+					// if (subs) {
+					// 	item.subscriptions = subs;
+					// }
 					var perms = this.permissionsSharedWithMe.filter((el) => el.resourceid === item.resource.uuid );
 
 					if (perms.length) {
@@ -165,6 +171,12 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 						Vue.set( item, 'isShareDeleted', true );
 					}*/
 				}
+				this.apisSharedWithMe = this.apisSharedWithMe.filter((el) => !el.isShareDeleted );
+			},
+			async reload() {
+				this.isReloading = true;
+				await this.getApisSharedWithMe();
+				this.isReloading = false;
 			},
 		},
 		async created() {
@@ -181,6 +193,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 		data() {
 			return {
 				isLoading: true,
+				isReloading: false,
 				apisSharedByMe: [],
 				myApiSubscriptions: [],
 				permissionsSharedByMe: [],
@@ -198,12 +211,12 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 				// 2DO ABYSSP-300 "/apis/sharedby/subject" returns 2 same API's if shared read/write
 				this.apisSharedByMe = _.uniqBy(apisSharedByMe, 'uuid');
 				for (var item of this.apisSharedByMe) {
-					Vue.set(item, 'subscriptions', []);
+					// Vue.set(item, 'subscriptions', []);
 					await this.getResources(item, 'API', item.openapidocument.info.title + ' ' + item.openapidocument.info.version, item.openapidocument.info.description);
-					var subs = this.myApiSubscriptions.filter((el) => el.resourceid === item.resource.uuid );
+					/*var subs = this.myApiSubscriptions.filter((el) => el.resourceid === item.resource.uuid );
 					if (subs) {
 						item.subscriptions = subs;
-					}
+					}*/
 					var perms = this.permissionsSharedByMe.filter((el) => el.resourceid === item.resource.uuid );
 
 					if (perms.length) {
@@ -236,45 +249,17 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 					// }
 				}
 			},
+			async reload() {
+				this.isReloading = true;
+				await this.getApisSharedByMe();
+				this.isReloading = false;
+			},
 		},
 		async created() {
 			await this.getApisSharedByMe();
 			this.isLoading = false;
 			this.preload('.shared-by-bar');
 			console.log("shared-by: ");
-		},
-	});
-	Vue.component('xxxxx', {
-		template:'#xxxxx',
-		mixins: [mixWidgets],
-		props: [ 'index', 'data', 'color' ],
-		data() {
-			return {
-				isLoading: true,
-				apisSharedWithMe: [],
-				myApiSubscriptions: [],
-				permissionsSharedWithMe: [],
-			};
-		},
-		computed : {},
-		methods : {
-			async xxx() {
-				var permission_my_apis = this.getList(abyss.ajax.permission_my_apis + this.$root.rootData.user.uuid);
-				var permissions_app = this.getList(abyss.ajax.permissions_app + this.$root.rootData.user.uuid);
-				var apis_shared_with_me = this.getList(abyss.ajax.apis_shared_with_me + this.$root.rootData.user.uuid);
-				var [myApiSubscriptions, permissionsSharedWithMe, apisSharedWithMe] = await Promise.all([permission_my_apis, permissions_app, apis_shared_with_me]);
-				this.permissionsSharedWithMe = permissionsSharedWithMe.filter( (el) => !el.isdeleted );
-				this.myApiSubscriptions = myApiSubscriptions.filter((el) => el.resourceactionid === abyss.defaultIds.invokeApi );
-				this.apisSharedWithMe = _.uniqBy(apisSharedWithMe, 'uuid');
-				for (var item of this.yyy) {
-					
-				}
-			},
-		},
-		async created() {
-			await this.xxx();
-			this.isLoading = false;
-			this.preload('.uuu');
 		},
 	});
 	Vue.component('widget-controls', {
@@ -303,7 +288,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 		computed : {},
 		methods : {
 			redraw(val){
-				console.log("val: ", val);
 				// this.chartOptions.series[0].setData(this.agePotValue,true);
 				this.$parent.chartOptions.chart = this.data.chart;
 			},
@@ -319,6 +303,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 		data() {
 			return {
 				isLoading: true,
+				isReloading: false,
 				sort: {
 					key: 'uuid',
 					type: String,
@@ -339,7 +324,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 						type: 'pie'
 					},
 					title: {
-						text: 'My APIs'
+						text: 'My Proxy APIs'
 					},
 					series: [
 						{
@@ -390,7 +375,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 
 				var [myApiSubscriptions, myProxyApiList, myBusinessApiList] = await Promise.all([permission_my_apis, my_proxy_api_list, my_business_api_list]);
 
-				this.myApiSubscriptions = myApiSubscriptions.filter((el) => el.resourceactionid === abyss.defaultIds.invokeApi );
+				this.myApiSubscriptions = myApiSubscriptions.filter((el) => el.resourceactionid === abyss.defaultIds.invokeApi && !el.isdeleted );
 				this.myBusinessApiList = myBusinessApiList;
 				this.myProxyApiList = myProxyApiList;
 				this.mySubscribersCount = this.myApiSubscriptions.length;
@@ -410,15 +395,26 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 					Vue.set(item, 'subjectName', subjectName.displayname);
 					Vue.set(item, 'subjectOwner', subjectOwner.displayname);
 				}
+				this.myProxyApiList = _.orderBy(this.myProxyApiList, (item) => { return item.subscriptions.length; }, 'desc');
+			},
+			async reload() {
+				this.isReloading = true;
+				await this.getProxyApis();
+				this.chart();
+				this.isReloading = false;
+			},
+			chart() {
+				if (this.data.chart) {
+					var mySubscribers = this.myProxyApiList.filter((el) => el.subscriptionsCount !== 0 );
+					this.chartOptions.chart = this.data.chart;
+					this.chartOptions.series[0].data = _.map(mySubscribers, v => ({"y":v.subscriptionsCount, "id":v.uuid, "name":v.openapidocument.info.title}));
+				}
 			},
 		},
 		async created() {
+			this.$eventHub.$on('reload', this.reload);
 			await this.getProxyApis();
-			if (this.data.chart) {
-				var mySubscribers = this.myProxyApiList.filter((el) => el.subscriptionsCount !== 0 );
-				this.chartOptions.chart = this.data.chart;
-				this.chartOptions.series[0].data = _.map(mySubscribers, v => ({"y":v.subscriptionsCount, "id":v.uuid, "name":v.openapidocument.info.title}));
-			}
+			this.chart();
 			this.isLoading = false;
 			this.preload('.my-proxy-bar');
 			console.log("my-proxy-apis: ");
@@ -431,6 +427,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 		data() {
 			return {
 				isLoading: true,
+				isReloading: false,
 				sort: {
 					key: 'uuid',
 					type: String,
@@ -443,13 +440,12 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 				},
 				myProxyApiList: [],
 				myBusinessApiList: [],
-				mySubscriptions: 0,
 				chartOptions: {
 					chart: {
 						type: 'pie'
 					},
 					title: {
-						text: 'My Proxy APİs'
+						text: 'My Business APİs'
 					},
 					series: [
 						{
@@ -479,14 +475,23 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 					}
 				}
 			},
+			async reload() {
+				this.isReloading = true;
+				await this.getBusinessApis();
+				this.chart();
+				this.isReloading = false;
+			},
+			chart() {
+				if (this.data.chart) {
+					var myBusinessApis = this.myBusinessApiList.filter((el) => el.proxies.length !== 0 );
+					this.chartOptions.chart = this.data.chart;
+					this.chartOptions.series[0].data = _.map(myBusinessApis, v => ({"y":v.proxies.length, "id":v.uuid, "name":v.openapidocument.info.title}));
+				}
+			},
 		},
 		async created() {
 			await this.getBusinessApis();
-			if (this.data.chart) {
-				var myBusinessApis = this.myBusinessApiList.filter((el) => el.proxies.length !== 0 );
-				this.chartOptions.chart = this.data.chart;
-				this.chartOptions.series[0].data = _.map(myBusinessApis, v => ({"y":v.proxies.length, "id":v.uuid, "name":v.openapidocument.info.title}));
-			}
+			this.chart();
 			this.isLoading = false;
 			this.preload('.my-business-bar');
 			console.log("my-business-apis: ");
@@ -499,12 +504,12 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 		data() {
 			return {
 				isLoading: true,
+				isReloading: false,
 				sortApp: {
-					key: 'subscriptions',
+					key: 'contracts',
 					type: Array,
 					order: 'desc'
 				},
-				mySubscriptions: 0,
 				chartOptions: {
 					chart: {
 						type: 'pie'
@@ -524,19 +529,24 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 		},
 		computed : {},
 		methods : {
-			async xxx() {
-				for (var item of this.yyy) {
-					
+			async reload() {
+				this.isReloading = true;
+				await this.getMyAppList('dashboard');
+				this.chart();
+				this.isReloading = false;
+			},
+			chart() {
+				if (this.data.chart) {
+					var mySubscriptions = this.$root.appList.filter((el) => el.contracts.length !== 0 );
+					this.chartOptions.chart = this.data.chart;
+					this.chartOptions.series[0].data = _.map(mySubscriptions, v => ({"y":v.contracts.length, "id":v.uuid, "name":v.firstname}));
 				}
 			},
 		},
 		async created() {
-			await this.getMyApps(true);
-			if (this.data.chart) {
-				var mySubscriptions = this.$root.appList.filter((el) => el.subscriptionsCount !== 0 );
-				this.chartOptions.chart = this.data.chart;
-				this.chartOptions.series[0].data = _.map(mySubscriptions, v => ({"y":v.subscriptionsCount, "id":v.uuid, "name":v.firstname}));
-			}
+			this.$eventHub.$on('reload', this.reload);
+			// await this.getMyAppList('dashboard');
+			this.chart();
 			this.isLoading = false;
 			this.preload('.my-apps-bar');
 			console.log("my-apps-subscriptions: ");
@@ -559,153 +569,165 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 				paginate: {},
 				api: {},
 				app: {},
+				showEditDash: false,
+				showOverlay: false,
 				showWidgets: false,
-
-				"preferences": {
-					"uuid": "4c36206b-56bc-4266-a8e8-d722abe92691",
-					"organizationid": "89db8aca-51b3-435b-a79d-e1f4067d2076",
-					"created": "2018-10-08T16:03:33.35404Z",
-					"updated": "2018-10-08T16:03:33.35404Z",
-					"deleted": null,
-					"isdeleted": false,
-					"crudsubjectid": "9820d2aa-eb02-4a58-8cc5-8b9a89504df9",
-					"darksidebar": false,
-					"widgets": [
-						{
-							id: '1',
-							title: 'My Proxy APIs & Subscribers',
-							order: 1,
-							class: 'fol-sm-12 fol-xl-8 fol-xll-9',
-							comp: 'my-proxy-apis',
-						},
-						{
-							id: '2',
-							title: 'APIs Shared with Me',
-							order: 2,
-							class: 'fol-sm-6 fol-xl-4 fol-xll-3',
-							comp: 'apis-shared-with-me',
-						},
-						{
-							id: '3',
-							title: 'APIs Shared by Me',
-							order: 3,
-							class: 'fol-sm-6 fol-xl-4 fol-xll-3',
-							comp: 'apis-shared-by-me',
-						},
-						{
-							id: '4',
-							title: 'My APPS & Subscriptions',
-							order: 4,
-							class: 'fol-sm-12 fol-xl-8 fol-xll-9',
-							comp: 'my-apps-subscriptions',
-						},
-					],
-				},
-
-				widgets: [
-					{
-						id: '1',
-						title: 'My Proxy APIs & Subscribers',
-						order: 1,
-						class: 'fol-sm-12 fol-xl-8',
-						size: '2/3',
-						color: 'green',
-						chart: {
-							name: 'Column',
-							type: 'column',
-						},
-						comp: 'my-proxy-apis',
-					},
-					{
-						id: '2',
-						title: 'APIs Shared with Me',
-						order: 2,
-						class: 'fol-sm-6 fol-xl-4',
-						size: '1/3',
-						color: 'purple',
-						chart: null,
-						comp: 'apis-shared-with-me',
-					},
-					{
-						id: '3',
-						title: 'APIs Shared by Me',
-						order: 3,
-						class: 'fol-sm-6 fol-xl-4',
-						size: '1/3',
-						color: 'orange',
-						chart: null,
-						comp: 'apis-shared-by-me',
-					},
-					{
-						id: '4',
-						title: 'My APPS & Subscriptions',
-						order: 4,
-						class: 'fol-sm-12 fol-xl-8',
-						size: '2/3',
-						color: 'cyan',
-						chart: {
-							name: 'Pie',
-							type: 'pie',
-						},
-						comp: 'my-apps-subscriptions',
-					},
-					{
-						id: '5',
-						title: 'My Business APIs & Subscribers',
-						order: 5,
-						class: 'fol-sm-12 fol-xl-8',
-						size: '2/3',
-						color: 'red',
-						chart: {
-							name: 'Pie',
-							type: 'pie',
-						},
-						comp: 'my-business-apis',
-					},
-				],
 				widgetOptions: {
 					handle: '.handle',
 					draggable: '.card-item',
 					animation: 150,
 				},
+				dashboards: [],
 				end: []
 			};
 		},
+		computed: {
+			myDashboards() {
+				// get() {
+					return this.dashboards.filter((el) => el.crudsubjectid === this.$root.rootData.user.uuid );
+				// },
+			},
+			activeDashboard: {
+				get() {
+					return this.dashboards.find((el) => el.uuid === this.$root.preferences.activedashboardid );
+				},
+				set(newVal) {
+					this.getPage();
+					// return newVal;
+				}
+			},
+		},
+		/*watch: {
+			activeDashboard(newQuestion, oldQuestion) {
+				console.log("newQuestion, oldQuestion: ", newQuestion, oldQuestion);
+			}
+		},*/
 		methods: {
 			clone(evt) {},
 			updateOrder(evt) {
 				console.log("evt: ", evt);
 				// console.log(evt.oldIndex, evt.newIndex, evt);
-				this.widgets.forEach((item, index) => {
+				this.activeDashboard.widgets.forEach((item, index) => {
 					Vue.set( item, 'order', index + 1 );
 					// Vue.set( item, 'neworder', index + 1 );
 					// if (item.order != item.neworder) {
-						this.saveWidgets(item);
 					// }
 				});
+				this.saveDash();
 			},
-			async deleteWidget(item) {
-				// var res = this.saveWidgets(item);
-				// if (res) {
-					var index = this.widgets.indexOf(item);
-					this.widgets.splice(index, 1);
+			addWidget(w) {
+				var item = _.cloneDeep(w);
+				if (item.isactive) {
+					this.activeDashboard.widgets.push(item);
+					this.saveDash();
+				} else {
+					this.deleteWidget(item);
+				}
+			},
+			deleteWidget(item) {
+				// var index = this.activeDashboard.widgets.indexOf(item);
+				var index = _.findIndex(this.activeDashboard.widgets, { 'uuid': item.uuid });
+				this.activeDashboard.widgets.splice(index, 1);
+				this.saveDash();
+			},
+			deleteProps(obj) {
+				// var item = this.cleanProps(obj);
+				var item = _.cloneDeep(obj);
+				if (item.widgets) {
+					for (var wgt of item.widgets) {
+						Vue.delete( wgt, 'comp' );
+						Vue.delete(wgt, 'created');
+						Vue.delete(wgt, 'updated');
+						Vue.delete(wgt, 'deleted');
+						Vue.delete(wgt, 'isdeleted');
+						Vue.delete(wgt, 'organizationid');
+						Vue.delete(wgt, 'crudsubjectid');
+					}
+				}
+				return item;
+			},
+			savePref() {
+				console.log("savePref: ", this.$root.preferences);
+				window.localStorage.setItem('preferences', JSON.stringify(this.$root.preferences));
+			},
+			saveDash() {
+				console.log("this.activeDashboard: ", this.activeDashboard);
+				// var item = this.dashboards.find((el) => el.uuid === this.activeDashboard.uuid )
+				var items = _.cloneDeep(this.dashboards);
+				for (var dash of items) {
+					for (var wgt of dash.widgets) {
+						Vue.delete( wgt, 'comp' );
+						Vue.delete(wgt, 'created');
+						Vue.delete(wgt, 'updated');
+						Vue.delete(wgt, 'deleted');
+						Vue.delete(wgt, 'isdeleted');
+						Vue.delete(wgt, 'organizationid');
+						Vue.delete(wgt, 'crudsubjectid');
+					}
+				}
+				console.log("dashs: ", items);
+				window.localStorage.setItem('dashboards', JSON.stringify(this.dashboards));
+				this.savePref();
+			},
+			addDash(item) {
+				this.dashboards.push(this.deleteProps(item)); //
+				this.activateDashboard(item);
+				this.saveDash();
+			},
+			copyDashboard(c) {
+				var item = _.cloneDeep(c);
+				Vue.set( item, 'name', item.name + ' Copy' );
+				Vue.set( item, 'uuid', this.uuidv4() ); // del
+				this.addDash(item);
+			},
+			deleteDashboard(item) {
+				// var del = await this.deleteItem(abyss.ajax.dashboards, item, true, this.dashboards);
+				// if (del) {
+					item.isdeleted = true;
+					var index = _.findIndex(this.dashboards, { 'uuid': item.uuid });
+					this.dashboards.splice(index, 1);
+					console.log("this.myDashboards: ", this.myDashboards);
+					console.log("this.myDashboards.length: ", this.myDashboards.length);
+					if (this.myDashboards.length) {
+						this.activateDashboard(this.myDashboards[0])
+					} else {
+						// this.createDashboard('a657b478-55d3-42ea-a7b1-e3cbb8210296');
+						this.createDashboard('ca099337-95ac-4bde-9ec0-4634db46055e');
+					}
+					this.saveDash();
 				// }
-				this.saveWidgets(item);
 			},
-			saveWidgets(item) {
-				console.log("saveWidgets: ", item);
-				// item.order = item.neworder;
-				// var item = await this.editItem( abyss.ajax.preferences, this.widgets.uuid, this.deleteProps(this.widgets) );
+			activateDashboard(item) {
+				Vue.set( this.$root.preferences, 'activedashboardid', item.uuid );
+				Vue.set( this, 'activeDashboard', item );
+				this.savePref();
+				console.log("this.activeDashboard.widgets: ", this.activeDashboard.widgets);
+			},
+			createDashboard(ev) {
+				if (ev) {
+					var newDash = _.cloneDeep(this.dashboards.find((el) => el.uuid === ev));
+					Vue.set( newDash, 'uuid', this.uuidv4() ); // del
+					Vue.set( newDash, 'crudsubjectid', this.$root.rootData.user.uuid ); // del
+					this.addDash(newDash);
+					this.savePref();
+				}
 			},
 			selectWidgets() {
+				this.showOverlay = true;
 				this.showWidgets = true;
 				$('body').addClass('no-scroll');
 				$('.page-wrapper').addClass('no-scroll');
 			},
-			cancelSelectWidgets() {
+			cancelOverlay() {
+				this.showOverlay = false;
 				this.showWidgets = false;
+				this.showEditDash = false;
 				$('body').removeClass('no-scroll');
 				$('.page-wrapper').removeClass('no-scroll');
+			},
+			editDashboard() {
+				this.showOverlay = true;
+				this.showEditDash = true;
 			},
 			widgetClass(item) {
 				switch (item.size) {
@@ -727,16 +749,41 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 				}
 			},
 			async getPage(p, d) {
-				// var xxx = this.widgets.filter(f => this.preferences.widgets.includes(f.id));
-				var xxx = _.filter(this.widgets, (v) => _.includes( this.preferences.widgets.map(e => e.id), v.id));
-				console.log("xxx: ", xxx);
+				if (this.activeDashboard.widgets.length) {
+					var inc = _.filter(this.widgets, (v) => _.includes( this.activeDashboard.widgets.map(e => e.uuid), v.uuid));
+					var exc = _.reject(this.widgets, (v) => _.includes( this.activeDashboard.widgets.map(e => e.uuid), v.uuid));
+					for (var item of inc) {
+						Vue.set( item, 'isactive', true );
+					}
+					for (var item of exc) {
+						Vue.set( item, 'isactive', false );
+					}
+				} else {
+					for (var item of this.widgets) {
+						Vue.set( item, 'isactive', false );
+					}
+				}
+				_.merge( this.activeDashboard.widgets, _.map( inc, ( obj ) => {
+				    return _.pick( obj, 'uuid', 'comp' );
+				}));
+				console.log("this.activeDashboard.widgets: ", this.activeDashboard.widgets);
 			},
 		},
 		async created() {
 			this.$emit('set-page', 'index', 'init');
+			await this.getMyAppList('dashboard');
+			this.widgets = await this.getList(abyss.ajax.widgets);
+			// var dashboards = await this.getList(abyss.ajax.dashboards + abyss.defaultIds.organization);
+			var dashboards = JSON.parse(window.localStorage.getItem('dashboards'));
+			if (!dashboards) {
+				dashboards = await this.getList(abyss.ajax.dashboards);
+				window.localStorage.setItem('dashboards', JSON.stringify(dashboards));
+			}
+			this.dashboards = dashboards;
 			await this.getPage(1);
 			this.isLoading = false;
 			this.preload();
+			console.log("this.myDashboards: ", this.myDashboards);
 		},
 	});
 });

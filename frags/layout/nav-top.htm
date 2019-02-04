@@ -4,45 +4,77 @@
 	<nav th:fragment="navTop" class="navbar navbar-fixed-top">
 		<div class="mobile-only-brand">
 			<div class="nav-header">
-				<a class="logo-wrap" href="/abyss/index">
-					<i class="icon-verapi"></i>
-					<span class="brand-text"><span>API</span> Portal</span>
-				</a>
+				<a class="logo-img" href="/abyss/index"></a>
 			</div>	
 			<a id="toggle_nav_btn" class="toggle-left-nav-btn" href="javascript:void(0);"><i class="fas fa-ellipsis-v"></i></a>
 			<a id="toggle_mobile_nav" class="mobile-only-view" href="javascript:void(0);"><i class="fas fa-ellipsis-v"></i></a>
-			<h6 class="m-0">
-				{{abyssOrgName}}
-			</h6>
+			<p class="m-0 d-flex align-items-center" v-if="rootData.user">
+				<!-- {{abyssOrgName}} -->
+				<select class="form-control w-auto" name="organization" v-model="abyssOrgId">
+					<option v-for="(o,index) in $root.rootData.user.organizations" :value="o.uuid">{{o.name}}</option>
+				</select>
+			</p>
 			<div class="breadcrumbs flex-grow">
 				<ol class="breadcrumb" v-if="pageCurrent == 'my-apis'">
-					<li><a href="my-apis.html">My APIs</a></li>
-					<li v-if="rootState == 'edit'"><a href="#">Information</a></li>
-					<li v-if="rootState == 'edit'"><a href="#">Tags & Components</a></li>
-					<li v-if="rootState == 'edit'"><a href="#">Paths</a></li>
-					<li v-if="rootState == 'edit'" class="active"><a href="#">Editor</a></li>
+					<li><a href="/abyss/my-apis">My APIs</a></li>
+					<li v-if="pageCurrent == 'my-apis' && rootState == 'edit'" class="active"><a href="#">{{$root.$refs.refMyApis.api.openapidocument.info.title}}</a></li>
 				</ol>
 				<ol class="breadcrumb" v-if="pageCurrent == 'users'">
-					<li><a href="#">User Management</a></li>
+					<li><a href="#">Identity Management</a></li>
 					<li><a href="/abyss/users">Users</a></li>
 				</ol>
 				<ol class="breadcrumb" v-if="pageCurrent == 'user-groups'">
-					<li><a href="#">User Management</a></li>
-					<li><a href="/abyss/users-groups">User Groups</a></li>
+					<li><a href="#">Identity Management</a></li>
+					<li><a href="/abyss/users-groups">Groups</a></li>
 				</ol>
 				<ol class="breadcrumb" v-if="pageCurrent == 'user-directories'">
-					<li><a href="#">User Management</a></li>
-					<li><a href="/abyss/users-directories">User Directories</a></li>
+					<li><a href="#">Identity Management</a></li>
+					<li><a href="/abyss/identity-managers">Identity Managers</a></li>
 				</ol>
-				<ol class="breadcrumb" v-if="pageCurrent == 'change-password'">
-					<li><a href="#">My Account</a></li>
-					<li><a href="/abyss/change-password">Change Password</a></li>
+				<ol class="breadcrumb" v-if="pageCurrent == 'access-managers'">
+					<li><a href="#">Access Management</a></li>
+					<li><a href="/abyss/access-managers">Access Managers</a></li>
+				</ol>
+				<ol class="breadcrumb" v-if="pageCurrent == 'permissions'">
+					<li><a href="#">Access Management</a></li>
+					<li><a href="/abyss/permissions">Permissions</a></li>
+				</ol>
+				<ol class="breadcrumb" v-if="pageCurrent == 'index'">
+					<li><a href="/abyss/index">Dashboard</a></li>
+				</ol>
+				<ol class="breadcrumb" v-if="pageCurrent == 'my-apps'">
+					<li><a href="/abyss/my-apps">My Apps</a></li>
+				</ol>
+				<ol class="breadcrumb" v-if="pageCurrent == 'policies'">
+					<li><a href="/abyss/my-policies">My Policies</a></li>
+				</ol>
+				<ol class="breadcrumb" v-if="pageCurrent == 'licenses'">
+					<li><a href="/abyss/my-licenses">My Licenses</a></li>
+				</ol>
+				<ol class="breadcrumb" v-if="pageCurrent == 'explore'">
+					<li><a href="/abyss/explore">Explore</a></li>
 				</ol>
 			</div>
 		</div>
 		<div id="mobile_only_nav" class="mobile-only-nav align-items-center">
 			<small>{{abyssVersion | formatDateTime}}</small>
-			<form id="search_form" role="search" class="top-nav-search fol" v-on:submit.prevent="onSearchAll(0)">
+			<form id="search_form" role="search" class="top-nav-search fol d-flex" v-on:submit.prevent="onSearchAll(0)">
+				<div class="input-group search-type">
+					<select class="form-control w-auto" v-model="searchPath" v-on:change="changeSearchPath($event.target.value)">
+						<option value="/*,-configuration-audit,-.*,-temperature,-metricbeat*/_search">Search All</option>
+						<option value="/*,-logs*,-configuration-audit,-.*,-temperature,-metricbeat*/_search">Search All No Logs</option>
+						<option value="/api*/_search">Search APIs</option>
+						<option value="/contract*/_search">Search Contracts</option>
+						<option value="/message*/_search">Search Messages</option>
+						<option value="/organization*/_search">Search Organizations</option>
+						<option value="/policy*/_search">Search Policies</option>
+						<option value="/license*/_search">Search Licenses</option>
+						<option value="/resource*/_search">Search Resources</option>
+						<option value="/subject*/_search">Search Subjects</option>
+						<option value="/subjectpermission*/_search">Search Permissions</option>
+						<option value="/logs*/_search">Search Logs</option>
+					</select>
+				</div>
 				<div class="input-group">
 					<input type="text" name="example-input1-group2" class="form-control" placeholder="Search" v-model="searchAll">
 					<span class="input-group-btn">
@@ -52,44 +84,34 @@
 			</form>
 			<ul class="nav navbar-right top-nav">
 				<li>
-					<a href="/abyss/messages"><i class="fas fa-envelope top-nav-icon"></i></a>
+					<a href="/abyss/my-messages"><i class="fas fa-envelope top-nav-icon"></i></a>
 				</li>
 				<li class="dropdown alert-drp">
-					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fas fa-bell top-nav-icon"></i><span class="top-nav-icon-badge">5</span></a>
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fas fa-bell top-nav-icon"></i><span class="top-nav-icon-badge">0</span></a>
 					<ul class="dropdown-menu alert-dropdown" data-dropdown-in="bounceIn" data-dropdown-out="bounceOut">
 						<li class="nav-item brd-b">
 							<div class="clearfix">
-							<a class="txt-item flt-r" href="#"> clear all</a>
+							<a class="txt-item disabled txt-muted flt-r" href="#">Clear All</a>
 							<h6 class="m-0">Notifications</h6>
 							</div>
 						</li>
-						<li class="nav-item brd-b">
-							<div class="clearfix"><small class="flt-r">2pm</small><div class="txt-truncate">New subscription created</div></div>
+						<li class="nav-item brd-b txt-c">
+							<div class="clearfix"><div class="txt-truncate txt-black">No Notifications</div></div>
+						</li>
+						<!-- <li class="nav-item brd-b">
+							<div class="clearfix"><small class="flt-r">2pm</small><div class="txt-truncate fnt-bold txt-black">New subscription created</div></div>
 							<small class="d-block txt-truncate">Your customer subscribed for the basic plan. The customer will pay $25 per md-block onth.</small>
-						</li>
-						<li class="nav-item brd-b">
-							<div class="clearfix"><small class="flt-r">1pm</small><div class="txt-truncate txt-warning">Server #2 not responding</div></div>
-							<small class="d-block txt-truncate">Some technical error occurred needs to be resolved.</small>
-						</li>
-						<li class="nav-item brd-b">
-							<div class="clearfix"><small class="flt-r">4pm</small><div class="txt-truncate">2 new messages</div></div>
-							<small class="d-block txt-truncate"> The last payment for your G Suite Basic subscription failed.</small>
-						</li>
-						<li class="nav-item brd-b">
-							<div class="clearfix"><small class="flt-r">1pm</small><div class="txt-truncate">Sandy Doe</div></div>
-							<small class="d-block txt-truncate">Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, ad-block dipisci velit</small>
-						</li>
-						<li class="nav-item brd-b">
-							<div class="clearfix"><small class="flt-r">1pm</small><div class="txt-truncate txt-danger">99% server space occupied.</div></div>
-							<small class="d-block txt-truncate">consectetur, adipisci velit.</small>
-						</li>
-						<li class="">
-							<a class="d-block txt-c read-all" href="javascript:void(0)">Read all</a>
+						</li> -->
+						<li class="disabled">
+							<a class="d-block txt-c read-all" href="javascript:void(0)">Read All</a>
 						</li>
 					</ul>
 				</li>
 				<li class="dropdown auth-drp">
-					<a href="#" class="dropdown-toggle pr-0" data-toggle="dropdown"><img src="/dist/img/avatar.jpg" alt="user_auth" class="user-auth-img img-circle"/><span class="user-online-status"></span></a>
+					<a href="#" class="dropdown-toggle pr-0" data-toggle="dropdown">
+						<span class="mx-1" v-if="$root.rootData.user">{{$root.rootData.user.displayname}}</span>
+						<img src="/dist/img/avatar.jpg" alt="user_auth" class="user-auth-img img-circle"/><span class="user-online-status"></span>
+					</a>
 					<ul class="dropdown-menu user-auth-dropdown" data-dropdown-in="flipInX" data-dropdown-out="flipOutX">
 						<li>
 							<a href="#" v-on:click="$root.listOrganizations()" class="organizations_panel_btn"><i class="fas fa-building"></i><span>My Organizations</span></a>
@@ -98,7 +120,7 @@
 							<a href="#" v-on:click="$root.editProfile()" class="profile_panel_btn"><i class="fas fa-user"></i><span>My Profile</span></a>
 						</li>
 						<li>
-							<a href="/abyss/messages"><i class="fas fa-envelope"></i><span>Inbox</span></a>
+							<a href="/abyss/my-messages"><i class="fas fa-envelope"></i><span>Inbox</span></a>
 						</li>
 						<li>
 							<a href="#" id="setting_panel_btn"><i class="fas fa-cog"></i><span>Settings</span></a>

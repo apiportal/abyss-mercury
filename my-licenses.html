@@ -46,6 +46,7 @@
 									<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
 									<ul class="dropdown-menu dropdown-menu-right" role="menu">
 										<li><a title="EDIT LICENSE" v-on:click="$emit('set-state', 'edit'); selectLicense(license, index);"><i class="fa fa-plus"></i> EDIT LICENSE</a></li>
+										<li><a title="CHANGE LOGS" v-on:click="changeLogs(license.uuid, '/license*/_search');"><i class="fa fa-search"></i> CHANGE LOGS</a></li>
 										<li><a class="" title="DELETE LICENSE" v-on:click="deleteLicense(license, index)"><i class="fa fa-trash-alt"></i> DELETE LICENSE</a></li>
 									</ul>
 								</div>
@@ -121,7 +122,7 @@
 										</p>
 									</div>
 									<div class="fol-sm-4 small">
-										<strong class="d-block py-2 brd-b row txt-c">Legal Aggreement</strong>
+										<strong class="d-block py-2 brd-b row txt-c">Legal Agreement</strong>
 										<h6 class="mt-2">
 											{{license.licensedocument.legal.name}}
 										</h6>
@@ -158,158 +159,166 @@
 				</div>
 			</section>
 			<aside class="column column-aside add-column">
-				<div class="nicescroll-bar">
-					<div class="clearfix brd-b column-header column-min-button">
-						<h5 class="column-header-title" >
-						<span v-if="rootState == 'add'">Add New License</span>
-						<span v-if="rootState == 'edit'">Edit License</span>
-						</h5>
-					</div>
-					<div class="p-3">
-						<div class="form-group" v-bind:class="{ 'has-error': errors.has('name') }">
-							<label for="name">License Name:</label>
-							<input type="text" name="name" id="name" v-model="license.name" v-validate="'required'" class="form-control">
-							<em v-bind:class="{ 'show': errors.has('name') }">{{ errors.first('name') }}</em>
-						</div>
-						<div class="form-group" v-bind:class="{ 'has-error': errors.has('licenseversion') }">
-							<label for="licenseversion">License Version:</label>
-							<input type="text" name="licenseversion" id="licenseversion" v-model="license.version" v-validate="'required'" class="form-control">
-							<em v-bind:class="{ 'show': errors.has('licenseversion') }">{{ errors.first('licenseversion') }}</em>
-						</div>
-						<hr>
-						<div v-if="license.licensedocument.info">
-							<div class="form-group" v-bind:class="{ 'has-error': errors.has('infotitle') }">
-								<label for="infotitle">Title:</label>
-								<input type="text" name="infotitle" id="infotitle" v-model="license.licensedocument.info.title" v-validate="'required'" class="form-control">
-								<em v-bind:class="{ 'show': errors.has('infotitle') }">{{ errors.first('infotitle') }}</em>
+				<div class="clearfix brd-b column-header column-min-button">
+					<h5 class="column-header-title" >
+					<span v-if="rootState == 'add'">Add New License</span>
+					<span v-if="rootState == 'edit'">Edit License</span>
+					</h5>
+				</div>
+				<div class="column-content">
+					<div class="nicescroll-bar">
+						<div class="p-3">
+							<div class="form-group" v-bind:class="{ 'has-error': errors.has('name') }">
+								<label for="name">License Name:</label>
+								<input type="text" name="name" id="name" v-model="license.name" v-validate="'required'" class="form-control">
+								<em v-bind:class="{ 'show': errors.has('name') }">{{ errors.first('name') }}</em>
 							</div>
-							<div class="form-group" v-bind:class="{ 'has-error': errors.has('infodescription') }">
-								<label for="infodescription">Description:</label>
-								<textarea type="text" name="infodescription" id="infodescription" v-model="license.licensedocument.info.description" v-validate="'required'" class="form-control"></textarea>
-								<em v-bind:class="{ 'show': errors.has('infodescription') }">{{ errors.first('infodescription') }}</em>
+							<div class="form-group" v-bind:class="{ 'has-error': errors.has('licenseversion') }">
+								<label for="licenseversion">License Version:</label>
+								<input type="text" name="licenseversion" id="licenseversion" v-model="license.version" v-validate="'required'" class="form-control">
+								<em v-bind:class="{ 'show': errors.has('licenseversion') }">{{ errors.first('licenseversion') }}</em>
 							</div>
-							<div class="form-group">
-								<label>Visibility</label>
-								<select class="form-control" name="visibility" id="visibility" v-model="license.licensedocument.info.visibility" v-validate="'required'">
-									<option value="Public">Public</option>
-									<option value="Private">Private</option>
-								</select>
+							<hr>
+							<div v-if="license.licensedocument.info">
+								<div class="form-group" v-bind:class="{ 'has-error': errors.has('infotitle') }">
+									<label for="infotitle">Title:</label>
+									<input type="text" name="infotitle" id="infotitle" v-model="license.licensedocument.info.title" v-validate="'required'" class="form-control">
+									<em v-bind:class="{ 'show': errors.has('infotitle') }">{{ errors.first('infotitle') }}</em>
+								</div>
+								<div class="form-group" v-bind:class="{ 'has-error': errors.has('infodescription') }">
+									<label for="infodescription">Description:</label>
+									<textarea type="text" name="infodescription" id="infodescription" v-model="license.licensedocument.info.description" v-validate="'required'" class="form-control"></textarea>
+									<em v-bind:class="{ 'show': errors.has('infodescription') }">{{ errors.first('infodescription') }}</em>
+								</div>
+								<div class="form-group">
+									<label>Visibility</label>
+									<select class="form-control" name="visibility" id="visibility" v-model="license.licensedocument.info.visibility" v-validate="'required'">
+										<option value="Public">Public</option>
+										<option value="Private">Private</option>
+									</select>
+								</div>
 							</div>
-						</div>
-						<div class="form-group d-flex justify-content-between">
-							<button type="button" class="btn btn-secondary btn-rounded" v-on:click="$emit('set-state', 'init'); cancelLicense()">CANCEL</button>
-							<button type="button" class="btn btn-primary btn-rounded" v-if="rootState == 'add'" v-on:click="licenseAction('add')">ADD</button>
-							<button type="button" class="btn btn-primary btn-rounded" v-if="rootState == 'edit'" v-on:click="licenseAction('edit')">SAVE</button>
+							<div class="form-group d-flex justify-content-between">
+								<button type="button" class="btn btn-secondary btn-rounded" v-on:click="$emit('set-state', 'init'); cancelLicense()">CANCEL</button>
+								<button type="button" class="btn btn-primary btn-rounded" v-if="rootState == 'add'" v-on:click="licenseAction('add')">ADD</button>
+								<button type="button" class="btn btn-primary btn-rounded" v-if="rootState == 'edit'" v-on:click="licenseAction('edit')">SAVE</button>
+							</div>
 						</div>
 					</div>
 				</div>
 			</aside>
 			<aside class="column column-aside manage-column" v-if="license.licensedocument.sla">
-				<div class="nicescroll-bar">
-					<div class="clearfix brd-b column-header column-min-button">
-						<h5 class="column-header-title">Policies</h5>
-					</div>
-					<div class="p-3">
-						<div class="form-group v-select-color-violet" v-bind:class="{ 'has-error': errors.has('custom') }">
-							<label>Select Policies</label>
-							<v-select label="name" multiple :filterable="false" :options="policyList" v-model="license.policies" v-validate="'required'" :has-error="errors.has('custom')" name="custom">
-								<span slot="no-options"></span>
-								<template slot="option" slot-scope="option">
-									<strong>{{ option.name }}</strong>
-									<small class="d-block">{{option.policyinstance.info.type}} - {{option.policyinstance.info.subType}}</small>
-									<code class="d-block small"><small>{{option.uuid}}</small></code>
-								</template>
-								<template slot="selected-option" slot-scope="option">
-									<strong>{{ option.name }}</strong>
-									<small class="d-block">{{option.policyinstance.info.type}} - {{option.policyinstance.info.subType}}</small>
-									<code class="d-block small"><small>{{option.uuid}}</small></code>
-								</template>
-							</v-select>
-							<em v-bind:class="{ 'show': errors.has('custom') }">{{ errors.first('custom') }}</em>
+				<div class="clearfix brd-b column-header column-min-button">
+					<h5 class="column-header-title">Policies</h5>
+				</div>
+				<div class="column-content">
+					<div class="nicescroll-bar">
+						<div class="p-3">
+							<div class="form-group v-select-color-violet" v-bind:class="{ 'has-error': errors.has('custom') }">
+								<label>Select Policies</label>
+								<v-select label="name" multiple :filterable="false" :options="policyList" v-model="license.policies" v-validate="'required'" :has-error="errors.has('custom')" name="custom">
+									<span slot="no-options"></span>
+									<template slot="option" slot-scope="option">
+										<strong>{{ option.name }}</strong>
+										<small class="d-block">{{option.policyinstance.info.type}} - {{option.policyinstance.info.subType}}</small>
+										<code class="d-block small"><small>{{option.uuid}}</small></code>
+									</template>
+									<template slot="selected-option" slot-scope="option">
+										<strong>{{ option.name }}</strong>
+										<small class="d-block">{{option.policyinstance.info.type}} - {{option.policyinstance.info.subType}}</small>
+										<code class="d-block small"><small>{{option.uuid}}</small></code>
+									</template>
+								</v-select>
+								<em v-bind:class="{ 'show': errors.has('custom') }">{{ errors.first('custom') }}</em>
+							</div>
 						</div>
 					</div>
 				</div>
 			</aside>
 			<aside class="column column-aside manage-column" v-if="license.licensedocument.sla">
-				<div class="nicescroll-bar">
-					<div class="clearfix brd-b column-header column-min-button">
-						<h5 class="column-header-title">SLA</h5>
-					</div>
-					<div class="p-3">
-						<div class="form-group" v-bind:class="{ 'has-error': errors.has('slatierName') }">
-							<label for="slatierName">SLA Tier Name:</label>
-							<input type="text" name="slatierName" id="slatierName" v-model="license.licensedocument.sla.tierName" v-validate="'required'" class="form-control">
-							<em v-bind:class="{ 'show': errors.has('slatierName') }">{{ errors.first('slatierName') }}</em>
-						</div>
-						<div class="form-group" v-bind:class="{ 'has-error': errors.has('sladescription') }">
-							<label for="sladescription">SLA Description:</label>
-							<textarea type="text" name="sladescription" id="sladescription" v-model="license.licensedocument.sla.description" v-validate="'required'" class="form-control"></textarea>
-							<em v-bind:class="{ 'show': errors.has('sladescription') }">{{ errors.first('sladescription') }}</em>
-						</div>
-						<div class="form-group" v-bind:class="{ 'has-error': errors.has('slasupportHours') }">
-							<label for="slasupportHours">SLA Support Hours:</label>
-							<input type="text" name="slasupportHours" id="slasupportHours" v-model="license.licensedocument.sla.supportHours" v-validate="'required'" class="form-control">
-							<em v-bind:class="{ 'show': errors.has('slasupportHours') }">{{ errors.first('slasupportHours') }}</em>
-						</div>
-						<div class="form-group" v-bind:class="{ 'has-error': errors.has('slaavailability') }">
-							<label for="slaavailability">Ailability:</label>
-							<input type="text" name="slaavailability" id="slaavailability" v-model="license.licensedocument.sla.availability" v-validate="'required'" class="form-control">
-							<em v-bind:class="{ 'show': errors.has('slaavailability') }">{{ errors.first('slaavailability') }}</em>
-						</div>
-						<div class="form-group" v-bind:class="{ 'has-error': errors.has('slablackOutHoursPerYear') }">
-							<label for="slablackOutHoursPerYear">SLA Blackout Hours Per Year</label>
-							<input type="text" name="slablackOutHoursPerYear" id="slablackOutHoursPerYear" v-model="license.licensedocument.sla.blackOutHoursPerYear" v-validate="'required'" class="form-control">
-							<em v-bind:class="{ 'show': errors.has('slablackOutHoursPerYear') }">{{ errors.first('slablackOutHoursPerYear') }}</em>
-						</div>
-						<div class="form-group" v-bind:class="{ 'has-error': errors.has('slaperformance') }">
-							<label for="slaperformance">SLA Performance:</label>
-							<input type="text" name="slaperformance" id="slaperformance" v-model="license.licensedocument.sla.performance" v-validate="'required'" class="form-control">
-							<em v-bind:class="{ 'show': errors.has('slaperformance') }">{{ errors.first('slaperformance') }}</em>
+				<div class="clearfix brd-b column-header column-min-button">
+					<h5 class="column-header-title">SLA</h5>
+				</div>
+				<div class="column-content">
+					<div class="nicescroll-bar">
+						<div class="p-3">
+							<div class="form-group" v-bind:class="{ 'has-error': errors.has('slatierName') }">
+								<label for="slatierName">SLA Tier Name:</label>
+								<input type="text" name="slatierName" id="slatierName" v-model="license.licensedocument.sla.tierName" v-validate="'required'" class="form-control">
+								<em v-bind:class="{ 'show': errors.has('slatierName') }">{{ errors.first('slatierName') }}</em>
+							</div>
+							<div class="form-group" v-bind:class="{ 'has-error': errors.has('sladescription') }">
+								<label for="sladescription">SLA Description:</label>
+								<textarea type="text" name="sladescription" id="sladescription" v-model="license.licensedocument.sla.description" v-validate="'required'" class="form-control"></textarea>
+								<em v-bind:class="{ 'show': errors.has('sladescription') }">{{ errors.first('sladescription') }}</em>
+							</div>
+							<div class="form-group" v-bind:class="{ 'has-error': errors.has('slasupportHours') }">
+								<label for="slasupportHours">SLA Support Hours:</label>
+								<input type="text" name="slasupportHours" id="slasupportHours" v-model="license.licensedocument.sla.supportHours" v-validate="'required'" class="form-control">
+								<em v-bind:class="{ 'show': errors.has('slasupportHours') }">{{ errors.first('slasupportHours') }}</em>
+							</div>
+							<div class="form-group" v-bind:class="{ 'has-error': errors.has('slaavailability') }">
+								<label for="slaavailability">Availability:</label>
+								<input type="text" name="slaavailability" id="slaavailability" v-model="license.licensedocument.sla.availability" v-validate="'required'" class="form-control">
+								<em v-bind:class="{ 'show': errors.has('slaavailability') }">{{ errors.first('slaavailability') }}</em>
+							</div>
+							<div class="form-group" v-bind:class="{ 'has-error': errors.has('slablackOutHoursPerYear') }">
+								<label for="slablackOutHoursPerYear">SLA Blackout Hours Per Year</label>
+								<input type="text" name="slablackOutHoursPerYear" id="slablackOutHoursPerYear" v-model="license.licensedocument.sla.blackOutHoursPerYear" v-validate="'required'" class="form-control">
+								<em v-bind:class="{ 'show': errors.has('slablackOutHoursPerYear') }">{{ errors.first('slablackOutHoursPerYear') }}</em>
+							</div>
+							<div class="form-group" v-bind:class="{ 'has-error': errors.has('slaperformance') }">
+								<label for="slaperformance">SLA Performance:</label>
+								<input type="text" name="slaperformance" id="slaperformance" v-model="license.licensedocument.sla.performance" v-validate="'required'" class="form-control">
+								<em v-bind:class="{ 'show': errors.has('slaperformance') }">{{ errors.first('slaperformance') }}</em>
+							</div>
 						</div>
 					</div>
 				</div>
 			</aside>
 			<aside class="column column-aside manage-column">
-				<div class="nicescroll-bar">
-					<div class="clearfix brd-b column-header column-min-button">
-						<h5 class="column-header-title">Legal Agreement</h5>
-					</div>
-					<div class="p-3">
-						<div v-if="license.licensedocument.info">
-							<div class="form-group" v-bind:class="{ 'has-error': errors.has('legalname') }">
-								<label for="legalname">Legal Aggrement Name:</label>
-								<input type="text" name="legalname" id="legalname" v-model="license.licensedocument.legal.name" v-validate="'required'" class="form-control">
-								<em v-bind:class="{ 'show': errors.has('legalname') }">{{ errors.first('legalname') }}</em>
-							</div>
-							<div class="form-group" v-bind:class="{ 'has-error': errors.has('legaldescription') }">
-								<label for="legaldescription">Legal Aggrement Description:</label>
-								<textarea type="text" name="legaldescription" id="legaldescription" v-model="license.licensedocument.legal.description" v-validate="'required'" class="form-control"></textarea>
-								<em v-bind:class="{ 'show': errors.has('legaldescription') }">{{ errors.first('legaldescription') }}</em>
-							</div>
-							<div class="form-group">
-								<label>Agreement Type</label>
-								<select class="form-control" name="agreementType" id="agreementType" v-model="license.licensedocument.legal.agreementType" v-validate="'required'">
-									<option value="signup">signup</option>
-									<option value="eula">eula</option>
-								</select>
-							</div>
-							<div class="form-group">
-								<label>Document State</label>
-								<select class="form-control" name="documentState" id="documentState" v-model="license.licensedocument.legal.documentState" v-validate="'required'">
-									<option value="draft">draft</option>
-									<option value="active">active</option>
-									<option value="inactive">inactive</option>
-								</select>
-							</div>
-							<div class="form-group" v-bind:class="{ 'has-error': errors.has('legallink') }">
-								<label for="legallink">Legal Aggrement Link:</label>
-								<input type="text" name="legallink" id="legallink" v-model="license.licensedocument.legal.link" v-validate="'required'" class="form-control">
-								<em v-bind:class="{ 'show': errors.has('legallink') }">{{ errors.first('legallink') }}</em>
-							</div>
-							<div class="form-group" v-bind:class="{ 'has-error': errors.has('documentText') }">
-								<label for="documentText">Document Text</label>
-								<textarea type="text" name="documentText" id="documentText" v-model="license.licensedocument.legal.documentText" v-validate="'required'" class="form-control"></textarea>
-								<em v-bind:class="{ 'show': errors.has('documentText') }">{{ errors.first('documentText') }}</em>
+				<div class="clearfix brd-b column-header column-min-button">
+					<h5 class="column-header-title">Legal Agreement</h5>
+				</div>
+				<div class="column-content">
+					<div class="nicescroll-bar">
+						<div class="p-3">
+							<div v-if="license.licensedocument.info">
+								<div class="form-group" v-bind:class="{ 'has-error': errors.has('legalname') }">
+									<label for="legalname">Legal Agreement Name:</label>
+									<input type="text" name="legalname" id="legalname" v-model="license.licensedocument.legal.name" v-validate="'required'" class="form-control">
+									<em v-bind:class="{ 'show': errors.has('legalname') }">{{ errors.first('legalname') }}</em>
+								</div>
+								<div class="form-group" v-bind:class="{ 'has-error': errors.has('legaldescription') }">
+									<label for="legaldescription">Legal Agreement Description:</label>
+									<textarea type="text" name="legaldescription" id="legaldescription" v-model="license.licensedocument.legal.description" v-validate="'required'" class="form-control"></textarea>
+									<em v-bind:class="{ 'show': errors.has('legaldescription') }">{{ errors.first('legaldescription') }}</em>
+								</div>
+								<div class="form-group">
+									<label>Agreement Type</label>
+									<select class="form-control" name="agreementType" id="agreementType" v-model="license.licensedocument.legal.agreementType" v-validate="'required'">
+										<option value="signup">signup</option>
+										<option value="eula">eula</option>
+									</select>
+								</div>
+								<div class="form-group">
+									<label>Document State</label>
+									<select class="form-control" name="documentState" id="documentState" v-model="license.licensedocument.legal.documentState" v-validate="'required'">
+										<option value="draft">draft</option>
+										<option value="active">active</option>
+										<option value="inactive">inactive</option>
+									</select>
+								</div>
+								<div class="form-group" v-bind:class="{ 'has-error': errors.has('legallink') }">
+									<label for="legallink">Legal Agreement Link:</label>
+									<input type="text" name="legallink" id="legallink" v-model="license.licensedocument.legal.link" v-validate="'required'" class="form-control">
+									<em v-bind:class="{ 'show': errors.has('legallink') }">{{ errors.first('legallink') }}</em>
+								</div>
+								<div class="form-group" v-bind:class="{ 'has-error': errors.has('documentText') }">
+									<label for="documentText">Document Text</label>
+									<textarea type="text" name="documentText" id="documentText" v-model="license.licensedocument.legal.documentText" v-validate="'required'" class="form-control"></textarea>
+									<em v-bind:class="{ 'show': errors.has('documentText') }">{{ errors.first('documentText') }}</em>
+								</div>
 							</div>
 						</div>
 					</div>

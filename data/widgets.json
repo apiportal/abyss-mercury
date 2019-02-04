@@ -1,0 +1,81 @@
+[
+	{
+		"uuid": "fe5a0293-6bdb-4fc2-b1d6-24bcd81ab28c",
+		"organizationid": "3c65fafc-8f3a-4243-9c4e-2821aa32d293",
+		"created": "2018-10-08T16:03:33.35404Z",
+		"updated": "2018-10-08T16:03:33.35404Z",
+		"deleted": null,
+		"isdeleted": false,
+		"crudsubjectid": "e20ca770-3c44-4a2d-b55d-2ebcaa0536bc",
+		"title": "My Proxy APIs & Subscribers",
+		"size": "2/3",
+		"color": "green",
+		"chart": {
+			"name": "Column Chart",
+			"type": "column"
+		},
+		"comp": "my-proxy-apis"
+	},
+	{
+		"uuid": "560a8452-5f0a-4ed5-a022-d25285df99cb",
+		"organizationid": "3c65fafc-8f3a-4243-9c4e-2821aa32d293",
+		"created": "2018-10-08T16:03:33.35404Z",
+		"updated": "2018-10-08T16:03:33.35404Z",
+		"deleted": null,
+		"isdeleted": false,
+		"crudsubjectid": "e20ca770-3c44-4a2d-b55d-2ebcaa0536bc",
+		"title": "APIs Shared with Me",
+		"size": "1/3",
+		"color": "purple",
+		"chart": null,
+		"comp": "apis-shared-with-me"
+	},
+	{
+		"uuid": "32520383-96f8-4e20-aee8-0a858cde2b7e",
+		"organizationid": "3c65fafc-8f3a-4243-9c4e-2821aa32d293",
+		"created": "2018-10-08T16:03:33.35404Z",
+		"updated": "2018-10-08T16:03:33.35404Z",
+		"deleted": null,
+		"isdeleted": false,
+		"crudsubjectid": "e20ca770-3c44-4a2d-b55d-2ebcaa0536bc",
+		"title": "APIs Shared by Me",
+		"size": "1/3",
+		"color": "orange",
+		"chart": null,
+		"comp": "apis-shared-by-me"
+	},
+	{
+		"uuid": "66f83423-11d0-42bf-93bd-be4c9015ebc9",
+		"organizationid": "3c65fafc-8f3a-4243-9c4e-2821aa32d293",
+		"created": "2018-10-08T16:03:33.35404Z",
+		"updated": "2018-10-08T16:03:33.35404Z",
+		"deleted": null,
+		"isdeleted": false,
+		"crudsubjectid": "e20ca770-3c44-4a2d-b55d-2ebcaa0536bc",
+		"title": "My APPS & Subscriptions",
+		"size": "2/3",
+		"color": "cyan",
+		"chart": {
+			"name": "Pie Chart",
+			"type": "pie"
+		},
+		"comp": "my-apps-subscriptions"
+	},
+	{
+		"uuid": "b3d3edd5-99c2-42df-896c-c1cf881cd3bf",
+		"organizationid": "3c65fafc-8f3a-4243-9c4e-2821aa32d293",
+		"created": "2018-10-08T16:03:33.35404Z",
+		"updated": "2018-10-08T16:03:33.35404Z",
+		"deleted": null,
+		"isdeleted": false,
+		"crudsubjectid": "e20ca770-3c44-4a2d-b55d-2ebcaa0536bc",
+		"title": "My Business APIs",
+		"size": "2/3",
+		"color": "red",
+		"chart": {
+			"name": "Pie Chart",
+			"type": "pie"
+		},
+		"comp": "my-business-apis"
+	}
+]

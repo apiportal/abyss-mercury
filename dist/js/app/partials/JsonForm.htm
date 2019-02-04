@@ -1,0 +1,59 @@
+<template>
+	<div title="(v, k, i) in obj">
+		<div class="form-group" v-if="(v.schema.type == 'string' || v.schema.type == 'integer' || v.schema.type == 'number') && !v.schema.enum">
+			<label :for="k + i">{{v.description}}</label>
+			<input class="form-control" type="text" :name="k + i" v-model="v.value" v-if="v.schema.type == 'string'" :required="v.required">
+			<input class="form-control" type="number" :name="k + i" v-model="v.value" v-if="v.schema.type == 'integer'" :required="v.required">
+			<!-- <input class="form-control" type="number" :name="k + i" step=".01" v-model.number="v.value" v-if="v.schema.type == 'integer'" :required="v.required"> -->
+		</div>
+		<div class="form-group" v-if="(v.schema.type == 'string' || v.schema.type == 'integer' || v.schema.type == 'number') && v.schema.enum">
+			<label :for="k + i">{{v.description}}:</label>
+			<select class="form-control" :name="k + i" :id="k + i" v-model="v.value" v-validate="'required'" :required="v.required">
+				<option v-for="(e, index) in v.schema.enum" :value="e">{{e}}</option>
+			</select>
+		</div>
+		<div class="form-group form-inline" v-if="v.schema.type == 'boolean'">
+			<label class="d-block">{{v.description}}:</label>
+			<span class="switch switch-primary ml-auto">
+				<input type="checkbox" :name="k + i" :id="k + i" v-model="v.value" checked>
+				<label :for="k + i"></label>
+			</span>
+		</div>
+		<div class="form-group v-select-20 v-select-small" v-if="v.schema.type == 'array'">
+			<label>{{v.description}}:</label>
+			<v-select multiple :options="v.schema.enum" v-model="v.value" >
+				<!-- <template slot="selected-option" slot-scope="option">
+					<div class="'badge-'+option.name">{{option.name}}</div>
+				</template> -->
+			</v-select>
+		</div>
+	</div>
+</template>
+
+<script>
+    define(['Vue', 'vue-select'], function(Vue, VueSelect) {
+    	Vue.component('v-select', VueSelect.VueSelect);
+		Vue.component("json-form", {
+			template: template,
+			props: ['obj', 'v', 'k', 'i'],
+			data() {
+				return {
+					isLoading: true,
+				};
+			},
+			computed: {
+			},
+			methods : {
+			},
+			created() {
+			},
+		});
+    });
+</script>
+
+<style>
+
+div#div2 {
+	border: 1px solid red;
+}
+</style>

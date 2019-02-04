@@ -42,6 +42,10 @@ require.config({
 		"highcharts": "plugins/Highcharts",
 		"sweetalert2": "plugins/sweetalert2.min",
 		"sweetalert2-css": "plugins/sweetalert2.min.css?noext",
+		"turndown": "plugins/turndown.umd",
+		"medium-editor": "plugins/medium-editor.min",
+		// "medium-editor-markdown": "plugins/me-markdown.standalone.min",
+		"medium-editor-css": "plugins/medium-editor.min.css?noext",
 		//// comps ////
 		"vuedraggable": "comps/vuedraggable",
 		"vee-validate": "comps/vee-validate.min",
@@ -54,7 +58,13 @@ require.config({
 		"vue-dropzone-css": "comps/vue2Dropzone.css?noext",
 		// "vue-izitoast": "comps/vue-izitoast.min",
 		"vue-izitoast": "comps/vue-my-izitoast",
+		"vue-medium-editor": "comps/vueMediumEditor.min",
 		// "ace-init": "scripts/ace",
+		//// components ////
+		"organization-tree": "app/partials/OrganizationTree.htm?noext",
+		"schema-template-form": "app/partials/SchemaTemplateForm.htm?noext",
+		"openapi-schema-item": "app/partials/OpenapiSchemaItem.htm?noext",
+		"json-form": "app/partials/JsonForm.htm?noext",
 		//// init ////
 		"config": "config",
 		"global": "/global",
@@ -89,6 +99,8 @@ require.config({
 		'vue-snotify': ['Vue'],
 		'vue-dropzone': ['dropzone'],
 		'vue-cookie': ['tiny-cookie'],
+		// 'vue-medium-editor': ['medium-editor'],
+		// 'medium-editor-markdown': ['vue-medium-editor'],
 		'dropdown': ['jquery', 'bootstrap'],
 		'dropzone': { exports: 'Dropzone'},
 		'moment': { exports: 'moment'},

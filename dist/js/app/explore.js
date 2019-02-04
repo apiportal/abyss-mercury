@@ -32,6 +32,11 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select'], funct
 			};
 		},
 		computed: {
+			filteredApps : {
+				get() {
+					return _.reject(this.$root.appList, { contracts: [ { apiid: this.api.uuid, isdeleted: false } ]});
+				}
+			},
 			apiEnvironment : {
 				get() {
 					if (this.api.issandbox) {
@@ -116,6 +121,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select'], funct
 			async filterApi(filter) {
 				if (filter == null) {
 					this.getPage(1);
+					this.apiList = this.apiList.filter( (item) => item.apivisibilityid === abyss.defaultIds.apiVisibilityPublic );
 					this.filterTxt = '';
 				} else {
 					console.log("filter: ", filter);
@@ -146,7 +152,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select'], funct
 		async created() {
 			this.$emit('set-page', 'explore', 'init');
 			await this.getPage(1);
-			await this.getMyApps();
+			await this.getMyAppList();
 			this.apiList = this.apiList.filter( (item) => item.apivisibilityid === abyss.defaultIds.apiVisibilityPublic );
 			this.paginate = this.makePaginate(this.apiList);
 			this.isLoading = false;

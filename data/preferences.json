@@ -1,0 +1,14 @@
+{
+	"uuid": "e2b560da-6821-4f60-809a-de6b4c40419b",
+	"organizationid": "89db8aca-51b3-435b-a79d-e1f4067d2076",
+	"created": "2018-10-08T16:03:33.35404Z",
+	"updated": "2018-10-08T16:03:33.35404Z",
+	"deleted": null,
+	"isdeleted": false,
+	"crudsubjectid": "9820d2aa-eb02-4a58-8cc5-8b9a89504df9",
+	"subjectid": "9820d2aa-eb02-4a58-8cc5-8b9a89504df9",
+	"uisettings": {
+		"darksidebar": false
+	},
+	"activedashboardid": "07fe6d6d-dd97-40ee-a723-3f826c05a42a"
+}

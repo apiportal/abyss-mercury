@@ -8,17 +8,14 @@
 		<div th:replace="webroot/frags/layout/nav-top.htm :: navTop"></div>
 		<div th:replace="webroot/frags/layout/nav-left.htm :: navLeft"></div>
 		<div th:replace="webroot/frags/layout/nav-right.htm :: navRight"></div>
-		<div th:replace="webroot/frags/layout/modal.htm :: taxonomy"></div>
 		<div th:replace="webroot/frags/layout/modal.htm :: searchAll"></div>
 	</div>
 	<header th:fragment="navError" class="navbar navbar-fixed-top navbar-light">
 		<div class="preloader-it">
 			<div class="la-anim-1"></div>
 		</div>
-		<a class="logo-main" href="/abyss/index">
-			<i class="icon-verapi"></i>
-			<span class="brand-text"><span>API</span> Portal <sup>{{abyssVersion}}</sup></span>
-		</a>
+		<a class="logo-img" href="/abyss/index"></a>
+		<small class="logo-version mr-auto">{{abyssVersion}}</small>
 		<div class="nav-button">
 			<a class="d-inline-block btn btn-outline-primary btn-rounded" href="/abyss/index">Back to Home</a>
 		</div>
@@ -27,10 +24,8 @@
 		<div class="preloader-it">
 			<div class="la-anim-1"></div>
 		</div>
-		<a class="logo-main" href="/abyss/index">
-			<i class="icon-verapi"></i>
-			<span class="brand-text"><span>API</span> Portal <sup>{{abyssVersion}}</sup></span>
-		</a>
+		<a class="logo-img" href="/abyss/index"></a>
+		<small class="logo-version mr-auto">{{abyssVersion}}</small>
 		<div class="nav-button">
 			<a class="d-inline-block btn btn-outline-primary btn-rounded" href="/abyss/logout">Logout</a>
 		</div>
@@ -39,10 +34,8 @@
 		<div class="preloader-it">
 			<div class="la-anim-1"></div>
 		</div>
-		<a class="logo-main" href="/abyss/index">
-			<i class="icon-verapi"></i>
-			<span class="brand-text"><span>API</span> Portal <sup>{{abyssVersion}}</sup></span>
-		</a>
+		<a class="logo-img" href="/abyss/index"></a>
+		<small class="logo-version mr-auto">{{abyssVersion}}</small>
 		<div class="nav-button">
 			<span class="d-inline-block pr-2">Don't have an account?</span>
 			<a class="d-inline-block btn btn-outline-primary btn-rounded" href="/abyss/signup">Sign Up</a>
@@ -52,10 +45,8 @@
 		<div class="preloader-it">
 			<div class="la-anim-1"></div>
 		</div>
-		<a class="logo-main" href="/abyss/index">
-			<i class="icon-verapi"></i>
-			<span class="brand-text"><span>API</span> Portal <sup>{{abyssVersion}}</sup></span>
-		</a>
+		<a class="logo-img" href="/abyss/index"></a>
+		<small class="logo-version mr-auto">{{abyssVersion}}</small>
 		<div class="nav-button">
 			<span class="d-inline-block pr-2">Already have an account?</span>
 			<a class="d-inline-block btn btn-outline-primary btn-rounded" href="/abyss/login">Sign In</a>

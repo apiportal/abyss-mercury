@@ -59,107 +59,127 @@
 				</div>
 			</section>
 			<aside class="column column-aside add-column">
-				<div class="nicescroll-bar">
-					<div class="clearfix brd-b column-header column-min-button">
-						<h5 class="column-header-title" >
-						<span v-if="rootState == 'add'">Add New Access Manager</span>
-						<span v-if="rootState == 'edit'">Edit Access Manager</span>
-						</h5>
+				<div class="clearfix brd-b column-header column-min-button">
+					<h5 class="column-header-title" >
+					<span v-if="rootState == 'add'">Add New Access Manager</span>
+					<span v-if="rootState == 'edit'">Edit Access Manager</span>
+					</h5>
+				</div>
+				<div class="column-content">
+					<div class="nicescroll-bar">
+						<div class="p-3">
+							<div class="form-group" v-bind:class="{ 'has-error': errors.has('accessmanagername') }">
+								<label for="accessmanagername">Name:</label>
+								<input type="text" name="accessmanagername" id="accessmanagername" v-model="accessManager.accessmanagername" v-validate="'required|min:2|alpha_spaces'" class="form-control">
+								<em v-bind:class="{ 'show': errors.has('accessmanagername') }">{{ errors.first('accessmanagername') }}</em>
+							</div>
+							<div class="form-group" v-bind:class="{ 'has-error': errors.has('description') }">
+								<label for="description">Decription:</label>
+								<textarea type="text" name="description" id="description" v-model="accessManager.description" v-validate="'required'" class="form-control"></textarea>
+								<em v-bind:class="{ 'show': errors.has('description') }">{{ errors.first('description') }}</em>
+							</div>
+							<div class="form-group form-inline">
+								<label class="d-block">Enabled</label>
+								<span class="switch switch-primary ml-auto">
+									<input type="checkbox" name="isactive" id="isactive" v-model="accessManager.isactive" checked>
+									<label for="isactive"></label>
+								</span>
+							</div>
+							<div class="form-group " v-bind:class="{ 'has-error': errors.has('orgid') }">
+								<label>Organization Id</label>
+								<select class="form-control" name="orgid" id="orgid" v-model="accessManager.organizationid" v-validate="'required'">
+									<option v-for="(org,index) in orgOptions" :value="org.uuid">{{org.name}}</option>
+								</select>
+								<em v-bind:class="{ 'show': errors.has('orgid') }">{{ errors.first('orgid') }}</em>
+							</div>
+							<div class="form-group " v-bind:class="{ 'has-error': errors.has('type') }">
+								<label>Access Manager Type</label>
+								<select class="form-control" name="type" id="type" v-model="accessManager.accessmanagertypeid" v-validate="'required'" v-on:change="getTemplate($event.target.value, true)">
+									<option v-for="(type,index) in accessManagerTypes" :value="type.uuid">{{type.typename}}</option>
+								</select>
+								<em v-bind:class="{ 'show': errors.has('type') }">{{ errors.first('type') }}</em>
+							</div>
+							<div class="form-group" v-bind:class="{ 'has-error': errors.has('attributes') }">
+								<label for="attributes" class="txt-muted">Attributes:</label>
+								<textarea type="text" name="attributes" id="attributes" v-model="stringifyAttribute" v-validate="'required'" class="form-control" :readonly="!$root.abyssSandbox"></textarea>
+								<em v-bind:class="{ 'show': errors.has('attributes') }">{{ errors.first('attributes') }}</em>
+							</div>
+							<div class="form-group d-flex justify-content-between">
+								<button type="button" class="btn btn-secondary btn-rounded" v-on:click="$emit('set-state', 'init'); cancelAccessManager()">CANCEL</button>
+								<button type="button" class="btn btn-primary btn-rounded" v-if="rootState == 'add'" v-on:click="accessManagerAction('add')">ADD</button>
+								<button type="button" class="btn btn-primary btn-rounded" v-if="rootState == 'edit'" v-on:click="accessManagerAction('edit')">SAVE</button>
+							</div>
+						</div>
 					</div>
-					<div class="p-3">
-						<div class="form-group" v-bind:class="{ 'has-error': errors.has('accessmanagername') }">
-							<label for="accessmanagername">Name:</label>
-							<input type="text" name="accessmanagername" id="accessmanagername" v-model="accessManager.accessmanagername" v-validate="'required|min:2|alpha_spaces'" class="form-control">
-							<em v-bind:class="{ 'show': errors.has('accessmanagername') }">{{ errors.first('accessmanagername') }}</em>
-						</div>
-						<div class="form-group" v-bind:class="{ 'has-error': errors.has('description') }">
-							<label for="description">Decription:</label>
-							<textarea type="text" name="description" id="description" v-model="accessManager.description" v-validate="'required'" class="form-control"></textarea>
-							<em v-bind:class="{ 'show': errors.has('description') }">{{ errors.first('description') }}</em>
-						</div>
-						<div class="form-group form-inline">
-							<label class="d-block">Enabled</label>
-							<span class="switch switch-primary ml-auto">
-								<input type="checkbox" name="isactive" id="isactive" v-model="accessManager.isactive" checked>
-								<label for="isactive"></label>
-							</span>
-						</div>
-						<div class="form-group " v-bind:class="{ 'has-error': errors.has('orgid') }">
-							<label>Organization Id</label>
-							<select class="form-control" name="orgid" id="orgid" v-model="accessManager.organizationid" v-validate="'required'">
-								<option v-for="(org,index) in orgOptions" :value="org.uuid">{{org.name}}</option>
-							</select>
-							<em v-bind:class="{ 'show': errors.has('orgid') }">{{ errors.first('orgid') }}</em>
-						</div>
-						<div class="form-group " v-bind:class="{ 'has-error': errors.has('type') }">
-							<label>Access Manager Type</label>
-							<select class="form-control" name="type" id="type" v-model="accessManager.accessmanagertypeid" v-validate="'required'" v-on:change="getTemplate($event.target.value)">
-								<option v-for="(type,index) in accessManagerTypes" :value="type.uuid">{{type.typename}}</option>
-							</select>
-							<em v-bind:class="{ 'show': errors.has('type') }">{{ errors.first('type') }}</em>
-						</div>
-						<div class="form-group" v-bind:class="{ 'has-error': errors.has('attributes') }">
-							<label for="attributes">Attributes:</label>
-							<textarea type="text" name="attributes" id="attributes" v-model.lazy="stringifyAttribute" v-validate="'required'" class="form-control"></textarea>
-							<em v-bind:class="{ 'show': errors.has('attributes') }">{{ errors.first('attributes') }}</em>
-						</div>
-						<div class="form-group d-flex justify-content-between">
-							<button type="button" class="btn btn-secondary btn-rounded" v-on:click="$emit('set-state', 'init'); cancelAccessManager()">CANCEL</button>
-							<button type="button" class="btn btn-primary btn-rounded" v-if="rootState == 'add'" v-on:click="accessManagerAction('add')">ADD</button>
-							<button type="button" class="btn btn-primary btn-rounded" v-if="rootState == 'edit'" v-on:click="accessManagerAction('edit')">SAVE</button>
+				</div>
+			</aside>
+			<aside class="column column-aside manage-column" v-if="template">
+				<div class="clearfix brd-b column-header column-min-button">
+					<h5 class="column-header-title">Configure AM</h5>
+				</div>
+				<div class="column-content">
+					<div class="nicescroll-bar">
+						<div class="p-3">
+							<div v-for="(cv, ck, ci) in template.components.schemas">
+								<div v-for="(pv, pk, pi) in cv.properties">
+									<schema-template-form :v="pv" :k="pk" :i="pi" :req="cv.required" :attr="accessManager.accessmanagerattributes"></schema-template-form>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
 			</aside>
 			<aside class="column column-aside manage-column column-minimize">
-				<div class="nicescroll-bar">
-					<div class="clearfix brd-b column-header column-min-button">
-						<h5 class="column-header-title">Access Manager Types</h5>
+				<div class="clearfix brd-b column-header column-min-button">
+					<h5 class="column-header-title">Access Manager Types</h5>
+				</div>
+				<div class="column-content">
+					<div class="nicescroll-bar">
+						<access-manager-types v-for="(t,index) in accessManagerTypes" :key="t.uuid" :t="t" :index="index" :orgoptions="orgOptions" inline-template>
+							<article class="field-controls field-color-grey field-level-1" :class="{'is-deleted': t.isdeleted}">
+								<div class="field-sum">
+									<a class="field-link nav-caret" data-toggle="collapse" v-bind:data-target="'#t'+index" v-bind:aria-controls="'t'+index">
+										<strong class="fnt-bold">{{t.typename}}</strong>
+									</a>
+									<div class="ficon-actions dropdown dropdown-hover">
+										<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
+										<ul class="dropdown-menu dropdown-menu-right" role="menu">
+											<li><a title="Add Access Manager Type" v-on:click="addType()"><i class="fas fa-lg fa-plus"></i> Add AM Type</a></li>
+											<li><a title="Remove Access Manager Type" v-on:click="deleteType(t, index)"><i class="fa fa-trash-alt"></i> Remove AM Type</a></li>
+										</ul>
+									</div>
+								</div>
+								<div v-bind:id="'t'+index" class="collapse field-acc field-tabs">
+									<div class="form-group" v-bind:class="{ 'has-error': errors.has('name') }">
+										<label>Name</label>
+										<input class="form-control" name="name" v-model="t.typename" v-validate="'required'">
+										<em v-bind:class="{ 'show': errors.has('name') }">{{ errors.first('name') }}</em>
+									</div>
+									<div class="form-group">
+										<label>Description</label>
+										<textarea class="form-control" v-model="t.description"></textarea>
+									</div>
+									<div class="form-group" v-bind:class="{ 'has-error': errors.has('organization') }">
+										<label>Organization Id</label>
+										<select class="form-control" name="organization" v-model="t.organizationid" v-validate="'required'">
+											<option v-for="(org,index) in orgoptions" :value="org.uuid">{{org.name}}</option>
+										</select>
+										<em v-bind:class="{ 'show': errors.has('organization') }">{{ errors.first('organization') }}</em>
+									</div>
+									<div class="form-group" v-bind:class="{ 'has-error': errors.has('template') }">
+										<label for="template">Template:</label>
+										<textarea type="text" name="template" id="template" v-model.lazy="stringifyTemplate" v-validate="'required'" class="form-control"></textarea>
+										<em v-bind:class="{ 'show': errors.has('template') }">{{ errors.first('template') }}</em>
+									</div>
+									<div class="form-group d-flex justify-content-center">
+										<button type="button" class="btn btn-secondary btn-rounded mr-auto" v-if="!t.uuid" v-on:click="cancelAddType(t)">CANCEL</button>
+										<button type="button" class="btn btn-primary btn-rounded" v-if="!t.uuid" v-on:click="saveAddType(t)">ADD</button>
+										<button type="button" class="btn btn-primary btn-rounded" v-if="t.uuid" v-on:click="saveType(t)">SAVE</button>
+									</div>
+								</div>
+							</article>
+						</access-manager-types>
 					</div>
-					<access-manager-types v-for="(t,index) in accessManagerTypes" :key="t.uuid" :t="t" :index="index" :orgoptions="orgOptions" inline-template>
-						<article class="field-controls field-color-grey field-level-1" :class="{'is-deleted': t.isdeleted}">
-							<div class="field-sum">
-								<a class="field-link nav-caret" data-toggle="collapse" v-bind:data-target="'#t'+index" v-bind:aria-controls="'t'+index">
-									<strong class="fnt-bold">{{t.typename}}</strong>
-								</a>
-								<div class="ficon-actions dropdown dropdown-hover">
-									<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
-									<ul class="dropdown-menu dropdown-menu-right" role="menu">
-										<li><a title="Add Access Manager Type" v-on:click="addType()"><i class="fas fa-lg fa-plus"></i> Add AM Type</a></li>
-										<li><a title="Remove Access Manager Type" v-on:click="deleteType(t, index)"><i class="fa fa-trash-alt"></i> Remove AM Type</a></li>
-									</ul>
-								</div>
-							</div>
-							<div v-bind:id="'t'+index" class="collapse field-acc field-tabs">
-								<div class="form-group" v-bind:class="{ 'has-error': errors.has('name') }">
-									<label>Name</label>
-									<input class="form-control" name="name" v-model="t.typename" v-validate="'required'">
-									<em v-bind:class="{ 'show': errors.has('name') }">{{ errors.first('name') }}</em>
-								</div>
-								<div class="form-group">
-									<label>Description</label>
-									<textarea class="form-control" v-model="t.description"></textarea>
-								</div>
-								<div class="form-group" v-bind:class="{ 'has-error': errors.has('organization') }">
-									<label>Organization Id</label>
-									<select class="form-control" name="organization" v-model="t.organizationid" v-validate="'required'">
-										<option v-for="(org,index) in orgoptions" :value="org.uuid">{{org.name}}</option>
-									</select>
-									<em v-bind:class="{ 'show': errors.has('organization') }">{{ errors.first('organization') }}</em>
-								</div>
-								<div class="form-group" v-bind:class="{ 'has-error': errors.has('template') }">
-									<label for="template">Template:</label>
-									<textarea type="text" name="template" id="template" v-model.lazy="stringifyTemplate" v-validate="'required'" class="form-control"></textarea>
-									<em v-bind:class="{ 'show': errors.has('template') }">{{ errors.first('template') }}</em>
-								</div>
-								<div class="form-group d-flex justify-content-center">
-									<button type="button" class="btn btn-secondary btn-rounded mr-auto" v-if="!t.uuid" v-on:click="cancelAddType(t)">CANCEL</button>
-									<button type="button" class="btn btn-primary btn-rounded" v-if="!t.uuid" v-on:click="saveAddType(t)">ADD</button>
-									<button type="button" class="btn btn-primary btn-rounded" v-if="t.uuid" v-on:click="saveType(t)">SAVE</button>
-								</div>
-							</div>
-						</article>
-					</access-manager-types>
 				</div>
 			</aside>
 			<div class="btn-float-br btn-float-under">

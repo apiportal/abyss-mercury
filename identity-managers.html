@@ -24,7 +24,7 @@
 							<th class="td-name" v-bind:class="sort.order" v-on:click="sortList(sort, 'directorytypeid', String)">Type</th>
 							<th class="td-bool" v-bind:class="sort.order" v-on:click="sortList(sort, 'directorypriorityorder', Number)">Order</th>
 							<th class="td-bool" v-on:click="sortList(sort, 'istemplate', Boolean)">istemplate</th>
-							<th class="td-datetime">Syncronization</th>
+							<th class="td-datetime" v-bind:class="sort.order" v-on:click="sortList(sort, 'lastsyncronizedat', Date)">Syncronization</th>
 							<th class="td-datetime-x" v-bind:class="sort.order" v-on:click="sortList(sort, 'created', Date)">Created / Updated / Deleted</th>
 							<th class="td-action-1"></th>
 							<th class="td-action-1"></th>
@@ -72,144 +72,141 @@
 				</div>
 			</section>
 			<aside class="column column-aside add-column">
-				<div class="nicescroll-bar">
-					<div class="clearfix brd-b column-header column-min-button">
-						<h5 class="column-header-title" >
-						<span v-if="rootState == 'add'">Add New Identity Manager</span>
-						<span v-if="rootState == 'edit'">Edit Identity Manager</span>
-						</h5>
-					</div>
-					<div class="p-3">
-						<div class="form-group" v-bind:class="{ 'has-error': errors.has('directoryname') }">
-							<label for="directoryname">Name:</label>
-							<input type="text" name="directoryname" id="directoryname" v-model="directory.directoryname" v-validate="'required|min:2|alpha_spaces'" class="form-control">
-							<em v-bind:class="{ 'show': errors.has('directoryname') }">{{ errors.first('directoryname') }}</em>
-						</div>
-						<div class="form-group" v-bind:class="{ 'has-error': errors.has('directorydescription') }">
-							<label for="directorydescription">Decription:</label>
-							<textarea type="text" name="directorydescription" id="directorydescription" v-model="directory.description" v-validate="'required'" class="form-control"></textarea>
-							<em v-bind:class="{ 'show': errors.has('directorydescription') }">{{ errors.first('directorydescription') }}</em>
-						</div>
-						<div class="form-group" v-bind:class="{ 'has-error': errors.has('order') }">
-							<label for="order">Priority Order:</label>
-							<input type="number" name="order" id="order" v-model.number="directory.directorypriorityorder" class="form-control">
-							<em v-bind:class="{ 'show': errors.has('order') }">{{ errors.first('order') }}</em>
-						</div>
-						<div class="fow">
-							<div class="fol-6 form-group ">
-								<label class="d-block">Enabled</label>
-								<span class="switch switch-primary">
-									<input type="checkbox" name="isactive" id="isactive" v-model="directory.isactive" checked>
-									<label for="isactive"></label>
-								</span>
+				<div class="clearfix brd-b column-header column-min-button">
+					<h5 class="column-header-title" >
+					<span v-if="rootState == 'add'">Add New Identity Manager</span>
+					<span v-if="rootState == 'edit'">Edit Identity Manager</span>
+					</h5>
+				</div>
+				<div class="column-content">
+					<div class="nicescroll-bar">
+						<div class="p-3">
+							<div class="form-group" v-bind:class="{ 'has-error': errors.has('directoryname') }">
+								<label for="directoryname">Name:</label>
+								<input type="text" name="directoryname" id="directoryname" v-model="directory.directoryname" v-validate="'required|min:2|alpha_spaces'" class="form-control">
+								<em v-bind:class="{ 'show': errors.has('directoryname') }">{{ errors.first('directoryname') }}</em>
 							</div>
-							<div class="fol-6 form-group txt-r">
-								<label class="d-block">Template</label>
-								<span class="switch switch-primary">
-									<input type="checkbox" name="istemplate" id="istemplate" v-model="directory.istemplate" checked>
-									<label for="istemplate"></label>
-								</span>
+							<div class="form-group" v-bind:class="{ 'has-error': errors.has('directorydescription') }">
+								<label for="directorydescription">Decription:</label>
+								<textarea type="text" name="directorydescription" id="directorydescription" v-model="directory.description" v-validate="'required'" class="form-control"></textarea>
+								<em v-bind:class="{ 'show': errors.has('directorydescription') }">{{ errors.first('directorydescription') }}</em>
 							</div>
-						</div>
-						<div class="form-group " v-bind:class="{ 'has-error': errors.has('orgid') }">
-							<label>Organization Id</label>
-							<select class="form-control" name="orgid" id="orgid" v-model="directory.organizationid" v-validate="'required'">
-								<option v-for="(org,index) in orgOptions" :value="org.uuid">{{org.name}}</option>
-							</select>
-							<em v-bind:class="{ 'show': errors.has('orgid') }">{{ errors.first('orgid') }}</em>
-						</div>
-						<div class="form-group " v-bind:class="{ 'has-error': errors.has('type') }">
-							<label>Directory Type</label>
-							<select class="form-control" name="type" id="type" v-model="directory.directorytypeid" v-validate="'required'">
-								<option v-for="(type,index) in directoryTypes" :value="type.uuid">{{type.typename}}</option>
-							</select>
-							<em v-bind:class="{ 'show': errors.has('type') }">{{ errors.first('type') }}</em>
-						</div>
-						<div class="form-group d-flex justify-content-between">
-							<button type="button" class="btn btn-secondary btn-rounded" v-on:click="$emit('set-state', 'init'); cancelDirectory()">CANCEL</button>
-							<button type="button" class="btn btn-primary btn-rounded" v-if="rootState == 'add'" v-on:click="directoryAction('add')">ADD</button>
-							<button type="button" class="btn btn-primary btn-rounded" v-if="rootState == 'edit'" v-on:click="directoryAction('edit')">SAVE</button>
+							<div class="form-group" v-bind:class="{ 'has-error': errors.has('order') }">
+								<label for="order">Priority Order:</label>
+								<input type="number" name="order" id="order" v-model.number="directory.directorypriorityorder" class="form-control">
+								<em v-bind:class="{ 'show': errors.has('order') }">{{ errors.first('order') }}</em>
+							</div>
+							<div class="fow">
+								<div class="fol-6 form-group ">
+									<label class="d-block">Enabled</label>
+									<span class="switch switch-primary">
+										<input type="checkbox" name="isactive" id="isactive" v-model="directory.isactive" checked>
+										<label for="isactive"></label>
+									</span>
+								</div>
+								<div class="fol-6 form-group txt-r">
+									<label class="d-block">Template</label>
+									<span class="switch switch-primary">
+										<input type="checkbox" name="istemplate" id="istemplate" v-model="directory.istemplate" checked>
+										<label for="istemplate"></label>
+									</span>
+								</div>
+							</div>
+							<div class="form-group " v-bind:class="{ 'has-error': errors.has('orgid') }">
+								<label>Organization Id</label>
+								<select class="form-control" name="orgid" id="orgid" v-model="directory.organizationid" v-validate="'required'">
+									<option v-for="(org,index) in orgOptions" :value="org.uuid">{{org.name}}</option>
+								</select>
+								<em v-bind:class="{ 'show': errors.has('orgid') }">{{ errors.first('orgid') }}</em>
+							</div>
+							<div class="form-group " v-bind:class="{ 'has-error': errors.has('type') }">
+								<label>Directory Type</label>
+								<select class="form-control" name="type" id="type" v-model="directory.directorytypeid" v-validate="'required'" v-on:change="getTemplate($event.target.value, true)">
+									<option v-for="(type,index) in directoryTypes" :value="type.uuid">{{type.typename}}</option>
+								</select>
+								<em v-bind:class="{ 'show': errors.has('type') }">{{ errors.first('type') }}</em>
+							</div>
+							<div class="form-group" v-bind:class="{ 'has-error': errors.has('attributes') }">
+								<label for="attributes" class="txt-muted">Attributes:</label>
+								<textarea type="text" name="attributes" id="attributes" v-model="stringifyAttribute" v-validate="'required'" class="form-control" :readonly="!$root.abyssSandbox"></textarea>
+								<em v-bind:class="{ 'show': errors.has('attributes') }">{{ errors.first('attributes') }}</em>
+							</div>
+							<div class="form-group d-flex justify-content-between">
+								<button type="button" class="btn btn-secondary btn-rounded" v-on:click="$emit('set-state', 'init'); cancelDirectory()">CANCEL</button>
+								<button type="button" class="btn btn-primary btn-rounded" v-if="rootState == 'add'" v-on:click="directoryAction('add')">ADD</button>
+								<button type="button" class="btn btn-primary btn-rounded" v-if="rootState == 'edit'" v-on:click="directoryAction('edit')">SAVE</button>
+							</div>
 						</div>
 					</div>
 				</div>
 			</aside>
-			<aside class="column column-aside manage-column" v-if="directory.directorytypeid == '11da556e-7c89-481b-80cf-6df70cb90d9e'">
-				<div class="nicescroll-bar">
-					<div class="clearfix brd-b column-header column-min-button">
-						<h5 class="column-header-title">Configure</h5>
+			<aside class="column column-aside manage-column" v-if="template">
+				<div class="clearfix brd-b column-header column-min-button">
+					<h5 class="column-header-title">Configure Directory</h5>
+				</div>
+				<div class="column-content">
+					<div class="nicescroll-bar">
+						<div class="p-3">
+							<div v-for="(cv, ck, ci) in template.components.schemas">
+								<div v-for="(pv, pk, pi) in cv.properties">
+									<schema-template-form :v="pv" :k="pk" :i="pi" :req="cv.required" :attr="directory.directoryattributes"></schema-template-form>
+								</div>
+							</div>
+						</div>
 					</div>
-					<article class="field-controls field-level-0" data-id="Servers">
-						<div class="field-sum">
-							<a class="field-link nav-caret" data-toggle="collapse" data-target="#server" aria-controls="server">
-								<h6 class="d-block">Server Settings</h6>
-							</a>
-						</div>
-						<div id="server" class="collapse field-tabs field-acc">
-							<div class="form-group">
-								<label>Name</label>
-								<input class="form-control" v-model="directory.directoryattributes.servers">
-							</div>
-						</div>
-					</article>
-					<article class="field-controls field-level-0" data-id="Schema">
-						<div class="field-sum">
-							<a class="field-link nav-caret" data-toggle="collapse" data-target="#schema" aria-controls="schema">
-								<h6 class="d-block">LDAP Schema</h6>
-							</a>
-						</div>
-						<div id="schema" class="collapse field-tabs field-acc">
-							<div class="form-group">
-								<label>Name</label>
-								<input class="form-control" v-model="directory.directoryattributes.schema">
-							</div>
-						</div>
-					</article>
 				</div>
 			</aside>
 			<aside class="column column-aside manage-column column-minimize">
-				<div class="nicescroll-bar">
-					<div class="clearfix brd-b column-header column-min-button">
-						<h5 class="column-header-title">Identity Manager Types</h5>
+				<div class="clearfix brd-b column-header column-min-button">
+					<h5 class="column-header-title">Identity Manager Types</h5>
+				</div>
+				<div class="column-content">
+					<div class="nicescroll-bar">
+						<directory-types v-for="(t,index) in directoryTypes" :key="t.uuid" :t="t" :index="index" :orgoptions="orgOptions" inline-template>
+							<article class="field-controls field-color-grey field-level-1" :class="{'is-deleted': t.isdeleted}">
+								<div class="field-sum">
+									<a class="field-link nav-caret" data-toggle="collapse" v-bind:data-target="'#t'+index" v-bind:aria-controls="'t'+index">
+										<strong class="fnt-bold">{{t.typename}}</strong>
+									</a>
+									<div class="ficon-actions dropdown dropdown-hover">
+										<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
+										<ul class="dropdown-menu dropdown-menu-right" role="menu">
+											<li><a title="Add Identity Manager Type" v-on:click="addType()"><i class="fas fa-lg fa-plus"></i> Add IM Type</a></li>
+											<li><a title="Remove Identity Manager Type" v-on:click="deleteType(t, index)"><i class="fa fa-trash-alt"></i> Remove IM Type</a></li>
+										</ul>
+									</div>
+								</div>
+								<div v-bind:id="'t'+index" class="collapse field-acc">
+									<div class="form-group" v-bind:class="{ 'has-error': errors.has('name') }">
+										<label>Name</label>
+										<input class="form-control" name="name" v-model="t.typename" v-validate="'required'">
+										<em v-bind:class="{ 'show': errors.has('name') }">{{ errors.first('name') }}</em>
+									</div>
+									<div class="form-group">
+										<label>Description</label>
+										<textarea class="form-control" name="description" v-model="t.description"></textarea>
+									</div>
+									<div class="form-group" v-bind:class="{ 'has-error': errors.has('organization') }">
+										<label>Organization Id</label>
+										<select class="form-control" name="organization" v-model="t.organizationid" v-validate="'required'">
+											<option v-for="(org,index) in orgoptions" :value="org.uuid">{{org.name}}</option>
+										</select>
+										<em v-bind:class="{ 'show': errors.has('organization') }">{{ errors.first('organization') }}</em>
+									</div>
+									<div class="form-group" v-bind:class="{ 'has-error': errors.has('template') }">
+										<label for="template">Template:</label>
+										<textarea type="text" name="template" id="template" v-model.lazy="stringifyTemplate" v-validate="'required'" class="form-control"></textarea>
+										<em v-bind:class="{ 'show': errors.has('template') }">{{ errors.first('template') }}</em>
+									</div>
+									<div class="form-group d-flex justify-content-center">
+										<button type="button" class="btn btn-secondary btn-rounded mr-auto" v-if="!t.uuid" v-on:click="cancelAddType(t)">CANCEL</button>
+										<button type="button" class="btn btn-primary btn-rounded" v-if="!t.uuid" v-on:click="saveAddType(t)">ADD</button>
+										<button type="button" class="btn btn-primary btn-rounded" v-if="t.uuid" v-on:click="saveType(t)">SAVE</button>
+									</div>
+								</div>
+							</article>
+						</directory-types>
 					</div>
-					<directory-types v-for="(t,index) in directoryTypes" :key="t.uuid" :t="t" :index="index" :orgoptions="orgOptions" inline-template>
-						<article class="field-controls field-color-grey field-level-1" :class="{'is-deleted': t.isdeleted}">
-							<div class="field-sum">
-								<a class="field-link nav-caret" data-toggle="collapse" v-bind:data-target="'#t'+index" v-bind:aria-controls="'t'+index">
-									<strong class="fnt-bold">{{t.typename}}</strong>
-								</a>
-								<div class="ficon-actions dropdown dropdown-hover">
-									<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
-									<ul class="dropdown-menu dropdown-menu-right" role="menu">
-										<li><a title="Add Identity Manager Type" v-on:click="addType()"><i class="fas fa-lg fa-plus"></i> Add IM Type</a></li>
-										<li><a title="Remove Identity Manager Type" v-on:click="deleteType(t, index)"><i class="fa fa-trash-alt"></i> Remove IM Type</a></li>
-									</ul>
-								</div>
-							</div>
-							<div v-bind:id="'t'+index" class="collapse field-acc">
-								<div class="form-group" v-bind:class="{ 'has-error': errors.has('name') }">
-									<label>Name</label>
-									<input class="form-control" name="name" v-model="t.typename" v-validate="'required'">
-									<em v-bind:class="{ 'show': errors.has('name') }">{{ errors.first('name') }}</em>
-								</div>
-								<div class="form-group">
-									<label>Description</label>
-									<textarea class="form-control" name="description" v-model="t.description"></textarea>
-								</div>
-								<div class="form-group" v-bind:class="{ 'has-error': errors.has('organization') }">
-									<label>Organization Id</label>
-									<select class="form-control" name="organization" v-model="t.organizationid" v-validate="'required'">
-										<option v-for="(org,index) in orgoptions" :value="org.uuid">{{org.name}}</option>
-									</select>
-									<em v-bind:class="{ 'show': errors.has('organization') }">{{ errors.first('organization') }}</em>
-								</div>
-								<div class="form-group d-flex justify-content-center">
-									<button type="button" class="btn btn-secondary btn-rounded mr-auto" v-if="!t.uuid" v-on:click="cancelAddType(t)">CANCEL</button>
-									<button type="button" class="btn btn-primary btn-rounded" v-if="!t.uuid" v-on:click="saveAddType(t)">ADD</button>
-									<button type="button" class="btn btn-primary btn-rounded" v-if="t.uuid" v-on:click="saveType(t)">SAVE</button>
-								</div>
-							</div>
-						</article>
-					</directory-types>
 				</div>
 			</aside>
 			<div class="btn-float-br btn-float-under">
