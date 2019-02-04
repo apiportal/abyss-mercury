@@ -6,9 +6,9 @@
 <main id="portal">
 	<div th:replace="webroot/frags/layout/navs.htm :: navError"></div>
 	<h1><i class="fas fa-check"></i></h1>
-	<h3 th:text="${context.get('http.errorMessage')}">???</h3>
-	<p th:text="${context.get('context.failureMessage')}">???</p>
-	<p th:text="${context.get('http.url')}">???</p>
+	<h3 th:text="${http.errorMessage}">???</h3>
+	<p th:text="${context.failureMessage}">???</p>
+	<p th:text="${http.url}">???</p>
 	<div th:replace="webroot/frags/layout/footer.htm :: copy"></div>
 </main>
 <script id="reqJs" data-module="error" data-main="/dist/js/main" src="/dist/js/lib/require.min.js"></script>

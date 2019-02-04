@@ -1,7 +1,7 @@
 ﻿<!DOCTYPE html>
 <html class="page-auth" lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:v-bind="http://www.w3.org/1999/xhtml" xmlns:v-on="http://www.w3.org/1999/xhtml">
 <head th:replace="webroot/frags/layout/head.htm :: header">
-</head>
+	<title></title></head>
 <body>
 <main id="portal">
 	<div th:replace="webroot/frags/layout/navs.htm :: navIndex"></div>
@@ -10,8 +10,8 @@
 	<form action="/abyss/select-organization" method="POST" id="validForm" v-on:submit="validateBeforeSubmit">
 		<div class="form-group " v-bind:class="{ 'has-error': errors.has('orgid') }">
 			<label>Organization Name</label>
-			<select class="form-control" name="orgid" id="orgid" v-validate="'required'"/>
-				<option th:each="org : ${context.get('userOrganizationArray')}" th:value="${org.uuid}+'|'+${org.name}" th:label="${org.name}" >Abyss</option>
+			<select th:field="*{userOrganizationArray}" class="form-control" name="orgid" id="orgid" v-validate="'required'">
+				<option th:each="org : ${userOrganizationArray}" th:value="${org.uuid}+'|'+${org.name}" th:label="${org.name}" >[[${org.name}]]</option>
 			</select>
 			<em v-bind:class="{ 'show': errors.has('orgid') }">{{ errors.first('orgid') }}</em>
 		</div>
