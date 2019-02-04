@@ -1,7 +1,7 @@
 define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izitoast', 'sweetalert2', 'vue-izitoast', 'css!sweetalert2-css', 'vue!organization-tree'], function (abyss, Vue, axios, VeeValidate, VueCookie, moment, iziToast, swal) {
 // ■■■■■■■■ AXIOS ■■■■■■■■ //
 	axios.defaults.headers.common['Accept'] = 'application/json';
-	axios.defaults.headers.common['Content-Type'] = 'application/json';
+	axios.defaults.headers.common['Content-Type'] = 'application/json;charset=utf-8';
 	axios.defaults.withCredentials = abyss.abyssCredentials;
 	axios.defaults.timeout = 10000;
 	axios.defaults.responseType = 'json';

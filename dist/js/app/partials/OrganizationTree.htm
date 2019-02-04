@@ -1,6 +1,6 @@
 <template>
 	<div class="field-controls">
-		<div class="field--controls field-controls-hover">
+		<div class="field--controls field-controls-hover" :class="{'is-deleted': org.isdeleted}">
 			<a class="field-link nav--caret" data-toggle="collapse" v-bind:data-target="'#org'+col+index" v-bind:aria-controls="'org'+col+index">
 				<strong class="m-0 txt-blue txt-uppercase d-block txt-r" v-if="title == 'add'">Add Organization <i class="fas fa-fw fa-plus"></i></strong>
 				<strong class="m-0" v-if="title == 'edit'">{{org.name}}</strong>

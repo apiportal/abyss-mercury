@@ -366,12 +366,12 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 				var organizations_list = this.getList(abyss.ajax.organizations_list);
 
 				var [directoryOptions, userList, memberOptions, permissionOptions, groupList, orgOptions] = await Promise.all([subject_directories_list, user_list, subject_memberships, permission_list, user_group_list, organizations_list]);
-
 				this.directoryOptions = directoryOptions.filter( (item) => !item.isdeleted );
 				this.userList = userList.filter( (item) => !item.isdeleted );
 				this.memberOptions = memberOptions.filter( (item) => !item.isdeleted );
 				this.permissionOptions = permissionOptions;
-				this.orgOptions = orgOptions.filter( (item) => !item.isdeleted );
+				// this.orgOptions = orgOptions.filter( (item) => !item.isdeleted );
+				this.orgOptions = orgOptions;
 
 				// this.groupList = _.map(groupList, o => _.extend({users: []}, o));
 				this.groupList = _.map(groupList, o => _.extend({permissionfilter: true, groupfilter: true, userfilter: true}, o));

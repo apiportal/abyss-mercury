@@ -191,6 +191,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue!schem
 						this.selected = null;
 						this.template = null;
 					}
+					this.getPage(1);
 				}
 			},
 			async getPage(p, d) {

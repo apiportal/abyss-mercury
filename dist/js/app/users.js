@@ -325,6 +325,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 							this.selected = null;
 						}
 					}
+					this.getPage(1);
 				}
 			},
 			async getPage(p, d) {
