@@ -53,7 +53,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 
 				orgOptions: [],
 				resourceOptions: [],
-				// subjectOptions: [],
+				subjectOptions: [],
 				groupOptions: [],
 				userOptions: [],
 				appOptions: [],
@@ -82,16 +82,16 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 					}
 				// }
 			},*/
-			showAppListOnly() {
+			/*showAppListOnly() {
 				if (this.permission.resource.resourceType.type == 'API' && this.permission.resourceactionid == abyss.defaultIds.invokeApi) {
 					return true;
 				} else {
 					return false;
 				}
-			}
+			}*/
 		},
 		methods: {
-			permissionEndpoint() {
+			/*permissionEndpoint() {
 				// 2DO /subject-permissions/organization/{uuid}
 				if (this.$root.rootData.user.isAdmin) {
 					return abyss.ajax.permission_list;
@@ -114,7 +114,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 				} else {
 					return abyss.ajax.resources_subject + this.$root.rootData.user.uuid;
 				}
-			},
+			},*/
 			cancelPermission() {
 				var index = this.permissionList.indexOf(this.permission);
 				this.permissionList[index] = this.selectedPermission;
@@ -209,37 +209,38 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 					Vue.set(value, 'organization', pOrg );
 					// var aTyp = _.find(this.accessManagerTypes, { 'uuid': acMn.accessmanagertypeid });
 					// Vue.set(value.accessManager, 'accessManagerType', aTyp );
-					var resource = await this.getItem(abyss.ajax.resources, value.resourceid);
+					var resource = _.find(this.resourceOptions, { 'uuid': value.resourceid });
 					Vue.set(value, 'resource', resource );
 					var rTyp = _.find(this.$root.rootData.resourceTypes, { 'uuid': value.resource.resourcetypeid });
 					Vue.set(value.resource, 'resourceType', rTyp );
-					var subject = await this.getItem(abyss.ajax.subjects, value.subjectid);
+					var subject = _.find(this.subjectOptions, { 'uuid': value.subjectid });
 					Vue.set(value, 'subject', subject );
 					var sTyp = _.find(this.subjectTypes, { 'uuid': value.subject.subjecttypeid });
 					Vue.set(value.subject, 'subjectType', sTyp.typename );
 				});
 				// }
 			},
+
 			async getPage(p, d) {
 				var access_managers = this.getList(abyss.ajax.access_managers);
 				// var access_manager_types = this.getList(abyss.ajax.access_manager_types);
 				var subject_types = this.getList(abyss.ajax.subject_types);
-				var resource_list = this.getList(this.resourceEndpoint());
-				var permission_list = this.getList(this.permissionEndpoint());
-				var user_list = this.getList(abyss.ajax.user_list);
-				var app_list = this.getList(abyss.ajax.app_list);
-				var user_group_list = this.getList(abyss.ajax.user_group_list);
+				var permission_list = this.getList(abyss.ajax.permission_list);
+				var resource_list = this.getList(abyss.ajax.resources);
+				var subject_list = this.getList(abyss.ajax.subjects);
 				var organizations_list = this.getList(abyss.ajax.organizations_list);
 
-				var [accessManagerOptions, subjectTypes, resourceOptions, permissionList, userOptions, appOptions, groupOptions, orgOptions] = await Promise.all([access_managers, subject_types, resource_list, permission_list, user_list, app_list, user_group_list, organizations_list]);
+				var [accessManagerOptions, subjectTypes, resourceOptions, permissionList, orgOptions, subjectOptions] = await Promise.all([access_managers, subject_types, resource_list, permission_list, organizations_list, subject_list]);
 
 				this.accessManagerOptions = accessManagerOptions;
 				// this.accessManagerTypes = accessManagerTypes;
 				this.subjectTypes = subjectTypes;
 				this.resourceOptions = resourceOptions;
-				this.userOptions = userOptions;
-				this.appOptions = appOptions;
-				this.groupOptions = groupOptions;
+
+				this.subjectOptions = subjectOptions;
+				this.userOptions = this.subjectOptions.filter((el) => el.subjecttypeid == abyss.defaultIds.subjectTypeUser );
+				this.appOptions = this.subjectOptions.filter((el) => el.subjecttypeid == abyss.defaultIds.subjectTypeApp );
+				this.groupOptions = this.subjectOptions.filter((el) => el.subjecttypeid == abyss.defaultIds.subjectTypeGroup );
 
 				this.resourceActionOptions = this.$root.rootData.resourceActions;
 

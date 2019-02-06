@@ -164,7 +164,7 @@
 									<div class="form-group" v-bind:class="{ 'has-error': errors.has('organization') }">
 										<label>Organization Id</label>
 										<select class="form-control" name="organization" v-model="t.organizationid" v-validate="'required'">
-											<option v-for="(org,index) in orgoptions" :value="org.uuid">{{org.name}}</option>
+											<option v-for="(org,index) in orgoptions" :value="org.uuid" :class="{'txt-red': org.isdeleted}">{{org.name}}</option>
 										</select>
 										<em v-bind:class="{ 'show': errors.has('organization') }">{{ errors.first('organization') }}</em>
 									</div>

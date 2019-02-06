@@ -36,11 +36,11 @@
 								<span slot="no-options"></span>
 							</v-select>
 						</div>
-						<div class="fol form-group mb-0 bg-white">
+						<!-- <div class="fol form-group mb-0 bg-white">
 							<v-select label="permission" :filterable="true" :options="permissionOptions" :on-change="filterPermission" placeholder="Search Permissions">
 								<span slot="no-options"></span>
 							</v-select>
-						</div>
+						</div> -->
 					</div>
 					<table class="table table-hover table-bordered table-edge">
 						<tr>
@@ -57,7 +57,8 @@
 							<th class="td-action-1"></th>
 							<th class="td-action-1"></th>
 						</tr>
-						<tr v-for="(user, index) in sortByNested(sort, userList)" v-bind:key="user.uuid" v-bind:class="{'active': isSelected(index), 'tr-deleted': user.isdeleted}" v-if="user.groupfilter && user.permissionfilter">
+						<!-- <tr v-for="(user, index) in sortByNested(sort, userList)" v-bind:key="user.uuid" v-bind:class="{'active': isSelected(index), 'tr-deleted': user.isdeleted}" v-if="user.groupfilter && user.permissionfilter"> -->
+						<tr v-for="(user, index) in sortByNested(sort, userList)" v-bind:key="user.uuid" v-bind:class="{'active': isSelected(index), 'tr-deleted': user.isdeleted}" v-if="user.groupfilter">
 							<td class="txt-c">
 								<i class="fas fa-circle" title="Not Activated" v-if="!user.isactivated"></i>
 								<i class="fas fa-check-circle txt-green" title="Activated" v-if="user.isactivated"></i>
@@ -216,8 +217,8 @@
 							<div class="form-group " v-bind:class="{ 'has-error': errors.has('organization') }">
 								<label>Organization Id</label>
 								<select class="form-control" name="organization" id="organization" v-model="user.organizationid" v-validate="'required'">
-									<!-- <option v-for="(org,index) in orgOptions" :value="org.organizationid">{{org.name}}</option> -->
-									<option v-for="(org,index) in orgOptions" :value="org.uuid">{{org.name}}</option>
+									<!-- <option v-for="(org,index) in orgOptions" :value="org.organizationid" :class="{'txt-red': org.isdeleted}">{{org.name}}</option> -->
+									<option v-for="(org,index) in orgOptions" :value="org.uuid" :class="{'txt-red': org.isdeleted}">{{org.name}}</option>
 								</select>
 								<em v-bind:class="{ 'show': errors.has('organization') }">{{ errors.first('organization') }}</em>
 							</div>

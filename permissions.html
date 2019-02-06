@@ -181,13 +181,13 @@
 								<label>Subject</label>
 								<select class="form-control" name="subject" id="subject" v-model="permission.subjectid" v-validate="'required'">
 									<!-- <option v-for="(sb,index) in filteredSubjects" :value="sb.uuid">{{sb.displayname}}</option> -->
-									<optgroup v-if="!showAppListOnly" label="GROUPS">
+									<optgroup label="GROUPS">
 										<option v-for="(sb,index) in groupOptions" :class="{'txt-red': sb.isdeleted}" :value="sb.uuid">{{sb.displayname}}</option>
 									</optgroup>
-									<optgroup v-if="!showAppListOnly" label="USERS">
+									<optgroup label="USERS">
 										<option v-for="(sb,index) in userOptions" :class="{'txt-red': sb.isdeleted}" :value="sb.uuid">{{sb.displayname}}</option>
 									</optgroup>
-									<optgroup v-if="showAppListOnly" label="APPS">
+									<optgroup label="APPS">
 										<option v-for="(sb,index) in appOptions" :class="{'txt-red': sb.isdeleted}" :value="sb.uuid">{{sb.displayname}}</option>
 									</optgroup>
 								</select>
