@@ -253,7 +253,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 			deleteProps(obj) {
 				var item = this.cleanProps(obj);
 				// Vue.delete(item, 'password');
-				Vue.delete(item, 'isactivated');
+				// Vue.delete(item, 'isactivated');
 				Vue.delete(item, 'totallogincount');
 				Vue.delete(item, 'failedlogincount');
 				Vue.delete(item, 'invalidpasswordattemptcount');
@@ -304,7 +304,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 				if (this.memberDelete.length > 0) {
 					this.memberDelete.forEach(async (value, key) => {
 						var item = this.cleanProps(value);
-						Vue.delete(item, 'isactivated');
+						// Vue.delete(item, 'isactivated');
 						var del = await this.deleteItem(abyss.ajax.subject_memberships, value, false);
 						console.log("del: ", del);
 						if (del) {
@@ -321,6 +321,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 						var item = await this.addItem(abyss.ajax.subjects, this.deleteProps(this.group), this.groupList);
 						if (item) {
 							await this.addDeleteGroupUsers();
+							await this.getPage(1);
 							this.$emit('set-state', 'init');
 							this.group = _.cloneDeep(this.newGroup);
 						}
@@ -332,6 +333,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 						var item = await this.editItem( abyss.ajax.subjects, this.group.uuid, this.deleteProps(this.group), this.groupList );
 						if (item) {
 							await this.addDeleteGroupUsers();
+							await this.getPage(1);
 							this.$emit('set-state', 'init');
 							this.group = _.cloneDeep(this.newGroup);
 							this.selected = null;
@@ -364,7 +366,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 				this.userList = userList.filter( (item) => !item.isdeleted );
 				this.memberOptions = memberOptions.filter( (item) => !item.isdeleted );
 				// this.permissionOptions = permissionOptions;
-				this.orgOptions = orgOptions;
+				this.orgOptions = _.orderBy(orgOptions, [item => item['name'].toLowerCase()], 'asc');
 				// this.groupList = _.map(groupList, o => _.extend({permissionfilter: true, groupfilter: true, userfilter: true}, o));
 				this.groupList = _.map(groupList, o => _.extend({groupfilter: true, userfilter: true}, o));
 				await this.setGetPage();

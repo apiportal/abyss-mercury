@@ -149,9 +149,6 @@
 							</div>
 							<div class="form-group " v-bind:class="{ 'has-error': errors.has('resourceType') }">
 								<label>Resource Type</label>
-								<!-- <select class="form-control" name="resourceType" id="resourceType" v-model="permission.resource.resourceType" v-validate="'required'">
-									<option v-for="(rt,index) in $root.rootData.resourceTypes" :value="rt">{{rt.type}}</option>
-								</select> -->
 								<select class="form-control" name="resourceType" id="resourceType" v-on:change="resourceTypeChange($event.target.value)" v-model="permission.resource.resourcetypeid" v-validate="'required'">
 									<option v-for="(rt,index) in $root.rootData.resourceTypes" :class="{'txt-red': rt.isdeleted}" :value="rt.uuid">{{rt.type}}</option>
 								</select>
@@ -159,9 +156,6 @@
 							</div>
 							<div class="form-group " v-bind:class="{ 'has-error': errors.has('resource') }">
 								<label>Resource</label>
-								<!-- <select class="form-control" name="resource" id="resource" v-model="permission.resourceid" v-validate="'required'">
-									<option v-for="(rs,index) in resourceOptions" v-if="rs.resourcetypeid == permission.resource.resourceType.uuid" :value="rs.uuid">{{rs.resourcename}}</option>
-								</select> -->
 								<select class="form-control" name="resource" id="resource" v-model="permission.resourceid" v-validate="'required'">
 									<option v-for="(rs,index) in resourceOptions" v-if="rs.resourcetypeid == permission.resource.resourcetypeid" :class="{'txt-red': rs.isdeleted}" :value="rs.uuid">{{rs.resourcename}}</option>
 								</select>
@@ -169,9 +163,6 @@
 							</div>
 							<div class="form-group " v-bind:class="{ 'has-error': errors.has('resourceAction') }">
 								<label>Resource Action</label>
-								<!-- <select class="form-control" name="resourceAction" id="resourceAction" v-model="permission.resourceactionid" v-validate="'required'">
-									<option v-for="(ra,index) in resourceActionOptions" v-if="ra.resourcetypeid == permission.resource.resourceType.uuid" :value="ra.uuid">{{ra.actionname}} - {{ra.description}}</option>
-								</select> -->
 								<select class="form-control" name="resourceAction" id="resourceAction" v-model="permission.resourceactionid" v-validate="'required'">
 									<option v-for="(ra,index) in resourceActionOptions" v-if="ra.resourcetypeid == permission.resource.resourcetypeid" :class="{'txt-red': ra.isdeleted}" :value="ra.uuid">{{ra.actionname}} - {{ra.description}}</option>
 								</select>
@@ -180,7 +171,6 @@
 							<div class="form-group " v-bind:class="{ 'has-error': errors.has('subject') }">
 								<label>Subject</label>
 								<select class="form-control" name="subject" id="subject" v-model="permission.subjectid" v-validate="'required'">
-									<!-- <option v-for="(sb,index) in filteredSubjects" :value="sb.uuid">{{sb.displayname}}</option> -->
 									<optgroup label="GROUPS">
 										<option v-for="(sb,index) in groupOptions" :class="{'txt-red': sb.isdeleted}" :value="sb.uuid">{{sb.displayname}}</option>
 									</optgroup>

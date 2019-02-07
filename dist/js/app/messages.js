@@ -465,20 +465,20 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 				console.log(act, JSON.stringify(this.deleteProps(msg), null, '\t'));
 				var item = await this.addItem(abyss.ajax.messages, this.deleteProps(msg));
 				if (item) {
+					await this.getPage(1);
 					this.$emit('set-state', 'init');
 					this.message = _.cloneDeep(this.newMessage);
 					this.selected = null;
-					this.getPage();
 				}
 			},
 			async editMessage(msg, act) {
 				console.log(act, JSON.stringify(this.deleteProps(msg), null, '\t'));
 				var item = await this.editItem( abyss.ajax.messages, msg.uuid, this.deleteProps(msg) );
 				if (item) {
+					await this.getPage(1);
 					this.$emit('set-state', 'init');
 					this.message = _.cloneDeep(this.newMessage);
 					this.selected = null;
-					this.getPage();
 				}
 			},
 			/*async fixMessage() {

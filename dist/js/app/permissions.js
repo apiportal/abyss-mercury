@@ -163,13 +163,13 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 					if (act === 'add') {
 						this.fixProps(this.permission);
 						await this.addItem(abyss.ajax.permission_list, this.deleteProps(this.permission));
-						this.getPage(1);
+						await this.getPage(1);
 						this.$emit('set-state', 'init');
 						this.permission = _.cloneDeep(this.newPermission);
 					}
 					if (act === 'edit') {
 						await this.editItem( abyss.ajax.permission_list, this.permission.uuid, this.deleteProps(this.permission) );
-						this.getPage(1);
+						await this.getPage(1);
 						this.$emit('set-state', 'init');
 						this.permission = _.cloneDeep(this.newPermission);
 						this.selected = null;
@@ -232,20 +232,22 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 
 				var [accessManagerOptions, subjectTypes, resourceOptions, permissionList, orgOptions, subjectOptions] = await Promise.all([access_managers, subject_types, resource_list, permission_list, organizations_list, subject_list]);
 
-				this.accessManagerOptions = accessManagerOptions;
-				// this.accessManagerTypes = accessManagerTypes;
 				this.subjectTypes = subjectTypes;
-				this.resourceOptions = resourceOptions;
-
-				this.subjectOptions = subjectOptions;
+				// this.accessManagerOptions = accessManagerOptions;
+				// this.resourceOptions = resourceOptions;
+				// this.subjectOptions = subjectOptions;
+				// this.orgOptions = orgOptions;
+				this.accessManagerOptions = _.orderBy(accessManagerOptions, [item => item['accessmanagername'].toLowerCase()], 'asc');
+				this.resourceOptions = _.orderBy(resourceOptions, [item => item['resourcename'].toLowerCase()], 'asc');
+				this.subjectOptions = _.orderBy(subjectOptions, [item => item['displayname'].toLowerCase()], 'asc');
 				this.userOptions = this.subjectOptions.filter((el) => el.subjecttypeid == abyss.defaultIds.subjectTypeUser );
 				this.appOptions = this.subjectOptions.filter((el) => el.subjecttypeid == abyss.defaultIds.subjectTypeApp );
 				this.groupOptions = this.subjectOptions.filter((el) => el.subjecttypeid == abyss.defaultIds.subjectTypeGroup );
+				this.orgOptions = _.orderBy(orgOptions, [item => item['name'].toLowerCase()], 'asc');
 
 				this.resourceActionOptions = this.$root.rootData.resourceActions;
 
 				this.permissionList = permissionList;
-				this.orgOptions = orgOptions;
 				this.paginate = this.makePaginate(this.permissionList);
 				await this.setGetPage();
 				this.isLoading = false;

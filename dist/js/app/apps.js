@@ -148,9 +148,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 		methods: {
 			activated(act) {
 				if (act) {
-					return 'ACTIVATED'
+					return 'Activated'
 				} else {
-					return 'NOT ACTIVATED'
+					return 'Not activated'
 				}
 			},
 			sandbox(sand) {
@@ -340,7 +340,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 							}
 							// this.$root.appList.push(item);
 							// this.app = _.cloneDeep(this.newApp);
-							this.getMyApps();
+							await this.getMyApps();
 							this.$emit('set-state', 'init');
 							//// !! DISABLE KEY CONTROL
 							// this.$emit('set-state', 'edit');
@@ -355,6 +355,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 							var item = await this.editItem( abyss.ajax.subjects, this.app.uuid, this.deleteProps(this.app), this.$root.appList );
 							await this.getResources(item, 'APP', item.firstname, item.description);
 							await this.updateResource(item, 'APP', item.firstname, item.description);
+							await this.getMyApps();
 							this.$emit('set-state', 'init');
 							this.app = _.cloneDeep(this.newApp);
 							this.selected = null;

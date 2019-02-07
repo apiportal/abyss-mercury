@@ -29,18 +29,32 @@
 									</div>
 									<div>
 										<small class="txt-uppercase" v-bind:class="{'txt-green': license.licensedocument.info.visibility == 'Public', 'txt-orange': license.licensedocument.info.visibility == 'Private'}">{{license.licensedocument.info.visibility}}</small>
-										<div class="d-flex txt-uppercase flt-r small txt-muted">
+										<!-- <div class="d-flex txt-uppercase flt-r small txt-muted">
 											<span v-if="!license.isdeleted" :title="license.updated | formatDateTime">
 												{{license.created | formatDateTime}}
 											</span>
 											<span class="ml-auto txt-r" v-if="license.isdeleted">
 												{{license.deleted | formatDateTime}}
 											</span>
+										</div> -->
+										<div class="txt-uppercase flt-r">
+											<div class="txt-uppercase small">
+												Created
+												{{license.created | formatDateTime}}
+											</div>
+											<div class="txt-uppercase small">
+												Updated
+												{{license.updated | formatDateTime}}
+											</div>
+											<div class="txt-uppercase small" v-if="license.isdeleted">
+												Deleted
+												{{license.deleted | formatDateTime}}
+											</div>
 										</div>
 									</div>
 									<div class="">{{license.licensedocument.info.title}}</div>
-									<code class="flt-r d-block txt-line small txt-blue"><small>{{license.uuid}}</small></code>
-									<small class="d-block txt-line my-1 txt-muted">{{license.licensedocument.info.description}}</small>
+									<code class="flt-r d-block small txt-blue"><small>{{license.uuid}}</small></code>
+									<small class="d-block txt-muted">{{license.licensedocument.info.description}}</small>
 								</a>
 								<div class="ficon-actions dropdown dropdown-hover">
 									<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>

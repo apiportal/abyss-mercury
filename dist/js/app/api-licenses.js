@@ -126,6 +126,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment'], funct
 						var resAdd = await this.addItem(abyss.ajax.licenses, this.deleteProps(this.license), this.licenseList);
 						await this.createResource(resAdd, 'LICENSE', resAdd.name, resAdd.licensedocument.info.description);
 						Vue.set(resAdd, 'policies', _.filter(this.policyList, (v) => _.includes(resAdd.licensedocument.termsOfService.policyKey, v.uuid)) );
+						await this.getPage(1);
 						this.$emit('set-state', 'init');
 						this.license = _.cloneDeep(this.newLicense);
 					}
@@ -133,6 +134,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment'], funct
 						var resEdit = await this.editItem( abyss.ajax.licenses, this.license.uuid, this.deleteProps(this.license), this.licenseList );
 						await this.getResources(resEdit, 'LICENSE', resEdit.name, resEdit.licensedocument.info.description); // for error check
 						await this.updateResource(resEdit, 'LICENSE', resEdit.name, resEdit.licensedocument.info.description);
+						await this.getPage(1);
 						this.$emit('set-state', 'init');
 						this.license = _.cloneDeep(this.newLicense);
 						this.selected = null;

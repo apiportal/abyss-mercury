@@ -45,7 +45,7 @@
 					<table class="table table-hover table-bordered table-edge">
 						<tr>
 							<th class="td-bool" v-bind:class="sort.order" v-on:click="sortList(sort, 'isactivated', Boolean)">Status</th>
-							<th class="td-name" v-bind:class="sort.order" v-on:click="sortList(sort, 'firstname', String)">Group Name</th>
+							<th class="td-name" v-bind:class="sort.order" v-on:click="sortList(sort, 'displayname', String)">Group Name</th>
 							<th class="td-number" v-bind:class="sort.order" v-on:click="sortList(sort, 'userCount', Number)">Users</th>
 							<th class="td-datetime-x" v-bind:class="sort.order" v-on:click="sortList(sort, 'created', Date)">Created / Updated / Deleted</th>
 							<th class="td-datetime" v-bind:class="sort.order" v-on:click="sortList(sort, 'effectivestartdate', Date)">Effective From</th>
@@ -58,12 +58,12 @@
 						<!-- <tr v-for="(group, index) in sortByNested(sort, groupList)" v-bind:key="group.uuid" v-bind:class="{'active': isSelected(index), 'tr-deleted': group.isdeleted}" v-if="group.userfilter && group.permissionfilter"> -->
 						<tr v-for="(group, index) in sortByNested(sort, groupList)" v-bind:key="group.uuid" v-bind:class="{'active': isSelected(index), 'tr-deleted': group.isdeleted}" v-if="group.userfilter">
 							<td class="txt-c">
-								<i class="fas fa-circle" title="Not Enabled" v-if="!group.isactivated"></i>
-								<i class="fas fa-check-circle txt-green" title="Enabled" v-if="group.isactivated"></i>
+								<i class="fas fa-circle" title="Not Activated" v-if="!group.isactivated"></i>
+								<i class="fas fa-check-circle txt-green" title="Activated" v-if="group.isactivated"></i>
 								<i class="fas fa-times-circle txt-red" title="Deleted" v-if="group.isdeleted"></i>
 							</td>
 							<td>
-								<div class="d-block">{{group.firstname}}</div>
+								<div class="d-block">{{group.displayname}}</div>
 								<small class="d-block">{{group.description}}</small>
 								<code class="d-block small txt-purple"><small>{{group.uuid}}</small></code>
 							</td>
@@ -148,10 +148,11 @@
 								</div>
 								<em v-bind:class="{ 'show': errors.has('effectiveenddate') }">{{ errors.first('effectiveenddate') }}</em>
 							</div>
-							<div class="form-group ">
-								<span class="checkbox">
-									<input type="checkbox" name="isactivated" id="isactivated" v-model="group.isactivated">
-									<label for="isactivated">Enabled</label>
+							<div class="form-group form-inline">
+								<label class="d-block">Activate Group</label>
+								<span class="switch switch-primary ml-auto">
+									<input type="checkbox" name="isactivated" id="isactivated" v-model="group.isactivated" checked>
+									<label for="isactivated"></label>
 								</span>
 							</div>
 							<div class="form-group d-flex justify-content-between">

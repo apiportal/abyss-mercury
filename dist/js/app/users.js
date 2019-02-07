@@ -249,7 +249,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 			deleteProps(obj) {
 				var item = this.cleanProps(obj);
 				// Vue.delete(item, 'password');
-				Vue.delete(item, 'isactivated');
+				// Vue.delete(item, 'isactivated');
 				Vue.delete(item, 'totallogincount');
 				Vue.delete(item, 'failedlogincount');
 				Vue.delete(item, 'invalidpasswordattemptcount');
@@ -300,7 +300,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 				if (this.memberDelete.length > 0) {
 					this.memberDelete.forEach(async (value, key) => {
 						var item = this.cleanProps(value);
-						Vue.delete(item, 'isactivated');
+						// Vue.delete(item, 'isactivated');
 						var del = await this.deleteItem(abyss.ajax.subject_memberships, value, false);
 					});
 				}
@@ -313,6 +313,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 						var item = await this.addItem(abyss.ajax.subjects, this.deleteProps(this.user), this.userList);
 						if (item) {
 							await this.addDeleteUserGroups();
+							await this.getPage(1);
 							this.$emit('set-state', 'init');
 							this.user = _.cloneDeep(this.newUser);
 						}
@@ -321,12 +322,12 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 						var item = await this.editItem( abyss.ajax.subjects, this.user.uuid, this.deleteProps(this.user), this.userList );
 						if (item) {
 							await this.addDeleteUserGroups();
+							await this.getPage(1);
 							this.$emit('set-state', 'init');
 							this.user = _.cloneDeep(this.newUser);
 							this.selected = null;
 						}
 					}
-					this.getPage(1);
 				}
 			},
 			async getPage(p, d) {
@@ -344,7 +345,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 				this.groupOptions = groupOptions;
 				this.memberOptions = memberOptions;
 				// this.permissionOptions = permissionOptions;
-				this.orgOptions = orgOptions;
+				this.orgOptions = _.orderBy(orgOptions, [item => item['name'].toLowerCase()], 'asc');
 				// this.userList = _.map(userList, o => _.extend({permissionfilter: true, groupfilter: true, userfilter: true}, o));
 				this.userList = _.map(userList, o => _.extend({groupfilter: true, userfilter: true}, o));
 				this.userList.forEach(async (value, key) => {

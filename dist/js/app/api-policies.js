@@ -204,6 +204,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue!schem
 						console.log("this.deleteProps(this.policy): ", this.deleteProps(this.policy));
 						var resAdd = await this.addItem(abyss.ajax.policies, this.deleteProps(this.policy), this.policyList);
 						await this.createResource(resAdd, 'POLICY', resAdd.name, resAdd.description);
+						await this.getPage(1);
 						this.$emit('set-state', 'init');
 						this.policy = _.cloneDeep(this.newPolicy);
 						this.template = null;
@@ -212,6 +213,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue!schem
 						var resEdit = await this.editItem( abyss.ajax.policies, this.policy.uuid, this.deleteProps(this.policy), this.policyList );
 						await this.getResources(resEdit, 'POLICY', resEdit.name, resEdit.description); // for error check
 						await this.updateResource(resEdit, 'POLICY', resEdit.name, resEdit.description);
+						await this.getPage(1);
 						this.$emit('set-state', 'init');
 						this.policy = _.cloneDeep(this.newPolicy);
 						this.selected = null;
@@ -225,7 +227,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue!schem
 				var organizations_list = this.getList(abyss.ajax.organizations_list);
 				var [policyList, policyTypes, orgOptions] = await Promise.all([subject_policies_list, policy_types, organizations_list]);
 				Vue.set( this, 'policyList', policyList );
-				Vue.set( this, 'orgOptions', orgOptions );
+				Vue.set( this, 'orgOptions', _.orderBy(orgOptions, [item => item['name'].toLowerCase()], 'asc') );
 				this.paginate = this.makePaginate(this.policyList);
 				this.preload();
 				this.policyList.forEach((value, key) => {

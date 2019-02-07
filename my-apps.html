@@ -45,15 +45,21 @@
 											<code class="txt-line small txt-blue sandbox-item"><small>{{app.uuid}}</small></code>
 										</div>
 										<div class="fol-sm txt-sm-r">
-											<div v-if="!app.isdeleted" :title="app.updated | formatDateTime">
+											<div class="txt-uppercase small">
+												Created
 												{{app.created | formatDateTime}}
 											</div>
-											<div v-if="app.isdeleted">
+											<div class="txt-uppercase small">
+												Updated
+												{{app.updated | formatDateTime}}
+											</div>
+											<div class="txt-uppercase small" v-if="app.isdeleted">
+												Deleted
 												{{app.deleted | formatDateTime}}
 											</div>
-											<strong class="txt-uppercase">{{sandbox(app.issandbox)}}</strong>
-											<div class="txt-uppercase">
-												{{activated(app.isactivated)}}
+											<div>
+												{{activated(app.isactivated)}} | 
+												<strong class="txt-uppercase">{{sandbox(app.issandbox)}}</strong>
 											</div>
 											<code class="txt-line small txt-orange sandbox-item" v-if="app.resource"><small>{{app.resource.uuid}}</small></code>
 										</div>

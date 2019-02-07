@@ -187,18 +187,19 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue!schem
 					if (act === 'add') {
 						this.fixProps(this.directory);
 						await this.addItem(abyss.ajax.subject_directories_list, this.deleteProps(this.directory), this.directoryList);
+						await this.getPage(1);
 						this.$emit('set-state', 'init');
 						this.directory = _.cloneDeep(this.newDirectory);
 						this.template = null;
 					}
 					if (act === 'edit') {
 						await this.editItem( abyss.ajax.subject_directories_list, this.directory.uuid, this.deleteProps(this.directory), this.directoryList );
+						await this.getPage(1);
 						this.$emit('set-state', 'init');
 						this.directory = _.cloneDeep(this.newDirectory);
 						this.selected = null;
 						this.template = null;
 					}
-					this.getPage(1);
 				}
 			},
 			async getPage(p, d) {
@@ -208,7 +209,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue!schem
 				var [directoryList, directoryTypes, orgOptions] = await Promise.all([subject_directories_list, subject_directory_types, organizations_list]);
 				Vue.set( this, 'directoryList', directoryList );
 				Vue.set( this, 'directoryTypes', directoryTypes );
-				Vue.set( this, 'orgOptions', orgOptions );
+				Vue.set( this, 'orgOptions', _.orderBy(orgOptions, [item => item['name'].toLowerCase()], 'asc') );
 				this.paginate = this.makePaginate(this.directoryList);
 				this.preload();
 			},

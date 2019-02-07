@@ -943,7 +943,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 				Vue.delete(item, 'deleted');
 				Vue.delete(item, 'isdeleted');
 				if (typ === 'user') {
-					Vue.delete(item, 'isactivated');
+					// Vue.delete(item, 'isactivated');
 					Vue.delete(item, 'totallogincount');
 					Vue.delete(item, 'failedlogincount');
 					Vue.delete(item, 'invalidpasswordattemptcount');
