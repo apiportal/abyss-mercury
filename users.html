@@ -19,15 +19,17 @@
 				<div class="nicescroll--bar">
 					<div class="fow no-gutters">
 						<div class="fol fol-6 form-group mb-0 bg-white">
-							<v-select label="displayname" :filterable="true" :options="userOptions" @search="getUserOptions" :on-change="filterUser" placeholder="Search Users">
+							<v-select label="subjectname" :filterable="true" :options="$root.userOptions" @search="$root.getUserOptions" :on-change="filterUser" placeholder="Search for USERNAME">
 								<span slot="no-options"></span>
 								<template slot="option" slot-scope="option">
-									<strong>{{ option.firstname }} {{ option.lastname }}</strong>
+									<strong>{{ option.subjectname }}</strong>
 									<div>{{ option.displayname }}</div>
 									<small>{{ option.email }}</small>
 								</template>
 								<template slot="selected-option" slot-scope="option">
-									<strong>{{ option.firstname }} {{ option.lastname }}</strong> <em>{{ option.displayname }}</em> <small>{{ option.email }}</small>
+									<strong>{{ option.subjectname }}</strong>
+									<span>{{ option.displayname }}</span>
+									<small>{{ option.email }}</small>
 								</template>
 							</v-select>
 						</div>
@@ -36,11 +38,11 @@
 								<span slot="no-options"></span>
 							</v-select>
 						</div>
-						<div class="fol form-group mb-0 bg-white">
+						<!-- <div class="fol form-group mb-0 bg-white">
 							<v-select label="permission" :filterable="true" :options="permissionOptions" :on-change="filterPermission" placeholder="Search Permissions">
 								<span slot="no-options"></span>
 							</v-select>
-						</div>
+						</div> -->
 					</div>
 					<table class="table table-hover table-bordered table-edge">
 						<tr>
@@ -57,11 +59,11 @@
 							<th class="td-action-1"></th>
 							<th class="td-action-1"></th>
 						</tr>
-						<tr v-for="(user, index) in sortByNested(sort, userList)" v-bind:key="user.uuid" v-bind:class="{'active': isSelected(index), 'tr-deleted': user.isdeleted}" v-if="user.groupfilter && user.permissionfilter">
+						<!-- <tr v-for="(user, index) in sortByNested(sort, userList)" v-bind:key="user.uuid" v-bind:class="{'active': isSelected(index), 'tr-deleted': user.isdeleted}" v-if="user.groupfilter && user.permissionfilter"> -->
+						<tr v-for="(user, index) in sortByNested(sort, userList)" v-bind:key="user.uuid" v-bind:class="{'active': isSelected(index), 'tr-deleted': user.isdeleted}" v-if="user.groupfilter">
 							<td class="txt-c">
-								<i class="fas fa-circle" title="Not Activated" v-if="!user.isactivated"></i>
+								<i class="fas fa-times-circle" title="Not Activated" v-if="!user.isactivated"></i>
 								<i class="fas fa-check-circle txt-green" title="Activated" v-if="user.isactivated"></i>
-								<i class="fas fa-times-circle txt-red" title="Deleted" v-if="user.isdeleted"></i>
 							</td>
 							<td>{{ user.firstname }}</td>
 							<td>{{ user.lastname }}</td>
@@ -132,10 +134,10 @@
 								<a class="btn btn-xl txt-link btn-square" title="CHANGE LOGS" v-on:click="changeLogs(user.uuid, '/subject*/_search');"><i class="fa fa-search"></i></a>
 							</td>
 							<td class="td-action-1">
-								<a class="btn btn-xl txt-link btn-square" title="EDIT USER" v-on:click="$emit('set-state', 'edit'); selectUser(user, index);"><i class="fas fa-edit"></i></a>
+								<a v-if="!user.isdeleted" class="btn btn-xl txt-link btn-square" title="EDIT USER" v-on:click="$emit('set-state', 'edit'); selectUser(user, index);"><i class="fas fa-edit"></i></a>
 							</td>
 							<td class="td-action-1">
-								<a class="btn btn-xl txt-link txt-grey btn-square" title="DELETE USER" v-on:click="deleteUser(user, index)"><i class="fas fa-trash-alt"></i></a>
+								<a v-if="!user.isdeleted" class="btn btn-xl txt-link txt-grey btn-square" title="DELETE USER" v-on:click="deleteUser(user, index)"><i class="fas fa-trash-alt"></i></a>
 							</td>
 						</tr>
 					</table>
@@ -179,6 +181,13 @@
 								<label for="url">Url:</label>
 								<input type="text" name="url" id="url" v-model="user.url" class="form-control">
 							</div>
+							<div class="form-group form-inline">
+								<label class="d-block">Activate User</label>
+								<span class="switch switch-primary ml-auto">
+									<input type="checkbox" name="isactivated" id="isactivated" v-model="user.isactivated" checked>
+									<label for="isactivated"></label>
+								</span>
+							</div>
 							<p v-if="rootState == 'edit'"><a class="txt-link" v-on:click="resetPassword = !resetPassword">Reset Password</a></p>
 							<div v-show="rootState == 'add' || resetPassword">
 								<div class="form-group js-showpass" v-bind:class="{ 'has-error': errors.has('password') }">
@@ -196,7 +205,7 @@
 									</span>
 								</div>
 							</div>
-							<p v-if="rootState == 'add'">This user will be able to change her password after first login</p>
+							<p v-if="rootState == 'add'">This user will be able to change the password after first login</p>
 							<div class="form-group d-flex justify-content-between">
 								<button type="button" class="btn btn-secondary btn-rounded" v-on:click="$emit('set-state', 'init'); cancelUser()">CANCEL</button>
 								<button type="button" class="btn btn-primary btn-rounded" v-if="rootState == 'add'" v-on:click="userAction('add')">ADD USER</button>
@@ -216,15 +225,14 @@
 							<div class="form-group " v-bind:class="{ 'has-error': errors.has('organization') }">
 								<label>Organization Id</label>
 								<select class="form-control" name="organization" id="organization" v-model="user.organizationid" v-validate="'required'">
-									<!-- <option v-for="(org,index) in orgOptions" :value="org.organizationid">{{org.name}}</option> -->
-									<option v-for="(org,index) in orgOptions" :value="org.uuid">{{org.name}}</option>
+									<option v-for="(org,index) in orgOptions" :value="org.uuid" :class="{'op-deleted': org.isdeleted}" :disabled="org.isdeleted">{{org.name}}</option>
 								</select>
 								<em v-bind:class="{ 'show': errors.has('organization') }">{{ errors.first('organization') }}</em>
 							</div>
 							<div class="form-group " v-bind:class="{ 'has-error': errors.has('dirid') }">
 								<label>Directory</label>
 								<select class="form-control" name="dirid" id="dirid" v-model="user.subjectdirectoryid" v-validate="'required'">
-									<option v-for="(dir,index) in directoryOptions" :value="dir.uuid">{{dir.directoryname}}</option>
+									<option v-for="(dir,index) in directoryOptions" :value="dir.uuid" :class="{'op-deleted': dir.isdeleted}" :disabled="dir.isdeleted">{{dir.directoryname}}</option>
 								</select>
 								<em v-bind:class="{ 'show': errors.has('dirid') }">{{ errors.first('dirid') }}</em>
 							</div>

@@ -16,6 +16,15 @@
 								</span>
 							</div>
 						</li>
+						<li class="nav-item">
+							<div class="d-flex align-items-center">
+								<span class="switch-txt">Show Deleted Items</span>
+								<span class="switch switch-red ml-auto">
+									<input type="checkbox" name="showDeletedItemsSwitch" id="showDeletedItemsSwitch" v-model="$root.preferences.uisettings.showDeletedItems" v-on:change="darkSide()">
+									<label for="showDeletedItemsSwitch"></label>
+								</span>
+							</div>
+						</li>
 					</ul>
 				</li>
 			</ul>

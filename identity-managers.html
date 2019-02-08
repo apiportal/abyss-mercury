@@ -31,9 +31,8 @@
 						</tr>
 						<tr v-for="(directory, index) in sortBy(sort, directoryList)" v-bind:key="directory.uuid" v-bind:class="{'active': isSelected(index), 'tr-deleted': directory.isdeleted}">
 							<td class="txt-c">
-								<i class="fas fa-circle" title="Active" v-if="!directory.isactive"></i>
+								<i class="fas fa-times-circle" title="Active" v-if="!directory.isactive"></i>
 								<i class="fas fa-check-circle txt-green" title="Active" v-if="directory.isactive"></i>
-								<i class="fas fa-times-circle txt-red" title="Deleted" v-if="directory.isdeleted"></i>
 							</td>
 							<td>{{directory.directoryname}} <small class="d-block">{{directory.description}}</small></td>
 							<td>{{getTypeName(directory.directorytypeid)}}</td>
@@ -62,10 +61,10 @@
 								</div>
 							</td>
 							<td class="td-action-1">
-								<a class="btn btn-xl txt-link btn-square" title="EDIT DIRECTORY" v-on:click="$emit('set-state', 'edit'); selectDirectory(directory, index);"><i class="fas fa-edit"></i></a>
+								<a v-if="!directory.isdeleted" class="btn btn-xl txt-link btn-square" title="EDIT DIRECTORY" v-on:click="$emit('set-state', 'edit'); selectDirectory(directory, index);"><i class="fas fa-edit"></i></a>
 							</td>
 							<td class="td-action-1">
-								<a class="btn btn-xl txt-link txt-grey btn-square" title="DELETE DIRECTORY" v-on:click="deleteDirectory(directory, index)"><i class="fas fa-trash-alt"></i></a>
+								<a v-if="!directory.isdeleted" class="btn btn-xl txt-link txt-grey btn-square" title="DELETE DIRECTORY" v-on:click="deleteDirectory(directory, index)"><i class="fas fa-trash-alt"></i></a>
 							</td>
 						</tr>
 					</table>
@@ -115,7 +114,7 @@
 							<div class="form-group " v-bind:class="{ 'has-error': errors.has('orgid') }">
 								<label>Organization Id</label>
 								<select class="form-control" name="orgid" id="orgid" v-model="directory.organizationid" v-validate="'required'">
-									<option v-for="(org,index) in orgOptions" :value="org.uuid">{{org.name}}</option>
+									<option v-for="(org,index) in orgOptions" :value="org.uuid" :class="{'op-deleted': org.isdeleted}" :disabled="org.isdeleted">{{org.name}}</option>
 								</select>
 								<em v-bind:class="{ 'show': errors.has('orgid') }">{{ errors.first('orgid') }}</em>
 							</div>
@@ -189,7 +188,7 @@
 									<div class="form-group" v-bind:class="{ 'has-error': errors.has('organization') }">
 										<label>Organization Id</label>
 										<select class="form-control" name="organization" v-model="t.organizationid" v-validate="'required'">
-											<option v-for="(org,index) in orgoptions" :value="org.uuid">{{org.name}}</option>
+											<option v-for="(org,index) in orgoptions" :value="org.uuid" :class="{'op-deleted': org.isdeleted}" :disabled="org.isdeleted">{{org.name}}</option>
 										</select>
 										<em v-bind:class="{ 'show': errors.has('organization') }">{{ errors.first('organization') }}</em>
 									</div>

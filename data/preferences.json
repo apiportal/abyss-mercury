@@ -8,7 +8,8 @@
 	"crudsubjectid": "9820d2aa-eb02-4a58-8cc5-8b9a89504df9",
 	"subjectid": "9820d2aa-eb02-4a58-8cc5-8b9a89504df9",
 	"uisettings": {
-		"darksidebar": false
+		"darksidebar": false,
+		"showDeletedItems": false
 	},
 	"activedashboardid": "07fe6d6d-dd97-40ee-a723-3f826c05a42a"
 }

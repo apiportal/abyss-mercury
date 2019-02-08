@@ -2781,7 +2781,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 							await this.getResources(currApi, 'API', currApi.openapidocument.info.title + ' ' + currApi.openapidocument.info.version, currApi.openapidocument.info.description);
 							await this.updateResource(currApi, 'API', currApi.openapidocument.info.title + ' ' + currApi.openapidocument.info.version, currApi.openapidocument.info.description);
 						}
-						this.getPage(1);
+						await this.getPage(1);
 						var index = _.findIndex(this.apiType(this.api), { 'uuid': this.selectedApi.uuid });
 						this.apiType(this.api)[index] = this.selectedApi;
 						console.log("this.apiType(this.api)[index]: ", this.apiType(this.api)[index]);

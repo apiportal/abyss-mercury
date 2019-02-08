@@ -5,21 +5,21 @@
 		<li v-if="pagecurrent != 'explore'">
 			<a class="nav-caret" data-toggle="collapse" v-bind:data-target="'#'+name+'apiGroups'" v-bind:aria-controls="name+'apiGroups'">Groups</a>
 			<ul v-bind:id="name+'apiGroups'" class="collapse">
-				<li class="action" v-for="(group, index) in sortBy(sort, apiGroupList)" v-bind:key="group.uuid" v-bind:class="{'txt-muted': group.isdeleted}">
+				<li class="action" v-for="(group, index) in sortBy(sort, apiGroupList)" v-bind:key="group.uuid" v-bind:class="{'is-deleted': group.isdeleted}">
 					<a :title="group.uuid" v-on:click="filterApis(group, 'group')"><i class="fas fa-fw fa-object-group txt-pink"></i>{{group.name}}<span class="badge badge-pill badge-outline">{{group.count}}</span></a></li>
 			</ul>
 		</li>
 		<li>
 			<a class="nav-caret" data-toggle="collapse" v-bind:data-target="'#'+name+'apiTags'" v-bind:aria-controls="name+'apiTags'">Tags</a>
 			<ul v-bind:id="name+'apiTags'" class="collapse">
-				<li class="action" v-for="(tag, index) in sortBy(sort, apiTagList)" v-bind:key="tag.uuid" v-bind:class="{'txt-muted': tag.isdeleted}">
+				<li class="action" v-for="(tag, index) in sortBy(sort, apiTagList)" v-bind:key="tag.uuid" v-bind:class="{'is-deleted': tag.isdeleted}">
 					<a :title="tag.uuid" v-on:click="filterApis(tag, 'tag')"><i class="fas fa-fw fa-stop txt-purple"></i>{{tag.name}}<span class="badge badge-pill badge-outline">{{tag.count}}</span></a></li>
 			</ul>
 		</li>
 		<li>
 			<a class="nav-caret" data-toggle="collapse" v-bind:data-target="'#'+name+'apiCategories'" v-bind:aria-controls="name+'apiCategories'">Categories</a>
 			<ul v-bind:id="name+'apiCategories'" class="collapse">
-				<li class="action" v-for="(category, index) in sortBy(sort, apiCategoryList)" v-bind:key="category.uuid" v-bind:class="{'txt-muted': category.isdeleted}">
+				<li class="action" v-for="(category, index) in sortBy(sort, apiCategoryList)" v-bind:key="category.uuid" v-bind:class="{'is-deleted': category.isdeleted}">
 					<a :title="category.uuid" v-on:click="filterApis(category, 'category')"><i class="fas fa-fw fa-stop txt-green"></i>{{category.name}}<span class="badge badge-pill badge-outline">{{category.count}}</span></a></li>
 			</ul>
 		</li>

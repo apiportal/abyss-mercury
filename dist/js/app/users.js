@@ -55,9 +55,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 					"groups": [],
 					"membershiplist": [],
 					"groupslist": [],
-					"permissions": [],
-					"permissionslist": [],
-					"permissionfilter": true,
+					// "permissions": [],
+					// "permissionslist": [],
+					// "permissionfilter": true,
 					"groupfilter": true,
 					"userfilter": true
 				},
@@ -65,9 +65,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 				newUser: {},
 				userList: [],
 
-				userOptions: [],
 				groupOptions: [],
-				permissionOptions: [],
+				// permissionOptions: [],
 				orgOptions: [],
 				directoryOptions: [],
 				memberOptions: [],
@@ -137,30 +136,30 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 					return false;
 				}
 			},
-			getPermissionName(dir) {
-				var subPrm = this.permissionOptions.filter((el) => el.subjectid == dir );
-				if (subPrm) {
-					return subPrm.map(e => e.permission).join(', ');
-				} else {
-					return false;
-				}
-			},
-			filterPermission(filter) {
-				if (filter == null) {
-					// this.getPage(1);
-					var sss = this.userList.filter((item) => item.permissionfilter === false );
-					sss.forEach((value, key) => {
-						value.permissionfilter = true;
-					});
-				} else {
-					// this.getPage(1, '&permission='+filter.uuid);
-					var flt = this.permissionOptions.filter((item) => item.uuid == filter.uuid );
-					var xxx = _.reject(this.userList, (item) => _.find(flt, { subjectid: item.uuid }));
-					xxx.forEach((value, key) => {
-						value.permissionfilter = false;
-					});
-				}
-			},
+			// getPermissionName(dir) {
+			// 	var subPrm = this.permissionOptions.filter((el) => el.subjectid == dir );
+			// 	if (subPrm) {
+			// 		return subPrm.map(e => e.permission).join(', ');
+			// 	} else {
+			// 		return false;
+			// 	}
+			// },
+			// filterPermission(filter) {
+			// 	if (filter == null) {
+			// 		// this.getPage(1);
+			// 		var sss = this.userList.filter((item) => item.permissionfilter === false );
+			// 		sss.forEach((value, key) => {
+			// 			value.permissionfilter = true;
+			// 		});
+			// 	} else {
+			// 		// this.getPage(1, '&permission='+filter.uuid);
+			// 		var flt = this.permissionOptions.filter((item) => item.uuid == filter.uuid );
+			// 		var xxx = _.reject(this.userList, (item) => _.find(flt, { subjectid: item.uuid }));
+			// 		xxx.forEach((value, key) => {
+			// 			value.permissionfilter = false;
+			// 		});
+			// 	}
+			// },
 			async filterUser(filter) {
 				if (filter == null) {
 					this.getPage(1);
@@ -168,19 +167,15 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 					// var userList = await this.getItem(abyss.ajax.subjects, filter.uuid);
 					this.userList = [];
 					this.userList.push(filter);
-					this.userList = _.map(this.userList, o => _.extend({permissionfilter: true, groupfilter: true, userfilter: true}, o));
+					// this.userList = _.map(this.userList, o => _.extend({permissionfilter: true, groupfilter: true, userfilter: true}, o));
+					this.userList = _.map(this.userList, o => _.extend({groupfilter: true, userfilter: true}, o));
 				}
 			},
-			async getUserOptions(search, loading) {
-				loading(true);
-				this.userOptions = await this.getList(abyss.ajax.user_list + '?likename=' + search);
-				loading(false);
-			},
 			// 2DO
-			setUserPermissions(filter) {
-				console.log("filter: ", filter);
-				console.log("this.user.uuid: ", this.user.uuid);
-			},
+			// setUserPermissions(filter) {
+			// 	console.log("filter: ", filter);
+			// 	console.log("this.user.uuid: ", this.user.uuid);
+			// },
 			setUserGroups(filter) {
 				console.log("this.user.groups: ", this.user.groups);
 				console.log("this.user.membershiplist: ", this.user.membershiplist);
@@ -248,7 +243,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 			deleteProps(obj) {
 				var item = this.cleanProps(obj);
 				// Vue.delete(item, 'password');
-				Vue.delete(item, 'isactivated');
+				// Vue.delete(item, 'isactivated');
 				Vue.delete(item, 'totallogincount');
 				Vue.delete(item, 'failedlogincount');
 				Vue.delete(item, 'invalidpasswordattemptcount');
@@ -263,9 +258,9 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 				Vue.delete(item, 'groups');
 				Vue.delete(item, 'membershiplist');
 				Vue.delete(item, 'groupslist');
-				Vue.delete(item, 'permissions');
-				Vue.delete(item, 'permissionslist');
-				Vue.delete(item, 'permissionfilter');
+				// Vue.delete(item, 'permissions');
+				// Vue.delete(item, 'permissionslist');
+				// Vue.delete(item, 'permissionfilter');
 				Vue.delete(item, 'groupfilter');
 				Vue.delete(item, 'userfilter');
 				item.effectivestartdate = moment.utc(this.user.effectivestartdate).toISOString();
@@ -299,7 +294,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 				if (this.memberDelete.length > 0) {
 					this.memberDelete.forEach(async (value, key) => {
 						var item = this.cleanProps(value);
-						Vue.delete(item, 'isactivated');
+						// Vue.delete(item, 'isactivated');
 						var del = await this.deleteItem(abyss.ajax.subject_memberships, value, false);
 					});
 				}
@@ -312,6 +307,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 						var item = await this.addItem(abyss.ajax.subjects, this.deleteProps(this.user), this.userList);
 						if (item) {
 							await this.addDeleteUserGroups();
+							await this.getPage(1);
 							this.$emit('set-state', 'init');
 							this.user = _.cloneDeep(this.newUser);
 						}
@@ -320,30 +316,31 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 						var item = await this.editItem( abyss.ajax.subjects, this.user.uuid, this.deleteProps(this.user), this.userList );
 						if (item) {
 							await this.addDeleteUserGroups();
+							await this.getPage(1);
 							this.$emit('set-state', 'init');
 							this.user = _.cloneDeep(this.newUser);
 							this.selected = null;
 						}
 					}
-					this.getPage(1);
 				}
 			},
 			async getPage(p, d) {
 				var subject_directories_list = this.getList(abyss.ajax.subject_directories_list);
 				var user_group_list = this.getList(abyss.ajax.user_group_list);
 				var subject_memberships = this.getList(abyss.ajax.subject_memberships);
-				var permission_list = this.getList(abyss.ajax.permission_list);
+				// var permission_list = this.getList(abyss.ajax.permission_list);
 				var user_list = this.getList(abyss.ajax.user_list);
 				var organizations_list = this.getList(abyss.ajax.organizations_list);
 
-				var [directoryOptions, groupOptions, memberOptions, permissionOptions, userList, orgOptions] = await Promise.all([subject_directories_list, user_group_list, subject_memberships, permission_list, user_list, organizations_list]);
-				// .filter( (item) => !item.isdeleted )
-				this.directoryOptions = directoryOptions;
+				// var [directoryOptions, groupOptions, memberOptions, permissionOptions, userList, orgOptions] = await Promise.all([subject_directories_list, user_group_list, subject_memberships, permission_list, user_list, organizations_list]);
+				var [directoryOptions, groupOptions, memberOptions, userList, orgOptions] = await Promise.all([subject_directories_list, user_group_list, subject_memberships, user_list, organizations_list]);
+				this.directoryOptions = _.orderBy(directoryOptions, [item => item['directoryname'].toLowerCase()], 'asc');
 				this.groupOptions = groupOptions;
 				this.memberOptions = memberOptions;
-				this.permissionOptions = permissionOptions;
-				this.orgOptions = orgOptions;
-				this.userList = _.map(userList, o => _.extend({permissionfilter: true, groupfilter: true, userfilter: true}, o));
+				// this.permissionOptions = permissionOptions;
+				this.orgOptions = _.orderBy(orgOptions, [item => item['name'].toLowerCase()], 'asc');
+				// this.userList = _.map(userList, o => _.extend({permissionfilter: true, groupfilter: true, userfilter: true}, o));
+				this.userList = _.map(userList, o => _.extend({groupfilter: true, userfilter: true}, o));
 				this.userList.forEach(async (value, key) => {
 					var membershiplist = await this.getList(abyss.ajax.subject_memberships_subject + value.uuid);
 					if (membershiplist) {

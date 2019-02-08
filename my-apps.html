@@ -26,8 +26,8 @@
 								<a class="field-link app-collapse" data-toggle="collapse" v-bind:data-target="'#app'+index" v-bind:aria-controls="'app'+index" v-on:click="getMyAppDetail(app,index)">
 									<div>										
 										<div class="h6">
-											<i class="fas fa-check-circle txt-green" title="Active" v-if="!app.isdeleted"></i>
-											<i class="fas fa-times-circle txt-red" title="Deleted" v-if="app.isdeleted"></i>
+											<i class="fas fa-check-circle txt-green" title="Activated" v-if="app.isactivated"></i>
+											<i class="fas fa-times-circle txt-muted" title="Not Activated" v-if="!app.isactivated"></i>
 											{{app.firstname}}
 										</div>
 										<span class="txt-red txt-uppercase flt-r" v-if="app.expiredCount > 0"><small>Access Token Expired</small> <span class="badge badge-red badge-pill ml-1"><strong>{{app.expiredCount}}</strong></span></span>
@@ -45,15 +45,21 @@
 											<code class="txt-line small txt-blue sandbox-item"><small>{{app.uuid}}</small></code>
 										</div>
 										<div class="fol-sm txt-sm-r">
-											<div v-if="!app.isdeleted" :title="app.updated | formatDateTime">
+											<div class="txt-uppercase small">
+												Created
 												{{app.created | formatDateTime}}
 											</div>
-											<div v-if="app.isdeleted">
+											<div class="txt-uppercase small">
+												Updated
+												{{app.updated | formatDateTime}}
+											</div>
+											<div class="txt-uppercase small" v-if="app.isdeleted">
+												Deleted
 												{{app.deleted | formatDateTime}}
 											</div>
-											<strong class="txt-uppercase">{{sandbox(app.issandbox)}}</strong>
-											<div class="txt-uppercase">
-												{{activated(app.isactivated)}}
+											<div>
+												{{activated(app.isactivated)}} | 
+												<strong class="txt-uppercase">{{sandbox(app.issandbox)}}</strong>
 											</div>
 											<code class="txt-line small txt-orange sandbox-item" v-if="app.resource"><small>{{app.resource.uuid}}</small></code>
 										</div>
@@ -62,9 +68,9 @@
 								<div class="ficon-actions dropdown dropdown-hover">
 									<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
 									<ul class="dropdown-menu dropdown-menu-right" role="menu">
-										<li><a title="EDIT APP" v-on:click="$emit('set-state', 'edit'); selectApp(app, index);"><i class="fa fa-pencil"></i> EDIT APP</a></li>
+										<li v-if="!app.isdeleted"><a title="EDIT APP" v-on:click="$emit('set-state', 'edit'); selectApp(app, index);"><i class="fa fa-pencil"></i> EDIT APP</a></li>
 										<li><a title="CHANGE LOGS" v-on:click="changeLogs(app.uuid, '/subject*/_search');"><i class="fa fa-search"></i> CHANGE LOGS</a></li>
-										<li><a class="" title="DELETE APP" v-on:click="deleteApp(app, index)"><i class="fa fa-trash-alt"></i> DELETE APP</a></li>
+										<li v-if="!app.isdeleted"><a class="" title="DELETE APP" v-on:click="deleteApp(app, index)"><i class="fa fa-trash-alt"></i> DELETE APP</a></li>
 									</ul>
 								</div>
 							</div>
@@ -135,15 +141,14 @@
 							<div class="form-group " v-bind:class="{ 'has-error': errors.has('orgid') }">
 								<label>Organization Id</label>
 								<select class="form-control" name="orgid" id="orgid" v-model="app.organizationid" v-validate="'required'">
-									<!-- <option v-for="(org,index) in orgOptions" :value="org.organizationid">{{org.name}}</option> -->
-									<option v-for="(org,index) in orgOptions" :value="org.uuid">{{org.name}}</option>
+									<option v-for="(org,index) in orgOptions" :value="org.uuid" :class="{'op-deleted': org.isdeleted}" :disabled="org.isdeleted">{{org.name}}</option>
 								</select>
 								<em v-bind:class="{ 'show': errors.has('orgid') }">{{ errors.first('orgid') }}</em>
 							</div>
 							<div class="form-group " v-bind:class="{ 'has-error': errors.has('dirid') }">
 								<label>Directory</label>
 								<select class="form-control" name="dirid" id="dirid" v-model="app.subjectdirectoryid" v-validate="'required'">
-									<option v-for="(dir,index) in directoryOptions" :value="dir.uuid">{{dir.directoryname}}</option>
+									<option v-for="(dir,index) in directoryOptions" :value="dir.uuid" :class="{'op-deleted': dir.isdeleted}" :disabled="dir.isdeleted">{{dir.directoryname}}</option>
 								</select>
 								<em v-bind:class="{ 'show': errors.has('dirid') }">{{ errors.first('dirid') }}</em>
 							</div>

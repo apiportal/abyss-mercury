@@ -20,7 +20,7 @@
 					<div class="fow m-0 p-3 justify-content-center">
 						<article v-for="(license, index) in sortByNested(sort, licenseList)" v-bind:key="license.uuid" v-bind:class="{'active': isSelected(index)}" class="fol-sm-6 fol-md-4 fol-lg-4 fol-xl-3 fol-xlm-3 fol-xlg-3 thumb-3x card-item field-controls">
 							<div class="field-sum bg-white shadow-sm" v-bind:class="{'is-deleted': license.isdeleted}">
-								<a class="field-link" data-toggle="collapse" v-bind:data-target="'#license'+index" v-bind:aria-controls="'license'+index">
+								<a class="field-link box" data-toggle="collapse" v-bind:data-target="'#license'+index" v-bind:aria-controls="'license'+index">
 									<div class="h6">										
 									<i class="fas fa-check-circle txt-green" title="Active" v-if="!license.isdeleted"></i>
 									<i class="fas fa-times-circle txt-red" title="Deleted" v-if="license.isdeleted"></i>
@@ -29,25 +29,39 @@
 									</div>
 									<div>
 										<small class="txt-uppercase" v-bind:class="{'txt-green': license.licensedocument.info.visibility == 'Public', 'txt-orange': license.licensedocument.info.visibility == 'Private'}">{{license.licensedocument.info.visibility}}</small>
-										<div class="d-flex txt-uppercase flt-r small txt-muted">
+										<!-- <div class="d-flex txt-uppercase flt-r small txt-muted">
 											<span v-if="!license.isdeleted" :title="license.updated | formatDateTime">
 												{{license.created | formatDateTime}}
 											</span>
 											<span class="ml-auto txt-r" v-if="license.isdeleted">
 												{{license.deleted | formatDateTime}}
 											</span>
+										</div> -->
+										<div class="txt-uppercase flt-r txt-r">
+											<div class="txt-uppercase small">
+												Created
+												{{license.created | formatDateTime}}
+											</div>
+											<div class="txt-uppercase small">
+												Updated
+												{{license.updated | formatDateTime}}
+											</div>
+											<div class="txt-uppercase small" v-if="license.isdeleted">
+												Deleted
+												{{license.deleted | formatDateTime}}
+											</div>
+											<code class="d-block small txt-blue"><small>{{license.uuid}}</small></code>
 										</div>
 									</div>
 									<div class="">{{license.licensedocument.info.title}}</div>
-									<code class="flt-r d-block txt-line small txt-blue"><small>{{license.uuid}}</small></code>
-									<small class="d-block txt-line my-1 txt-muted">{{license.licensedocument.info.description}}</small>
+									<small class="d-block txt-muted">{{license.licensedocument.info.description}}</small>
 								</a>
 								<div class="ficon-actions dropdown dropdown-hover">
 									<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
 									<ul class="dropdown-menu dropdown-menu-right" role="menu">
-										<li><a title="EDIT LICENSE" v-on:click="$emit('set-state', 'edit'); selectLicense(license, index);"><i class="fa fa-plus"></i> EDIT LICENSE</a></li>
+										<li v-if="!license.isdeleted"><a title="EDIT LICENSE" v-on:click="$emit('set-state', 'edit'); selectLicense(license, index);"><i class="fa fa-plus"></i> EDIT LICENSE</a></li>
 										<li><a title="CHANGE LOGS" v-on:click="changeLogs(license.uuid, '/license*/_search');"><i class="fa fa-search"></i> CHANGE LOGS</a></li>
-										<li><a class="" title="DELETE LICENSE" v-on:click="deleteLicense(license, index)"><i class="fa fa-trash-alt"></i> DELETE LICENSE</a></li>
+										<li v-if="!license.isdeleted"><a class="" title="DELETE LICENSE" v-on:click="deleteLicense(license, index)"><i class="fa fa-trash-alt"></i> DELETE LICENSE</a></li>
 									</ul>
 								</div>
 							</div>

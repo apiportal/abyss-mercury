@@ -180,18 +180,19 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue!schem
 					if (act === 'add') {
 						this.fixProps(this.accessManager);
 						await this.addItem(abyss.ajax.access_managers, this.deleteProps(this.accessManager), this.accessManagerList);
+						await this.getPage(1);
 						this.$emit('set-state', 'init');
 						this.accessManager = _.cloneDeep(this.newAccessManager);
 						this.template = null;
 					}
 					if (act === 'edit') {
 						await this.editItem( abyss.ajax.access_managers, this.accessManager.uuid, this.deleteProps(this.accessManager), this.accessManagerList );
+						await this.getPage(1);
 						this.$emit('set-state', 'init');
 						this.accessManager = _.cloneDeep(this.newAccessManager);
 						this.selected = null;
 						this.template = null;
 					}
-					this.getPage(1);
 				}
 			},
 			async getPage(p, d) {
@@ -201,7 +202,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue!schem
 				var [accessManagerList, accessManagerTypes, orgOptions] = await Promise.all([access_managers, access_manager_types, organizations_list]);
 				Vue.set( this, 'accessManagerList', accessManagerList );
 				Vue.set( this, 'accessManagerTypes', accessManagerTypes );
-				Vue.set( this, 'orgOptions', orgOptions );
+				Vue.set( this, 'orgOptions', _.orderBy(orgOptions, [item => item['name'].toLowerCase()], 'asc') );
 				this.paginate = this.makePaginate(this.accessManagerList);
 				this.preload();
 			},
