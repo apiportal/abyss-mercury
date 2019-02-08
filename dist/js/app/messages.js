@@ -131,9 +131,17 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 				var messageList = this.messageList;
 				if (key == 'istrashed') {
 					// return this.messageList.filter((item) => item[key] == val && !item.isread && item.istrashed && !item.isdeleted ).length;
-					var tno = this.messageList.filter((item) => item[key] == val && !item.isread && item.istrashed && !item.isdeleted );
+					// var tno = this.messageList.filter((item) => item[key] == val && !item.isread && item.istrashed && !item.isdeleted );
+					var tno = this.messageList.filter((item) => item[key] == val && item.istrashed && !item.isdeleted );
 					if (tno.length) {
 						return '<span class="badge badge-pill badge-outline flt-r">' + tno.length + '</span>';
+					} else {
+						return;
+					}
+				} else if (val == 'Draft') {
+					var dno = this.messageList.filter((item) => item[key] == val && !item.istrashed && !item.isdeleted );
+					if (dno.length) {
+						return '<span class="badge badge-pill badge-outline flt-r">' + dno.length + '</span>';
 					} else {
 						return;
 					}
@@ -386,7 +394,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 				if (this.checkedMessages.length) {
 					for (var item of this.checkedMessages) {
 						console.log("item: ", item);
-						// await this.deleteMessage(item);
+						await this.deleteMessage(item);
 					}
 				}
 			},
@@ -396,6 +404,10 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 				if (del) {
 					item.isdeleted = true;
 					// this.getPage();
+					await this.getPage(1);
+					this.$emit('set-state', 'init');
+					this.message = _.cloneDeep(this.newMessage);
+					this.selected = null;
 				}
 			},
 			async trashMessage(item) {
@@ -405,6 +417,10 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 				var res = await this.editItem( abyss.ajax.messages, item.uuid, this.deleteProps(item), this.messageList );
 				if (res) {
 					item.istrashed = res.istrashed;
+					await this.getPage(1);
+					this.$emit('set-state', 'init');
+					this.message = _.cloneDeep(this.newMessage);
+					this.selected = null;
 				}
 			},
 			async markAsStarred(item) {

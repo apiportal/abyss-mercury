@@ -35,7 +35,7 @@
 						<tr v-for="(policy, index) in sortByNested(sort, policyList)" v-bind:key="policy.uuid" v-bind:class="{'active': isSelected(index), 'tr-deleted': policy.isdeleted}">
 							<td class="txt-c">
 								<i class="fas fa-check-circle txt-green" title="Active" v-if="!policy.isdeleted"></i>
-								<i class="fas fa-times-circle txt-red" title="Deleted" v-if="policy.isdeleted"></i>
+								<i class="fas fa-times-circle" title="Deleted" v-if="policy.isdeleted"></i>
 							</td>
 							<td>{{policy.name}} <small class="d-block">{{policy.description}}</small></td>
 							<td>{{policy.policyinstance.info.type}}</td>
@@ -62,10 +62,10 @@
 								<a class="btn btn-xl txt-link btn-square" title="CHANGE LOGS" v-on:click="changeLogs(policy.uuid, '/policy*/_search');"><i class="fa fa-search"></i></a>
 							</td>
 							<td class="td-action-1">
-								<a class="btn btn-xl txt-link btn-square" title="EDIT POLICY" v-on:click="$emit('set-state', 'edit'); selectPolicy(policy, index);"><i class="fas fa-edit"></i></a>
+								<a v-if="!policy.isdeleted" class="btn btn-xl txt-link btn-square" title="EDIT POLICY" v-on:click="$emit('set-state', 'edit'); selectPolicy(policy, index);"><i class="fas fa-edit"></i></a>
 							</td>
 							<td class="td-action-1">
-								<a class="btn btn-xl txt-link txt-grey btn-square" title="DELETE POLICY" v-on:click="deletePolicy(policy, index)"><i class="fas fa-trash-alt"></i></a>
+								<a v-if="!policy.isdeleted" class="btn btn-xl txt-link txt-grey btn-square" title="DELETE POLICY" v-on:click="deletePolicy(policy, index)"><i class="fas fa-trash-alt"></i></a>
 							</td>
 						</tr>
 					</table>
@@ -164,7 +164,7 @@
 									<div class="form-group" v-bind:class="{ 'has-error': errors.has('organization') }">
 										<label>Organization Id</label>
 										<select class="form-control" name="organization" v-model="t.organizationid" v-validate="'required'">
-											<option v-for="(org,index) in orgoptions" :value="org.uuid" :class="{'txt-red': org.isdeleted}">{{org.name}}</option>
+											<option v-for="(org,index) in orgoptions" :value="org.uuid" :class="{'op-deleted': org.isdeleted}" :disabled="org.isdeleted">{{org.name}}</option>
 										</select>
 										<em v-bind:class="{ 'show': errors.has('organization') }">{{ errors.first('organization') }}</em>
 									</div>

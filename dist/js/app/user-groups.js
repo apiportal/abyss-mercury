@@ -67,7 +67,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 				newGroup: {},
 				groupList: [],
 
-				userOptions: [],
 				groupOptions: [],
 				// permissionOptions: [],
 				orgOptions: [],
@@ -113,12 +112,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 						value.userfilter = false;
 					});
 				}
-			},
-			async getUserOptions(search, loading) {
-				loading(true);
-				var userOptions = await this.getList(abyss.ajax.user_list + '?likename=' + search);
-				this.userOptions = userOptions.filter( (item) => !item.isdeleted );
-				loading(false);
 			},
 			getDirName(dir) {
 				var subDir = this.directoryOptions.find((el) => el.uuid == dir );
@@ -362,7 +355,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'VueBo
 
 				// var [directoryOptions, userList, memberOptions, permissionOptions, groupList, orgOptions] = await Promise.all([subject_directories_list, user_list, subject_memberships, permission_list, user_group_list, organizations_list]);
 				var [directoryOptions, userList, memberOptions, groupList, orgOptions] = await Promise.all([subject_directories_list, user_list, subject_memberships, user_group_list, organizations_list]);
-				this.directoryOptions = directoryOptions.filter( (item) => !item.isdeleted );
+				this.directoryOptions = _.orderBy(directoryOptions, [item => item['directoryname'].toLowerCase()], 'asc');
 				this.userList = userList.filter( (item) => !item.isdeleted );
 				this.memberOptions = memberOptions.filter( (item) => !item.isdeleted );
 				// this.permissionOptions = permissionOptions;

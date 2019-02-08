@@ -131,8 +131,8 @@
 							<div v-for="(app, index) in sortByNested(sortApp, $root.appList)" v-if="app.contracts" class="brd-b brd-0-last field-controls">
 								<a class="nav-link d-block" v-on:click="getMyAppDetail(app,index,true);" :class="{'is-deleted': app.isdeleted}">
 									<div class="">										
-										<i class="fas fa-check-circle txt-green" title="Active" v-if="!app.isdeleted"></i>
-										<i class="fas fa-times-circle txt-red" title="Deleted" v-if="app.isdeleted"></i>
+										<i class="fas fa-times-circle txt-muted" title="Not Activated" v-if="!app.isactivated"></i>
+										<i class="fas fa-check-circle txt-green" title="Activated" v-if="app.isactivated"></i>
 										<strong>{{app.firstname}}</strong>
 									</div>
 									<div>
@@ -140,8 +140,8 @@
 											<span v-if="!app.isdeleted" :title="app.created | formatDateTime">
 												{{app.updated | formatDateTime}}
 											</span>
-											<span class="ml-auto txt-r" v-if="app.isdeleted">
-												{{app.deleted | formatDateTime}}
+											<span class="ml-auto txt-r" :title="app.deleted | formatDateTime" v-if="app.isdeleted">
+												{{app.updated | formatDateTime}}
 											</span>
 										</div>
 									</div>

@@ -171,8 +171,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue-selec
 			},
 			async getDirectoryOptions() {
 				var directoryOptions = await this.getList(abyss.ajax.subject_directories_list);
-				this.directoryOptions = directoryOptions.filter( (item) => !item.isdeleted );
-				this.orgOptions = this.$root.rootData.user.organizations.filter( (item) => !item.isdeleted );
+				this.directoryOptions = _.orderBy(directoryOptions, [item => item['directoryname'].toLowerCase()], 'asc');
+				this.orgOptions = _.orderBy(this.$root.rootData.user.organizations, [item => item['name'].toLowerCase()], 'asc');
 			},
 			filterApp() {
 				// 2DO

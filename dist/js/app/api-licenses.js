@@ -146,7 +146,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment'], funct
 				var subject_policies_list = this.getList(abyss.ajax.subject_policies_list + this.$root.rootData.user.uuid);
 				var [licenseList, policyList] = await Promise.all([subject_licenses_list, subject_policies_list]);
 				Vue.set( this, 'licenseList', licenseList );
-				Vue.set( this, 'policyList', policyList.filter( (item) => item.isdeleted === false ) );
+				Vue.set( this, 'policyList', policyList.filter( (item) => !item.isdeleted ) );
 				this.licenseList.forEach((value, key) => {
 					Vue.set(value, 'policies', _.filter(this.policyList, (v) => _.includes(value.licensedocument.termsOfService.policyKey, v.uuid)) );
 					this.getResources(value, 'LICENSE', value.name, value.licensedocument.info.description);

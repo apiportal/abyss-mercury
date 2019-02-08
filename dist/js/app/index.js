@@ -124,6 +124,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 				apisSharedWithMe: [],
 				myApiSubscriptions: [],
 				permissionsSharedWithMe: [],
+				resourceList: [],
+				userList: [],
 			};
 		},
 		computed : {},
@@ -132,13 +134,18 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 				// var permission_my_apis = this.getList(abyss.ajax.permission_my_apis + this.$root.rootData.user.uuid);
 				var permissions_app = this.getList(abyss.ajax.permissions_app + this.$root.rootData.user.uuid);
 				var apis_shared_with_me = this.getList(abyss.ajax.apis_shared_with_me + this.$root.rootData.user.uuid);
-				var [permissionsSharedWithMe, apisSharedWithMe] = await Promise.all([permissions_app, apis_shared_with_me]);
+				var resources_subject = this.getList(abyss.ajax.resources_subject + this.$root.rootData.user.uuid);
+				var user_list = this.getList(abyss.ajax.user_list);
+				var [permissionsSharedWithMe, apisSharedWithMe, resourceList, userList] = await Promise.all([permissions_app, apis_shared_with_me, resources_subject, user_list]);
 				this.permissionsSharedWithMe = permissionsSharedWithMe.filter( (el) => !el.isdeleted );
 				// this.myApiSubscriptions = myApiSubscriptions.filter((el) => el.resourceactionid === abyss.defaultIds.invokeApi );
+				this.resourceList = resourceList;
+				this.userList = userList;
 				this.apisSharedWithMe = _.uniqBy(apisSharedWithMe, 'uuid');
 				for (var item of this.apisSharedWithMe) {
 					// Vue.set(item, 'subscriptions', []);
-					await this.getResources(item, 'API', item.openapidocument.info.title + ' ' + item.openapidocument.info.version, item.openapidocument.info.description);
+					// await this.getResources(item, 'API', item.openapidocument.info.title + ' ' + item.openapidocument.info.version, item.openapidocument.info.description);
+					Vue.set(item, 'resource', _.find(this.resourceList, { 'resourcerefid': item.uuid }) );
 					// var subs = this.myApiSubscriptions.filter((el) => el.resourceid === item.resource.uuid );
 					// if (subs) {
 					// 	item.subscriptions = subs;
@@ -147,7 +154,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 
 					if (perms.length) {
 						perms = _.uniqBy(perms, 'resourceid');
-						var sharedBy = await this.getItem(abyss.ajax.subjects, perms[0].crudsubjectid)
+						// var sharedBy = await this.getItem(abyss.ajax.subjects, perms[0].crudsubjectid)
+						var sharedBy = _.find(this.userList, { 'uuid': perms[0].crudsubjectid });
 						Vue.set(item, 'sharedBy', sharedBy.displayname);
 					} else {
 						Vue.set( item, 'isShareDeleted', true );
@@ -197,6 +205,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 				apisSharedByMe: [],
 				myApiSubscriptions: [],
 				permissionsSharedByMe: [],
+				resourceList: [],
+				userList: [],
 			};
 		},
 		computed : {},
@@ -204,15 +214,20 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 			async getApisSharedByMe() {
 				var permission_my_apis = this.getList(abyss.ajax.permission_my_apis + this.$root.rootData.user.uuid);
 				var apis_shared_by_me = this.getList(abyss.ajax.apis_shared_by_me + this.$root.rootData.user.uuid);
-				var [myApiSubscriptions, apisSharedByMe] = await Promise.all([permission_my_apis, apis_shared_by_me]);
+				var resources_subject = this.getList(abyss.ajax.resources_subject + this.$root.rootData.user.uuid);
+				var user_list = this.getList(abyss.ajax.user_list);
+				var [myApiSubscriptions, apisSharedByMe, resourceList, userList] = await Promise.all([permission_my_apis, apis_shared_by_me, resources_subject, user_list]);
 				this.myApiSubscriptions = myApiSubscriptions.filter((el) => el.resourceactionid === abyss.defaultIds.invokeApi );
 				this.permissionsSharedByMe = myApiSubscriptions.filter((el) => el.resourceactionid !== abyss.defaultIds.invokeApi && !el.isdeleted );
+				this.resourceList = resourceList;
+				this.userList = userList;
 
 				// 2DO ABYSSP-300 "/apis/sharedby/subject" returns 2 same API's if shared read/write
 				this.apisSharedByMe = _.uniqBy(apisSharedByMe, 'uuid');
 				for (var item of this.apisSharedByMe) {
 					// Vue.set(item, 'subscriptions', []);
-					await this.getResources(item, 'API', item.openapidocument.info.title + ' ' + item.openapidocument.info.version, item.openapidocument.info.description);
+					// await this.getResources(item, 'API', item.openapidocument.info.title + ' ' + item.openapidocument.info.version, item.openapidocument.info.description);
+					Vue.set(item, 'resource', _.find(this.resourceList, { 'resourcerefid': item.uuid }) );
 					/*var subs = this.myApiSubscriptions.filter((el) => el.resourceid === item.resource.uuid );
 					if (subs) {
 						item.subscriptions = subs;
@@ -222,7 +237,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 					if (perms.length) {
 						perms = _.uniqBy(perms, 'subjectid');
 						perms.forEach(async (item, key) => {
-							var sharedWith = await this.getItem(abyss.ajax.subjects, item.subjectid)
+							// var sharedWith = await this.getItem(abyss.ajax.subjects, item.subjectid)
+							var sharedWith = _.find(this.userList, { 'uuid': item.subjectid });
 							Vue.set(item, 'sharedWith', sharedWith.displayname);
 							// console.log("item.sharedWith: ", item.sharedWith);
 						});
@@ -317,6 +333,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 				myProxyApiList: [],
 				myBusinessApiList: [],
 				myApiSubscriptions: [],
+				resourceList: [],
+				subjectList: [],
 				mySubscribersCount: 0,
 				chartOptions: {
 					chart: {
@@ -372,16 +390,21 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 				var permission_my_apis = this.getList(abyss.ajax.permission_my_apis + this.$root.rootData.user.uuid);
 				var my_proxy_api_list = this.getList(abyss.ajax.my_proxy_api_list + this.$root.rootData.user.uuid);
 				var my_business_api_list = this.getList(abyss.ajax.my_business_api_list + this.$root.rootData.user.uuid);
+				var resources_subject = this.getList(abyss.ajax.resources_subject + this.$root.rootData.user.uuid);
+				var subject_list = this.getList(abyss.ajax.subjects);
 
-				var [myApiSubscriptions, myProxyApiList, myBusinessApiList] = await Promise.all([permission_my_apis, my_proxy_api_list, my_business_api_list]);
+				var [myApiSubscriptions, myProxyApiList, myBusinessApiList, resourceList, subjectList] = await Promise.all([permission_my_apis, my_proxy_api_list, my_business_api_list, resources_subject, subject_list]);
 
 				this.myApiSubscriptions = myApiSubscriptions.filter((el) => el.resourceactionid === abyss.defaultIds.invokeApi && !el.isdeleted );
 				this.myBusinessApiList = myBusinessApiList;
 				this.myProxyApiList = myProxyApiList;
+				this.resourceList = resourceList;
+				this.subjectList = subjectList;
 				this.mySubscribersCount = this.myApiSubscriptions.length;
 				for (var item of this.myProxyApiList) {
 					Vue.set(item, 'subscriptions', []);
-					await this.getResources(item, 'API', item.openapidocument.info.title + ' ' + item.openapidocument.info.version, item.openapidocument.info.description);
+					// await this.getResources(item, 'API', item.openapidocument.info.title + ' ' + item.openapidocument.info.version, item.openapidocument.info.description);
+					Vue.set(item, 'resource', _.find(this.resourceList, { 'resourcerefid': item.uuid }) );
 					var subs = this.myApiSubscriptions.filter((el) => el.resourceid === item.resource.uuid );
 					// if (subs) {
 						item.subscriptions = subs;
@@ -389,9 +412,11 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 					// }
 				}
 				for (var item of this.myApiSubscriptions) {
-					var subject_Name = await this.getItem(abyss.ajax.subjects, item.subjectid);
-					var subject_Owner = await this.getItem(abyss.ajax.subjects, item.crudsubjectid);
-					var [subjectName, subjectOwner] = await Promise.all([subject_Name, subject_Owner]);
+					// var subject_Name = await this.getItem(abyss.ajax.subjects, item.subjectid);
+					// var subject_Owner = await this.getItem(abyss.ajax.subjects, item.crudsubjectid);
+					// var [subjectName, subjectOwner] = await Promise.all([subject_Name, subject_Owner]);
+					var subjectName = _.find(this.subjectList, { 'uuid': item.subjectid });
+					var subjectOwner = _.find(this.subjectList, { 'uuid': item.crudsubjectid });
 					Vue.set(item, 'subjectName', subjectName.displayname);
 					Vue.set(item, 'subjectOwner', subjectOwner.displayname);
 				}

@@ -535,7 +535,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 					// await this.getMyApps();
 					Vue.set(this.$root, 'previewedApi', _.cloneDeep(item));
 					var apiLic = await this.getList(abyss.ajax.api_licenses_api + item.uuid);
-					var apiLicenses = apiLic.filter( (item) => item.isdeleted === false );
+					var apiLicenses = apiLic.filter( (item) => !item.isdeleted );
 					var licenses = [];
 					apiLicenses.forEach(async (value, key) => {
 						var lic = await this.getItem(abyss.ajax.licenses, value.licenseid);
@@ -664,8 +664,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 					var permissions_app = this.getList(abyss.ajax.permissions_app + res.uuid);
 					var contracts_app = this.getList(abyss.ajax.contracts_app + res.uuid);
 					var [subscriptions, contracts] = await Promise.all([permissions_app, contracts_app]);
-					subscriptions = subscriptions.filter((el) => el.resourceactionid === abyss.defaultIds.invokeApi && el.isdeleted === false );
-					contracts = contracts.filter((el) => el.isdeleted === false );
+					subscriptions = subscriptions.filter((el) => el.resourceactionid === abyss.defaultIds.invokeApi && !el.isdeleted );
+					contracts = contracts.filter((el) => !el.isdeleted );
 					Vue.set(res, 'contracts', contracts );
 					// Vue.set(res, 'subscriptions', subscriptions );
 					// Vue.set(res, 'appContractsCount', res.contracts.length );
@@ -705,8 +705,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 					var permissions_app = this.getList(abyss.ajax.permissions_subject + res.uuid);
 					var contracts_app = this.getList(abyss.ajax.contracts_app + res.uuid);
 					var [subscriptions, contracts] = await Promise.all([permissions_app, contracts_app]);
-					subscriptions = subscriptions.filter((el) => el.resourceactionid === abyss.defaultIds.invokeApi && el.isdeleted === false );
-					contracts = contracts.filter((el) => el.isdeleted === false );
+					subscriptions = subscriptions.filter((el) => el.resourceactionid === abyss.defaultIds.invokeApi && !el.isdeleted );
+					contracts = contracts.filter((el) => !el.isdeleted );
 					Vue.set(res, 'contracts', contracts );
 					// Vue.set(res, 'subscriptions', subscriptions );
 					// Vue.set(res, 'appContractsCount', res.contracts.length );
@@ -1491,7 +1491,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 						var myTokens = await this.getList(abyss.ajax.resource_access_tokens_permission + '/' + this.$root.rootData.user.permission.uuid) ;
 						if (myTokens.length > 0) {
 							// console.log("myTokens: ", myTokens);
-							var fixToken = myTokens.filter( (item) => item.isdeleted === false );
+							var fixToken = myTokens.filter( (item) => !item.isdeleted );
 							// console.log("fixToken: ", fixToken);
 							var sortToken = _.orderBy(fixToken, 'created', 'desc');
 							// console.log("sortToken: ", sortToken);
@@ -1535,6 +1535,12 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 				} else {
 					$('body').removeClass("dark-nav");
 				}
+				if(this.$root.preferences.uisettings.showDeletedItems) {
+					$('body').addClass("show-deleted");
+				} else {
+					$('body').removeClass("show-deleted");
+				}
+				// this.pageClass = this.pageClass + ' show-deleted-' + this.$root.preferences.uisettings.showDeletedItems;
 				window.localStorage.setItem('preferences', JSON.stringify(this.$root.preferences));
 			},
 		},
