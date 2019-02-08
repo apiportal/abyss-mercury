@@ -1,0 +1,26 @@
+﻿<!--
+  ~ /*
+  ~  *  Copyright (C) Verapi Yazilim Teknolojileri A.S. - All Rights Reserved
+  ~  *
+  ~  *  Unauthorized copying of this file, via any medium is strictly prohibited
+  ~  *  Proprietary and confidential
+  ~  *
+  ~  *  Written by Halil Özkan <halil.ozkan@verapi.com>, 2 2019
+  ~  */
+  -->
+
+<!DOCTYPE html>
+<html class="page-error" lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="webroot/frags/layout/head.htm :: header">
+</head>
+<body>
+<main id="portal">
+	<div th:replace="webroot/frags/layout/navs.htm :: navError"></div>
+	<h1>500</h1>
+	<h3>Internal Server Error</h3>
+	<p>There was an Error. Please try again later.</p>
+	<div th:replace="webroot/frags/layout/footer.htm :: copy"></div>
+</main>
+<script id="reqJs" data-module="error" data-main="/dist/js/main" src="/dist/js/lib/require.min.js"></script>
+</body>
+</html>
