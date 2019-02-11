@@ -1515,24 +1515,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				return {};
 			}
 		});
-// ■■■■■■■■ api-limits ■■■■■■■■ //
-	Vue.component('api-limits', {
-		template: '#template-limits',
-		mixins: [mixOas],
-		props: ['api', 'limits'],
-		computed: {
-			
-		},
-		methods: {
-			
-		},
-		data() {
-			return {};
-		},
-		created() {
-		},
-		
-	});
 // ■■■■■■■■ my-api-list ■■■■■■■■ //
 	Vue.component('my-api-list', {
 		mixins: [mixOas],
@@ -1868,15 +1850,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 					"categories": [],
 					"proxies": [],
 					"specs": null,
-					"limits": {
-						quota: null,
-						quoteUnit: 'Hits/Day',
-						rateLimit: null,
-						throttling: null,
-						circuitThreshold: null,
-						circuitSampleSize: null,
-						circuitReturn: null,
-					},
 				},
 				tagsAdd: [],
 				groupsAdd: [],
@@ -2465,17 +2438,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				if (item.organizationid == null) {
 					Vue.set(item,'organizationid',this.$root.abyssOrgId);
 				}
-				if (!item.limits) {
-					Vue.set( item, 'limits', {
-						quota: null,
-						quoteUnit: 'Hits/Day',
-						rateLimit: null,
-						throttling: null,
-						circuitThreshold: null,
-						circuitSampleSize: null,
-						circuitReturn: null,
-					} );
-				}
 				if (item.isproxyapi) {
 					Vue.set(item.openapidocument, 'servers', [{url: this.$root.abyssGatewayUrl + '/' + item.uuid}]);
 					Vue.set(item.openapidocument, 'security', [{abyssApiKeyAuth: []}]);
@@ -2622,7 +2584,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				});
 			},
 			async beforeCancelApi(c) {
-				console.log("beforeCancelApi this.isChanged: ", this.isChanged, Object.keys(this.changes).length, this.changes, "version: ", _.has(this.changes, 'openapidocument.info.version'), this.verChanged);
+				console.log("beforeCancelApi isChanged: ", this.isChanged, Object.keys(this.changes).length, this.changes, "info.version: ", _.has(this.changes, 'openapidocument.info.version'), 'verChanged', this.verChanged);
 				if (this.isChanged && this.rootState != 'init') {
 					var beforeCancelConfirm = await this.beforeCancelConfirm();
 					if (beforeCancelConfirm) {
@@ -3111,7 +3073,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 							this.$toast('warning', {message: 'You have to save as new API if you change the version', title: 'VERSION CHANGE DETECTED', position: 'bottomRight'});
 						}
 					}
-					console.log("this.isChanged: ", this.isChanged, Object.keys(this.changes).length, this.changes, "version: ", _.has(this.changes, 'openapidocument.info.version'), this.verChanged);
+					console.log("isChanged: ", this.isChanged, Object.keys(this.changes).length, this.changes, "info.version: ", _.has(this.changes, 'openapidocument.info.version'), 'verChanged', this.verChanged);
 				},
 				deep: true
 			},

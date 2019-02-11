@@ -312,7 +312,7 @@
 			</aside>
 			<aside class="column column-aside edit-column components-column column-minimize">
 				<div class="clearfix column-header column-min-button">
-					<h5 class="column-header-title">Components & Limits</h5>
+					<h5 class="column-header-title">Components & Tags</h5>
 				</div>
 				<div class="column-content">
 					<form class="nicescroll-bar" id="frmSchemas">
@@ -630,16 +630,6 @@
 								<api-parameter :parameter="parameter" :index="index" :openapi="openapi" :params="openapi.components.parameters" :type="Object" v-for="(parameter,item,index) in openapi.components.parameters" :key="index" :item="item"></api-parameter>
 							</div>
 						</article>
-						<!-- <article class="field-controls field-level-0" data-id="limits">
-							<div class="field-sum">
-								<a class="field-link nav-caret" data-toggle="collapse" data-target="#limits" aria-controls="limits">
-									<h6 class="d-block"><i class="fa fa-fw fa-tachometer-alt"></i> Limits</h6>
-								</a>
-							</div>
-							<div id="limits" class="collapse field-acc field-tabs">
-								<api-limits :api="api" :limits="api.limits"></api-limits>
-							</div>
-						</article> -->
 					</form>
 				</div>
 			</aside>

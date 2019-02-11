@@ -1000,7 +1000,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 				Vue.set(this, 'apiGroupList', myApiGroupList );
 				Vue.set(this, 'apiCategoryList', myApiCategoryList );
 				Vue.set(this, 'apiTagList', myApiTagList );
-				console.log("this.apiCategoryList: ", this.apiCategoryList);
+				// console.log("this.apiCategoryList: ", this.apiCategoryList);
 			} else if (this.$root.pageCurrent === 'explore') {
 				var apiGroupList = await this.getList(abyss.ajax.api_group_list);
 				var apiCategoryList = await this.getList(abyss.ajax.api_category_list);
