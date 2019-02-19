@@ -27,6 +27,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment'], funct
 					"version": null,
 					"subjectid": null,
 					"policies": null,
+					"isactive": true,
 					"licensedocument": {
 						"sla": {
 							"tierName": "Silver",

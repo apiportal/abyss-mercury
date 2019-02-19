@@ -19,7 +19,7 @@
 				<div class="nicescroll--bar">
 					<table class="table table-hover table-bordered table-edge">
 						<tr>
-							<th class="td-bool" v-bind:class="sort.order" v-on:click="sortList(sort, 'isdeleted', Boolean)">Status</th>
+							<th class="td-bool" v-bind:class="sort.order" v-on:click="sortList(sort, 'isactive', Boolean)">Status</th>
 							<th class="td-name" v-bind:class="sort.order" v-on:click="sortList(sort, 'name', String)">Name</th>
 							<th class="td-name" v-bind:class="sort.order" v-on:click="sortList(sort, 'policyinstance.info.type', String)">Type</th>
 							<th class="td-name" v-bind:class="sort.order" v-on:click="sortList(sort, 'policyinstance.info.subType', String)">subType</th>
@@ -34,8 +34,8 @@
 						</tr>
 						<tr v-for="(policy, index) in sortByNested(sort, policyList)" v-bind:key="policy.uuid" v-bind:class="{'active': isSelected(index), 'tr-deleted': policy.isdeleted}">
 							<td class="txt-c">
-								<i class="fas fa-check-circle txt-green" title="Active" v-if="!policy.isdeleted"></i>
-								<i class="fas fa-times-circle" title="Deleted" v-if="policy.isdeleted"></i>
+								<i class="fas fa-times-circle" title="Not Active" v-if="!policy.isactive"></i>
+								<i class="fas fa-check-circle txt-green" title="Active" v-if="policy.isactive"></i>
 							</td>
 							<td>{{policy.name}} <small class="d-block">{{policy.description}}</small></td>
 							<td>{{policy.policyinstance.info.type}}</td>
@@ -91,6 +91,13 @@
 								<textarea type="text" name="description" id="description" v-model="policy.description" v-validate="'required'" class="form-control"></textarea>
 								<em v-bind:class="{ 'show': errors.has('description') }">{{ errors.first('description') }}</em>
 							</div>
+							<div class="form-group form-inline">
+								<label class="d-block">Is Active?</label>
+								<span class="switch switch-green ml-auto">
+									<input type="checkbox" name="isactive" id="isactive" v-model="policy.isactive">
+									<label for="isactive"></label>
+								</span>
+							</div>
 							<div class="form-group " v-bind:class="{ 'has-error': errors.has('type') }">
 								<label>Policy Type</label>
 								<select class="form-control" name="type" id="type" v-model="policy.typeid" v-validate="'required'" v-on:change="getTemplate($event.target.value, true)">
@@ -130,10 +137,12 @@
 						<policy-types v-for="(t,index) in policyTypes" :key="t.uuid" :t="t" :index="index" :orgoptions="orgOptions" inline-template>
 							<article class="field-controls field-color-grey field-level-1" :class="{'is-deleted': t.isdeleted}">
 								<div class="field-sum">
-									<a class="field-link nav-caret" data-toggle="collapse" v-bind:data-target="'#t'+index" v-bind:aria-controls="'t'+index">
+									<a class="field-link nav-caret d-flex align-items-center" data-toggle="collapse" v-bind:data-target="'#t'+index" v-bind:aria-controls="'t'+index">
+										<i class="fas fa-times-circle txt-muted mr-2" title="Not Active" v-if="!t.isactive"></i>
+										<i class="fas fa-check-circle txt-green mr-2" title="Active" v-if="t.isactive"></i>
 										<strong class="fnt-bold">{{t.name}}</strong>
 									</a>
-									<div class="ficon-actions dropdown dropdown-hover">
+									<div class="ficon-actions dropdown dropdown-hover" v-if="!t.isdeleted">
 										<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
 										<ul class="dropdown-menu dropdown-menu-right" role="menu">
 											<li><a title="Add Policy Type" v-on:click="addType()"><i class="fas fa-lg fa-plus"></i> Add Policy Type</a></li>
@@ -141,7 +150,7 @@
 										</ul>
 									</div>
 								</div>
-								<div v-bind:id="'t'+index" class="collapse field-acc">
+								<fieldset v-bind:id="'t'+index" class="collapse field-acc" :disabled="t.isdeleted">
 									<div class="form-group" v-bind:class="{ 'has-error': errors.has('name') }">
 										<label>Name</label>
 										<input class="form-control" name="name" v-model="t.name" v-validate="'required'">
@@ -162,11 +171,18 @@
 										<textarea class="form-control" name="description" v-model="t.description"></textarea>
 									</div>
 									<div class="form-group" v-bind:class="{ 'has-error': errors.has('organization') }">
-										<label>Organization Id</label>
+										<label>Organization</label>
 										<select class="form-control" name="organization" v-model="t.organizationid" v-validate="'required'">
 											<option v-for="(org,index) in orgoptions" :value="org.uuid" :class="{'op-deleted': org.isdeleted}" :disabled="org.isdeleted">{{org.name}}</option>
 										</select>
 										<em v-bind:class="{ 'show': errors.has('organization') }">{{ errors.first('organization') }}</em>
+									</div>
+									<div class="form-group form-inline">
+										<label class="d-block">Is Active?</label>
+										<span class="switch switch-green ml-auto">
+											<input type="checkbox" name="isactive" :id="'isactive'+t.uuid" v-model="t.isactive">
+											<label :for="'isactive'+t.uuid"></label>
+										</span>
 									</div>
 									<div class="form-group" v-bind:class="{ 'has-error': errors.has('template') }">
 										<label for="template">Template:</label>
@@ -178,7 +194,7 @@
 										<button type="button" class="btn btn-primary btn-rounded" v-if="!t.uuid" v-on:click="saveAddType(t)">ADD</button>
 										<button type="button" class="btn btn-primary btn-rounded" v-if="t.uuid" v-on:click="saveType(t)">SAVE</button>
 									</div>
-								</div>
+								</fieldset>
 							</article>
 						</policy-types>
 					</div>

@@ -3,9 +3,13 @@
 		<div class="field--controls field-controls-hover" :class="{'is-deleted': org.isdeleted}">
 			<a class="field-link nav--caret" data-toggle="collapse" v-bind:data-target="'#org'+col+index" v-bind:aria-controls="'org'+col+index">
 				<strong class="m-0 txt-blue txt-uppercase d-block txt-r" v-if="title == 'add'">Add Organization <i class="fas fa-fw fa-plus"></i></strong>
-				<strong class="m-0" v-if="title == 'edit'">{{org.name}}</strong>
+				<strong class="m-0 d-flex align-items-center" v-if="title == 'edit'">
+					<i class="fas fa-times-circle txt-muted mr-2" title="Not Active" v-if="!org.isactive"></i>
+					<i class="fas fa-check-circle txt-green mr-2" title="Active" v-if="org.isactive"></i>
+					{{org.name}}
+				</strong>
 			</a>
-			<div class="ficon-actions dropdown dropdown-hover" v-if="title == 'edit'">
+			<div class="ficon-actions dropdown dropdown-hover" v-if="title == 'edit' && !org.isdeleted">
 				<button type="button" data-toggle="dropdown" aria-expanded="false" class="dropdown-toggle"> <i class="fas fa-ellipsis-h"></i>
 				</button>
 				<ul role="menu" class="dropdown-menu dropdown-menu-right">
@@ -15,7 +19,7 @@
 				</ul>
 			</div>
 			<div v-bind:id="'org'+col+index" class="collapse clearfix field-tabs">
-				<div class="px-3 pt-3 brd-t">
+				<fieldset class="px-3 pt-3 brd-t" :disabled="org.isdeleted">
 					<div class="form-group" v-bind:class="{ 'has-error': errors.has('name') }">
 						<label for="name">Organization Name:</label>
 						<input type="text" name="name" v-model="org.name" v-validate="'required|min:2'" class="form-control">
@@ -36,6 +40,13 @@
 						<input type="text" name="url" v-model="org.url" class="form-control" v-validate="'url'">
 						<em v-bind:class="{ 'show': errors.has('url') }">{{ errors.first('url') }}</em>
 					</div>
+					<div class="form-group form-inline">
+						<label class="d-block">Is Active?</label>
+						<span class="switch switch-green ml-auto">
+							<input type="checkbox" name="isactive" :id="'isactive'+org.uuid" v-model="org.isactive">
+							<label :for="'isactive'+org.uuid"></label>
+						</span>
+					</div>
 					<div class="form-group" v-bind:class="{ 'has-error': errors.has('description') }">
 						<label for="description">Description:</label>
 						<textarea type="text" name="description" v-model="org.description" v-validate="'required'" class="form-control"></textarea>
@@ -46,7 +57,7 @@
 						<button type="button" class="btn btn-primary btn-rounded" v-if="title == 'add'" v-on:click="organizationAction('add', org)">ADD</button>
 						<button type="button" class="btn btn-primary btn-rounded" v-if="title == 'edit'" v-on:click="organizationAction('edit', org)">SAVE</button>
 					</div>
-				</div>
+				</fieldset>
 			</div>
 		</div>
 		<organization-tree v-if="sorg.organizationid == org.uuid && deforg.uuid != org.uuid" :key="sorg.uuid" v-for="(sorg,sindex) in $root.rootData.user.organizations" :org="sorg" :index="sindex" :orgs="orgs" :deforg="deforg" title="edit" :col="'sub'+sindex"></organization-tree>

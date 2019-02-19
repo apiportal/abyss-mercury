@@ -31,7 +31,7 @@
 						</tr>
 						<tr v-for="(directory, index) in sortBy(sort, directoryList)" v-bind:key="directory.uuid" v-bind:class="{'active': isSelected(index), 'tr-deleted': directory.isdeleted}">
 							<td class="txt-c">
-								<i class="fas fa-times-circle" title="Active" v-if="!directory.isactive"></i>
+								<i class="fas fa-times-circle" title="Not Active" v-if="!directory.isactive"></i>
 								<i class="fas fa-check-circle txt-green" title="Active" v-if="directory.isactive"></i>
 							</td>
 							<td>{{directory.directoryname}} <small class="d-block">{{directory.description}}</small></td>
@@ -97,9 +97,9 @@
 							</div>
 							<div class="fow">
 								<div class="fol-6 form-group ">
-									<label class="d-block">Enabled</label>
-									<span class="switch switch-primary">
-										<input type="checkbox" name="isactive" id="isactive" v-model="directory.isactive" checked>
+									<label class="d-block">Is Active?</label>
+									<span class="switch switch-green">
+										<input type="checkbox" name="isactive" id="isactive" v-model="directory.isactive">
 										<label for="isactive"></label>
 									</span>
 								</div>
@@ -112,7 +112,7 @@
 								</div>
 							</div>
 							<div class="form-group " v-bind:class="{ 'has-error': errors.has('orgid') }">
-								<label>Organization Id</label>
+								<label>Organization</label>
 								<select class="form-control" name="orgid" id="orgid" v-model="directory.organizationid" v-validate="'required'">
 									<option v-for="(org,index) in orgOptions" :value="org.uuid" :class="{'op-deleted': org.isdeleted}" :disabled="org.isdeleted">{{org.name}}</option>
 								</select>
@@ -164,10 +164,12 @@
 						<directory-types v-for="(t,index) in directoryTypes" :key="t.uuid" :t="t" :index="index" :orgoptions="orgOptions" inline-template>
 							<article class="field-controls field-color-grey field-level-1" :class="{'is-deleted': t.isdeleted}">
 								<div class="field-sum">
-									<a class="field-link nav-caret" data-toggle="collapse" v-bind:data-target="'#t'+index" v-bind:aria-controls="'t'+index">
+									<a class="field-link nav-caret d-flex align-items-center" data-toggle="collapse" v-bind:data-target="'#t'+index" v-bind:aria-controls="'t'+index">
+										<i class="fas fa-times-circle txt-muted mr-2" title="Not Active" v-if="!t.isactive"></i>
+										<i class="fas fa-check-circle txt-green mr-2" title="Active" v-if="t.isactive"></i>
 										<strong class="fnt-bold">{{t.typename}}</strong>
 									</a>
-									<div class="ficon-actions dropdown dropdown-hover">
+									<div class="ficon-actions dropdown dropdown-hover" v-if="!t.isdeleted">
 										<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
 										<ul class="dropdown-menu dropdown-menu-right" role="menu">
 											<li><a title="Add Identity Manager Type" v-on:click="addType()"><i class="fas fa-lg fa-plus"></i> Add IM Type</a></li>
@@ -175,7 +177,7 @@
 										</ul>
 									</div>
 								</div>
-								<div v-bind:id="'t'+index" class="collapse field-acc">
+								<fieldset v-bind:id="'t'+index" class="collapse field-acc" :disabled="t.isdeleted">
 									<div class="form-group" v-bind:class="{ 'has-error': errors.has('name') }">
 										<label>Name</label>
 										<input class="form-control" name="name" v-model="t.typename" v-validate="'required'">
@@ -186,11 +188,18 @@
 										<textarea class="form-control" name="description" v-model="t.description"></textarea>
 									</div>
 									<div class="form-group" v-bind:class="{ 'has-error': errors.has('organization') }">
-										<label>Organization Id</label>
+										<label>Organization</label>
 										<select class="form-control" name="organization" v-model="t.organizationid" v-validate="'required'">
 											<option v-for="(org,index) in orgoptions" :value="org.uuid" :class="{'op-deleted': org.isdeleted}" :disabled="org.isdeleted">{{org.name}}</option>
 										</select>
 										<em v-bind:class="{ 'show': errors.has('organization') }">{{ errors.first('organization') }}</em>
+									</div>
+									<div class="form-group form-inline">
+										<label class="d-block">Is Active?</label>
+										<span class="switch switch-green ml-auto">
+											<input type="checkbox" name="isactive" :id="'isactive'+t.uuid" v-model="t.isactive">
+											<label :for="'isactive'+t.uuid"></label>
+										</span>
 									</div>
 									<div class="form-group" v-bind:class="{ 'has-error': errors.has('template') }">
 										<label for="template">Template:</label>
@@ -202,7 +211,7 @@
 										<button type="button" class="btn btn-primary btn-rounded" v-if="!t.uuid" v-on:click="saveAddType(t)">ADD</button>
 										<button type="button" class="btn btn-primary btn-rounded" v-if="t.uuid" v-on:click="saveType(t)">SAVE</button>
 									</div>
-								</div>
+								</fieldset>
 							</article>
 						</directory-types>
 					</div>

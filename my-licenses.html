@@ -22,8 +22,8 @@
 							<div class="field-sum bg-white shadow-sm" v-bind:class="{'is-deleted': license.isdeleted}">
 								<a class="field-link box" data-toggle="collapse" v-bind:data-target="'#license'+index" v-bind:aria-controls="'license'+index">
 									<div class="h6">										
-									<i class="fas fa-check-circle txt-green" title="Active" v-if="!license.isdeleted"></i>
-									<i class="fas fa-times-circle txt-red" title="Deleted" v-if="license.isdeleted"></i>
+									<i class="fas fa-times-circle txt-muted" title="Not Active" v-if="!license.isactive"></i>
+									<i class="fas fa-check-circle txt-green" title="Active" v-if="license.isactive"></i>
 										{{license.name}}
 										<small>{{license.version}}</small>
 									</div>
@@ -203,6 +203,13 @@
 									<label for="infodescription">Description:</label>
 									<textarea type="text" name="infodescription" id="infodescription" v-model="license.licensedocument.info.description" v-validate="'required'" class="form-control"></textarea>
 									<em v-bind:class="{ 'show': errors.has('infodescription') }">{{ errors.first('infodescription') }}</em>
+								</div>
+								<div class="form-group form-inline">
+									<label class="d-block">Is Active?</label>
+									<span class="switch switch-green ml-auto">
+										<input type="checkbox" name="isactive" id="isactive" v-model="license.isactive">
+										<label for="isactive"></label>
+									</span>
 								</div>
 								<div class="form-group">
 									<label>Visibility</label>

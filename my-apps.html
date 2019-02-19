@@ -139,7 +139,7 @@
 								</span>
 							</div>
 							<div class="form-group " v-bind:class="{ 'has-error': errors.has('orgid') }">
-								<label>Organization Id</label>
+								<label>Organization</label>
 								<select class="form-control" name="orgid" id="orgid" v-model="app.organizationid" v-validate="'required'">
 									<option v-for="(org,index) in orgOptions" :value="org.uuid" :class="{'op-deleted': org.isdeleted}" :disabled="org.isdeleted">{{org.name}}</option>
 								</select>

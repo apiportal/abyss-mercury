@@ -223,7 +223,7 @@
 					<div class="nicescroll-bar">
 						<div class="p-3">
 							<div class="form-group " v-bind:class="{ 'has-error': errors.has('organization') }">
-								<label>Organization Id</label>
+								<label>Organization</label>
 								<select class="form-control" name="organization" id="organization" v-model="user.organizationid" v-validate="'required'">
 									<option v-for="(org,index) in orgOptions" :value="org.uuid" :class="{'op-deleted': org.isdeleted}" :disabled="org.isdeleted">{{org.name}}</option>
 								</select>

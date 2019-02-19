@@ -83,6 +83,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'moment', 'vue!schem
 					"crudsubjectid": null,
 					"typename": "newType",
 					"description": "",
+					"isactive": true,
+					"attributetemplate": {},
 				},
 				template: null,
 				selectedDirectory: {},

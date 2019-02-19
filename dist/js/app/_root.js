@@ -1022,30 +1022,6 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 			},
 		}
 	});
-	Vue.component('my-organizations', {
-		props: ['org', 'index', 'orgs', 'title', 'deforg', 'col'],
-		data() {
-			return {
-				isLoading: true,
-			};
-		},
-		computed: {
-		},
-		methods : {
-			organizationAction(act, org) {
-				this.$validator.validateAll().then((result) => {
-					if (result) {
-						this.$root.organizationAction(act, org);
-					}
-				});
-			},
-			deleteOrganization(item) {
-				this.$root.deleteOrganization(item);
-			},
-		},
-		created() {
-		},
-	});
 // ■■■■■■■■ vue ■■■■■■■■ //
 	new Vue({
 		el: '#portal',
@@ -1125,6 +1101,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 				"name": null,
 				"description": "",
 				"url": "",
+				"picture": "",
+				"isactive": true,
 			}],
 			userOptions: [],
 			shareApi: {
@@ -1395,6 +1373,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 						"crudsubjectid": this.$root.rootData.user.uuid,
 						"subjectid": this.$root.rootData.user.uuid,
 						"organizationrefid": item.uuid,
+						"isactive": true,
+						"isowner": true,
 					};
 					await this.addItem(abyss.ajax.subject_organizations, subject);
 					this.getOrganizations(this.$root.rootData.user.uuid);
@@ -1404,11 +1384,23 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 						"name": null,
 						"description": "",
 						"url": "",
+						"picture": "",
+						"isactive": true,
 					}];
 				}
 				if (act === 'edit') {
+					if (org.picture == null) {
+						Vue.set(org,'picture','');
+					}
 					Vue.set(org.organizationUser, 'organizationid', org.organizationUser.organizationrefid ); // ??
-					await this.editItem(abyss.ajax.organizations_list, org.uuid, this.cleanProps(org, 'organization'))
+					if (!org.organizationUser.isowner) {
+						Vue.set(org.organizationUser, 'isowner', true );
+						if (!org.organizationUser.isactive) {
+							Vue.set(org.organizationUser, 'isactive', true );
+						}
+						await this.editItem(abyss.ajax.subject_organizations, org.organizationUser.uuid, this.cleanProps(org.organizationUser));
+					}
+					await this.editItem(abyss.ajax.organizations_list, org.uuid, this.cleanProps(org, 'organization'));
 					this.getOrganizations(this.$root.rootData.user.uuid);
 				}
 			},
