@@ -75,7 +75,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 					// return this.subjectOptions.filter((el) => el.subjecttypeid == this.permission.subject.subjecttypeid );
 				// } else {
 					// return this.subjectOptions;
-					if (this.permission.resource.resourceType.type == 'API' && this.permission.resourceactionid == abyss.defaultIds.invokeApi) {
+					if (this.permission.resource.resourceType.type == 'API PROXY' && this.permission.resourceactionid == abyss.defaultIds.invokeApi) {
 						return this.subjectOptions.filter((el) => el.subjecttypeid == abyss.defaultIds.subjectTypeApp );
 					} else {
 						return this.subjectOptions.filter((el) => el.subjecttypeid == abyss.defaultIds.subjectTypeUser );
@@ -83,7 +83,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'momen
 				// }
 			},*/
 			/*showAppListOnly() {
-				if (this.permission.resource.resourceType.type == 'API' && this.permission.resourceactionid == abyss.defaultIds.invokeApi) {
+				if (this.permission.resource.resourceType.type == 'API PROXY' && this.permission.resourceactionid == abyss.defaultIds.invokeApi) {
 					return true;
 				} else {
 					return false;

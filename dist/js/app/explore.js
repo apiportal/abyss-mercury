@@ -142,7 +142,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select'], funct
 				}
 				this.apiList = await this.getList(pxEndpoint);
 				this.apiList.forEach(async (value, key) => {
-					await this.getResources(value, 'API', value.openapidocument.info.title + ' ' + value.openapidocument.info.version, value.openapidocument.info.description);
+					await this.getResources(value, 'API PROXY', value.openapidocument.info.title + ' ' + value.openapidocument.info.version, value.openapidocument.info.description);
 				});
 				// this.apiList = this.apiList.filter( (item) => !item.isdeleted && item.apivisibilityid == abyss.defaultIds.apiVisibilityPublic );
 				// this.apiList = apiList;

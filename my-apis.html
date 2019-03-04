@@ -207,6 +207,18 @@
 										<label>Version</label>
 										<input class="form-control" placeholder="Required" v-model.lazy="openapi.info.version" v-validate="'required'" name="infoVersion">
 									</div>
+									<!-- <label>apioriginid</label>
+									<input class="form-control" v-model.lazy="api.apioriginid" placeholder="apioriginid" name="apioriginid">
+									<label>apiparentid</label>
+									<input class="form-control" v-model.lazy="api.apiparentid" placeholder="apiparentid" name="apiparentid"> -->
+									<div class="form-group" v-if="rootState == 'edit'">
+										<label>Parent API</label>
+										<div>{{parentApiName()}}</div>
+									</div>
+									<div class="form-group" v-if="rootState == 'edit'">
+										<label>Original API</label>
+										<div>{{originApiName()}}</div>
+									</div>
 									<div class="form-group mb-0">
 										<label>Description</label>
 										<a class="flt-r" title="Preview markdown" v-on:click="markdownPreview('#txtDescription')"><i class="fa fa-check-circle"></i></a>
@@ -290,7 +302,7 @@
 									</div>
 								</div>
 								<div class="form-group">
-									<label>Color {{api.color}}</label>
+									<label>Color</label>
 									<div class="input-group api-color" data-format="hex" data-targetbg="#appcolor"><input type="text" class="form-control" v-model.lazy="api.color"><span class="input-group-addon"><i></i></span></div>
 								</div>
 								<div class="form-group v-select-color-green v-select-inline" v-if="rootState == 'edit'">
@@ -663,8 +675,8 @@
 								</a>
 								<div class="ficon-actions dropdown dropdown-hover">
 									<span class="switch switch-primary">
-										<input type="checkbox" :name="'isactive'+index" :id="'isactive'+index" v-model="license.isactive" v-on:change="setLicense(license)">
-										<label :for="'isactive'+index"></label>
+										<input type="checkbox" :name="'isselected'+index" :id="'isselected'+index" v-model="license.isselected" v-on:change="setLicense(license)">
+										<label :for="'isselected'+index"></label>
 									</span>
 								</div>
 							</div>

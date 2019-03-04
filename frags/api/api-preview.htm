@@ -123,7 +123,7 @@
 														<strong>{{sub.user.displayname}}</strong>
 														<small class="d-block"><strong>{{sub.text}}</strong></small>
 													</div>
-													<div class="ddd" v-if="$root.abyssSandbox">
+													<div class="sandbox-item" v-if="$root.abyssSandbox">
 														<small class="d-block">{{sub.permission}}</small>
 														<small class="d-block">{{sub.view}}</small>
 														<small class="txt-uppercase">resourceid</small>
@@ -151,8 +151,10 @@
 									<small class="flt-r txt-uppercase mt-1 txt-green">{{con.contractStateName}}</small>
 									<h5 class=""><i class="fas fa-fw fa-cubes"></i> {{con.contractApp}}</h5>
 									<p class="sandbox-item"><code class="d-block small txt-cyan"><small>{{con.subjectid}}</small></code></p>
-									<p><strong class="lbl">license</strong> {{con.contractLicenseName}}</p>
-									<p class="sandbox-item small"><strong class="lbl">Subscriber</strong> {{con.contractPerson}}</p>
+									<div class="fow">
+										<p class="fol"><strong class="lbl">license</strong> {{con.contractLicenseName}}</p>
+										<p class="fol"><strong class="lbl">Subscriber</strong> {{con.contractPerson}}</p>
+									</div>
 								</a>
 								<div v-bind:id="'con'+index" class="collapse field-tabs">
 									<div th:replace="webroot/frags/api/api-preview-items.htm :: apiContract"></div>

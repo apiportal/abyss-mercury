@@ -686,15 +686,18 @@
 		<a data-toggle="collapse" v-bind:data-target="'#api'+api.uuid" v-bind:aria-controls="'api'+api.uuid" v-bind:class="{'active': $parent.isSelectedApi(api.uuid), 'is-deleted': api.isdeleted}">
 			<div class="">
 				<i v-bind:title="apiGetStateName(api.apistateid)" class="fas fa-circle" v-bind:class="'stat-' + apiGetStateName(api.apistateid)"></i>
-				<strong>{{api.openapidocument.info.title}}</strong> <small class="txt-muted">{{api.openapidocument.info.version}} {{apiDefaultVersion}} {{apiLatestVersion}}</small>
+				<strong>{{api.openapidocument.info.title}}</strong>
+				{{api.openapidocument.info.version}}
+				<small class="txt-muted">{{apiDefaultVersion}} {{apiLatestVersion}}</small>
 			</div>
 			<span v-if="!api.isproxyapi">
 				<small>Proxies: <strong v-if="api.proxies">{{api.proxies.length}}</strong></small>
 			</span>
-			<span v-if="api.isproxyapi">
-				<small>Business API: <strong>{{businessapi}}</strong></small>
-			</span>
 			<small class="txt-muted flt-r">{{api.created | formatDate}}</small>
+			<span v-if="api.isproxyapi">
+				<small class="d-block">Business API: <strong>{{businessapi}}</strong></small>
+				<small class="d-block" v-if="api.subscriptions">Subscriptions: <strong>{{api.subscriptions.length}}</strong></small>
+			</span>
 			<code class="d-block small" :style="{ 'color': api.color }"><small>{{api.uuid}}</small></code>
 		</a>
 		<ul v-bind:id="'api'+api.uuid" class="collapse clearfix" :data-api="businessapiId">

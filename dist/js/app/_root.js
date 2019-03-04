@@ -542,7 +542,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 						licenses.push(lic);
 					});
 					Vue.set(this.$root.previewedApi, 'licenses', licenses);
-					await this.getResources(this.$root.previewedApi, 'API', this.$root.previewedApi.openapidocument.info.title + ' ' + this.$root.previewedApi.openapidocument.info.version, this.$root.previewedApi.openapidocument.info.description);
+					await this.getResources(this.$root.previewedApi, 'API PROXY', this.$root.previewedApi.openapidocument.info.title + ' ' + this.$root.previewedApi.openapidocument.info.version, this.$root.previewedApi.openapidocument.info.description);
 					// Vue.set( this.$root.previewedApi, 'filteredApps', _.reject(this.$root.appList, { contracts: [ { apiid: item.uuid, isdeleted: false } ]}) );
 					if (this.$root.rootData.user.uuid === this.$root.previewedApi.subjectid) {
 						var apiCon = await this.getList(abyss.ajax.contracts_api + this.$root.previewedApi.uuid);
@@ -617,13 +617,13 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 						// vCon.subscriptions = [];
 						// vCon.subscriptions.push(res);
 						if (hasCont) {
-							this.getAccessTokens(item.uuid, 'API', res);
+							this.getAccessTokens(item.uuid, 'API PROXY', res);
 						}
 					} else {
 						// Vue.set(vCon, 'subscriptions', contSubs );
 						Vue.set(vCon, 'subscription', sub );
 						if (hasCont) {
-							this.getAccessTokens(item.uuid, 'API', sub);
+							this.getAccessTokens(item.uuid, 'API PROXY', sub);
 						}
 					}
 				});
@@ -641,10 +641,10 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 						Vue.set(vCon, 'api', conApi );
 						var conLicArr = await this.getList(abyss.ajax.licenses + '/' + vCon.licenseid);
 						Vue.set(vCon, 'license', conLicArr );
-						await this.getResources(vCon.api, 'API', vCon.api.openapidocument.info.title + ' ' + vCon.api.openapidocument.info.version, vCon.api.openapidocument.info.description);
+						await this.getResources(vCon.api, 'API PROXY', vCon.api.openapidocument.info.title + ' ' + vCon.api.openapidocument.info.version, vCon.api.openapidocument.info.description);
 						// Vue.set(vCon, 'subscription', _.find(app.subscriptions, { resourceid: vCon.api.resource.uuid }) );
 						// Vue.set(vCon, 'subscription', _.find(app.subscriptions, { uuid: vCon.subjectpermissionid }) );
-						this.getAccessTokens(vCon.api.uuid, 'API', vCon.subscription);
+						this.getAccessTokens(vCon.api.uuid, 'API PROXY', vCon.subscription);
 					}
 				}
 				if (modal && app.contracts.length > 0) {
@@ -717,7 +717,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 							Vue.set(cont, 'subscription', _.find(subscriptions, { uuid: cont.subjectpermissionid }) );
 							var resource = await this.getItem(abyss.ajax.resources, cont.subscription.resourceid);
 							Vue.set(cont.subscription, 'resource', resource );
-							await this.getAccessTokens(cont.subscription.resource.resourcerefid, 'API', cont.subscription);
+							await this.getAccessTokens(cont.subscription.resource.resourcerefid, 'API PROXY', cont.subscription);
 						}
 					}
 					Vue.set( res, 'expiredCount', res.contracts.filter( (item) => item.subscription.accessToken.isexpired ).length );
@@ -725,8 +725,8 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 						for (var sub of res.subscriptions) {
 							var resource = await this.getItem(abyss.ajax.resources, sub.resourceid);
 							Vue.set(sub, 'resource', resource );
-							// await this.getResources(api, 'API', api.name, api.description);
-							await this.getAccessTokens(sub.resource.resourcerefid, 'API', sub);
+							// await this.getResources(api, 'API PROXY', api.name, api.description);
+							await this.getAccessTokens(sub.resource.resourcerefid, 'API PROXY', sub);
 						}
 					}*/
 					if (this.$root.rootData.myPermissions.length > 0) {
@@ -836,7 +836,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 						isactive: true,
 					};
 					var subs = await this.addItem(abyss.ajax.permission_list, subscription);
-					await this.createAccessTokens(this.api.uuid, 'API', subs);
+					await this.createAccessTokens(this.api.uuid, 'API PROXY', subs);
 					var contract = {
 						organizationid: this.$root.abyssOrgId,
 						crudsubjectid: this.$root.rootData.user.uuid,
@@ -874,7 +874,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-cookie', 'moment', 'izito
 			async regenerateApisAccessToken(con, appid) {
 				var del = await this.deleteItem(abyss.ajax.resource_access_tokens, con.subscription.accessToken, false);
 				if (del) {
-					await this.createAccessTokens(con.apiid, 'API', con.subscription);
+					await this.createAccessTokens(con.apiid, 'API PROXY', con.subscription);
 					if (this.$root.pageCurrent == 'my-apps') {
 						var app = this.$root.appList.find( (item) => item.uuid == appid );
 						Vue.set( app, 'expiredCount', app.contracts.filter( (item) => item.subscription.accessToken.isexpired ).length );

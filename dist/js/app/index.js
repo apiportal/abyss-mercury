@@ -144,7 +144,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 				this.apisSharedWithMe = _.uniqBy(apisSharedWithMe, 'uuid');
 				for (var item of this.apisSharedWithMe) {
 					// Vue.set(item, 'subscriptions', []);
-					// await this.getResources(item, 'API', item.openapidocument.info.title + ' ' + item.openapidocument.info.version, item.openapidocument.info.description);
+					// await this.getResources(item, 'API PROXY', item.openapidocument.info.title + ' ' + item.openapidocument.info.version, item.openapidocument.info.description);
 					Vue.set(item, 'resource', _.find(this.resourceList, { 'resourcerefid': item.uuid }) );
 					// var subs = this.myApiSubscriptions.filter((el) => el.resourceid === item.resource.uuid );
 					// if (subs) {
@@ -226,7 +226,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 				this.apisSharedByMe = _.uniqBy(apisSharedByMe, 'uuid');
 				for (var item of this.apisSharedByMe) {
 					// Vue.set(item, 'subscriptions', []);
-					// await this.getResources(item, 'API', item.openapidocument.info.title + ' ' + item.openapidocument.info.version, item.openapidocument.info.description);
+					// await this.getResources(item, 'API PROXY', item.openapidocument.info.title + ' ' + item.openapidocument.info.version, item.openapidocument.info.description);
 					Vue.set(item, 'resource', _.find(this.resourceList, { 'resourcerefid': item.uuid }) );
 					/*var subs = this.myApiSubscriptions.filter((el) => el.resourceid === item.resource.uuid );
 					if (subs) {
@@ -403,7 +403,7 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'lodash', 'vue-select', 'Highc
 				this.mySubscribersCount = this.myApiSubscriptions.length;
 				for (var item of this.myProxyApiList) {
 					Vue.set(item, 'subscriptions', []);
-					// await this.getResources(item, 'API', item.openapidocument.info.title + ' ' + item.openapidocument.info.version, item.openapidocument.info.description);
+					// await this.getResources(item, 'API PROXY', item.openapidocument.info.title + ' ' + item.openapidocument.info.version, item.openapidocument.info.description);
 					Vue.set(item, 'resource', _.find(this.resourceList, { 'resourcerefid': item.uuid }) );
 					var subs = this.myApiSubscriptions.filter((el) => el.resourceid === item.resource.uuid );
 					// if (subs) {
