@@ -2350,12 +2350,38 @@ define(['config', 'Vue', 'axios', 'vee-validate', 'vue-select', 'moment', 'vue-d
 				}
 			},
 			parentApiName(item) {
-				var rel = this.apiType(this.api).find((el) => el.uuid == this.api.apiparentid );
-				return rel.openapidocument.info.title + ' ' + rel.openapidocument.info.version;
+				// var rel = this.apiType(this.api).find((el) => el.uuid == this.api.apiparentid );
+				var bapi = this.myApiList.find((el) => el.uuid == this.api.apiparentid );
+				var papi = this.myProxyList.find((el) => el.uuid == this.api.apiparentid );
+				// console.log("apiparentid: ", this.api.apiparentid, bapi, papi);
+				var rel = null;
+				if (bapi) {
+					rel = bapi
+				} else {
+					rel = papi
+				}
+				if (rel) {
+					return rel.openapidocument.info.title + ' ' + rel.openapidocument.info.version;
+				} else {
+					return '';
+				}
 			},
 			originApiName(item) {
-				var rel = this.apiType(this.api).find((el) => el.uuid == this.api.apioriginid );
-				return rel.openapidocument.info.title + ' ' + rel.openapidocument.info.version;
+				// var rel = this.apiType(this.api).find((el) => el.uuid == this.api.apioriginid );
+				var bapi = this.myApiList.find((el) => el.uuid == this.api.apioriginid );
+				var papi = this.myProxyList.find((el) => el.uuid == this.api.apioriginid );
+				// console.log("apioriginid: ", this.api.apioriginid, bapi, papi);
+				var rel = null;
+				if (bapi) {
+					rel = bapi
+				} else {
+					rel = papi
+				}
+				if (rel) {
+					return rel.openapidocument.info.title + ' ' + rel.openapidocument.info.version;
+				} else {
+					return '';
+				}
 			},
 			dropSpecsSuccess(file, response) {
 				console.log("file, response ", file, response);
